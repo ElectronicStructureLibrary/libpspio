@@ -2,19 +2,18 @@
  Copyright (C) 2011 J. Alberdi, M. Oliveira, Y. Pouillon, and M. Verstraete
 
  This program is free software; you can redistribute it and/or modify
- it under the terms of the GNU General Public License as published by
- the Free Software Foundation; either version 2, or (at your option)
- any later version.
+ it under the terms of the GNU Lesser General Public License as published by
+ the Free Software Foundation; either version 3 of the License, or 
+ (at your option) any later version.
 
  This program is distributed in the hope that it will be useful,
  but WITHOUT ANY WARRANTY; without even the implied warranty of
  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- GNU General Public License for more details.
+ GNU Lesser General Public License for more details.
 
- You should have received a copy of the GNU General Public License
+ You should have received a copy of the GNU Lesser General Public License
  along with this program; if not, write to the Free Software
- Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
- 02111-1307, USA.
+ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
  $Id: ab2libxc.c 41 2011-08-29 17:42:53Z joseba $
 */
@@ -58,7 +57,8 @@ int ab2libxc (int pspxc, psp_data_t *psp_data){
     nexch = 0;
     ncorr = 0;
 
-    for (ii=0; ii<2; ii++){
+    for 
+ii=0; ii<2; ii++){
       if(xc_func_init(&func, xccode[ii], XC_UNPOLARIZED) != 0){
         return PSPIO_VALUE_ERROR;
       }
