@@ -19,6 +19,9 @@
  $Id$
 */
 
+#ifndef PSPIO_ERROR_H
+#define PSPIO_ERROR_H
+
 /**
  * @file pspio_error.h 
  * @brief Error codes
@@ -32,3 +35,4 @@
 
 const char * pspio_errorstr (const int pspio_errorid);
 
+#endif PSPIO_ERROR_H

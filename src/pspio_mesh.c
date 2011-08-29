@@ -23,16 +23,22 @@
 
 int pspio_mesh_set_type(pspio_mesh_t *m, int type){
   
-
+  m->type = type;  
+  return(PSPIO_SUCCESS);
 }
 
 int pspio_mesh_set_parameters(pspio_mesh_t *m, const double a, const double b){
 
 
+
+  return PSPIO_SUCCESS;
 }
 
 
 int pspio_mesh_set_points(pspio_mesh_t *m, const int np, double r[]){
 
+
+
+  return(PSPIO_SUCCESS);
 }
 

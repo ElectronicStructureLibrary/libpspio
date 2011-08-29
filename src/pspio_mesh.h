@@ -22,6 +22,15 @@
 #ifndef PSPIO_MESH_H
 #define PSPIO_MESH_H
 
+#include "pspio_error.h"
+
+/**
+* Mesh types
+*/
+#define LOG1   1
+#define LOG2   2
+#define LINEAR 3
+
 /**
 * Mesh structure
 */
@@ -40,4 +49,4 @@ int pspio_mesh_set_parameters(pspio_mesh_t *m, const double a, const double b);
 
 int pspio_mesh_set_points(pspio_mesh_t *m, const int np, double r[]);
 
-#endif
+#endif PSPIO_MESH_H
