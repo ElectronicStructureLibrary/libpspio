@@ -5,7 +5,6 @@
 #include <string.h>
 #include "libxccodes.h"
 
-     read (tmp_unit, '(a)' )pspheads(ipsp)%title
      read (tmp_unit,*)pspheads(ipsp)%znuclpsp,pspheads(ipsp)%zionpsp,pspheads(ipsp)%pspdat
      read (tmp_unit,*)pspheads(ipsp)%pspcod,pspheads(ipsp)%pspxc,pspheads(ipsp)%lmax,idum,mmax
 
@@ -77,19 +76,30 @@ int read_abinit_header (fname, psp_data){
     12=> GGA, x-only part of Perdew-Burke-Ernzerhof GGA functional
     13=> GGA potential of van Leeuwen-Baerends, while for energy, Perdew-Wang 92 functional
     14=> GGA, revPBE of Y. Zhang and W. Yang, Phys. Rev. Lett. 80, 890 (1998)
+XC_GGA_X_PBE_R
+XC_GGA_C_PBE
     15=> GGA, RPBE of B. Hammer, L.B. Hansen and J.K. Norskov, Phys. Rev. B 59, 7413 (1999)
+XC_GGA_X_RPBE
     16=> GGA, HTCH93 of F.A. Hamprecht, A.J. Cohen, D.J. Tozer, N.C. Handy, J. Chem. Phys. 109, 6264 (1998)
+XC_GGA_XC_HCTH_93
     17=> GGA, HTCH120 of A.D. Boese, N.L. Doltsinis, N.C. Handy, and M. Sprik, J. Chem. Phys 112, 1670 (1998) - The usual HCTH functional.
+XC_GGA_XC_HCTH_120
     18=> (NOT AVAILABLE : used internally for GGA BLYP pseudopotentials from M. Krack, see Theor. Chem. Acc. 114, 145 (2005), available from the CP2K repository - use the LibXC instead, with ixc=-106131.
     19=> (NOT AVAILABLE : used internally for GGA BP86 pseudopotentials from M. Krack, see Theor. Chem. Acc. 114, 145 (2005), available from the CP2K repository - use the LibXC instead, with ixc=-106132.
 
     20=> Fermi-Amaldi xc ( -1/N Hartree energy, where N is the number of electrons per cell ; G=0 is not taken into account however), for TDDFT tests. No spin-pol. Does not work for RF.
     21=> same as 20, except that the xc-kernel is the LDA (ixc=1) one, for TDDFT tests.
     22=> same as 20, except that the xc-kernel is the Burke-Petersilka-Gross hybrid, for TDDFT tests.
+NOT in libxc?
     23=> GGA of Z. Wu and R.E. Cohen, Phys. Rev. 73, 235116 (2006).
+XC_GGA_X_WC
+XC_GGA_C_PBE
     24=> GGA, C09x exchange of V. R. Cooper, PRB 81, 161104(R) (2010).
+NOT in libxc?
     26=> GGA, HTCH147 of A.D. Boese, N.L. Doltsinis, N.C. Handy, and M. Sprik, J. Chem. Phys 112, 1670 (1998).
+XC_GGA_XC_HCTH_147
     27=> GGA, HTCH407 of A.D. Boese, and N.C. Handy, J. Chem. Phys 114, 5497 (2001).
+XC_GGA_XC_HCTH_407
     28=> (NOT AVAILABLE : used internally for GGA OLYP pseudopotentials from M. Krack, see Theor. Chem. Acc. 114, 145 (2005), available from the CP2K repository - use the LibXC instead, with ixc=-110131.
 */
   switch(pspxc){
@@ -127,10 +137,6 @@ int read_abinit_header (fname, psp_data){
       break;
     case(17):
       break;
-    case(18):
-      break;
-    case(19):
-      break;
     case(20):
       break;
     case(21):
@@ -149,8 +155,10 @@ int read_abinit_header (fname, psp_data){
       psp_data. = XC_GGA_XC_HCTH_147;
       break;
 
-    case(28):
     case(10):
+    case(18):
+    case(19):
+    case(28):
     default:
       return PSPIO_VALUE_ERROR;
   }

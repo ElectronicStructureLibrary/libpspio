@@ -36,7 +36,8 @@ struct psp_data_t {
   // general data
   char *title; /**< descriptive string for content of file read in */
   int wave_eq; /**< type of wave equation which was solved: Dirac, Scalar Relativistic, or Schroedinger */
-  int ixc; /**< exchange-correlation functional id, taken from libxc conventions */
+  int exchange; /**< exchange functional id, taken from libxc conventions */
+  int correlation; /**< correlation functional id, taken from libxc conventions */
   int scheme; /**< scheme used to generate the pseudopotentials */
   int nlcc; /**< flag for presence of NLCC */
   mesh_t *mesh; /**< Radial mesh */
