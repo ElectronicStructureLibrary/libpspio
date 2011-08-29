@@ -22,6 +22,20 @@
 #include <gsl/gsl_spline.h>
 
 /**
+* File formats
+*/
+#define UNKNOWN -1
+#define ABINIT_4 1
+#define ABINIT_5 2
+#define ABINIT_6 3
+#define ABINIT_HGH 4
+#define ABINIT_GTH 5
+#define ATOM 6
+#define FHI98PP 7
+#define SIESTA 8
+#define UPF 9
+
+/**
  * Wave-equations 
 */
 #define SCHRODINGER 1
@@ -41,6 +55,7 @@
 #define HGH 8
 #define GTH 9
 #define RRKJ 10
+
 
 /** 
 * values for NLCC - could add possibilities for different schemes
