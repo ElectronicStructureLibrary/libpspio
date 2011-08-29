@@ -1,5 +1,5 @@
 #include <gsl/gsl_spline.h>
-#include <libxc_ixc.h>  /**< to be written and imported from libxc */
+#include <xc_funcs.h> /**< imported from libxc - may need to be updated periodically */
 //#include <stdio.h>
 
 /**
