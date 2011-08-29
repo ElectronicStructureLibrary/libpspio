@@ -26,7 +26,7 @@
 
 #include "pspio.h"
 
-int psp_init(char * filename, int fileformat, psp_data_t pspio){
+int psp_init(char * filename, int fileformat, psp_data_t * pspio){
   FILE * fp;
   int ierr;
   
@@ -55,6 +55,7 @@ int psp_init(char * filename, int fileformat, psp_data_t pspio){
   case SIESTA:
     break;
   case UPF:
+    pspio_upf_init(pspio,fp)
     break;
   }
   
