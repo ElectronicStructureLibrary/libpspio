@@ -24,6 +24,7 @@
 #include <stdio.h>
 #include <string.h>
 
+#include "pspio_error.h"
 #include "pspio.h"
 
 /**
@@ -31,24 +32,27 @@
 *@param[in]  fp         pointer to open file
 *@param[out] psp_data   pseudopotential info is filled in present routine and subroutines
 */
-int read_abinit (FILE *fp, psp_data_t *psp_data){
+int read_abinit (FILE *fp, pspio_pspdata_t *psp_data){
 
   /// local variables
   int ierr;
   int idum;
+  int narg;
   int ncharead = 1000;
   int pspcod; 
+  int pspxc; 
   char line[ncharead];
   char *testread;
 
 
   /// read in header
   ierr = read_abinit_header(fp, psp_data, pspcod);
+  if (ierr != PSPIO_SUCCESS) return ierr;
 
  
   /**< read in psp code and xc code*/
   if(fgets(line, ncharead, fp) == NULL) return PSPIO_IOERR;
-  narg = sscanf (line, "%d %d %d %d %d", &pspcod, &pspxc, &psp_data.lmax, &idum, &psp_data.mesh.np);
+  narg = sscanf (line, "%d %d %d %d %d", &pspcod, &pspxc, &((*psp_data).lmax), &idum, &((*(*psp_data).mesh).np) );
   ///check narg is equal to 5
 
 

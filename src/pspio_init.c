@@ -25,7 +25,7 @@
 
 #include "pspio.h"
 
-int psp_init(char * file_name, int file_format, psp_data_t * psp_data){
+int psp_init(char * file_name, int file_format, pspio_pspdata_t * psp_data){
   FILE * fp;
   int ierr;
   

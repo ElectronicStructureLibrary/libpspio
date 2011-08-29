@@ -21,7 +21,7 @@
 #include <stdio.h>
 #include <string.h>
 #include "pspio_error.h"
-#include "pspio_state.h"
+#include "pspio.h"
 
 int pspio_state_label_set(pspio_state_t state, const char *label) {
   int label_size;

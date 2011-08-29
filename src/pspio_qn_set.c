@@ -21,12 +21,12 @@
 #include <stdio.h>
 #include <string.h>
 #include "pspio_error.h"
-#include "pspio_state.h"
+#include "pspio.h"
 
 int pspio_qn_set(pspio_qn_t *qn, const int n, const int l, const int j) {
 
   qn->n = n;
-  qn->l = l
+  qn->l = l;
   qn->j = j;
 
   return PSPIO_SUCCESS;
