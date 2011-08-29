@@ -20,7 +20,9 @@ pio_srcs = \
   pspio_state_rc_set.c \
   pspio_state_wf_set.c \
   pspio_state_wfp_set.c \
-  read_abinit_header.c
+  read_abinit_header.c \
+  read_abinit4.c \
+  ab2libxc.c
 
 
 # Script-generated

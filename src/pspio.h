@@ -19,6 +19,9 @@
  $Id$
 */
 
+#ifndef PSPIO_H
+#define PSPIO_H
+
 /**
  * @file pspio.h
  * @brief the include file 
@@ -150,4 +153,4 @@ typedef struct{
   pspio_kb_projectors_t *kb_projector; /**< Kleinman and Bylander projectors */
 } pspio_pspdata_t;
 
-
+#endif
