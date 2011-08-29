@@ -69,13 +69,14 @@
 #define NLCC_YES 1
 #define NLCC_LOUIE 2 // S. G. Louie, S. Froyen, and M. L. Cohen. Nonlinear ionic pseudopotentials in spin-density-functional calculations. Phys. Rev. B, 26:1738-1742, 1982. 
 
+#define STRLEN_TITLE 80
 
 /**
  * Main structure for pseudopotential data
  */
 struct psp_data_t {
   // general data
-  char *title; /**< descriptive string for content of file read in */
+  char title[STRLEN_TITLE]; /**< descriptive string for content of file read in */
   int wave_eq; /**< type of wave equation which was solved: Dirac, Scalar Relativistic, or Schroedinger */
   int exchange; /**< exchange functional id, taken from libxc conventions */
   int correlation; /**< correlation functional id, taken from libxc conventions */
