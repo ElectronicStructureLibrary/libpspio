@@ -1,3 +1,7 @@
+/** @file pspio_errorstr.c
+ * @brief returns a string describing an error
+*/
+
 #include "pspio_error.h"
 
 const char * pspio_errorstr (const int pspio_errorid){
