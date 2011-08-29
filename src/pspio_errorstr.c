@@ -11,6 +11,8 @@ const char * pspio_errorstr (const int pspio_errorid){
       return "success" ;
     case PSPIO_ERROR:
       return "error" ;
+    case PSPIO_NOFILE:
+      return "file does not exist" ;
     default:
       return "unknown error code" ;
     }
