@@ -2,14 +2,14 @@
 
 /**
  * Wave-equations 
- */
+*/
 #define SCHRODINGER 1
 #define SCALAR_REL 2
 #define DIRAC 3
 
 /**
- * Pseudopotential generation schemes
- */
+* Pseudopotential generation schemes
+*/
 #define BHS 1
 #define HSC 2
 #define HAMANN 3
@@ -21,28 +21,46 @@
 #define GTH 9
 #define RRKJ 10
 
+/** 
+* values for NLCC - could add possibilities for different schemes
+*/
+#define NLCC_NO 0
+#define NLCC_LOUIE 1 // S. G. Louie, S. Froyen, and M. L. Cohen. Nonlinear ionic pseudopotentials in spin-density-functional calculations. Phys. Rev. B, 26:1738-1742, 1982. 
+
+
 /**
- * Main structure for pseudopotential data
- */
+* Main structure for pseudopotential data
+*/
 struct psp_data_t {
-  double z; /**< Atomic number */
+  // general data
   char *title; /**< descriptive string for content of file read in */
-  char *symbol; /**< Atomic symbol */
   int wave_eq; /**< type of wave equation which was solved: Dirac, Scalar Relativistic, or Schroedinger */
   int ixc; /**< exchange-correlation functional id, taken from libxc conventions */
   int scheme; /**< scheme used to generate the pseudopotentials */
+  int nlcc; /**< flag for presence of NLCC */
   mesh_t *mesh; /**< Radial mesh */
+
+  // atom data
+  double z; /**< Atomic number */
+  char *symbol; /**< Atomic symbol */
+
+  // valence data for psp
+  double zvalence; /**< charge of pseudopotential ion - valence electrons */
+  double nelvalence; /**< number of electrons - normally equal to zion, except for special cases for ions */
   int n_states; /**< number of electronic states */
   states_t *states[]; /**< struct with electronic states */
+  int lmax; /**< maximal angular momentum channel */
+  int l_local; /**< angular momentum channel of local potential */
   int n_potentials; /**< Number of pseudopotentials */
   potential_t potentials[]; /**< struc with pseudopotentials */ 
   kb_projector_t *kb_projector; /**< Kleinman and Bylander projectors */
 };
 
 
+//Other imports from ape:
 /**
- * Mesh structure
- */
+* Mesh structure
+*/
 struct mesh_t{
   int type; /**< Type of mesh */
   int np; /**< Number of points in mesh */
@@ -51,9 +69,10 @@ struct mesh_t{
 };
 
 
+//Other imports from ape:
 /**
- * Potential structure
- */
+* Potential structure
+*/
 struct potential_t{
   qn_t *qn; /**< struct with quantum numbers n l j for the potential */
   double psp[]; /**< pseudopotential, on a radial grid */
@@ -61,13 +80,13 @@ struct potential_t{
 };
 
 /**
- *General information about the state
- */
+*General information about the state
+*/
 struct state_t{
   qn_t *qn; /**< quantum numbers n l j for this wavefunction */
   double *occ; /**< occupation of the electronic state */
   double *eigenval; /**< eigenvalue of electronic state*/
-  char *label; /**< string describing the electronic state - eg 2s or 4d1.5 */
+  char *label; /**< string describing the electronic state - eg 2s or 4d1.5  */
   double *rc; /**< cutoff radii used for pseudopotential generation */
   /// The wavefunctions 
   int np; /**< number of points */
@@ -76,8 +95,8 @@ struct state_t{
 };
 
 /** 
- * The quantum numbers
- */
+* The quantum numbers
+*/
 struct qn_t{
   int n; /**< main quantum number */
   int l; /**< angular momentum quantum number */
@@ -86,7 +105,6 @@ struct qn_t{
 
 
 struct kb_projector_t {
-  int l_local; /**< angular momentum channel of local potential */
   potential_t *vlocal; /**< local potential */
   int nproj; /**< number of projectors below */
   qn_t qn[]; /**< quantum numbers for present projector */
