@@ -20,7 +20,7 @@
 #define  XC_LDA_XC_TETER93     20  /* Teter 93 parametrization                                   */
 #define  XC_LDA_X_1D           21  /* Exchange in 1D                                             */
 #define  XC_LDA_C_ML1          22  /* Modified LSD (version 1) of Proynov and Salahub            */
-#define  XC_LDA_C_ML2          23  /* Modified LSD (version 3) of Proynov and Salahub            */
+#define  XC_LDA_C_ML2          23  /* Modified LSD (version 2) of Proynov and Salahub            */
 #define  XC_LDA_C_GOMBAS       24  /* Gombas parametrization                                     */
 #define  XC_LDA_C_PW_RPA       25  /* Perdew & Wang fit of the RPA                               */
 #define  XC_LDA_K_TF           50  /* Thomas-Fermi kinetic energy functional                     */
@@ -70,7 +70,7 @@
 #define  XC_GGA_C_RGE2        143  /* Regularized PBE                                            */
 #define  XC_GGA_X_RPW86       144  /* refitted Perdew & Wang 86                                  */
 #define  XC_GGA_X_KT1         145  /* Keal and Tozer version 1                                   */
-#define  XC_GGA_XC_KT2        146  /* Keal and Tozer version 3                                   */
+#define  XC_GGA_XC_KT2        146  /* Keal and Tozer version 2                                   */
 #define  XC_GGA_C_WL          147  /* Wilson & Levy                                              */
 #define  XC_GGA_C_WI          148  /* Wilson & Ivanov                                            */
 #define  XC_GGA_X_MB88        149  /* Modified Becke 88 for proton transfer                      */
