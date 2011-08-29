@@ -25,6 +25,7 @@
  */
 
 #include <gsl/gsl_spline.h>
+#include "pspio_mesh.h"
 
 /**
  * File formats
@@ -71,10 +72,60 @@
 
 #define STRLEN_TITLE 80
 
+
+/** 
+ * The quantum numbers
+ */
+typedef struct{
+  int n;    /**< main quantum number */
+  int l;    /**< angular momentum quantum number */
+  double j; /**< total angular momentum quantum number */
+} pspio_qn_t;
+
+
+/**
+ * Potential structure
+ */
+typedef struct{
+  pspio_qn_t *qn;      /**< struct with quantum numbers n l j for the potential */
+  double *psp;         /**< pseudopotential, on a radial grid */
+  gsl_spline *psp_spl; /**< spline type, for future interpolation before output to calling code */
+} pspio_potential_t;
+
+
+/**
+ *General information about the state
+ */
+typedef struct{
+  pspio_qn_t *qn; /**< quantum numbers n l j for this wavefunction */
+  double *occ; /**< occupation of the electronic state */
+  double *eigenval; /**< eigenvalue of electronic state*/
+  char *label; /**< string describing the electronic state - eg 2s or 4d1.5  */
+  double *rc; /**< cutoff radii used for pseudopotential generation */
+  /// The wavefunctions 
+  int np; /**< number of points */
+  double *wf; /**< Wavefunction */
+  double *wfp; /**<Derivative of the wavefunction */
+} pspio_state_t;
+
+
+/**
+ * Kleinman Bylander projectors
+ */
+typedef struct{
+  pspio_potential_t *vlocal; /**< local potential */
+  int nproj; /**< number of projectors below */
+  pspio_qn_t *qn; /**< quantum numbers for present projector */
+  double *ekb; /**< Kleinman Bylander energies */
+  double *proj; /**< Kleinman Bylander projectors */
+  gsl_spline *proj_spl; /**< spline structures for interpolating projectors*/
+} pspio_kb_projectors_t;
+
+
 /**
  * Main structure for pseudopotential data
  */
-struct psp_data_t {
+typedef struct{
   // general data
   char title[STRLEN_TITLE]; /**< descriptive string for content of file read in */
   int wave_eq; /**< type of wave equation which was solved: Dirac, Scalar Relativistic, or Schroedinger */
@@ -92,56 +143,12 @@ struct psp_data_t {
   double zvalence; /**< charge of pseudopotential ion - valence electrons */
   double nelvalence; /**< number of electrons - normally equal to zion, except for special cases for ions */
   int n_states; /**< number of electronic states */
-  states_t *states[]; /**< struct with electronic states */
+  pspio_state_t *states; /**< struct with electronic states */
   int lmax; /**< maximal angular momentum channel */
   int l_local; /**< angular momentum channel of local potential */
   int n_potentials; /**< Number of pseudopotentials */
-  potential_t potentials[]; /**< struc with pseudopotentials */ 
-  kb_projector_t *kb_projector; /**< Kleinman and Bylander projectors */
-};
-
-
-/**
- * Potential structure
- */
-struct potential_t{
-  qn_t *qn; /**< struct with quantum numbers n l j for the potential */
-  double psp[]; /**< pseudopotential, on a radial grid */
-  gsl_spline *psp_spl; /**< spline type, for future interpolation before output to calling code */
-};
-
-/**
- *General information about the state
- */
-struct state_t{
-  qn_t *qn; /**< quantum numbers n l j for this wavefunction */
-  double *occ; /**< occupation of the electronic state */
-  double *eigenval; /**< eigenvalue of electronic state*/
-  char *label; /**< string describing the electronic state - eg 2s or 4d1.5  */
-  double *rc; /**< cutoff radii used for pseudopotential generation */
-  /// The wavefunctions 
-  int np; /**< number of points */
-  double wf[]; /**< Wavefunction */
-  double wfp[]; /**<Derivative of the wavefunction */
-};
-
-/** 
- * The quantum numbers
- */
-struct qn_t{
-  int n; /**< main quantum number */
-  int l; /**< angular momentum quantum number */
-  double j; /**< total angular momentum quantum number */
-};
-
-
-struct kb_projector_t {
-  potential_t *vlocal; /**< local potential */
-  int nproj; /**< number of projectors below */
-  qn_t qn[]; /**< quantum numbers for present projector */
-  double en[]; /**< Kleinman Bylander energies */
-  double proj[][]; /**< Kleinman Bylander projectors */
-  gsl_spline p_spl[]; /**< spline structures for interpolating projectors*/
-};
+  pspio_potential_t *potentials; /**< struc with pseudopotentials */ 
+  pspio_kb_projectors_t *kb_projector; /**< Kleinman and Bylander projectors */
+} pspio_pspdata_t;
 
 

@@ -10,7 +10,9 @@
 
 # Hand-written
 pio_srcs = \
+  pspio_mesh.c \
   read_abinit_header.c
+
 
 # Script-generated
 pio_built_srcs = \
@@ -19,6 +21,7 @@ pio_built_srcs = \
 # C headers
 pio_hdrs = \
   libxccodes.h \
+  pspio_mesh.h \
   pspio.h
 
                     # ------------------------------------ #
