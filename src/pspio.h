@@ -82,7 +82,7 @@ struct psp_data_t {
   int correlation; /**< correlation functional id, taken from libxc conventions */
   int scheme; /**< scheme used to generate the pseudopotentials */
   int nlcc; /**< flag for presence of NLCC */
-  mesh_t *mesh; /**< Radial mesh */
+  pspio_mesh_t *mesh; /**< Radial mesh */
 
   // atom data
   double z; /**< Atomic number */
@@ -98,17 +98,6 @@ struct psp_data_t {
   int n_potentials; /**< Number of pseudopotentials */
   potential_t potentials[]; /**< struc with pseudopotentials */ 
   kb_projector_t *kb_projector; /**< Kleinman and Bylander projectors */
-};
-
-
-/**
- * Mesh structure
- */
-struct mesh_t{
-  int type; /**< Type of mesh */
-  int np; /**< Number of points in mesh */
-  double a, b; /**< Mesh parameters */
-  double r[]; /**< Mesh points */
 };
 
 
