@@ -24,8 +24,9 @@
 /**
 * Main structure for pseudopotential data
 */
-struct psp_data{
+struct psp_data_t {
   double z; /**< Atomic number */
+  char *title; /**< descriptive string for content of file read in */
   char *symbol; /**< Atomic symbol */
   int wave_eq; /**< type of wave equation which was solved: Dirac, Scalar Relativistic, or Schroedinger */
   int ixc; /**< exchange-correlation functional id, taken from libxc conventions */
