@@ -20,24 +20,30 @@
 */
 
 #include "pspio_mesh.h"
+#include <stdlib.h>
 
 int pspio_mesh_set_type(pspio_mesh_t *m, int type){
   
   m->type = type;  
+
   return(PSPIO_SUCCESS);
 }
 
 int pspio_mesh_set_parameters(pspio_mesh_t *m, const double a, const double b){
 
+  m->a = a;
+  m->b = b;
 
-
-  return PSPIO_SUCCESS;
+  return(PSPIO_SUCCESS);
 }
 
-
 int pspio_mesh_set_points(pspio_mesh_t *m, const int np, double r[]){
+  int i;
 
-
+  m->np = np;
+  m->r = (double *)malloc(np*sizeof(double));
+  
+  for(i=0; i<np; i++) m->r[i] = r[i];
 
   return(PSPIO_SUCCESS);
 }

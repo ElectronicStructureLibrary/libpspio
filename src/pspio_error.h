@@ -36,4 +36,4 @@
 
 const char * pspio_errorstr (const int pspio_errorid);
 
-#endif PSPIO_ERROR_H
+#endif

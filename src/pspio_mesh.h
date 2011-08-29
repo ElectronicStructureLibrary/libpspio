@@ -38,7 +38,7 @@ typedef struct{
   int type;    /**< Type of mesh */
   int np;      /**< Number of points in mesh */
   double a, b; /**< Mesh parameters */
-  double r[];  /**< Mesh points */
+  double *r;  /**< Mesh points */
 } pspio_mesh_t;
 
 //typedef struct pspio_mesh_struct pspio_mesh_t;
@@ -49,4 +49,4 @@ int pspio_mesh_set_parameters(pspio_mesh_t *m, const double a, const double b);
 
 int pspio_mesh_set_points(pspio_mesh_t *m, const int np, double r[]);
 
-#endif PSPIO_MESH_H
+#endif
