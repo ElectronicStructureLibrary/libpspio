@@ -62,7 +62,6 @@
 #define GTH 9
 #define RRKJ 10
 
-
 /** 
  * values for NLCC - could add possibilities for different schemes
  */
@@ -70,8 +69,8 @@
 #define NLCC_YES 1
 #define NLCC_LOUIE 2 // S. G. Louie, S. Froyen, and M. L. Cohen. Nonlinear ionic pseudopotentials in spin-density-functional calculations. Phys. Rev. B, 26:1738-1742, 1982. 
 
+#define MAX_LEN 256
 #define STRLEN_TITLE 80
-
 
 /** 
  * The quantum numbers

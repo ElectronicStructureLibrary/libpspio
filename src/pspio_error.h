@@ -32,6 +32,7 @@
 #define PSPIO_IOERR    2
 #define PSPIO_VALUE_ERROR 3
 #define PSPIO_FILE_FORMAT_ERROR 4
+#define PSPIO_TYPE_ERROR 5
 
 const char * pspio_errorstr (const int pspio_errorid);
 
