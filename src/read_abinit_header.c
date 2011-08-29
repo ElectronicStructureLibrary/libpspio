@@ -1,51 +1,53 @@
 /** subroutine to read in abinit header which is generic to all psp files for abinit */
 
 #include <stdio.h>
-#include <pspio.h>
 #include <string.h>
+
+#include "pspio.h"
 #include "libxccodes.h"
 
-     read (tmp_unit,*)pspheads(ipsp)%znuclpsp,pspheads(ipsp)%zionpsp,pspheads(ipsp)%pspdat
-     read (tmp_unit,*)pspheads(ipsp)%pspcod,pspheads(ipsp)%pspxc,pspheads(ipsp)%lmax,idum,mmax
-
-int read_abinit_header (fname, psp_data){
-
- /// input variables
-  char *fname; /**< file name to be read in */
-  psp_data_t psp_data; /**< output: pseudopotential info is partially filled in present routine */
+/**
+* subroutine reads in full abinit header file and initializes psp_data structure with available stuff
+*@param[in]  fname  file name to be read in 
+*@param[out] psp_data  output: pseudopotential info is partially filled in present routine 
+*/
+int read_abinit_header (char *fname, psp_data_t *psp_data, int pspcod){
 
  /// local variables
-  FILE* fp;            /**< file pointer for reading in */
+  FILE* fp;
   int ierr;
+  int idum;
   int ncharead = 1000;
-  int pspcod;
   int pspxc; 
   char line[ncharead];
+  char *testread;
 
  /// open file
   fp = fopen(fname, "r");
   if(fp == NULL) return PSPIO_NOFILE;
 
   /**< read in title */
-  getline(&line, &ncharead, fp);
-  if(line == NULL) return PSPIO_IOERR;
+  if(fgets(line, ncharead, fp) == NULL) return PSPIO_IOERR;
   psp_data.title = (*char) malloc (strlen(line));
   psp_data.title = line[0:strlen(line)-1];
  
   /**< read in atomic number, pseudopotential ion charge (= num of valence electrons), and abinit data flag (not used) */
-  getline(&line, &ncharead, fp);
-  narg = sscanf (line, "%f %f", &psp_data.z, &psp_data.zvalence);
+  if(fgets(line, ncharead, fp) == NULL) return PSPIO_IOERR;
+  narg = sscanf (line, "%f %f %d", &psp_data.z, &psp_data.zvalence, &idum);
   ///check narg is equal to 2
  
   /**< read in psp code and xc code*/
-  getline(&line, &ncharead, fp);
-  narg = sscanf (line, "%d %d", &pspcod, &pspxc);
-  ///check narg is equal to 2
+  if(fgets(line, ncharead, fp) == NULL) return PSPIO_IOERR;
+  narg = sscanf (line, "%d %d %d %d %d", &pspcod, &pspxc, &psp_data.lmax, &idum, &psp_data.mesh.np);
+  ///check narg is equal to 5
 
 // inferred from abinit web site http://www.abinit.org/documentation/helpfiles/for-v6.8/users/abinit_help.html#5
 /* NOTE: pspcod = 5 is used also for new psp generated with the Martins code, including 2 projectors for spin orbit coupling */ 
   switch(pspcod){
     case 1:
+    case 4:
+    case 5:
+    case 6:
       psp_data.scheme = TM2;
       break;
     case 2:
@@ -59,106 +61,96 @@ int read_abinit_header (fname, psp_data){
   }
 
 // inferred from abinit web site http://www.abinit.org/documentation/helpfiles/for-v6.8/input_variables/varbas.html#ixc
-/*
-    0=> NO xc;
-
-    1=> LDA or LSD, Teter Pade parametrization (4/93, published in S. Goedecker, M. Teter, J. Huetter, Phys.Rev.B54, 1703 (1996)), which reproduces Perdew-Wang (which reproduces Ceperley-Alder!).
-    2=> LDA, Perdew-Zunger-Ceperley-Alder (no spin-polarization)
-    3=> LDA, old Teter rational polynomial parametrization (4/91) fit to Ceperley-Alder data (no spin-polarization)
-    4=> LDA, Wigner functional (no spin-polarization)
-    5=> LDA, Hedin-Lundqvist functional (no spin-polarization)
-    6=> LDA, "X-alpha" functional (no spin-polarization)
-    7=> LDA or LSD, Perdew-Wang 92 functional
-    8=> LDA or LSD, x-only part of the Perdew-Wang 92 functional
-    9=> LDA or LSD, x- and RPA correlation part of the Perdew-Wang 92 functional
-
-    11=> GGA, Perdew-Burke-Ernzerhof GGA functional
-    12=> GGA, x-only part of Perdew-Burke-Ernzerhof GGA functional
-    13=> GGA potential of van Leeuwen-Baerends, while for energy, Perdew-Wang 92 functional
-    14=> GGA, revPBE of Y. Zhang and W. Yang, Phys. Rev. Lett. 80, 890 (1998)
-XC_GGA_X_PBE_R
-XC_GGA_C_PBE
-    15=> GGA, RPBE of B. Hammer, L.B. Hansen and J.K. Norskov, Phys. Rev. B 59, 7413 (1999)
-XC_GGA_X_RPBE
-    16=> GGA, HTCH93 of F.A. Hamprecht, A.J. Cohen, D.J. Tozer, N.C. Handy, J. Chem. Phys. 109, 6264 (1998)
-XC_GGA_XC_HCTH_93
-    17=> GGA, HTCH120 of A.D. Boese, N.L. Doltsinis, N.C. Handy, and M. Sprik, J. Chem. Phys 112, 1670 (1998) - The usual HCTH functional.
-XC_GGA_XC_HCTH_120
-    18=> (NOT AVAILABLE : used internally for GGA BLYP pseudopotentials from M. Krack, see Theor. Chem. Acc. 114, 145 (2005), available from the CP2K repository - use the LibXC instead, with ixc=-106131.
-    19=> (NOT AVAILABLE : used internally for GGA BP86 pseudopotentials from M. Krack, see Theor. Chem. Acc. 114, 145 (2005), available from the CP2K repository - use the LibXC instead, with ixc=-106132.
-
-    20=> Fermi-Amaldi xc ( -1/N Hartree energy, where N is the number of electrons per cell ; G=0 is not taken into account however), for TDDFT tests. No spin-pol. Does not work for RF.
-    21=> same as 20, except that the xc-kernel is the LDA (ixc=1) one, for TDDFT tests.
-    22=> same as 20, except that the xc-kernel is the Burke-Petersilka-Gross hybrid, for TDDFT tests.
-NOT in libxc?
-    23=> GGA of Z. Wu and R.E. Cohen, Phys. Rev. 73, 235116 (2006).
-XC_GGA_X_WC
-XC_GGA_C_PBE
-    24=> GGA, C09x exchange of V. R. Cooper, PRB 81, 161104(R) (2010).
-NOT in libxc?
-    26=> GGA, HTCH147 of A.D. Boese, N.L. Doltsinis, N.C. Handy, and M. Sprik, J. Chem. Phys 112, 1670 (1998).
-XC_GGA_XC_HCTH_147
-    27=> GGA, HTCH407 of A.D. Boese, and N.C. Handy, J. Chem. Phys 114, 5497 (2001).
-XC_GGA_XC_HCTH_407
-    28=> (NOT AVAILABLE : used internally for GGA OLYP pseudopotentials from M. Krack, see Theor. Chem. Acc. 114, 145 (2005), available from the CP2K repository - use the LibXC instead, with ixc=-110131.
-*/
   switch(pspxc){
     case(0):
+      psp_data.exchange = XC_NONE;
+      psp_data.correlation = XC_NONE;
       break;
     case(1):
+      psp_data.exchange = XC_LDA_XC_TETER93;
+      psp_data.correlation = XC_LDA_XC_TETER93;
       break;
     case(2):
-      break;
-    case(3):
+      psp_data.exchange = XC_LDA_X;
+      psp_data.correlation = XC_LDA_C_PZ_MOD;
       break;
     case(4):
+      psp_data.exchange = XC_LDA_X;
+      psp_data.correlation = XC_LDA_C_WIGNER;
       break;
     case(5):
+      psp_data.exchange = XC_LDA_X;
+      psp_data.correlation = XC_LDA_C_HL;
       break;
     case(6):
+      psp_data.exchange = XC_LDA_X;
+      psp_data.correlation = XC_LDA_C_XALPHA;
       break;
     case(7):
-      break;
-    case(8):
+      psp_data.exchange = XC_LDA_X;
+      psp_data.correlation = XC_LDA_C_PW;
       break;
     case(9):
+      psp_data.exchange = XC_LDA_X;
+      psp_data.correlation = XC_LDA_C_PW_RPA;
       break;
     case(11):
+      psp_data.exchange = XC_GGA_X_PBE;
+      psp_data.correlation = XC_GGA_C_PBE;
       break;
     case(12):
+      psp_data.exchange = XC_GGA_X_PBE;
+      psp_data.correlation = XC_NONE;
       break;
     case(13):
+      psp_data.exchange = XC_GGA_XC_LB;
+      psp_data.correlation = XC_GGA_XC_LB;
       break;
     case(14):
+      psp_data.exchange = XC_GGA_X_PBE_R;
+      psp_data.correlation = XC_GGA_C_PBE;
       break;
     case(15):
+      psp_data.exchange = XC_GGA_X_RPBE;
+      psp_data.correlation = XC_GGA_C_PBE; // is this correct?
       break;
     case(16):
+      psp_data.exchange = XC_GGA_XC_HCTH_93;
+      psp_data.correlation = XC_GGA_XC_HCTH_93;
       break;
     case(17):
-      break;
-    case(20):
-      break;
-    case(21):
-      break;
-    case(22):
+      psp_data.exchange = XC_GGA_XC_HCTH_120;
+      psp_data.correlation = XC_GGA_XC_HCTH_120;
       break;
     case(23):
-      break;
-    case(24):
-      break;
-    case(25):
+      psp_data.exchange = XC_GGA_X_WC;
+      psp_data.correlation = XC_GGA_C_PBE;
       break;
     case(26):
+      psp_data.exchange = XC_GGA_XC_HCTH_147;
+      psp_data.correlation = XC_GGA_XC_HCTH_147;
       break;
     case(27):
-      psp_data. = XC_GGA_XC_HCTH_147;
+      psp_data.exchange = XC_GGA_XC_HCTH_407;
+      psp_data.correlation = XC_GGA_XC_HCTH_407;
       break;
 
+// the following are not in libxc?
+    case(3):
+    case(8):
+    case(20):
+    case(22):
+    case(22):
+    case(24):
+
+// the following are real errors
     case(10):
     case(18):
     case(19):
+    case(25):
     case(28):
+
+// unknown abinit code
     default:
       return PSPIO_VALUE_ERROR;
   }

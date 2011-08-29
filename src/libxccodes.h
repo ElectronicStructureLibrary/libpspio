@@ -3,3 +3,6 @@
 #else
 #include <xc_funcs.h> /**< imported from libxc into pspio package - may need to be updated periodically */
 #endif
+
+/**< addition to the present libxc standard - define value for no xc explicitly */
+#define XC_NONE 0
