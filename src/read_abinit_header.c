@@ -24,11 +24,11 @@ int read_abinit_header (fname, psp_data){
 
  /// open file
   fp = fopen(fname, "r");
- /// check for fp being null
+  if(fp == NULL) return PSPIO_NOFILE;
 
   /**< read in title */
   getline(&line, &ncharead, fp);
-  /// check for line != NULL
+  if(line == NULL) return PSPIO_IOERR;
   psp_data.title = (*char) malloc (strlen(line));
   psp_data.title = line[0:strlen(line)-1];
  
