@@ -30,17 +30,14 @@
 #include "pspio.h"
 
 /**
- * Quantum numbers
- */
-int pspio_qn_set(pspio_qn_t numbers, const int n, const int l, const double j);
-
-/**
- * Sets the occupation numbers of a state.
+ * Sets the quantum numbers of a state.
  * @param[inout] state: state structure to set
- * @param[in] occ: pointer to the occupation numbers
+ * @param[in] n: main quantum number
+ * @param[in] l: angular momentum
+ * @param[in] j: angular momentum
  * @return error code
  */
-int pspio_state_occ_set(pspio_state_t state, const double *occ);
+int pspio_qn_set(pspio_qn_t numbers, const int n, const int l, const double j);
 
 /**
  * Sets the eigenvalues of a state.
@@ -59,20 +56,28 @@ int pspio_state_eigenval_set(pspio_state_t state, const double *eigenval);
 int pspio_state_label_set(pspio_state_t state, const char *label);
 
 /**
- * Sets the cutoff radii of a state.
- * @param[inout] state: state structure to set
- * @param[in] rc: pointer to the cutoff radii
- * @return error code
- */
-int pspio_state_rc_set(pspio_state_t state, const double *rc);
-
-/**
  * Sets the number of points of a state.
  * @param[inout] state: state structure to set
  * @param[in] np: number of points
  * @return error code
  */
 int pspio_state_np_set(pspio_state_t state, const int np);
+
+/**
+ * Sets the occupation numbers of a state.
+ * @param[inout] state: state structure to set
+ * @param[in] occ: pointer to the occupation numbers
+ * @return error code
+ */
+int pspio_state_occ_set(pspio_state_t state, const double *occ);
+
+/**
+ * Sets the cutoff radii of a state.
+ * @param[inout] state: state structure to set
+ * @param[in] rc: pointer to the cutoff radii
+ * @return error code
+ */
+int pspio_state_rc_set(pspio_state_t state, const double *rc);
 
 /**
  * Sets the wavefunction of a state.
