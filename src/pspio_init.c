@@ -56,7 +56,9 @@ int psp_init(char * filename, int fileformat, psp_data_t * pspio){
     break;
   case UPF:
     pspio_upf_init(pspio,fp)
-    break;
+      break;
+  default:
+    return PSPIO_FILE_FORMAT_ERROR;
   }
   
   // close file and check for ierr being non 0
