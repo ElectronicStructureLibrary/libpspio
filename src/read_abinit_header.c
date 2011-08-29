@@ -1,4 +1,4 @@
-/**< subroutine to read in abinit header which is generic to all psp files for abinit */
+/** subroutine to read in abinit header which is generic to all psp files for abinit */
 
 #include <pspio.h>
 #include <stdio.h>
