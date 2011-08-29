@@ -19,11 +19,16 @@
  $Id$
 */
 
+/**
+ * @file pspio.h
+ * @brief the include file 
+ */
+
 #include <gsl/gsl_spline.h>
 
 /**
-* File formats
-*/
+ * File formats
+ */
 #define UNKNOWN -1
 #define ABINIT_4 1
 #define ABINIT_5 2
@@ -37,14 +42,14 @@
 
 /**
  * Wave-equations 
-*/
+ */
 #define SCHRODINGER 1
 #define SCALAR_REL 2
 #define DIRAC 3
 
 /**
-* Pseudopotential generation schemes
-*/
+ * Pseudopotential generation schemes
+ */
 #define BHS 1
 #define HSC 2
 #define HAMANN 3
@@ -58,16 +63,16 @@
 
 
 /** 
-* values for NLCC - could add possibilities for different schemes
-*/
+ * values for NLCC - could add possibilities for different schemes
+ */
 #define NLCC_NO 0
 #define NLCC_YES 1
 #define NLCC_LOUIE 2 // S. G. Louie, S. Froyen, and M. L. Cohen. Nonlinear ionic pseudopotentials in spin-density-functional calculations. Phys. Rev. B, 26:1738-1742, 1982. 
 
 
 /**
-* Main structure for pseudopotential data
-*/
+ * Main structure for pseudopotential data
+ */
 struct psp_data_t {
   // general data
   char *title; /**< descriptive string for content of file read in */
@@ -95,10 +100,9 @@ struct psp_data_t {
 };
 
 
-//Other imports from ape:
 /**
-* Mesh structure
-*/
+ * Mesh structure
+ */
 struct mesh_t{
   int type; /**< Type of mesh */
   int np; /**< Number of points in mesh */
@@ -107,10 +111,9 @@ struct mesh_t{
 };
 
 
-//Other imports from ape:
 /**
-* Potential structure
-*/
+ * Potential structure
+ */
 struct potential_t{
   qn_t *qn; /**< struct with quantum numbers n l j for the potential */
   double psp[]; /**< pseudopotential, on a radial grid */
@@ -118,8 +121,8 @@ struct potential_t{
 };
 
 /**
-*General information about the state
-*/
+ *General information about the state
+ */
 struct state_t{
   qn_t *qn; /**< quantum numbers n l j for this wavefunction */
   double *occ; /**< occupation of the electronic state */
@@ -133,8 +136,8 @@ struct state_t{
 };
 
 /** 
-* The quantum numbers
-*/
+ * The quantum numbers
+ */
 struct qn_t{
   int n; /**< main quantum number */
   int l; /**< angular momentum quantum number */
