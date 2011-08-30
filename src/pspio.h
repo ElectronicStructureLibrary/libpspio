@@ -30,6 +30,7 @@
 #include "pspio_meshfunc.h"
 #include "pspio_potential.h"
 #include "pspio_state.h"
+#include "pspio_projector.h"
 
 /**
  * File formats
@@ -76,18 +77,6 @@
 #define MAX_STRLEN 256
 #define STRLEN_TITLE 80
 
-/**
- * Kleinman Bylander projectors
- */
-typedef struct{
-  pspio_potential_t *vlocal; /**< local potential */
-  int nproj; /**< number of projectors below */
-  pspio_qn_t *qn; /**< quantum numbers for present projector */
-  double *ekb; /**< Kleinman Bylander energies */
-  double *proj; /**< Kleinman Bylander projectors */
-  gsl_spline *proj_spl; /**< spline structures for interpolating projectors*/
-} pspio_kb_projectors_t;
-
 
 /**
  * Main structure for pseudopotential data
@@ -115,7 +104,10 @@ typedef struct{
   int l_local; /**< angular momentum channel of local potential */
   int n_potentials; /**< Number of pseudopotentials */
   pspio_potential_t *potentials; /**< struc with pseudopotentials */ 
-  pspio_kb_projectors_t *kb_projector; /**< Kleinman and Bylander projectors */
+  int n_kbproj; /**< Number of Kleinman and Bylander projectors */
+  pspio_projector_t *kb_projectors; /**< Kleinman and Bylander projectors */
+  pspio_potential_t *vlocal; /**< local potential for the KB form of the pseudopotentials */ 
+
 } pspio_pspdata_t;
 
 #endif
