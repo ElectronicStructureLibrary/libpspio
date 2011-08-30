@@ -93,15 +93,16 @@ int pspio_upf_file_read(FILE * fp, pspio_pspdata_t * psp_data){
   narg = sscanf (line, "%d %d",&n_states,&n_proj); // read the number of wavefunctions and projectors 
   //check if narg is 2
 	
-	if (wavefunctions = (wavefunction_t *)malloc(n_states*sizeof(wavefunction_t)) == NULL){
-		return PSPIO_ERROR;
-	}
-	
+  if (wavefunctions = (wavefunction_t *)malloc(n_states*sizeof(wavefunction_t)) == NULL){
+    return PSPIO_ERROR;
+  }
+  
   //read the wavefuntions: "Wavefunctions   nl   l   occ"   
   if(fgets(line, MAX_STRLEN, fp) == NULL) return PSPIO_EIO; //skip the first line
   for (i=0; i<n_states; i++) {
     if(fgets(line, MAX_STRLEN, fp) == NULL) return PSPIO_EIO;
-    narg = sscanf (line, "%2c %d %lf",&wavefunctions[i]->nl[i],&wavefunctions[i]->l,&wavefunctions[i]->occ); // read the number of wavefunctions and projectors 
+    narg = sscanf (line, "%2c %d %lf",&wavefunctions[i].nl[0],&wavefunctions[i].l,
+		   &wavefunctions[i].occ); // read the number of wavefunctions and projectors 
     //check if narg is 3
   }
 	
