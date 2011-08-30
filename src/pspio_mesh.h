@@ -26,7 +26,12 @@
 #ifndef PSPIO_MESH_H
 #define PSPIO_MESH_H
 
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
+
 #include "pspio_error.h"
+
 
 /**
 * Mesh types
