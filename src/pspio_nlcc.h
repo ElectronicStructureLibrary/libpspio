@@ -37,6 +37,7 @@
 /** 
  * values for NLCC scheme - could add possibilities for different schemes
  */
+#define NLCC_NONE -1
 #define NLCC_UNKNOWN 0
 #define NLCC_LOUIE 1 // S. G. Louie, S. Froyen, and M. L. Cohen. Nonlinear ionic pseudopotentials in spin-density-functional calculations. Phys. Rev. B, 26:1738-1742, 1982. 
 #define NLCC_FHI 2 // M. Fuchs and M. Scheffler. Ab initio pseudopotentials for electronic structure calculations of poly-atomic systems using density-functional theory. Comp. Phys. Comm. 119:67-98, 1999.

@@ -50,18 +50,19 @@ int read_abinit5 (FILE *fp, pspio_pspdata_t *psp_data){
 
 
   /// read in header
-  ierr = read_abinit_header(fp, psp_data, pspcod, rchrg, fchrg);
-  if (ierr != PSPIO_SUCCESS) return ierr;
+  HANDLE_FUNC_ERROR (read_abinit_header(fp, psp_data, pspcod, rchrg, fchrg))
 
-  /// set up the nlcc if necessary
-  
- 
+  if (rchrg > 0.0) {
+    psp_data->has_nlcc = 1;
+    HANDLE_FUNC_ERROR( nlcc_abinit1 (psp_data.nlcc, rchrg, fchrg) )
+  }
+
   /**< read in psp code and xc code*/
-  if(fgets(line, MAX_STRLEN, fp) == NULL) return PSPIO_EIO;
+  if(fgets(line, MAX_STRLEN, fp) == NULL) {
+    HANDLE_ERROR ( PSPIO_EIO )
+  }
   narg = sscanf (line, "%d %d %d %d %d", &pspcod, &pspxc, &(psp_data->l_max), &idum, &((psp_data->mesh)->np) );
   ///check narg is equal to 5
-
-
 
   return PSPIO_SUCCESS;
 

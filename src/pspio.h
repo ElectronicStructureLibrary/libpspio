@@ -67,7 +67,7 @@ typedef struct{
   int correlation; /**< correlation functional id, taken from libxc conventions */
   int scheme; /**< scheme used to generate the pseudopotentials */
   int has_nlcc; /**< flag for presence of NLCC */
-  pspio_nlcc_t nlcc; /**< NLCC structure */
+  pspio_nlcc_t *nlcc; /**< NLCC structure */
   pspio_mesh_t *mesh; /**< Radial mesh */
 
   // atom data

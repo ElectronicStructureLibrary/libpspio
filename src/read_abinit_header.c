@@ -46,26 +46,35 @@ int read_abinit_header (FILE *fp, pspio_pspdata_t *psp_data, int pspcod, double 
   int narg;
   int minlen;
   int pspxc; 
+  int np;
   char line[MAX_STRLEN];
   char *testread;
   double qchrg;
 
   /**< read in title */
-  if (fgets(line, MAX_STRLEN, fp) == NULL) return PSPIO_EIO;
+  if (fgets(line, MAX_STRLEN, fp) == NULL) {
+    HANDLE_ERROR(PSPIO_EIO)
+  }
   minlen = strlen(line) > STRLEN_TITLE ? STRLEN_TITLE : strlen(line);
   if (strncpy((*psp_data).title, line, minlen) == NULL){
-    return PSPIO_EIO;
+    HANDLE_ERROR(PSPIO_EIO)
   }
  
   /**< read in atomic number, pseudopotential ion charge (= num of valence electrons), and abinit data flag (not used) */
-  if(fgets(line, MAX_STRLEN, fp) == NULL) return PSPIO_EIO;
+  if(fgets(line, MAX_STRLEN, fp) == NULL) {
+    HANDLE_ERROR(PSPIO_EIO)
+  }
   narg = sscanf (line, "%lf %lf %d", &(psp_data->z), &(psp_data->zvalence), &idum);
   ///check narg is equal to 2
  
   /**< read in psp code and xc code*/
-  if(fgets(line, MAX_STRLEN, fp) == NULL) return PSPIO_EIO;
-  narg = sscanf (line, "%d %d %d %d %d", &pspcod, &pspxc, &(psp_data->l_max), &(psp_data->l_local), &((psp_data->mesh)->np));
+  if(fgets(line, MAX_STRLEN, fp) == NULL) {
+    HANDLE_ERROR(PSPIO_EIO)
+  }
+  narg = sscanf (line, "%d %d %d %d %d", &pspcod, &pspxc, &(psp_data->l_max), &(psp_data->l_local), &np);
   ///check narg is equal to 5
+
+  HANDLE_FUNC_ERROR(pspio_mesh_alloc(psp_data->mesh, np))
 
   // inferred from abinit web site http://www.abinit.org/documentation/helpfiles/for-v6.8/users/abinit_help.html#5
   /* NOTE: pspcod = 5 is used also for new psp generated with the Martins code, including 2 projectors for spin orbit coupling */ 
@@ -83,19 +92,20 @@ int read_abinit_header (FILE *fp, pspio_pspdata_t *psp_data, int pspcod, double 
       (*psp_data).scheme = HGH;
       break;
     default:
-      return PSPIO_EVALUE;
+      HANDLE_ERROR(PSPIO_EVALUE)
   }
 
 
-  ierr = ab2libxc (pspxc, psp_data);
-  if (ierr != PSPIO_SUCCESS) return ierr;
+  HANDLE_FUNC_ERROR( ab2libxc(pspxc,psp_data) )
 
   /// if we have a NLCC data line to read
   rchrg = 0.0;
   fchrg = 0.0;
   if (pspcod == 1 || pspcod == 4 || pspcod == 5 || pspcod == 6){
   /**< read in NLCC parameters */
-    if(fgets(line, MAX_STRLEN, fp) == NULL) return PSPIO_EIO;
+    if(fgets(line, MAX_STRLEN, fp) == NULL) {
+      HANDLE_ERROR(PSPIO_EIO)
+    }
     narg = sscanf (line, "%lf %lf %lf", &rchrg, &fchrg, &qchrg);
     ///check narg is equal to 3
   }
