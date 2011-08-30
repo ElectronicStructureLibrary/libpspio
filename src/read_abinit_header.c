@@ -31,11 +31,13 @@
 
 /**
 * subroutine reads in full abinit header file and initializes psp_data structure with available stuff
-*@param[in]  fname      file name to be read in 
+*@param[in]  fp         file pointer to be read in 
 *@param[out] psp_data   pseudopotential info is partially filled in present routine 
 *@param[out] pspcod     pseudopotential file type (HGH GTH fhi etc...)
+*@param[out] rchrg      radius for NLCC, if any
+*@param[out] fchrg      charge for NLCC, if any
 */
-int read_abinit_header (FILE *fp, pspio_pspdata_t *psp_data, int pspcod){
+int read_abinit_header (FILE *fp, pspio_pspdata_t *psp_data, int pspcod, double rchrg, double fchrg){
 
   /// local variables
   int ierr;
@@ -46,6 +48,7 @@ int read_abinit_header (FILE *fp, pspio_pspdata_t *psp_data, int pspcod){
   int pspxc; 
   char line[ncharead];
   char *testread;
+  double qchrg;
 
   /**< read in title */
   if (fgets(line, ncharead, fp) == NULL) return PSPIO_EIO;
@@ -87,20 +90,19 @@ int read_abinit_header (FILE *fp, pspio_pspdata_t *psp_data, int pspcod){
   ierr = ab2libxc (pspxc, psp_data);
   if (ierr != PSPIO_SUCCESS) return ierr;
 
+  /// if we have a NLCC data line to read
+  rchrg = 0.0;
+  fchrg = 0.0;
+  if (pspcod == 4 || pspcod == 5 || pspcod == 6){
+  /**< read in NLCC parameters */
+    if(fgets(line, ncharead, fp) == NULL) return PSPIO_EIO;
+    narg = sscanf (line, "%f %f %f", &rchrg, &fchrg, &qchrg);
+    ///check narg is equal to 3
+  }
 
   return PSPIO_SUCCESS;
 
 }
 
 
-
-
-//  double rchrg;
-//  double fchrg;
-//  double qchrg;
-  /**< read in NLCC parameters */
-//  if(fgets(line, ncharead, fp) == NULL) return PSPIO_EIO;
-//  narg = sscanf (line, "%f %f %f", &rchrg, &fchrg, &qchrg);
-  ///check narg is equal to 3
   
- /**< initialize nlcc according to pspcod */
