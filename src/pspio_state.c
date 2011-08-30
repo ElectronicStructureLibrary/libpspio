@@ -15,7 +15,7 @@
  along with this program; if not, write to the Free Software
  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
- $Id: pspio_state_eigenval_set.c 49 2011-08-29 23:42:09Z micael $
+ $Id$
 */
 
 #include <stdio.h>

@@ -15,7 +15,7 @@
  along with this program; if not, write to the Free Software
  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
- $Id: pspio_nlcc.h 71 2011-08-30 13:22:28Z micael $
+ $Id$
 */
 
 /**

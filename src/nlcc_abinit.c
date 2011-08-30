@@ -15,7 +15,7 @@
  along with this program; if not, write to the Free Software
  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
- $Id: nlcc_abinit.c 60 2011-08-30 10:48:58Z mjv500 $
+ $Id$
 */
 
 #ifdef HAVE_CONFIG_H

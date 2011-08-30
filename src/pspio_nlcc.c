@@ -15,7 +15,7 @@
  along with this program; if not, write to the Free Software
  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
- $Id: pspio_nlcc.c 73 2011-08-30 14:03:13Z micael $
+ $Id$
 */
 
 #include "pspio_nlcc.h"
