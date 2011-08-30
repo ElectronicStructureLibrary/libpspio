@@ -108,13 +108,13 @@ int nlcc_abinit4 (pspio_nlcc_t *nlcc, double rchrg, double fchrg){
   /// allocate the nlcc object
   ierr = pspio_nlcc_alloc(nlcc, np);
 
-  ff = (double *) malloc(sizeof(nlcc->cdens->f))
+  ff = (double *) malloc(sizeof(nlcc->core_dens->f))
 
   if (np < 2) return PSPIO_EVALUE;
 
   /// fill the nlcc core density
-  for (ir=0;  ir < nlcc->cdens->mesh->np; ir++){
-    ierr = nlcc_ab4 (((double)ir)/((double)nlcc->cdens->mesh->np-1), fftmp);
+  for (ir=0;  ir < nlcc->core_dens->mesh->np; ir++){
+    ierr = nlcc_ab4 (((double)ir)/((double)nlcc->core_dens->mesh->np-1), fftmp);
     if (ierr) return ierr;
     ff[ir]=fchrg * fftmp;
   }
