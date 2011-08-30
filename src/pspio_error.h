@@ -82,18 +82,42 @@ int pspio_error_free(void);
 
 
 /**
- * Error handler macro
- * @param[in] FUNCTION_CALL: the function to be called with all parameters
- * @param[in] TYPE_TO_FREE: type of variable to free when error
- * @param[in] VAR_TO_FREE: name of the variable to free when error
+ * Error handler macro that frees memory upon error after calling a
+ * function
+ * @param[in] function_call: the function to be called with all parameters
+ * @param[in] type_to_free: type of variable to free when error
+ * @param[in] var_to_free: name of the variable to free when error
  */
-#define HANDLE_ERROR(FUNCTION_CALL, TYPE_TO_FREE, VAR_TO_FREE) \
-  pspio_error_tmp_id = FUNCTION_CALL; \
+#define HANDLE_ALLOC_ERROR(function_call, type_to_free, var_to_free) \
+  pspio_error_tmp_id = function_call; \
   if ( pspio_error_tmp_id != PSPIO_SUCCESS ) { \
-    pspio_ ## TYPE_TO_FREE ## _free(VAR_TO_FREE); \
-    pspio_error_add(pspio_error_tmp_id, __FILE__, __LINE__); \
+    pspio_ ## type_to_free ## _free(var_to_free); \
+    pspio_error_add(__FILE__, __LINE__); \
     return pspio_error_tmp_id; \
   }
+
+
+/**
+ * Error handler macro for function calls
+ * @param[in] function_call: the function to be called with all parameters
+ */
+#define HANDLE_FUNC_ERROR(function_call) \
+  pspio_error_tmp_id = function_call; \
+  if ( pspio_error_tmp_id != PSPIO_SUCCESS ) { \
+    pspio_error_add(__FILE__, __LINE__); \
+    return pspio_error_tmp_id; \
+  }
+
+
+/**
+ * Basic error handler macro
+ * @param[id] error_id: error code to check
+ */
+#define HANDLE_ERROR(error_id) \
+  if ( error_id != PSPIO_SUCCESS ) { \
+    pspio_error_tmp_id = error_id; \
+    pspio_error_add(__FILE__, __LINE__); \
+    return error_id; \
+  }
+
 #endif
-
-

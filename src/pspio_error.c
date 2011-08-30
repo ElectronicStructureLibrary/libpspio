@@ -43,6 +43,7 @@ int pspio_error_add(const char *filename, const long line) {
     }
     memcpy(pspio_error_chain->filename,filename,s);
     pspio_error_chain->filename[s] = 0;
+    pspio_error_tmp_id = 0;
 
     return PSPIO_SUCCESS;
   }
@@ -67,6 +68,7 @@ int pspio_error_add(const char *filename, const long line) {
   }
   memcpy(last_err->filename,filename,s);
   last_err->filename[s] = 0;
+  pspio_error_tmp_id = 0;
 
   return PSPIO_SUCCESS;
 }
