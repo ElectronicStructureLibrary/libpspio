@@ -32,6 +32,7 @@
 
 #define GO_BACK 1
 #include <stdio.h>
+#include <string.h>
 #include "pspio.h"
 
 /**
@@ -63,25 +64,25 @@ int pspio_upf_file_read(FILE * fp, pspio_pspdata_t * psp_data);
 /** 
  * Evaluates is a tag is defined
  * @param[in] fp a stream of the input file
- * @param[in] string the tag
+ * @param[in] tag the tag
  * @return 0 if defined. 1 else
  */
-int tag_isdef(FILE * fp, char * string);
+int tag_isdef(FILE * fp, char * tag);
 
 
 /** 
  * Goes to the point just after the tag 
  * @param[in] fp a stream of the input file
- * @param[in] string the tag
+ * @param[in] tag the tag
  * @param[in] go_back decides it has to go to the beginning of the file
  * @return error code
  */
-int init_tag(FILE * fp, char * string, int go_back);
+int init_tag(FILE * fp, char * tag, int go_back);
 
 /** 
  * Evaluates is a tag is correctly closed
  * @param[in] fp a stream of the input file
- * @param[in] string the tag
+ * @param[in] tag the tag
  * @return 0 if correct. 1 else
  */
 int check_end_tag(FILE * fp, char * tag);

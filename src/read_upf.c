@@ -128,6 +128,9 @@ int check_end_tag(FILE * fp, char * tag){
   if(fgets(line, sizeof line, fp) == NULL) return PSPIO_EIO;
 
   if( strcmp(line,compare_string) ) return;
+  else{
+    printf("PSPIO library is not able to find %s ending tag",compare_string);
+    return 1;
+  }
   
-	
 }
