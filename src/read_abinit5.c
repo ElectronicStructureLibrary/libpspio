@@ -53,6 +53,8 @@ int read_abinit5 (FILE *fp, pspio_pspdata_t *psp_data){
   ierr = read_abinit_header(fp, psp_data, pspcod, rchrg, fchrg);
   if (ierr != PSPIO_SUCCESS) return ierr;
 
+  /// set up the nlcc if necessary
+  
  
   /**< read in psp code and xc code*/
   if(fgets(line, MAX_STRLEN, fp) == NULL) return PSPIO_EIO;

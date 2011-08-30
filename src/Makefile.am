@@ -23,7 +23,8 @@ pio_srcs = \
   pspio_qn.c \
   pspio_state.c \
   read_abinit_header.c \
-  read_abinit5.c
+  read_abinit5.c \
+  read_upf.c
 
 
 # Script-generated
@@ -43,7 +44,8 @@ pio_hdrs = \
   pspio_projector.h \
   pspio_qn.h \
   pspio_state.h \
-  read_upf.h
+  read_upf.h \
+  xc_func.h
 
                     # ------------------------------------ #
 
