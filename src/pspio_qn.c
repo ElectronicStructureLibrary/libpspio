@@ -38,11 +38,9 @@ int pspio_qn_alloc(pspio_qn_t *qn) {
 
 
 int pspio_qn_free(pspio_qn_t *qn) {
-  if ( qn == NULL ) {
-    return PSPIO_ERROR;
+  if ( qn != NULL ) {
+    free(qn);
   }
-
-  free(qn);
 
   return PSPIO_SUCCESS;
 }
