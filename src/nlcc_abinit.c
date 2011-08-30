@@ -40,14 +40,14 @@
 */
 int nlcc_ab1(double x, double y){
 
-  const double c21=4.e0/9.e0
-  const double c22=-40.e0/27.e0
-  const double c23=20.e0/3.e0-16.e0*pow(PI,2)/27.e0
-  const double c24=-4160.e0/243.e0+160.e0*pow(PI,2)/81.e0
-  const double c31=1.e0/36.e0
-  const double c32=-25.e0/108.e0
-  const double c33=485.e0/432.e0-pow(PI,2)/27.e0
-  const double c34=-4055.e0/972.e0+25.e0*pow(PI,2)/81.e0
+  const double c21=4.e0/9.e0;
+  const double c22=-40.e0/27.e0;
+  const double c23=20.e0/3.e0-16.e0*pow(M_PI,2)/27.e0;
+  const double c24=-4160.e0/243.e0+160.e0*pow(M_PI,2)/81.e0;
+  const double c31=1.e0/36.e0;
+  const double c32=-25.e0/108.e0;
+  const double c33=485.e0/432.e0-pow(M_PI,2)/27.e0;
+  const double c34=-4055.e0/972.e0+25.e0*pow(M_PI,2)/81.e0;
 
   if (x < 0.0) return PSPIO_EVALUE;
 
@@ -56,7 +56,7 @@ int nlcc_ab1(double x, double y){
   }
 //  Take care of difficult limits near x=0, 1/2, and 1
   else if (abs(x) <= 1.e-09) {
-    y = 1.d0;
+    y = 1.e0;
   }
   else if (abs(x-0.5e0) <= 1.e-04) {
 //  (this limit and next are more troublesome for numerical cancellation)
@@ -65,12 +65,12 @@ int nlcc_ab1(double x, double y){
   else if (abs(x-1.e0) <= 1.e-04) {
     y = c31+(x-1.0e0)*(c32+(x-1.0e0)*(c33+(x-1.0e0)*c34));
   }
-  else
+  else {
 //  The following is the square of the Fourier transform of a
 //  function built out of two spherical bessel functions in G
 //  space and cut off absolutely beyond gcut
-    y = pow((  sin(2.0d0*PI*x)/ \\
-             ( (2.0d0*PI*x) * (1.d0-4.0d0*pow(x,2))*(1.d0-pow(x,2)) )  ), 2);
+    y = pow((  sin(2.0e0*M_PI*x)/ \
+             ( (2.0e0*M_PI*x) * (1.e0-4.0e0*pow(x,2))*(1.e0-pow(x,2)) )  ), 2);
   }
 
   return PSPIO_SUCCESS;

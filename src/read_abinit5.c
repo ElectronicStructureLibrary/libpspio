@@ -54,7 +54,7 @@ int read_abinit5 (FILE *fp, pspio_pspdata_t *psp_data){
 
   if (rchrg > 0.0) {
     psp_data->has_nlcc = 1;
-    HANDLE_FUNC_ERROR( nlcc_abinit1 (psp_data.nlcc, rchrg, fchrg) )
+    HANDLE_FUNC_ERROR( nlcc_abinit1 (psp_data->nlcc, rchrg, fchrg) )
   }
 
   /**< read in psp code and xc code*/
