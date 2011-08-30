@@ -12,7 +12,9 @@
 pio_srcs = \
   pspio_errorstr.c \
   pspio_mesh.c \
+  pspio_meshfunc.c \
   pspio_qn.c \
+  pspio_potential.c \
   pspio_state.c \
   read_abinit_header.c \
   read_abinit4.c \
@@ -28,7 +30,9 @@ pio_hdrs = \
   libxccodes.h \
   pspio_error.h \
   pspio_mesh.h \
+  pspio_meshfunc.h \
   pspio_qn.h \
+  pspio_potential.h \
   pspio_state.h \
   pspio.h \
   read_upf.h
