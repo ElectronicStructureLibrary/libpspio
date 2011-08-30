@@ -21,22 +21,22 @@
 #include "pspio_mesh.h"
 #include <stdlib.h>
 
-int pspio_mesh_set_type(pspio_mesh_t *m, int type){
+int pspio_mesh_type_set(pspio_mesh_t *m, int type){
   
   m->type = type;  
 
-  return(PSPIO_SUCCESS);
+  return PSPIO_SUCCESS;
 }
 
-int pspio_mesh_set_parameters(pspio_mesh_t *m, const double a, const double b){
+int pspio_mesh_parameters_set(pspio_mesh_t *m, const double a, const double b){
 
   m->a = a;
   m->b = b;
 
-  return(PSPIO_SUCCESS);
+  return PSPIO_SUCCESS;
 }
 
-int pspio_mesh_set_points(pspio_mesh_t *m, const int np, double r[]){
+int pspio_mesh_points_set(pspio_mesh_t *m, const int np, double r[]){
   int i;
 
   m->np = np;
@@ -44,6 +44,6 @@ int pspio_mesh_set_points(pspio_mesh_t *m, const int np, double r[]){
   
   for(i=0; i<np; i++) m->r[i] = r[i];
 
-  return(PSPIO_SUCCESS);
+  return PSPIO_SUCCESS;
 }
 

@@ -52,7 +52,7 @@ typedef struct{
  * @param[in] type: type of mesh. Can be LOG1, LOG2, or LINEAR.
  * @return error code
  */
-int pspio_mesh_set_type(pspio_mesh_t *m, int type);
+int pspio_mesh_type_set(pspio_mesh_t *m, int type);
 
 /**
  * Sets the mesh parameters.
@@ -61,7 +61,7 @@ int pspio_mesh_set_type(pspio_mesh_t *m, int type);
  * @param[in] b: parameter b. The meaning depends on the type of mesh.
  * @return error code
  */
-int pspio_mesh_set_parameters(pspio_mesh_t *m, const double a, const double b);
+int pspio_mesh_parameters_set(pspio_mesh_t *m, const double a, const double b);
 
 /**
  * Sets the mesh points.
@@ -70,6 +70,6 @@ int pspio_mesh_set_parameters(pspio_mesh_t *m, const double a, const double b);
  * @param[in] r: pointer to mesh radial points
  * @return error code
  */
-int pspio_mesh_set_points(pspio_mesh_t *m, const int np, double *r);
+int pspio_mesh_points_set(pspio_mesh_t *m, const int np, double *r);
 
 #endif
