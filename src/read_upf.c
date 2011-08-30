@@ -45,7 +45,7 @@ int pspio_upf_file_read(FILE * fp, pspio_pspdata_t * psp_data){
   fgets(line, 2, fp);  // kind of pseudo-potentials US|NC|PAW    "Ultrasoft|Norm conserving|Projector-augmented" 
   if (!strncpm(line,"NC",2)) {
     printf("LIBPSP_IO can only read norm-conserving pseudo-potentials from UPF format.");
-    return PSPIO_TYPE_ERROR;
+    return PSPIO_ETYPE;
   }
   fscanf(fp,"%d",psp_data->nlcc); // read the nonlinear core correction
   fgets(line, sizeof line, fp); //skip the rest of the line
