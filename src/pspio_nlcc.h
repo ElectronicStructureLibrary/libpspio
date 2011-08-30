@@ -35,18 +35,18 @@
 #include "pspio_meshfunc.h"
 
 /** 
- * values for NLCC - could add possibilities for different schemes
+ * values for NLCC scheme - could add possibilities for different schemes
  */
-#define NLCC_NO 0
-#define NLCC_YES 1
-#define NLCC_LOUIE 2 // S. G. Louie, S. Froyen, and M. L. Cohen. Nonlinear ionic pseudopotentials in spin-density-functional calculations. Phys. Rev. B, 26:1738-1742, 1982. 
-
+#define NLCC_UNKNOWN 0
+#define NLCC_LOUIE 1 // S. G. Louie, S. Froyen, and M. L. Cohen. Nonlinear ionic pseudopotentials in spin-density-functional calculations. Phys. Rev. B, 26:1738-1742, 1982. 
+#define NLCC_FHI 2 // M. Fuchs and M. Scheffler. Ab initio pseudopotentials for electronic structure calculations of poly-atomic systems using density-functional theory. Comp. Phys. Comm. 119:67-98, 1999.
 
 /**
  * nlcc structure
  */
 typedef struct{
-  pspio_meshfunc_t *cdens  /**< pseudonlcc, on a radial mesh */
+  int scheme;                 /**< Scheme used to obtain the NLCC */
+  pspio_meshfunc_t *core_dens /**< core density, on a radial mesh */
 } pspio_nlcc_t;
 
 
@@ -54,19 +54,20 @@ typedef struct{
  * Allocates memory and preset nlcc structure
  * 
  * @param[in,out] nlcc: nlcc structure
- * @param[in] m: pointer to mesh
+ * @param[in] mesh: pointer to mesh
  * @return error code
  */
-int pspio_nlcc_alloc(pspio_nlcc_t *nlcc, pspio_mesh_t *m);
+int pspio_nlcc_alloc(pspio_nlcc_t *nlcc, pspio_mesh_t *mesh);
 
 
 /**
  * Sets the nlcc data.
  * @param[in,out] nlcc: nlcc structure to set
- * @param[in] cdens: values of the nlcc on the mesh
+ * @param[in] scheme: scheme used to obtain core density 
+ * @param[in] core_dens: values of the core density on the mesh
  * @return error code
  */
-int pspio_nlcc_set(pspio_nlcc_t *nlcc, double *cdens);
+int pspio_nlcc_set(pspio_nlcc_t *nlcc, int scheme, double *core_dens);
 
 
 /**
