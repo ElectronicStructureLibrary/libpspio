@@ -23,128 +23,89 @@
 #include "pspio_error.h"
 #include "pspio_state.h"
 
-int pspio_state_eigenval_set(pspio_state_t state, const double *eigenval) {
-  int eigenval_size;
+/**********************************************************************
+ * Global routines                                                    *
+ **********************************************************************/
 
-  if ( state.eigenval != NULL ) {
+int pspio_state_alloc(pspio_state_t *state) {
+  if ( state != NULL ) {
+    return PSPIO_ERROR;
+  }
+  state = (pspio_state_t *)malloc(sizeof(state));
+  if ( state == NULL ) {
     return PSPIO_ERROR;
   }
 
-  eigenval_size = sizeof(eigenval);
+  state->eigenval = NULL;
+  state->label = NULL;
+  state->np = -1;
+  state->occ = NULL;
+  state->rc = NULL;
+  state->wf = NULL;
+  state->wfp = NULL;
 
-  state.eigenval = (double *)malloc(eigenval_size);
-  if ( state.eigenval == NULL ) {
+  return PSPIO_SUCCESS;
+}
+
+
+int pspio_state_copy(pspio_state_t *dst, pspio_state_t *src) {
+  int s;
+
+  if ( dst != NULL ) {
     return PSPIO_ERROR;
-  } else {
-    memcpy(state.eigenval,eigenval,eigenval_size);
+  }
+  dst = (pspio_state_t *)malloc(sizeof(dst));
+  if ( dst == NULL ) {
+    return PSPIO_ERROR;
+  }
+
+  if ( (src->wf == NULL) || (dst->wf != NULL) ) {
+    return PSPIO_ERROR;
+  }
+  s = src->np * sizeof(double);
+  dst->wf = (double *)malloc(s);
+  memcpy(dst->wf, src->wf, s);
+
+  pspio_qn_copy(dst->qn, src->qn);
+
+  dst->eigenval = src->eigenval;
+  dst->np = src->np;
+  dst->occ = src->occ;
+  dst->rc = src->rc;
+
+  if ( (src->label == NULL) || (dst->label != NULL) ) {
+    return PSPIO_ERROR;
+  }
+  s = strlen(src->label);
+  dst->label = (double *)malloc(s+1);
+  memcpy(dst->label, src->label, s);
+  dst->label[s] = 0;
+
+  if ( (src->wfp == NULL) || (dst->wfp != NULL) ) {
+    return PSPIO_ERROR;
+  }
+  s = src->np * sizeof(double);
+  dst->wfp = (double *)malloc(s);
+  memcpy(dst->wfp, src->wfp, s);
+
+  return PSPIO_SUCCESS;
+}
+
+
+int pspio_state_free(pspio_state_t *state) {
+  if ( state != NULL ) {
+    free(state);
   }
 
   return PSPIO_SUCCESS;
 }
 
 
-int pspio_state_label_set(pspio_state_t state, const char *label) {
-  int label_size;
+int pspio_state_set(pspio_state_t *state, const double *eigenval,
+  char *label, int np, double *occ, double *rc, double *wf, double *wfp) {
 
-  if ( state.label != NULL ) {
-    return PSPIO_ERROR;
-  }
-
-  label_size = sizeof(label);
-
-  state.label = (char *)malloc(label_size);
-  if ( state.label == NULL ) {
-    return PSPIO_ERROR;
-  } else {
-    memcpy(state.label,label,label_size);
-  }
-
-  return PSPIO_SUCCESS;
-}
-
-
-int pspio_state_np_set(pspio_state_t state, const int np) {
-
-  state.np = np;
-
-  return PSPIO_SUCCESS;
-}
-
-
-int pspio_state_occ_set(pspio_state_t state, const double *occ) {
-  int occ_size;
-
-  if ( state.occ != NULL ) {
-    return PSPIO_ERROR;
-  }
-
-  occ_size = sizeof(occ);
-
-  state.occ = (double *)malloc(occ_size);
-  if ( state.occ == NULL ) {
-    return PSPIO_ERROR;
-  } else {
-    memcpy(state.occ,occ,occ_size);
-  }
-
-  return PSPIO_SUCCESS;
-}
-
-
-int pspio_state_rc_set(pspio_state_t state, const double *rc) {
-  int rc_size;
-
-  if ( state.rc != NULL ) {
-    return PSPIO_ERROR;
-  }
-
-  rc_size = sizeof(rc);
-
-  state.rc = (double *)malloc(rc_size);
-  if ( state.rc == NULL ) {
-    return PSPIO_ERROR;
-  } else {
-    memcpy(state.rc,rc,rc_size);
-  }
-
-  return PSPIO_SUCCESS;
-}
-
-
-int pspio_state_wf_set(pspio_state_t state, const double *wf) {
-  int wf_size;
-
-  if ( state.wf != NULL ) {
-    return PSPIO_ERROR;
-  }
-
-  wf_size = sizeof(wf);
-
-  state.wf = (double *)malloc(wf_size);
-  if ( state.wf == NULL ) {
-    return PSPIO_ERROR;
-  } else {
-    memcpy(state.wf,wf,wf_size);
-  }
-
-  return PSPIO_SUCCESS;
-}
-
-
-int pspio_state_wfp_set(pspio_state_t state, const double *wfp) {
-  int wfp_size;
-
-  if ( state.wfp != NULL ) {
-    return PSPIO_ERROR;
-  }
-
-  wfp_size = sizeof(wfp);
-
-  state.wfp = (double *)malloc(wfp_size);
-  if ( state.wfp == NULL ) {
-    return PSPIO_ERROR;
-  } else {
-    memcpy(state.wfp,wfp,wfp_size);
+  if ( eigenval == NULL ) {
+    state->eigenval = eigenval;
   }
 
   return PSPIO_SUCCESS;

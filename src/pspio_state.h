@@ -28,6 +28,11 @@
 
 #include "pspio.h"
 
+#if defined HAVE_CONFIG_H
+#include "config.h"
+#endif
+
+
 /**********************************************************************
  * Data structures                                                    *
  **********************************************************************/
@@ -37,10 +42,10 @@
  */
 typedef struct{
   pspio_qn_t *qn; /**< quantum numbers n l j for this wavefunction */
-  double *occ; /**< occupation of the electronic state */
-  double *eigenval; /**< eigenvalue of electronic state*/
+  double occ; /**< occupation of the electronic state */
+  double eigenval; /**< eigenvalue of electronic state*/
   char *label; /**< string describing the electronic state - eg 2s or 4d1.5  */
-  double *rc; /**< cutoff radii used for pseudopotential generation */
+  double rc; /**< cutoff radii used for pseudopotential generation */
   /// The wavefunctions 
   int np; /**< number of points */
   double *wf; /**< Wavefunction */
@@ -49,69 +54,50 @@ typedef struct{
 
 
 /**********************************************************************
- * Routines                                                           *
+ * Global routines                                                    *
  **********************************************************************/
 
 /**
- * Sets the eigenvalues of a state.
- * @param[inout] state: state structure to set
+ * Allocates and presets a state structure pointer.
+ * @param[out] state: state structure pointer to allocate
+ * @return error code
+ */
+int pspio_state_alloc(pspio_state_t *state);
+
+
+/**
+ * Duplicates a state structure pointer.
+ * @param[out] dst: destination state structure pointer
+ * @param[in] src: source state structure pointer
+ * @return error code
+ */
+int pspio_state_copy(pspio_state_t *dst,pspio_state_t *src);
+
+
+/**
+ * Deallocates a state structure pointer.
+ * @param[in,out] state: state structure pointer to destroy
+ * @return error code
+ * @note The state pointer is supposed to have been already allocated
+ *       with pspio_state_alloc.
+ */
+int pspio_state_free(pspio_state_t *state);
+
+
+/**
+ * Sets all parameters of a state.
+ * @param[in,out] state: state structure pointer to set
  * @param[in] eigenval: pointer to the eigenvalues
- * @return error code
- */
-int pspio_state_eigenval_set(pspio_state_t state, const double *eigenval);
-
-
-/**
- * Sets the labels of a state.
- * @param[inout] state: state structure to set
- * @param[in] label: pointer to the labels
- * @return error code
- */
-int pspio_state_label_set(pspio_state_t state, const char *label);
-
-
-/**
- * Sets the number of points of a state.
- * @param[inout] state: state structure to set
+ * @param[in] label: string describing the label
  * @param[in] np: number of points
- * @return error code
- */
-int pspio_state_np_set(pspio_state_t state, const int np);
-
-
-/**
- * Sets the occupation numbers of a state.
- * @param[inout] state: state structure to set
  * @param[in] occ: pointer to the occupation numbers
- * @return error code
- */
-int pspio_state_occ_set(pspio_state_t state, const double *occ);
-
-
-/**
- * Sets the cutoff radii of a state.
- * @param[inout] state: state structure to set
  * @param[in] rc: pointer to the cutoff radii
- * @return error code
- */
-int pspio_state_rc_set(pspio_state_t state, const double *rc);
-
-
-/**
- * Sets the wavefunction of a state.
- * @param[inout] state: state structure to set
  * @param[in] wf: pointer to the wavefunction
- * @return error code
- */
-int pspio_state_wf_set(pspio_state_t state, const double *wf);
-
-
-/**
- * Sets the wavefunction derivative of a state.
- * @param[inout] state: state structure to set
  * @param[in] wfp: pointer to the wavefunction derivative
  * @return error code
+ * @note The state pointer is supposed to have been already allocated
+ *       with pspio_state_alloc.
  */
-int pspio_state_wfp_set(pspio_state_t state, const double *wfp);
+int pspio_state_set(pspio_state_t *state, const double *eigenval,
+  char *label, int np, double *occ, double *rc, double *wf, double *wfp);
 
-#endif
