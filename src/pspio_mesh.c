@@ -46,6 +46,9 @@ int pspio_mesh_alloc(pspio_mesh_t *m, const int np){
     {
       m->r[i] = 0;
     }
+  m->a = 0;
+  m->b = 0;
+  m->type = MESH_NONE;
 
   return PSPIO_SUCCESS;
 }

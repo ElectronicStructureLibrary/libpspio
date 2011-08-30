@@ -53,7 +53,7 @@ typedef struct{
 
 
 /**
- * Allocates memory associated with mesh structure
+ * Allocates memory and preset mesh structure
  * 
  * @param[in,out] mesh: mesh structure
  * @param[in] np: number of points in the mesh
