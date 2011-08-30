@@ -59,7 +59,7 @@ typedef struct{
  * @param[in] np: number of points in the mesh
  * @return error code
  */
-int pspio_mesh_type_alloc(pspio_mesh_t *m, int np);
+int pspio_mesh_alloc(pspio_mesh_t *m, int np);
 
 
 /**
