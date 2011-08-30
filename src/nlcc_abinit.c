@@ -22,8 +22,9 @@
 #include "config.h"
 #endif
 
-/** subroutine to make NLCC core charge in abinit psp format 4  */
+/** subroutine to make NLCC core charge in abinit psp format 1  */
 
+#include <math.h>
 #include <stdio.h>
 #include <string.h>
 
@@ -32,6 +33,129 @@
 #include "pspio_nlcc.h"
 
 
+/**
+* function returns value of polynomial in NLCC core charge density for abinit format pspcod 4
+*@param[in]  x          value of input - should be between 0 and 1 in normal usage
+*@param[out] y          output value of polynomial
+*/
+int nlcc_ab1(double x, double y){
+
+  const double c21=4.e0/9.e0
+  const double c22=-40.e0/27.e0
+  const double c23=20.e0/3.e0-16.e0*pow(PI,2)/27.e0
+  const double c24=-4160.e0/243.e0+160.e0*pow(PI,2)/81.e0
+  const double c31=1.e0/36.e0
+  const double c32=-25.e0/108.e0
+  const double c33=485.e0/432.e0-pow(PI,2)/27.e0
+  const double c34=-4055.e0/972.e0+25.e0*pow(PI,2)/81.e0
+
+  if (x < 0.0) return PSPIO_EVALUE;
+
+  if (x > 3.0e0) {
+    y = 0.0e0;
+  }
+//  Take care of difficult limits near x=0, 1/2, and 1
+  else if (abs(x) <= 1.e-09) {
+    y = 1.d0;
+  }
+  else if (abs(x-0.5e0) <= 1.e-04) {
+//  (this limit and next are more troublesome for numerical cancellation)
+    y = c21+(x-0.5e0)*(c22+(x-0.5e0)*(c23+(x-0.5e0)*c24));
+  }
+  else if (abs(x-1.e0) <= 1.e-04) {
+    y = c31+(x-1.0e0)*(c32+(x-1.0e0)*(c33+(x-1.0e0)*c34));
+  }
+  else
+//  The following is the square of the Fourier transform of a
+//  function built out of two spherical bessel functions in G
+//  space and cut off absolutely beyond gcut
+    y = pow((  sin(2.0d0*PI*x)/ \\
+             ( (2.0d0*PI*x) * (1.d0-4.0d0*pow(x,2))*(1.d0-pow(x,2)) )  ), 2);
+  }
+
+  return PSPIO_SUCCESS;
+}
+
+/**
+* subroutine accepts fchrg and rchrg and makes the non linear core correction model density on the corresponding grid
+*  for abinit1 we have a modified sin function
+*@param[in]  rchrg      radius of core charge
+*@param[in]  fchrg      amplitude of core charge
+*@param[out] psp_data   pseudopotential info is filled in present routine and subroutines
+*/
+int nlcc_abinit1 (pspio_nlcc_t *nlcc, double rchrg, double fchrg){
+
+  /// local variables
+  int ierr;
+  int ir;
+  int np;
+  double fftmp;
+  double a;
+  double b;
+  double *rr;
+  double *ff;
+  pspio_mesh_t *nlccmesh;
+
+  /// init the mesh
+  np = 2501;  // this is the abinit default, used with analytical core charges. Could be modified to use the potential's mesh, but there can be numerical problems with not using a linear mesh.
+
+  ierr = pspio_mesh_alloc(nlccmesh, np);
+  
+/**< the following could become a new linear init mode for mesh */
+  a = 1.0e0 / ((double) np - 1);
+  b = 0.0e0;
+  for (ir = 0; ir < np; ir++){
+    rr[ir] = a*ir;
+  }
+  ierr = pspio_mesh_set(nlccmesh, MESH_LINEAR, a, b, rr);
+  if (ierr) {
+    free(rr);
+    pspio_mesh_free(nlccmesh);
+    return ierr;
+  }
+
+  free(rr);
+
+  /// allocate the nlcc object
+  ierr = pspio_nlcc_alloc(nlcc, nlccmesh);
+  if(ierr) {
+    pspio_nlcc_free(nlcc);
+    pspio_mesh_free(nlccmesh);
+    return ierr;
+  }
+
+  ff = (double *) malloc(sizeof(nlcc->core_dens->f));
+
+  if (np < 2) {
+    pspio_nlcc_free(nlcc);
+    pspio_mesh_free(nlccmesh);
+    free(ff);
+    return PSPIO_EVALUE;
+  }
+
+  /// fill the nlcc core density
+  for (ir=0;  ir < np; ir++){
+    ierr = nlcc_ab4 (((double) ir)/((double) np-1), fftmp);
+    if (ierr) {
+      free(ff);
+      return ierr;
+    }
+    ff[ir] = fchrg * fftmp;
+  }
+
+  ierr = pspio_nlcc_set(nlcc, NLCC_TETER1, ff);
+  if (ierr) {
+    pspio_nlcc_free(nlcc);
+    pspio_mesh_free(nlccmesh);
+    free(ff);
+    return ierr;
+  }
+
+  free(ff);
+
+  return PSPIO_SUCCESS;
+
+}
 /**
 * function returns value of polynomial in NLCC core charge density for abinit format pspcod 4
 *@param[in]  x          value of input - should be between 0 and 1 in normal usage
@@ -103,29 +227,45 @@ int nlcc_abinit4 (pspio_nlcc_t *nlcc, double rchrg, double fchrg){
     rr[ir] = a*ir;
   }
   ierr = pspio_mesh_set(nlccmesh, MESH_LINEAR, a, b, rr);
+  if (ierr) {
+    free(rr);
+    pspio_mesh_free(nlccmesh);
+    return ierr;
+  }
+
   free(rr);
 
   /// allocate the nlcc object
   ierr = pspio_nlcc_alloc(nlcc, nlccmesh);
   if(ierr) {
+    pspio_nlcc_free(nlcc);
     pspio_mesh_free(nlccmesh);
     return ierr;
   }
 
   ff = (double *) malloc(sizeof(nlcc->core_dens->f));
 
-  if (np < 2) return PSPIO_EVALUE;
+  if (np < 2) {
+    pspio_nlcc_free(nlcc);
+    pspio_mesh_free(nlccmesh);
+    free(ff);
+    return PSPIO_EVALUE;
+  }
 
   /// fill the nlcc core density
-  for (ir=0;  ir < nlcc->core_dens->mesh->np; ir++){
+  for (ir=0;  ir < np; ir++){
     ierr = nlcc_ab4 (((double) ir)/((double) np-1), fftmp);
-    if (ierr) {free(ff); return ierr;}
-
+    if (ierr) {
+      free(ff);
+      return ierr;
+    }
     ff[ir] = fchrg * fftmp;
   }
 
   ierr = pspio_nlcc_set(nlcc, NLCC_TETER1, ff);
   if (ierr) {
+    pspio_nlcc_free(nlcc);
+    pspio_mesh_free(nlccmesh);
     free(ff);
     return ierr;
   }
