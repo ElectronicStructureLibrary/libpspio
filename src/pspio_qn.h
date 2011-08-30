@@ -48,11 +48,20 @@ typedef struct{
  **********************************************************************/
 
 /**
- * Allocates and presets an quantum number structure.
+ * Allocates and presets a quantum number structure.
  * @param[out] qn: quantum number structure pointer to allocate
  * @return error code
  */
 int pspio_qn_alloc(pspio_qn_t *qn);
+
+
+/**
+ * Duplicates a quantum number structure.
+ * @param[out] dst: destination quantum number structure pointer
+ * @param[out] src: source quantum number structure pointer 
+ * @return error code
+ */
+int pspio_qn_copy(pspio_qn_t *dst, pspio_qn_t *src);
 
 
 /**

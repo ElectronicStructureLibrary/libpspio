@@ -24,7 +24,10 @@
 #include "pspio_qn.h"
 
 int pspio_qn_alloc(pspio_qn_t *qn) {
-  qn = (pspio_qn_t *)malloc(sizeof(pspio_qn_t));
+  if ( qn != NULL ) {
+    return PSPIO_ERROR;
+  }
+  qn = (pspio_qn_t *)malloc(sizeof(qn));
   if ( qn == NULL ) {
     return PSPIO_ERROR;
   }
@@ -32,6 +35,23 @@ int pspio_qn_alloc(pspio_qn_t *qn) {
   qn->n = 0;
   qn->l = 0;
   qn->j = 0.0;
+
+  return PSPIO_SUCCESS;
+}
+
+
+int pspio_qn_copy(pspio_qn_t *dst, pspio_qn_t *src) {
+  if ( (src == NULL) || (dst != NULL) ) {
+    return PSPIO_ERROR;
+  }
+
+  dst = (pspio_qn_t *)malloc(sizeof(dst));
+  if ( dst == NULL ) {
+    return PSPIO_ERROR;
+  }
+  dst->n = src->n;
+  dst->l = src->l;
+  dst->j = src->j;
 
   return PSPIO_SUCCESS;
 }
