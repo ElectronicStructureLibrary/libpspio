@@ -38,13 +38,13 @@ int pspio_upf_file_read(FILE * fp, pspio_pspdata_t * psp_data){
   int version_number;
   char line[MAX_STRLEN];
   char symbol[2];
-  char nlcc,kind_ps[2],exchange[MAX_STRLEN],nl[2];
-  double zvalence,total_energy,wfc_cutoff,rho_cutoff,occ;
-  int lmax,np,n_states,n_proj,l;
+  char nlcc,kind_ps[2],exchange[MAX_STRLEN];
+  double zvalence,total_energy,wfc_cutoff,rho_cutoff;
+  int lmax,np,n_states,n_proj;
+	wavefunction_t * wavefunctions;
 	
   init_tag(fp,"PP_HEADER", GO_BACK);
-	
-	
+		
   if(fgets(line, MAX_STRLEN, fp) == NULL) return PSPIO_EIO;
   narg = sscanf (line, "%d", &version_number);
   //check if narg is 1
@@ -93,11 +93,15 @@ int pspio_upf_file_read(FILE * fp, pspio_pspdata_t * psp_data){
   narg = sscanf (line, "%d %d",&n_states,&n_proj); // read the number of wavefunctions and projectors 
   //check if narg is 2
 	
+	if (wavefunctions = (wavefunction_t *)malloc(n_states*sizeof(wavefunction_t)) == NULL){
+		return PSPIO_ERROR;
+	}
+	
   //read the wavefuntions: "Wavefunctions   nl   l   occ"   
   if(fgets(line, MAX_STRLEN, fp) == NULL) return PSPIO_EIO; //skip the first line
   for (i=0; i<n_states; i++) {
     if(fgets(line, MAX_STRLEN, fp) == NULL) return PSPIO_EIO;
-    narg = sscanf (line, "%2c %d %lf",&nl[0],&l,&occ); // read the number of wavefunctions and projectors 
+    narg = sscanf (line, "%2c %d %lf",&wavefunctions[i]->nl[i],&wavefunctions[i]->l,&wavefunctions[i]->occ); // read the number of wavefunctions and projectors 
     //check if narg is 3
   }
 	

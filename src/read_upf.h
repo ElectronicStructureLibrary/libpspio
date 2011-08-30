@@ -35,6 +35,11 @@
 #include <string.h>
 #include "pspio.h"
 
+typedef struct{
+	char nl[2];
+	int l;
+	double occ;
+} wavefunction_t;
 /**
  * Init the UPF file read
  * @param[in] fp a stream of the input file
@@ -80,7 +85,7 @@ int tag_isdef(FILE * fp, char * tag);
 int init_tag(FILE * fp, char * tag, int go_back);
 
 /** 
- * Evaluates is a tag is correctly closed
+ * Evaluates if a tag is correctly closed
  * @param[in] fp a stream of the input file
  * @param[in] tag the tag
  * @return 0 if correct. 1 else
