@@ -26,13 +26,9 @@
 #include "pspio_qn.h"
 
 int pspio_qn_alloc(pspio_qn_t *qn) {
-  if ( qn != NULL ) {
-    return PSPIO_ERROR;
-  }
+  PSPIO_ASSERT( qn == NULL, PSPIO_ERROR)
   qn = (pspio_qn_t *)malloc(sizeof(qn));
-  if ( qn == NULL ) {
-    return PSPIO_ENOMEM;
-  }
+  PSPIO_ASSERT( qn != NULL, PSPIO_ENOMEM)
 
   qn->n = 0;
   qn->l = 0;
@@ -43,14 +39,12 @@ int pspio_qn_alloc(pspio_qn_t *qn) {
 
 
 int pspio_qn_copy(pspio_qn_t *dst, pspio_qn_t *src) {
-  if ( (src == NULL) || (dst != NULL) ) {
-    return PSPIO_ERROR;
+  PSPIO_ASSERT(src == NULL, PSPIO_ERROR)
+
+  if ( dst == NULL ) {
+    pspio_qn_alloc(dst);
   }
 
-  dst = (pspio_qn_t *)malloc(sizeof(dst));
-  if ( dst == NULL ) {
-    return PSPIO_ENOMEM;
-  }
   dst->n = src->n;
   dst->l = src->l;
   dst->j = src->j;
@@ -70,9 +64,8 @@ int pspio_qn_free(pspio_qn_t *qn) {
 
 int pspio_qn_set(pspio_qn_t *qn, const int n, const int l, const double j) {
 
-  if ( (n < 0) || (l < 0) || (abs(j - (double)l) - 0.5 > 1.0e-9) ) {
-    return PSPIO_EVALUE;
-  }
+  PSPIO_ASSERT( (n < 0) || (l < 0) || (abs(j - (double)l) - 0.5 > 1.0e-9),
+    PSPIO_EVALUE)
 
   qn->n = n;
   qn->l = l;
