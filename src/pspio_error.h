@@ -120,4 +120,13 @@ int pspio_error_free(void);
     return error_id; \
   }
 
+
+/**
+ * Libpspio-specific assert
+ * @param[in] condition: condition to check
+ * @param[in] error_id: error code to set if condition is false
+#define PSPIO_ASSERT(condition, error_id) \
+  pspio_error_tmp_id = (condition ? PSPIO_SUCCESS : error_id); \
+  HANDLE_ERROR(pspio_error_tmp_id)
+
 #endif
