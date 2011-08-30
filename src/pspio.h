@@ -74,16 +74,6 @@
 #define MAX_LEN 256
 #define STRLEN_TITLE 80
 
-/** 
- * The quantum numbers
- */
-typedef struct{
-  int n;    /**< main quantum number */
-  int l;    /**< angular momentum quantum number */
-  double j; /**< total angular momentum quantum number */
-} pspio_qn_t;
-
-
 /**
  * Potential structure
  */
@@ -92,22 +82,6 @@ typedef struct{
   double *psp;         /**< pseudopotential, on a radial grid */
   gsl_spline *psp_spl; /**< spline type, for future interpolation before output to calling code */
 } pspio_potential_t;
-
-
-/**
- *General information about the state
- */
-typedef struct{
-  pspio_qn_t *qn; /**< quantum numbers n l j for this wavefunction */
-  double *occ; /**< occupation of the electronic state */
-  double *eigenval; /**< eigenvalue of electronic state*/
-  char *label; /**< string describing the electronic state - eg 2s or 4d1.5  */
-  double *rc; /**< cutoff radii used for pseudopotential generation */
-  /// The wavefunctions 
-  int np; /**< number of points */
-  double *wf; /**< Wavefunction */
-  double *wfp; /**<Derivative of the wavefunction */
-} pspio_state_t;
 
 
 /**

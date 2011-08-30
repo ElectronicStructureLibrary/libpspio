@@ -28,15 +28,29 @@
 
 #include "pspio.h"
 
+/**********************************************************************
+ * Data structures                                                    *
+ **********************************************************************/
+
 /**
- * Sets the quantum numbers of a state.
- * @param[inout] state: state structure to set
- * @param[in] n: main quantum number
- * @param[in] l: angular momentum
- * @param[in] j: angular momentum
- * @return error code
+ * General information about the state
  */
-int pspio_qn_set(pspio_qn_t numbers, const int n, const int l, const double j);
+typedef struct{
+  pspio_qn_t *qn; /**< quantum numbers n l j for this wavefunction */
+  double *occ; /**< occupation of the electronic state */
+  double *eigenval; /**< eigenvalue of electronic state*/
+  char *label; /**< string describing the electronic state - eg 2s or 4d1.5  */
+  double *rc; /**< cutoff radii used for pseudopotential generation */
+  /// The wavefunctions 
+  int np; /**< number of points */
+  double *wf; /**< Wavefunction */
+  double *wfp; /**<Derivative of the wavefunction */
+} pspio_state_t;
+
+
+/**********************************************************************
+ * Routines                                                           *
+ **********************************************************************/
 
 /**
  * Sets the eigenvalues of a state.
@@ -46,6 +60,7 @@ int pspio_qn_set(pspio_qn_t numbers, const int n, const int l, const double j);
  */
 int pspio_state_eigenval_set(pspio_state_t state, const double *eigenval);
 
+
 /**
  * Sets the labels of a state.
  * @param[inout] state: state structure to set
@@ -53,6 +68,7 @@ int pspio_state_eigenval_set(pspio_state_t state, const double *eigenval);
  * @return error code
  */
 int pspio_state_label_set(pspio_state_t state, const char *label);
+
 
 /**
  * Sets the number of points of a state.
@@ -62,6 +78,7 @@ int pspio_state_label_set(pspio_state_t state, const char *label);
  */
 int pspio_state_np_set(pspio_state_t state, const int np);
 
+
 /**
  * Sets the occupation numbers of a state.
  * @param[inout] state: state structure to set
@@ -69,6 +86,7 @@ int pspio_state_np_set(pspio_state_t state, const int np);
  * @return error code
  */
 int pspio_state_occ_set(pspio_state_t state, const double *occ);
+
 
 /**
  * Sets the cutoff radii of a state.
@@ -78,6 +96,7 @@ int pspio_state_occ_set(pspio_state_t state, const double *occ);
  */
 int pspio_state_rc_set(pspio_state_t state, const double *rc);
 
+
 /**
  * Sets the wavefunction of a state.
  * @param[inout] state: state structure to set
@@ -85,6 +104,7 @@ int pspio_state_rc_set(pspio_state_t state, const double *rc);
  * @return error code
  */
 int pspio_state_wf_set(pspio_state_t state, const double *wf);
+
 
 /**
  * Sets the wavefunction derivative of a state.

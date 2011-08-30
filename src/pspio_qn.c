@@ -15,29 +15,19 @@
  along with this program; if not, write to the Free Software
  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
- $Id$
+ $Id: pspio_qn_set.c 50 2011-08-29 23:44:48Z mjv500 $
 */
 
 #include <stdio.h>
 #include <string.h>
 #include "pspio_error.h"
-#include "pspio_state.h"
+#include "pspio_qn.h"
 
-int pspio_state_wf_set(pspio_state_t state, const double *wf) {
-  int wf_size;
+int pspio_qn_set(pspio_qn_t *qn, const int n, const int l, const int j) {
 
-  if ( state.wf != NULL ) {
-    return PSPIO_ERROR;
-  }
-
-  wf_size = sizeof(wf);
-
-  state.wf = (double *)malloc(wf_size);
-  if ( state.wf == NULL ) {
-    return PSPIO_ERROR;
-  } else {
-    memcpy(state.wf,wf,wf_size);
-  }
+  qn->n = n;
+  qn->l = l;
+  qn->j = j;
 
   return PSPIO_SUCCESS;
 }
