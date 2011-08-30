@@ -74,4 +74,47 @@ int pspio_meshfunc_set(pspio_meshfunc_t *func, double *f);
  */
 int pspio_meshfunc_free(pspio_meshfunc_t *func);
 
+
+/**
+ * Frees all memory associated with function structure
+ * 
+ * @param[in,out] func: function structure
+ * @return error code
+ */
+int pspio_meshfunc_free(pspio_meshfunc_t *func);
+
+
+/**
+ * Returns the value of the function at an arbitrary point
+ * 
+ * @param[in] func: function structuer
+ * @param[in] r: position were we want to evaluate the function
+ * @param[out] f: value of the function at r
+ * @return error code
+ */
+int pspio_meshfunc_eval(pspio_meshfunc_t *func, const double r, double f);
+
+
+/**
+ * Returns the value of the derivative of a function at an arbitrary point
+ * 
+ * @param[in] func: function structuer
+ * @param[in] r: position were we want to evaluate the function
+ * @param[out] fp: value of the derivative at r
+ * @return error code
+ */
+int pspio_meshfunc_eval_deriv(pspio_meshfunc_t *func, const double r, double fp);
+
+
+/**
+ * Returns the value of the second derivative of a function at an arbitrary point
+ * 
+ * @param[in] func: function structuer
+ * @param[in] r: position were we want to evaluate the function
+ * @param[out] fpp: value of the second derivative at r
+ * @return error code
+ */
+int pspio_meshfunc_eval_deriv2(pspio_meshfunc_t *func, const double r, double fpp);
+
+
 #endif
