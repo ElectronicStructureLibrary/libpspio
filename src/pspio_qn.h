@@ -28,6 +28,11 @@
 
 #include "pspio.h"
 
+#if defined HAVE_CONFIG_H
+#include "config.h"
+#endif
+
+
 /** 
  * The quantum numbers
  */
@@ -43,13 +48,33 @@ typedef struct{
  **********************************************************************/
 
 /**
+ * Allocates and presets an quantum number structure.
+ * @param[out] qn: quantum number structure pointer to allocate
+ * @return error code
+ */
+int pspio_qn_alloc(pspio_qn_t *qn);
+
+
+/**
+ * Frees the memory occupied by a quantum number structure.
+ * @param[in,out] qn: quantum number structure pointer to destroy
+ * @return error code
+ * @note The pointer has to be allocated first with the pspio_qn_alloc
+ *       method.
+ */
+int pspio_qn_free(pspio_qn_t *qn);
+
+
+/**
  * Sets the quantum numbers of a state.
- * @param[inout] state: state structure to set
+ * @param[in,out] state: quantum number structure pointer to set
  * @param[in] n: main quantum number
  * @param[in] l: angular momentum
  * @param[in] j: total angular momentum
  * @return error code
+ * @note The pointer has to be allocated first with the pspio_qn_alloc
+ *       method.
  */
-int pspio_qn_set(pspio_qn_t numbers, const int n, const int l, const double j);
+int pspio_qn_set(pspio_qn_t *qn, const int n, const int l, const double j);
 
 #endif

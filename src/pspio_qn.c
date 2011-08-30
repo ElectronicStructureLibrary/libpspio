@@ -23,7 +23,36 @@
 #include "pspio_error.h"
 #include "pspio_qn.h"
 
+int pspio_qn_alloc(pspio_qn_t *qn) {
+  qn = (pspio_qn_t *)malloc(sizeof(pspio_qn_t));
+  if ( qn == NULL ) {
+    return PSPIO_ERROR;
+  }
+
+  qn->n = 0;
+  qn->l = 0;
+  qn->j = 0.0;
+
+  return PSPIO_SUCCESS;
+}
+
+
+int pspio_qn_free(pspio_qn_t *qn) {
+  if ( qn == NULL ) {
+    return PSPIO_ERROR;
+  }
+
+  free(qn);
+
+  return PSPIO_SUCCESS;
+}
+
+
 int pspio_qn_set(pspio_qn_t *qn, const int n, const int l, const int j) {
+
+  if ( (n < 0) || (l < 0) || (abs(j - (double)l) - 0.5) > 1.0e-9) ) then {
+    return PSPIO_VALUE_ERROR;
+  }
 
   qn->n = n;
   qn->l = l;

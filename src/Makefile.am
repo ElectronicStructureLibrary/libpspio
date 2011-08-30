@@ -28,6 +28,8 @@ pio_hdrs = \
   libxccodes.h \
   pspio_error.h \
   pspio_mesh.h \
+  pspio_qn.h \
+  pspio_state.h \
   pspio.h
 
                     # ------------------------------------ #
