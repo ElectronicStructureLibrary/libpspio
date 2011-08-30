@@ -44,26 +44,25 @@ int read_abinit_header (FILE *fp, pspio_pspdata_t *psp_data, int pspcod, double 
   int idum;
   int narg;
   int minlen;
-  int ncharead = 1000;
   int pspxc; 
-  char line[ncharead];
+  char line[MAX_STRLEN];
   char *testread;
   double qchrg;
 
   /**< read in title */
-  if (fgets(line, ncharead, fp) == NULL) return PSPIO_EIO;
+  if (fgets(line, MAX_STRLEN, fp) == NULL) return PSPIO_EIO;
   minlen = strlen(line) > STRLEN_TITLE ? STRLEN_TITLE : strlen(line);
   if (strncpy((*psp_data).title, line, minlen) == NULL){
     return PSPIO_EIO;
   }
  
   /**< read in atomic number, pseudopotential ion charge (= num of valence electrons), and abinit data flag (not used) */
-  if(fgets(line, ncharead, fp) == NULL) return PSPIO_EIO;
+  if(fgets(line, MAX_STRLEN, fp) == NULL) return PSPIO_EIO;
   narg = sscanf (line, "%f %f %d", &((*psp_data).z), &((*psp_data).zvalence), &idum);
   ///check narg is equal to 2
  
   /**< read in psp code and xc code*/
-  if(fgets(line, ncharead, fp) == NULL) return PSPIO_EIO;
+  if(fgets(line, MAX_STRLEN, fp) == NULL) return PSPIO_EIO;
   narg = sscanf (line, "%d %d %d %d %d", &pspcod, &pspxc, &((*psp_data).l_max), &((*psp_data).l_local), &((*(*psp_data).mesh).np));
   ///check narg is equal to 5
 
@@ -95,7 +94,7 @@ int read_abinit_header (FILE *fp, pspio_pspdata_t *psp_data, int pspcod, double 
   fchrg = 0.0;
   if (pspcod == 4 || pspcod == 5 || pspcod == 6){
   /**< read in NLCC parameters */
-    if(fgets(line, ncharead, fp) == NULL) return PSPIO_EIO;
+    if(fgets(line, MAX_STRLEN, fp) == NULL) return PSPIO_EIO;
     narg = sscanf (line, "%f %f %f", &rchrg, &fchrg, &qchrg);
     ///check narg is equal to 3
   }

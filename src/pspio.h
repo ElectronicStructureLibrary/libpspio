@@ -73,7 +73,7 @@
 #define NLCC_YES 1
 #define NLCC_LOUIE 2 // S. G. Louie, S. Froyen, and M. L. Cohen. Nonlinear ionic pseudopotentials in spin-density-functional calculations. Phys. Rev. B, 26:1738-1742, 1982. 
 
-#define MAX_LEN 256
+#define MAX_STRLEN 256
 #define STRLEN_TITLE 80
 
 /**
