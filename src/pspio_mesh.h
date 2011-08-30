@@ -48,7 +48,7 @@ typedef struct{
 
 /**
  * Sets the type of the mesh.
- * @param[inout] mesh: mesh structure to set
+ * @param[in,out] mesh: mesh structure to set
  * @param[in] type: type of mesh. Can be LOG1, LOG2, or LINEAR.
  * @return error code
  */
@@ -56,7 +56,7 @@ int pspio_mesh_type_set(pspio_mesh_t *m, int type);
 
 /**
  * Sets the mesh parameters.
- * @param[inout] mesh: mesh structure to set
+ * @param[in,out] mesh: mesh structure to set
  * @param[in] a: parameter a. The meaning depends on the type of mesh.
  * @param[in] b: parameter b. The meaning depends on the type of mesh.
  * @return error code
@@ -65,7 +65,7 @@ int pspio_mesh_parameters_set(pspio_mesh_t *m, const double a, const double b);
 
 /**
  * Sets the mesh points.
- * @param[inout] mesh: mesh structure to set
+ * @param[in,out] mesh: mesh structure to set
  * @param[in] np: number of points in the mesh.
  * @param[in] r: pointer to mesh radial points
  * @return error code
