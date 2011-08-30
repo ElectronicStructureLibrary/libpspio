@@ -70,7 +70,8 @@ int pspio_meshfunc_set(pspio_meshfunc_t *func, double *f);
  * Frees all memory associated with function structure
  * 
  * @param[in,out] func: function structure
+ * @return error code
  */
-void pspio_meshfunc_free(pspio_meshfunc_t *func);
+int pspio_meshfunc_free(pspio_meshfunc_t *func);
 
 #endif

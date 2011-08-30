@@ -75,6 +75,6 @@ int pspio_nlcc_set(pspio_nlcc_t *nlcc, int scheme, double *core_dens);
  * 
  * @param[in,out] nlcc: nlcc structure
  */
-void pspio_nlcc_free(pspio_nlcc_t *nlcc);
+int pspio_nlcc_free(pspio_nlcc_t *nlcc);
 
 #endif

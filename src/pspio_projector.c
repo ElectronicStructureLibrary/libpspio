@@ -64,13 +64,12 @@ int pspio_projector_set(pspio_projector_t *projector, pspio_qn_t *qn, double e, 
 }
 
 
-void pspio_projector_free(pspio_projector_t *projector){
+int pspio_projector_free(pspio_projector_t *projector){
 
-  if (projector == NULL) {
-    return;
+  if (projector != NULL) {
+    pspio_meshfunc_free(projector->p);
+    free(projector);
   }
 
-  pspio_meshfunc_free(projector->p);
-  free(projector);
-
+  return PSPIO_SUCCESS;
 }

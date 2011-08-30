@@ -64,13 +64,11 @@ int pspio_potential_set(pspio_potential_t *potential, pspio_qn_t *qn, double *v)
 }
 
 
-void pspio_potential_free(pspio_potential_t *potential){
+int pspio_potential_free(pspio_potential_t *potential){
 
-  if (potential == NULL) {
-    return;
+  if (potential != NULL) {
+    pspio_meshfunc_free(potential->v);
+    free(potential);
   }
-
-  pspio_meshfunc_free(potential->v);
-  free(potential);
-
+  return PSPIO_SUCCESS;
 }

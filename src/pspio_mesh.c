@@ -70,11 +70,12 @@ int pspio_mesh_set(pspio_mesh_t *m, const int type, const double a, const double
 }
 
 
-void pspio_mesh_free(pspio_mesh_t *m){
+int pspio_mesh_free(pspio_mesh_t *m){
 
-  if (m == NULL) return;
+  if (m != NULL) {
+    if (m->r != NULL) free (m->r);
+    free (m);
+  }
 
-  free (m->r);
-  free (m);
-
+  return PSPIO_SUCCESS;
 }

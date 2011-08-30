@@ -69,7 +69,8 @@ int pspio_potential_set(pspio_potential_t *potential, pspio_qn_t *qn, double *v)
  * Frees all memory associated with potential structure
  * 
  * @param[in,out] potential: potential structure
+ * @return error code
  */
-void pspio_potential_free(pspio_potential_t *potential);
+int pspio_potential_free(pspio_potential_t *potential);
 
 #endif

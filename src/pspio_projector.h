@@ -71,7 +71,8 @@ int pspio_projector_set(pspio_projector_t *projector, pspio_qn_t *qn, double e, 
  * Frees all memory associated with a projector structure
  * 
  * @param[in,out] projector: projector structure
+ * @return error code
  */
-void pspio_projector_free(pspio_projector_t *projector);
+int pspio_projector_free(pspio_projector_t *projector);
 
 #endif

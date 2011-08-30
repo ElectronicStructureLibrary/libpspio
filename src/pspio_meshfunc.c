@@ -64,14 +64,15 @@ int pspio_meshfunc_set(pspio_meshfunc_t *func, double *f){
 }
 
 
-void pspio_meshfunc_free(pspio_meshfunc_t *func){
+int pspio_meshfunc_free(pspio_meshfunc_t *func){
 
-  if (func == NULL) return;
+  if (func != NULL) {
+    if (func->f != NULL) free(func->f);
+    gsl_spline_free(func->spl);
+    gsl_interp_accel_free(func->acc);
+    func->mesh = NULL;
+    free(func);
+  }
 
-  free(func->f);
-  gsl_spline_free(func->spl);
-  gsl_interp_accel_free(func->acc);
-  func->mesh = NULL;
-  free(func);
-
+  return PSPIO_SUCCESS;
 }

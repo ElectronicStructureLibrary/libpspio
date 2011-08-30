@@ -52,13 +52,12 @@ int pspio_nlcc_set(pspio_nlcc_t *nlcc, double *cdens){
 }
 
 
-void pspio_nlcc_free(pspio_nlcc_t *nlcc){
+int pspio_nlcc_free(pspio_nlcc_t *nlcc){
 
-  if (nlcc == NULL) {
-    return;
+  if (nlcc != NULL) {
+    pspio_meshfunc_free(nlcc->cdens);
+    free(nlcc);
   }
 
-  pspio_meshfunc_free(nlcc->cdens);
-  free(nlcc);
-
+  return PSPIO_SUCCESS;
 }
