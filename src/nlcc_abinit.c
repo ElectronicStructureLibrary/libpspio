@@ -89,7 +89,7 @@ int nlcc_abinit4 (pspio_nlcc_t *nlcc, double rchrg, double fchrg){
   double b;
   double *rr;
   double *ff;
-  pspio_mesh_t nlccmesh;
+  pspio_mesh_t *nlccmesh;
 
   /// init the mesh
   np = 2501;  // this is the abinit default, used with analytical core charges. Could be modified to use the potential's mesh, but there can be numerical problems with not using a linear mesh.
@@ -99,29 +99,37 @@ int nlcc_abinit4 (pspio_nlcc_t *nlcc, double rchrg, double fchrg){
 /**< the following could become a new linear init mode for mesh */
   a = 1.0e0 / ((double) np - 1);
   b = 0.0e0;
-  for (ir = 0; ir < ; ir++){
-    rr[ir]
+  for (ir = 0; ir < np; ir++){
+    rr[ir] = a*ir;
   }
   ierr = pspio_mesh_set(nlccmesh, MESH_LINEAR, a, b, rr);
-  free(rr)
+  free(rr);
 
   /// allocate the nlcc object
-  ierr = pspio_nlcc_alloc(nlcc, np);
+  ierr = pspio_nlcc_alloc(nlcc, nlccmesh);
+  if(ierr) {
+    pspio_mesh_free(nlccmesh);
+    return ierr;
+  }
 
-  ff = (double *) malloc(sizeof(nlcc->core_dens->f))
+  ff = (double *) malloc(sizeof(nlcc->core_dens->f));
 
   if (np < 2) return PSPIO_EVALUE;
 
   /// fill the nlcc core density
   for (ir=0;  ir < nlcc->core_dens->mesh->np; ir++){
-    ierr = nlcc_ab4 (((double)ir)/((double)nlcc->core_dens->mesh->np-1), fftmp);
-    if (ierr) return ierr;
-    ff[ir]=fchrg * fftmp;
+    ierr = nlcc_ab4 (((double) ir)/((double) np-1), fftmp);
+    if (ierr) {free(ff); return ierr;}
+
+    ff[ir] = fchrg * fftmp;
   }
 
-  ierr = pspio_nlcc_set(pspio_nlcc_t *nlcc, mesh, ff);
-  if (ierr) return ierr;
-  
+  ierr = pspio_nlcc_set(pspio_nlcc_t *nlcc, NLCC_TETER1, ff);
+  if (ierr) {
+    free(ff);
+    return ierr;
+  }
+
   free(ff);
 
   return PSPIO_SUCCESS;
