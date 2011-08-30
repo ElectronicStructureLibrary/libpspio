@@ -26,7 +26,7 @@
 #if !defined PSPIO_STATES_H
 #define PSPIO_STATES_H
 
-#include "pspio.h"
+#include "pspio_qn.h"
 
 #if defined HAVE_CONFIG_H
 #include "config.h"
@@ -87,17 +87,19 @@ int pspio_state_free(pspio_state_t *state);
 /**
  * Sets all parameters of a state.
  * @param[in,out] state: state structure pointer to set
- * @param[in] eigenval: pointer to the eigenvalues
- * @param[in] label: string describing the label
  * @param[in] np: number of points
- * @param[in] occ: pointer to the occupation numbers
- * @param[in] rc: pointer to the cutoff radii
+ * @param[in] eigenval: eigenvalue
+ * @param[in] label: string describing the state
+ * @param[in] occ: occupation number
+ * @param[in] rc: cutoff radius
  * @param[in] wf: pointer to the wavefunction
  * @param[in] wfp: pointer to the wavefunction derivative
  * @return error code
  * @note The state pointer is supposed to have been already allocated
  *       with pspio_state_alloc.
  */
-int pspio_state_set(pspio_state_t *state, const double *eigenval,
-  char *label, int np, double *occ, double *rc, double *wf, double *wfp);
+int pspio_state_set(pspio_state_t *state, const int np, const double eigenval,
+  const char *label, const double occ, const double rc, const double *wf,
+  const double *wfp);
 
+#endif

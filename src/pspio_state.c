@@ -36,11 +36,11 @@ int pspio_state_alloc(pspio_state_t *state) {
     return PSPIO_ERROR;
   }
 
-  state->eigenval = NULL;
-  state->label = NULL;
   state->np = -1;
-  state->occ = NULL;
-  state->rc = NULL;
+  state->eigenval = 0.0;
+  state->occ = 0.0;
+  state->rc = 0.0;
+  state->label = NULL;
   state->wf = NULL;
   state->wfp = NULL;
 
@@ -77,7 +77,7 @@ int pspio_state_copy(pspio_state_t *dst, pspio_state_t *src) {
     return PSPIO_ERROR;
   }
   s = strlen(src->label);
-  dst->label = (double *)malloc(s+1);
+  dst->label = (char *)malloc(s+1);
   memcpy(dst->label, src->label, s);
   dst->label[s] = 0;
 
@@ -101,12 +101,45 @@ int pspio_state_free(pspio_state_t *state) {
 }
 
 
-int pspio_state_set(pspio_state_t *state, const double *eigenval,
-  char *label, int np, double *occ, double *rc, double *wf, double *wfp) {
+int pspio_state_set(pspio_state_t *state, const int np, const double eigenval,
+      const char *label, const double occ, const double rc, const double *wf,
+      const double *wfp) {
+  int s;
 
-  if ( eigenval == NULL ) {
-    state->eigenval = eigenval;
+  if ( state == NULL ) {
+    return PSPIO_ERROR;
   }
+
+  state->np = np;
+  state->eigenval = eigenval;
+  state->occ = occ;
+  state->rc = rc;
+
+  if ( (label == NULL) || (state->label != NULL) ) {
+    return PSPIO_ERROR;
+  }
+  s = strlen(label);
+  state->label = (char *)malloc(s + 1);
+  memcpy(state->label,label,s);
+  state->label[s] = 0;
+
+  if ( (wf == NULL) || (state->wf != NULL) ) {
+    return PSPIO_ERROR;
+  }
+  state->wf = (double *)malloc(np);
+  if ( state->wf == NULL ) {
+    return PSPIO_ERROR;
+  }
+  memcpy(state->wf,wf,np);
+
+  if ( (wfp == NULL) || (state->wfp != NULL) ) {
+    return PSPIO_ERROR;
+  }
+  state->wfp = (double *)malloc(np);
+  if ( state->wfp == NULL ) {
+    return PSPIO_ERROR;
+  }
+  memcpy(state->wfp,wfp,np);
 
   return PSPIO_SUCCESS;
 }

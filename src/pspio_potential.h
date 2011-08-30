@@ -41,7 +41,7 @@
  */
 typedef struct{
   pspio_qn_t *qn;      /**< struct with quantum numbers n l j for the potential */
-  pspio_meshfunc_t *v  /**< pseudopotential, on a radial mesh */
+  pspio_meshfunc_t *v;  /**< pseudopotential, on a radial mesh */
 } pspio_potential_t;
 
 
