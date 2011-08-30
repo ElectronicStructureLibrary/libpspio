@@ -79,3 +79,26 @@ int pspio_mesh_free(pspio_mesh_t *m){
 
   return PSPIO_SUCCESS;
 }
+
+
+int pspio_mesh_copy(pspio_mesh_t *dst, pspio_mesh_t *src){
+  int i;
+
+  if ( (src == NULL) || (dst != NULL) ) {
+    return PSPIO_ERROR;
+  }
+
+  dst = (pspio_mesh_t *)malloc(sizeof(dst));
+  if ( dst == NULL ) {
+    return PSPIO_ENOMEM;
+  }
+  dst->type = src->type;
+  dst->np = src->np;
+  dst->a = src->a;
+  dst->b = src->b;
+  for (i=0; i<src->np; i++) {
+    dst->r[i] = src->r[i];
+  }
+
+  return PSPIO_SUCCESS;
+}

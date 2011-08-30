@@ -36,10 +36,11 @@
 /**
 * Mesh types
 */
-#define MESH_NONE   0
-#define MESH_LOG1   1
-#define MESH_LOG2   2
-#define MESH_LINEAR 3
+#define MESH_NONE    0
+#define MESH_LOG1    1
+#define MESH_LOG2    2
+#define MESH_LINEAR  3
+#define MESH_UNKNOWN 4
 
 /**
 * Mesh structure
@@ -81,5 +82,15 @@ int pspio_mesh_set(pspio_mesh_t *m, const int type, const double a, const double
  * @return error code
  */
 int pspio_mesh_free(pspio_mesh_t *m);
+
+
+/**
+ * Duplicates a mesh structure
+ * 
+ * @param[out] dst: destination mesh structure pointer
+ * @param[in] src: source mesh structure pointer
+ * @return error code
+ */
+int pspio_mesh_copy(pspio_mesh_t *dst, pspio_mesh_t *src);
 
 #endif
