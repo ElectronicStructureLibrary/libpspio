@@ -26,6 +26,7 @@
 #if !defined PSPIO_STATES_H
 #define PSPIO_STATES_H
 
+#include <stdlib.h>
 #include "pspio_qn.h"
 
 #if defined HAVE_CONFIG_H
