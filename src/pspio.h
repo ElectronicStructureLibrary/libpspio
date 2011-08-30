@@ -119,7 +119,7 @@ typedef struct{
   double nelvalence; /**< number of electrons - normally equal to zion, except for special cases for ions */
   int n_states; /**< number of electronic states */
   pspio_state_t *states; /**< struct with electronic states */
-  int lmax; /**< maximal angular momentum channel */
+  int l_max; /**< maximal angular momentum channel */
   int l_local; /**< angular momentum channel of local potential */
   int n_potentials; /**< Number of pseudopotentials */
   pspio_potential_t *potentials; /**< struc with pseudopotentials */ 

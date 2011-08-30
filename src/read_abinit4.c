@@ -18,6 +18,9 @@
  $Id$
 */
 
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
 
 /** subroutine to read in abinit psp format 4  */
 
@@ -51,7 +54,7 @@ int read_abinit (FILE *fp, pspio_pspdata_t *psp_data){
 
  
   /**< read in psp code and xc code*/
-  if(fgets(line, ncharead, fp) == NULL) return PSPIO_IOERR;
+  if(fgets(line, ncharead, fp) == NULL) return PSPIO_EIO;
   narg = sscanf (line, "%d %d %d %d %d", &pspcod, &pspxc, &((*psp_data).lmax), &idum, &((*(*psp_data).mesh).np) );
   ///check narg is equal to 5
 

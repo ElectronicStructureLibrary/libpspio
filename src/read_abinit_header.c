@@ -18,6 +18,9 @@
  $Id$
 */
 
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
 
 /** subroutine to read in abinit header which is generic to all psp files for abinit */
 
@@ -45,20 +48,20 @@ int read_abinit_header (FILE *fp, pspio_pspdata_t *psp_data, int pspcod){
   char *testread;
 
   /**< read in title */
-  if (fgets(line, ncharead, fp) == NULL) return PSPIO_IOERR;
+  if (fgets(line, ncharead, fp) == NULL) return PSPIO_EIO;
   minlen = strlen(line) > STRLEN_TITLE ? STRLEN_TITLE : strlen(line);
   if (strncpy((*psp_data).title, line, minlen) == NULL){
-    return PSPIO_IOERR;
+    return PSPIO_EIO;
   }
  
   /**< read in atomic number, pseudopotential ion charge (= num of valence electrons), and abinit data flag (not used) */
-  if(fgets(line, ncharead, fp) == NULL) return PSPIO_IOERR;
+  if(fgets(line, ncharead, fp) == NULL) return PSPIO_EIO;
   narg = sscanf (line, "%f %f %d", &((*psp_data).z), &((*psp_data).zvalence), &idum);
   ///check narg is equal to 2
  
   /**< read in psp code and xc code*/
-  if(fgets(line, ncharead, fp) == NULL) return PSPIO_IOERR;
-  narg = sscanf (line, "%d %d %d %d %d", &pspcod, &pspxc, &((*psp_data).lmax), &idum, &((*(*psp_data).mesh).np));
+  if(fgets(line, ncharead, fp) == NULL) return PSPIO_EIO;
+  narg = sscanf (line, "%d %d %d %d %d", &pspcod, &pspxc, &((*psp_data).l_max), &((*psp_data).l_local), &((*(*psp_data).mesh).np));
   ///check narg is equal to 5
 
   // inferred from abinit web site http://www.abinit.org/documentation/helpfiles/for-v6.8/users/abinit_help.html#5
@@ -77,15 +80,27 @@ int read_abinit_header (FILE *fp, pspio_pspdata_t *psp_data, int pspcod){
       (*psp_data).scheme = HGH;
       break;
     default:
-      return PSPIO_VALUE_ERROR;
+      return PSPIO_EVALUE;
   }
 
 
   ierr = ab2libxc (pspxc, psp_data);
   if (ierr != PSPIO_SUCCESS) return ierr;
 
+
   return PSPIO_SUCCESS;
 
 }
 
 
+
+
+//  double rchrg;
+//  double fchrg;
+//  double qchrg;
+  /**< read in NLCC parameters */
+//  if(fgets(line, ncharead, fp) == NULL) return PSPIO_EIO;
+//  narg = sscanf (line, "%f %f %f", &rchrg, &fchrg, &qchrg);
+  ///check narg is equal to 3
+  
+ /**< initialize nlcc according to pspcod */
