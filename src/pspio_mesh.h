@@ -31,45 +31,50 @@
 /**
 * Mesh types
 */
-#define LOG1   1
-#define LOG2   2
-#define LINEAR 3
+#define MESH_NONE   0
+#define MESH_LOG1   1
+#define MESH_LOG2   2
+#define MESH_LINEAR 3
 
 /**
 * Mesh structure
 */
 typedef struct{
   int type;    /**< Type of mesh */
-  int np;      /**< Number of points in mesh */
   double a, b; /**< Mesh parameters */
-  double *r;  /**< Mesh points */
+  int np;      /**< Number of points in mesh */
+  double *r;   /**< Mesh points */
 } pspio_mesh_t;
 
 
 /**
- * Sets the type of the mesh.
+ * Allocates memory associated with mesh structure
+ * 
+ * @param[in,out] mesh: mesh structure
+ * @param[in] np: number of points in the mesh
+ * @return error code
+ */
+int pspio_mesh_type_alloc(pspio_mesh_t *m, int np);
+
+
+/**
+ * Sets the mesh data.
  * @param[in,out] mesh: mesh structure to set
  * @param[in] type: type of mesh. Can be LOG1, LOG2, or LINEAR.
- * @return error code
- */
-int pspio_mesh_type_set(pspio_mesh_t *m, int type);
-
-/**
- * Sets the mesh parameters.
- * @param[in,out] mesh: mesh structure to set
  * @param[in] a: parameter a. The meaning depends on the type of mesh.
  * @param[in] b: parameter b. The meaning depends on the type of mesh.
+ * @param[in] r: pointer to mesh radial points. Should be of size m->np.
  * @return error code
  */
-int pspio_mesh_parameters_set(pspio_mesh_t *m, const double a, const double b);
+int pspio_mesh_set(pspio_mesh_t *m, const int type, const double a, const double b, double *r);
+
 
 /**
- * Sets the mesh points.
- * @param[in,out] mesh: mesh structure to set
- * @param[in] np: number of points in the mesh.
- * @param[in] r: pointer to mesh radial points
+ * Frees all memory associated with mesh structure
+ * 
+ * @param[in,out] mesh: mesh structure
  * @return error code
  */
-int pspio_mesh_points_set(pspio_mesh_t *m, const int np, double *r);
+int pspio_mesh_type_free(pspio_mesh_t *m);
 
 #endif

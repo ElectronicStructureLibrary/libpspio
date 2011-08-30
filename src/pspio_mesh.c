@@ -19,31 +19,59 @@
 */
 
 #include "pspio_mesh.h"
+#include "pspio_error.h"
 #include <stdlib.h>
 
-int pspio_mesh_type_set(pspio_mesh_t *m, int type){
-  
-  m->type = type;  
-
-  return PSPIO_SUCCESS;
-}
-
-int pspio_mesh_parameters_set(pspio_mesh_t *m, const double a, const double b){
-
-  m->a = a;
-  m->b = b;
-
-  return PSPIO_SUCCESS;
-}
-
-int pspio_mesh_points_set(pspio_mesh_t *m, const int np, double r[]){
+int pspio_mesh_alloc(pspio_mesh_t *m, const int np){
   int i;
 
-  m->np = np;
-  m->r = (double *)malloc(np*sizeof(double));
-  
-  for(i=0; i<np; i++) m->r[i] = r[i];
+  if (np < 2) {
+    return PSPIO_ERROR;
+  }
+
+  m = (pspio_mesh_t *) malloc (sizeof(pspio_mesh_t));
+
+  if (m == NULL) {
+    return PSPIO_ENOMEM;
+  }
+
+  m->r = (double *) malloc (np * sizeof(double));
+
+  if (m->r == NULL) {
+    free (m);
+    return PSPIO_ENOMEM;
+  }
+
+  for (i = 0; i < m->np; i++)
+    {
+      m->r[i] = 0;
+    }
 
   return PSPIO_SUCCESS;
 }
 
+
+int pspio_mesh_set(pspio_mesh_t *m, const int type, const double a, const double b, double *r){
+  int i;
+  
+  m->type = type;  
+  m->a = a;
+  m->a = b;
+
+  for (i = 0; i < m->np; i++)
+    {
+      m->r[i] = r[i];
+    }
+
+  return PSPIO_SUCCESS;
+}
+
+
+void pspio_mesh_free(pspio_mesh_t *m){
+
+  if (m == NULL) return;
+
+  free (m->r);
+  free (m);
+
+}
