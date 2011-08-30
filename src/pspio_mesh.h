@@ -73,8 +73,7 @@ int pspio_mesh_set(pspio_mesh_t *m, const int type, const double a, const double
  * Frees all memory associated with mesh structure
  * 
  * @param[in,out] mesh: mesh structure
- * @return error code
  */
-int pspio_mesh_type_free(pspio_mesh_t *m);
+void pspio_mesh_free(pspio_mesh_t *m);
 
 #endif
