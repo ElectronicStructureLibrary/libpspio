@@ -12,14 +12,8 @@
 pio_srcs = \
   pspio_errorstr.c \
   pspio_mesh.c \
-  pspio_qn_set.c \
-  pspio_state_eigenval_set.c \
-  pspio_state_label_set.c \
-  pspio_state_np_set.c \
-  pspio_state_occ_set.c \
-  pspio_state_rc_set.c \
-  pspio_state_wf_set.c \
-  pspio_state_wfp_set.c \
+  pspio_qn.c \
+  pspio_state.c \
   read_abinit_header.c \
   read_abinit4.c \
   ab2libxc.c
