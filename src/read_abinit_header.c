@@ -27,6 +27,7 @@
 #include <stdio.h>
 #include <string.h>
 #include "pspio_error.h"
+#include "pspio_common.h"
 #include "pspio.h"
 
 /**
@@ -58,7 +59,7 @@ int read_abinit_header (FILE *fp, pspio_pspdata_t *psp_data, int pspcod, double 
  
   /**< read in atomic number, pseudopotential ion charge (= num of valence electrons), and abinit data flag (not used) */
   if(fgets(line, MAX_STRLEN, fp) == NULL) return PSPIO_EIO;
-  narg = sscanf (line, "%f %f %d", &(psp_data->z), &(psp_data->zvalence), &idum);
+  narg = sscanf (line, "%lf %lf %d", &(psp_data->z), &(psp_data->zvalence), &idum);
   ///check narg is equal to 2
  
   /**< read in psp code and xc code*/
@@ -95,7 +96,7 @@ int read_abinit_header (FILE *fp, pspio_pspdata_t *psp_data, int pspcod, double 
   if (pspcod == 4 || pspcod == 5 || pspcod == 6){
   /**< read in NLCC parameters */
     if(fgets(line, MAX_STRLEN, fp) == NULL) return PSPIO_EIO;
-    narg = sscanf (line, "%f %f %f", &rchrg, &fchrg, &qchrg);
+    narg = sscanf (line, "%lf %lf %lf", &rchrg, &fchrg, &qchrg);
     ///check narg is equal to 3
   }
 

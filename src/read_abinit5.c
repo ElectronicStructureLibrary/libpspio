@@ -35,7 +35,7 @@
 *@param[in]  fp         pointer to open file
 *@param[out] psp_data   pseudopotential info is filled in present routine and subroutines
 */
-int read_abinit4 (FILE *fp, pspio_pspdata_t *psp_data){
+int read_abinit5 (FILE *fp, pspio_pspdata_t *psp_data){
 
   /// local variables
   int ierr;
@@ -54,7 +54,7 @@ int read_abinit4 (FILE *fp, pspio_pspdata_t *psp_data){
  
   /**< read in psp code and xc code*/
   if(fgets(line, MAX_STRLEN, fp) == NULL) return PSPIO_EIO;
-  narg = sscanf (line, "%d %d %d %d %d", &pspcod, &pspxc, &(psp_data->lmax), &idum, &((psp_data->mesh)->np) );
+  narg = sscanf (line, "%d %d %d %d %d", &pspcod, &pspxc, &(psp_data->l_max), &idum, &((psp_data->mesh)->np) );
   ///check narg is equal to 5
 
 

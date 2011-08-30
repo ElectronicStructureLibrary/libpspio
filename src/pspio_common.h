@@ -40,7 +40,7 @@
 #define SIESTA 8
 #define UPF 9
 
-#define MAX_LEN 256
+#define MAX_STRLEN 256
 #define STRLEN_TITLE 80
 
 #endif

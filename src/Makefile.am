@@ -19,7 +19,7 @@ pio_srcs = \
   pspio_projector.c \
   pspio_nlcc.h \
   read_abinit_header.c \
-  read_abinit4.c \
+  read_abinit5.c \
   ab2libxc.c
 
 

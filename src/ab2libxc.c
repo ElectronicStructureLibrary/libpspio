@@ -181,7 +181,7 @@ ii=0; ii<2; ii++){
 
 // unknown abinit pspxc
     default:
-      return PSPIO_VALUE_ERROR;
+      return PSPIO_EVALUE;
   }
 
   return PSPIO_SUCCESS;
