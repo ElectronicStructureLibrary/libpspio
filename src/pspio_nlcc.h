@@ -34,6 +34,13 @@
 #include "pspio_mesh.h"
 #include "pspio_meshfunc.h"
 
+/** 
+ * values for NLCC - could add possibilities for different schemes
+ */
+#define NLCC_NO 0
+#define NLCC_YES 1
+#define NLCC_LOUIE 2 // S. G. Louie, S. Froyen, and M. L. Cohen. Nonlinear ionic pseudopotentials in spin-density-functional calculations. Phys. Rev. B, 26:1738-1742, 1982. 
+
 
 /**
  * nlcc structure

@@ -17,6 +17,7 @@ pio_srcs = \
   pspio_potential.c \
   pspio_state.c \
   pspio_projector.c \
+  pspio_nlcc.h \
   read_abinit_header.c \
   read_abinit4.c \
   ab2libxc.c
@@ -37,6 +38,7 @@ pio_hdrs = \
   pspio_potential.h \
   pspio_state.h \
   pspio_projector.h \
+  pspio_nlcc.h \
   pspio.h \
   read_upf.h
 

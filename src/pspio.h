@@ -31,20 +31,8 @@
 #include "pspio_potential.h"
 #include "pspio_state.h"
 #include "pspio_projector.h"
+#include "pspio_nlcc.h"
 
-/**
- * File formats
- */
-#define UNKNOWN -1
-#define ABINIT_4 1
-#define ABINIT_5 2
-#define ABINIT_6 3
-#define ABINIT_HGH 4
-#define ABINIT_GTH 5
-#define ATOM 6
-#define FHI98PP 7
-#define SIESTA 8
-#define UPF 9
 
 /**
  * Wave-equations 
@@ -66,16 +54,6 @@
 #define HGH 8
 #define GTH 9
 #define RRKJ 10
-
-/** 
- * values for NLCC - could add possibilities for different schemes
- */
-#define NLCC_NO 0
-#define NLCC_YES 1
-#define NLCC_LOUIE 2 // S. G. Louie, S. Froyen, and M. L. Cohen. Nonlinear ionic pseudopotentials in spin-density-functional calculations. Phys. Rev. B, 26:1738-1742, 1982. 
-
-#define MAX_STRLEN 256
-#define STRLEN_TITLE 80
 
 
 /**
