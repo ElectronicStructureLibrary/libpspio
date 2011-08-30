@@ -12,6 +12,7 @@
 pio_srcs = \
   ab2libxc.c \
   nlcc_abinit.c \
+  pspio_error.c \
   pspio_errorstr.c \
   pspio_init.c \
   pspio_mesh.c \
