@@ -23,7 +23,7 @@
 #include "pspio_error.h"
 
 
-int pspio_error_add(const int id, const char *filename, const long line) {
+int pspio_error_add(const char *filename, const long line) {
   int s;
   pspio_error_t *last_err;
 
@@ -33,7 +33,7 @@ int pspio_error_add(const int id, const char *filename, const long line) {
       return PSPIO_ERROR;
     }
 
-    pspio_error_chain->id = id;
+    pspio_error_chain->id = pspio_error_tmp_id;
     pspio_error_chain->line = line;
     pspio_error_chain->next = NULL;
     s = strlen(filename);
@@ -57,7 +57,7 @@ int pspio_error_add(const int id, const char *filename, const long line) {
     return PSPIO_ERROR;
   }
   last_err = last_err->next;
-  last_err->id = id;
+  last_err->id = pspio_error_tmp_id;
   last_err->line = line;
   last_err->next = NULL;
   s = strlen(filename);
