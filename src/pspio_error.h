@@ -23,8 +23,14 @@
 
 /**
  * @file pspio_error.h 
- * @brief Error codes
+ * @brief Error codes and handlers
  */
+
+#if defined HAVE_CONFIG_H
+#include "config.h"
+#endif
+
+
 #define PSPIO_SUCCESS  0 
 #define PSPIO_ERROR   -1
 #define PSPIO_ENOFILE   1
@@ -43,4 +49,45 @@
  */
 const char * pspio_error_str (const int pspio_errorid);
 
+
+/**
+ * Global error handling structure
+ */
+typedef struct {
+  int id; /**< ID of the error */
+  char *filename; /**< name of the file where the error appeared */
+  long line; /**< line number in the file where the error appeared */
+  struct pspio_error_t *next; /**< next error in the chain */
+} pspio_error_t;
+
+static pspio_error_t *pspio_error_chain;
+
+
+/**
+ * Add an error to the chain
+ * @param[in] new_error: new error to add
+ */
+int pspio_error_add(const int id, const char *filename, const long line);
+
+
+/**
+ * Clear the error chain
+ */
+int pspio_error_free(void);
+
+
+/**
+ * Error handler macro
+ * @param[in] FUNCTION_CALL: the function to be called with all parameters
+ * @param[in] TYPE_TO_FREE: type of variable to free when error
+ * @param[in] VAR_TO_FREE: name of the variable to free when error
+ */
+#define HANDLE_ERROR(FUNCTION_CALL, TYPE_TO_FREE, VAR_TO_FREE) \
+  int ierr_macro; \
+  ierr_macro = FUNCTION_CALL; \
+  if ( ierr_macro != PSPIO_SUCCESS ) { \
+    pspio_ ## TYPE_TO_FREE ## _free(VAR_TO_FREE); \
+    pspio_error_add(ierr_macro, __FILE__, __LINE__); \
+    return ierr_macro; \
+  }
 #endif

@@ -10,6 +10,7 @@
 
 # Hand-written
 pio_srcs = \
+  pspio_error.c \
   pspio_errorstr.c \
   pspio_mesh.c \
   pspio_meshfunc.c \
