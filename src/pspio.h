@@ -75,16 +75,6 @@
 #define STRLEN_TITLE 80
 
 /**
- * Potential structure
- */
-typedef struct{
-  pspio_qn_t *qn;      /**< struct with quantum numbers n l j for the potential */
-  double *psp;         /**< pseudopotential, on a radial grid */
-  gsl_spline *psp_spl; /**< spline type, for future interpolation before output to calling code */
-} pspio_potential_t;
-
-
-/**
  * Kleinman Bylander projectors
  */
 typedef struct{
