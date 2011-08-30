@@ -22,7 +22,7 @@
 #include <stdlib.h>
 
 int pspio_potential_alloc(pspio_potential_t *potential, pspio_mesh_t *mesh){
-  int i, ierr;
+  int ierr;
   
   potential = (pspio_potential_t *) malloc (sizeof(pspio_potential_t));
 

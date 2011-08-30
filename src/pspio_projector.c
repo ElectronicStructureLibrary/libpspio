@@ -22,7 +22,7 @@
 #include <stdlib.h>
 
 int pspio_projector_alloc(pspio_projector_t *projector, pspio_mesh_t *mesh){
-  int i, ierr;
+  int ierr;
   
   projector = (pspio_projector_t *) malloc (sizeof(pspio_projector_t));
 

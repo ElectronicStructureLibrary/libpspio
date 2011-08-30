@@ -45,8 +45,8 @@
  * nlcc structure
  */
 typedef struct{
-  int scheme;                 /**< Scheme used to obtain the NLCC */
-  pspio_meshfunc_t *core_dens /**< core density, on a radial mesh */
+  int scheme;                  /**< Scheme used to obtain the NLCC */
+  pspio_meshfunc_t *core_dens; /**< core density, on a radial mesh */
 } pspio_nlcc_t;
 
 
