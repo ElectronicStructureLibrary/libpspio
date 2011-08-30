@@ -71,7 +71,6 @@ void pspio_potential_free(pspio_potential_t *potential){
   }
 
   pspio_meshfunc_free(potential->v);
-  potential->m = NULL;
   free(potential);
 
 }

@@ -27,6 +27,7 @@ pio_built_srcs = \
 
 # C headers
 pio_hdrs = \
+  pspio_common.h \
   libxccodes.h \
   pspio_error.h \
   pspio_mesh.h \

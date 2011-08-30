@@ -23,11 +23,13 @@
 
 /**
  * @file pspio.h
- * @brief the include file 
+ * @brief high-level include file 
  */
 
-#include <gsl/gsl_spline.h>
 #include "pspio_mesh.h"
+#include "pspio_meshfunc.h"
+#include "pspio_potential.h"
+#include "pspio_state.h"
 
 /**
  * File formats

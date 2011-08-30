@@ -18,8 +18,10 @@
  $Id: pspio_qn_set.c 50 2011-08-29 23:44:48Z mjv500 $
 */
 
+#include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+
 #include "pspio_error.h"
 #include "pspio_qn.h"
 
@@ -29,7 +31,7 @@ int pspio_qn_alloc(pspio_qn_t *qn) {
   }
   qn = (pspio_qn_t *)malloc(sizeof(qn));
   if ( qn == NULL ) {
-    return PSPIO_ERROR;
+    return PSPIO_ENOMEM;
   }
 
   qn->n = 0;
@@ -47,7 +49,7 @@ int pspio_qn_copy(pspio_qn_t *dst, pspio_qn_t *src) {
 
   dst = (pspio_qn_t *)malloc(sizeof(dst));
   if ( dst == NULL ) {
-    return PSPIO_ERROR;
+    return PSPIO_ENOMEM;
   }
   dst->n = src->n;
   dst->l = src->l;
@@ -66,10 +68,10 @@ int pspio_qn_free(pspio_qn_t *qn) {
 }
 
 
-int pspio_qn_set(pspio_qn_t *qn, const int n, const int l, const int j) {
+int pspio_qn_set(pspio_qn_t *qn, const int n, const int l, const double j) {
 
-  if ( (n < 0) || (l < 0) || (abs(j - (double)l) - 0.5) > 1.0e-9) ) then {
-    return PSPIO_VALUE_ERROR;
+  if ( (n < 0) || (l < 0) || (abs(j - (double)l) - 0.5 > 1.0e-9) ) {
+    return PSPIO_EVALUE;
   }
 
   qn->n = n;
