@@ -30,6 +30,7 @@
 #include "config.h"
 #endif
 
+#define GO_BACK 1
 #include <stdio.h>
 #include "pspio.h"
 
@@ -39,7 +40,7 @@
  * @param[in,out] psp_data the data structure
  * @return error code
  */
-int pspio_upf_init(char FILE * fp, pspio_pspdata_t * psp_data);
+int pspio_upf_init(FILE * fp, pspio_pspdata_t * psp_data);
 
 
 /**

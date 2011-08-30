@@ -20,6 +20,7 @@ pio_srcs = \
   pspio_nlcc.h \
   read_abinit_header.c \
   read_abinit5.c \
+  read_upf.c \
   ab2libxc.c
 
 
