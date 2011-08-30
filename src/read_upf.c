@@ -19,34 +19,10 @@
 */
 
 /** @file read_upf.c
- * @brief subroutine to read in UPF files 
+ * @brief implementation to read in UPF files 
  */
 
-#include <pspio.h>
-#include "stdio.h"
-
-/**
- * Init the UPF file read
- * @param[in,out] psp_data the data structure
- * @param[in] fp a stream of the input file
- * @return error code
- */
-int pspio_upf_init(char FILE * fp, pspio_pspdata_t * psp_data);
-int pspio_upf_end(pspio_pspdata_t * psp_data);
-int pspio_upf_file_read(FILE * fp, pspio_pspdata_t * psp_data);
-
-int tag_isdef(FILE * fp, char * string);
-int init_tag(FILE * fp, char * string, int go_back);
-int check_end_tag(char * tag);
-
-int pspio_upf_cutoff_radii(pspio_pspdata_t * psp_data);
-
-/**
- * checks normalization of the pseudo wavefunctions
- */   
-int pspio_upf_check_rphi(pspio_pspdata_t * psp_data);
-
-
+#include "read_upf.h"
 
  /* start the implementations */
 /*****************************/
@@ -105,4 +81,3 @@ int init_tag(FILE * fp, char * string, int go_back){
     if( strcamp(line,compare_string) ) return;
   }
 }
-

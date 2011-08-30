@@ -30,7 +30,8 @@ pio_hdrs = \
   pspio_mesh.h \
   pspio_qn.h \
   pspio_state.h \
-  pspio.h
+  pspio.h \
+  read_upf.h
 
                     # ------------------------------------ #
 
