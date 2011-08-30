@@ -37,7 +37,7 @@
 *@param[in]  fchrg      amplitude of core charge
 *@param[out] psp_data   pseudopotential info is filled in present routine and subroutines
 */
-int nlcc_abinit4 (FILE *fp, pspio_pspdata_t *psp_data){
+int nlcc_abinit4 (FILE *fp, pspio_pspdata_t *psp_data, ){
 
   /// local variables
   int ierr;
@@ -49,17 +49,7 @@ int nlcc_abinit4 (FILE *fp, pspio_pspdata_t *psp_data){
   char *testread;
 
 
-  /// read in header
-  ierr = read_abinit_header(fp, psp_data, pspcod);
-  if (ierr != PSPIO_SUCCESS) return ierr;
-
  
-  /**< read in psp code and xc code*/
-  if(fgets(line, MAX_STRLEN, fp) == NULL) return PSPIO_EIO;
-  narg = sscanf (line, "%d %d %d %d %d", &pspcod, &pspxc, &((*psp_data).lmax), &idum, &((*(*psp_data).mesh).np) );
-  ///check narg is equal to 5
-
-
 
   return PSPIO_SUCCESS;
 
