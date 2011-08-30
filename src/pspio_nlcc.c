@@ -30,7 +30,7 @@ int pspio_nlcc_alloc(pspio_nlcc_t *nlcc, pspio_mesh_t *mesh){
     return PSPIO_ENOMEM;
   }
 
-  ierr = pspio_meshfunc_alloc(nlcc->cdens, mesh);
+  ierr = pspio_meshfunc_alloc(nlcc->core_dens, mesh);
   if (!ierr) {
     free(nlcc);
     return ierr;
@@ -40,10 +40,12 @@ int pspio_nlcc_alloc(pspio_nlcc_t *nlcc, pspio_mesh_t *mesh){
 }
 
 
-int pspio_nlcc_set(pspio_nlcc_t *nlcc, double *cdens){
+int pspio_nlcc_set(pspio_nlcc_t *nlcc, int scheme, double *core_dens){
   int ierr;
 
-  ierr = pspio_meshfunc_set(nlcc->cdens, cdens);
+  nlcc->scheme = scheme;
+
+  ierr = pspio_meshfunc_set(nlcc->core_dens, core_dens);
   if (!ierr) {
     return ierr;
   }
@@ -55,9 +57,11 @@ int pspio_nlcc_set(pspio_nlcc_t *nlcc, double *cdens){
 int pspio_nlcc_free(pspio_nlcc_t *nlcc){
 
   if (nlcc != NULL) {
-    pspio_meshfunc_free(nlcc->cdens);
+    pspio_meshfunc_free(nlcc->core_dens);
     free(nlcc);
   }
 
-  return PSPIO_SUCCESS;
+  pspio_meshfunc_free(nlcc->core_dens);
+  free(nlcc);
+
 }

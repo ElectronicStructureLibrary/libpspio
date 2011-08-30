@@ -93,7 +93,7 @@ int read_abinit_header (FILE *fp, pspio_pspdata_t *psp_data, int pspcod, double 
   /// if we have a NLCC data line to read
   rchrg = 0.0;
   fchrg = 0.0;
-  if (pspcod == 4 || pspcod == 5 || pspcod == 6){
+  if (pspcod == 1 || pspcod == 4 || pspcod == 5 || pspcod == 6){
   /**< read in NLCC parameters */
     if(fgets(line, MAX_STRLEN, fp) == NULL) return PSPIO_EIO;
     narg = sscanf (line, "%lf %lf %lf", &rchrg, &fchrg, &qchrg);

@@ -38,19 +38,19 @@ int psp_init(char * file_name, int file_format, pspio_pspdata_t * psp_data){
   case UNKNOWN:
     break;
   case ABINIT_4:
-    read_abinit_header(fp,psp_data,file_format);
+    read_abinit4(fp,psp_data);
     break;
   case ABINIT_5:
-    read_abinit_header(fp,psp_data,file_format);
+    read_abinit5(fp,psp_data);
     break;
   case ABINIT_6:
-    read_abinit_header(fp,psp_data,file_format);
+    read_abinit6(fp,psp_data);
     break;
   case ABINIT_HGH:
-    read_abinit_header(fp,psp_data,file_format);
+    read_abinit_hgh(fp,psp_data);
     break;
   case ABINIT_GTH:
-    read_abinit_header(fp,psp_data,file_format);
+    read_abinit_gth(fp,psp_data);
     break;
   case ATOM:
     break;
@@ -62,7 +62,7 @@ int psp_init(char * file_name, int file_format, pspio_pspdata_t * psp_data){
     pspio_upf_init(fp,psp_data);
     break;
   default:
-    return PSPIO_FILE_FORMAT_ERROR;
+    return PSPIO_EFILE_FORMAT;
   }
   
   // close file and check for ierr being non 0

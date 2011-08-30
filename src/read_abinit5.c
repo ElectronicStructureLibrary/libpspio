@@ -43,12 +43,14 @@ int read_abinit5 (FILE *fp, pspio_pspdata_t *psp_data){
   int narg;
   int pspcod; 
   int pspxc; 
+  double rchrg;
+  double fchrg;
   char line[MAX_STRLEN];
   char *testread;
 
 
   /// read in header
-  ierr = read_abinit_header(fp, psp_data, pspcod);
+  ierr = read_abinit_header(fp, psp_data, pspcod, rchrg, fchrg);
   if (ierr != PSPIO_SUCCESS) return ierr;
 
  
