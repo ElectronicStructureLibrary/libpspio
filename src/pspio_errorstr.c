@@ -22,6 +22,10 @@
  * @brief returns a string describing an error
 */
 
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
+
 #include "pspio_error.h"
 
 const char * pspio_errorstr (const int pspio_errorid){
@@ -31,12 +35,16 @@ const char * pspio_errorstr (const int pspio_errorid){
       return "success" ;
     case PSPIO_ERROR:
       return "error" ;
-    case PSPIO_NOFILE:
+    case PSPIO_ENOFILE:
       return "file does not exist" ;
-    case PSPIO_IOERR:
+    case PSPIO_EIO:
       return "error in I/O" ;
-    case PSPIO_VALUE_ERROR:
+    case PSPIO_EVALUE:
       return "value error: bad value found";
+    case PSPIO_EGSL:
+      return "error in GSL";
+    case PSPIO_ENOMEM:
+      return "malloc failed";
     default:
       return "unknown error code" ;
     }

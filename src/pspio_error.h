@@ -27,12 +27,20 @@
  */
 #define PSPIO_SUCCESS  0 
 #define PSPIO_ERROR   -1
-#define PSPIO_NOFILE   1
-#define PSPIO_IOERR    2
-#define PSPIO_VALUE_ERROR 3
-#define PSPIO_FILE_FORMAT_ERROR 4
-#define PSPIO_TYPE_ERROR 5
+#define PSPIO_ENOFILE   1
+#define PSPIO_EIO    2
+#define PSPIO_EVALUE 3
+#define PSPIO_EFILE_FORMAT 4
+#define PSPIO_ETYPE 5
+#define PSPIO_EGSL  6
+#define PSPIO_ENOMEM 7
 
-const char * pspio_errorstr (const int pspio_errorid);
+
+/**
+ * Returns a string with error description.
+ * @param[in] error_id: integer identifying the error.
+ * @return string with error message.
+ */
+const char * pspio_error_str (const int pspio_errorid);
 
 #endif
