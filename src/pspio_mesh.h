@@ -18,6 +18,11 @@
  $Id$
 */
 
+/**
+ * @file pspio_mesh.h
+ * @brief header file for the handling of the mesh 
+ */
+
 #ifndef PSPIO_MESH_H
 #define PSPIO_MESH_H
 
@@ -40,12 +45,31 @@ typedef struct{
   double *r;  /**< Mesh points */
 } pspio_mesh_t;
 
-//typedef struct pspio_mesh_struct pspio_mesh_t;
 
+/**
+ * Sets the type of the mesh.
+ * @param[inout] mesh: mesh structure to set
+ * @param[in] type: type of mesh. Can be LOG1, LOG2, or LINEAR.
+ * @return error code
+ */
 int pspio_mesh_set_type(pspio_mesh_t *m, int type);
 
+/**
+ * Sets the mesh parameters.
+ * @param[inout] mesh: mesh structure to set
+ * @param[in] a: parameter a. The meaning depends on the type of mesh.
+ * @param[in] b: parameter b. The meaning depends on the type of mesh.
+ * @return error code
+ */
 int pspio_mesh_set_parameters(pspio_mesh_t *m, const double a, const double b);
 
-int pspio_mesh_set_points(pspio_mesh_t *m, const int np, double r[]);
+/**
+ * Sets the mesh points.
+ * @param[inout] mesh: mesh structure to set
+ * @param[in] np: number of points in the mesh.
+ * @param[in] r: pointer to mesh radial points
+ * @return error code
+ */
+int pspio_mesh_set_points(pspio_mesh_t *m, const int np, double *r);
 
 #endif
