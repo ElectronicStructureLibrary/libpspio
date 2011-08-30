@@ -124,7 +124,7 @@ int nlcc_abinit4 (pspio_nlcc_t *nlcc, double rchrg, double fchrg){
     ff[ir] = fchrg * fftmp;
   }
 
-  ierr = pspio_nlcc_set(pspio_nlcc_t *nlcc, NLCC_TETER1, ff);
+  ierr = pspio_nlcc_set(nlcc, NLCC_TETER1, ff);
   if (ierr) {
     free(ff);
     return ierr;

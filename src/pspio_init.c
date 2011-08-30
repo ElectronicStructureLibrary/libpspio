@@ -23,16 +23,21 @@
  * @brief the main file 
  */
 
+#include <stdio.h>
+#include "pspio_common.h"
 #include "pspio.h"
 
 int psp_init(char * file_name, int file_format, pspio_pspdata_t * psp_data){
   FILE * fp;
   int ierr;
+  int fileformat;
   
   // open file
   fp = fopen(file_name, "r");
-  if(fp == NULL) return PSPIO_NOFILE;
+  if(fp == NULL) return PSPIO_ENOFILE;
   
+  fileformat = UNKNOWN;
+
   //read from file
   switch(fileformat) {
   case UNKNOWN:
