@@ -51,10 +51,10 @@ typedef struct{
  * Allocates memory and preset function structure
  * 
  * @param[in,out] func: function structure
- * @param[in] mesh: mesh structure
+ * @param[in] np: number of points
  * @return error code
  */
-int pspio_meshfunc_alloc(pspio_meshfunc_t *func, pspio_mesh_t *mesh);
+int pspio_meshfunc_alloc(pspio_meshfunc_t *func, const int np);
 
 
 /**
@@ -63,16 +63,7 @@ int pspio_meshfunc_alloc(pspio_meshfunc_t *func, pspio_mesh_t *mesh);
  * @param[in] f: values of the function on the mesh.
  * @return error code
  */
-int pspio_meshfunc_set(pspio_meshfunc_t *func, double *f);
-
-
-/**
- * Frees all memory associated with function structure
- * 
- * @param[in,out] func: function structure
- * @return error code
- */
-int pspio_meshfunc_free(pspio_meshfunc_t *func);
+int pspio_meshfunc_set(pspio_meshfunc_t *func, pspio_mesh_t *mesh, double *f);
 
 
 /**
