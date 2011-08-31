@@ -25,10 +25,14 @@
 #include "pspio_error.h"
 #include "pspio_qn.h"
 
+
 int pspio_qn_alloc(pspio_qn_t *qn) {
   ASSERT( qn == NULL, PSPIO_ERROR)
+
   qn = (pspio_qn_t *)malloc(sizeof(qn));
-  ASSERT( qn != NULL, PSPIO_ENOMEM)
+  if ( qn == NULL ) {
+    HANDLE_FATAL_ERROR (PSPIO_ENOMEM);
+  }
 
   qn->n = 0;
   qn->l = 0;
@@ -42,7 +46,7 @@ int pspio_qn_copy(pspio_qn_t *dst, pspio_qn_t *src) {
   ASSERT(src != NULL, PSPIO_ERROR)
 
   if ( dst == NULL ) {
-    pspio_qn_alloc(dst);
+    HANDLE_FUNC_ERROR (pspio_qn_alloc(dst));
   }
 
   dst->n = src->n;
