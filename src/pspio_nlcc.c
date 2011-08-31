@@ -21,47 +21,38 @@
 #include "pspio_nlcc.h"
 #include <stdlib.h>
 
-int pspio_nlcc_alloc(pspio_nlcc_t *nlcc, pspio_mesh_t *mesh){
-  int i, ierr;
-  
+int pspio_nlcc_alloc(pspio_nlcc_t *nlcc, const int np){
+  int ierr;
+
+  ASSERT (np > 1, PSPIO_EVALUE);
+
   nlcc = (pspio_nlcc_t *) malloc (sizeof(pspio_nlcc_t));
+  HANDLE_FATAL_ERROR (nlcc == NULL, PSPIO_ENOMEM);
 
-  if (nlcc == NULL) {
-    return PSPIO_ENOMEM;
-  }
-
-  ierr = pspio_meshfunc_alloc(nlcc->core_dens, mesh);
-  if (!ierr) {
-    free(nlcc);
-    return ierr;
+  ierr = pspio_meshfunc_alloc(nlcc->core_dens, np);
+  if (ierr) {
+    pspio_nlcc_free(nlcc);
+    HANDLE_ERROR (ierr);
   }
 
   return PSPIO_SUCCESS;
 }
 
 
-int pspio_nlcc_set(pspio_nlcc_t *nlcc, int scheme, double *core_dens){
-  int ierr;
+int pspio_nlcc_set(pspio_nlcc_t *nlcc, const int scheme, const pspio_mesh_t *mesh, 
+		   const double *core_dens){
 
+  HANDLE_FUNC_ERROR (pspio_meshfunc_set(nlcc->core_dens, mesh, core_dens));
   nlcc->scheme = scheme;
-
-  ierr = pspio_meshfunc_set(nlcc->core_dens, core_dens);
-  if (!ierr) {
-    return ierr;
-  }
 
   return PSPIO_SUCCESS;
 }
 
 
 int pspio_nlcc_free(pspio_nlcc_t *nlcc){
-
   if (nlcc != NULL) {
     pspio_meshfunc_free(nlcc->core_dens);
     free(nlcc);
   }
-
-  pspio_meshfunc_free(nlcc->core_dens);
-  free(nlcc);
 
 }
