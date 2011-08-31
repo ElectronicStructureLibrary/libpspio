@@ -42,6 +42,11 @@
 #define MESH_LINEAR  3
 #define MESH_UNKNOWN 4
 
+
+/**********************************************************************
+ * Data structures                                                    *
+ **********************************************************************/
+
 /**
 * Mesh structure
 */
@@ -52,6 +57,10 @@ typedef struct{
   double *r;   /**< Mesh points */
 } pspio_mesh_t;
 
+
+/**********************************************************************
+ * Global routines                                                    *
+ **********************************************************************/
 
 /**
  * Allocates memory and preset mesh structure
@@ -97,7 +106,7 @@ int pspio_mesh_copy(pspio_mesh_t *dst, pspio_mesh_t *src);
  * 
  * @param[in,out] mesh: mesh structure
  * @return error code
- * @note This function can be safelly called even if some or all of its 
+ * @note This function can be safelly called even if some or all of the mesh 
  *       compoments have not been allocated.
  */
 int pspio_mesh_free(pspio_mesh_t *mesh);

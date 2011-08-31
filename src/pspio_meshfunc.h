@@ -36,6 +36,9 @@
 #include "pspio_mesh.h"
 
 
+/**********************************************************************
+ * Data structures                                                    *
+ **********************************************************************/
 /**
 * Mesh function structure
 */
@@ -46,6 +49,10 @@ typedef struct{
   gsl_interp_accel *acc; /**< accelerator for interpolation lookups */
 } pspio_meshfunc_t;
 
+
+/**********************************************************************
+ * Global routines                                                    *
+ **********************************************************************/
 
 /**
  * Allocates memory and preset function structure
@@ -75,7 +82,7 @@ int pspio_meshfunc_set(pspio_meshfunc_t *func, pspio_mesh_t *mesh, double *f);
  * 
  * @param[in,out] func: function structure
  * @return error code
- * @note This function can be safelly called even if some or all of its 
+ * @note This function can be safelly called even if some or all of the func 
  *       compoments have not been allocated.
  */
 int pspio_meshfunc_free(pspio_meshfunc_t *func);

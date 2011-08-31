@@ -34,6 +34,10 @@
 #include "pspio_error.h"
 
 
+/**********************************************************************
+ * Data structures                                                    *
+ **********************************************************************/
+
 /** 
  * The quantum numbers
  */
@@ -45,7 +49,7 @@ typedef struct{
 
 
 /**********************************************************************
- * Routines                                                           *
+ * Global routines                                                    *
  **********************************************************************/
 
 /**
@@ -59,7 +63,7 @@ int pspio_qn_alloc(pspio_qn_t *qn);
 /**
  * Duplicates a quantum number structure.
  * @param[out] dst: destination quantum number structure pointer
- * @param[out] src: source quantum number structure pointer 
+ * @param[in] src: source quantum number structure pointer 
  * @return error code
  * @note The src pointer has to be allocated first with the pspio_qn_alloc 
  *       method.
@@ -73,7 +77,7 @@ int pspio_qn_copy(pspio_qn_t *dst, pspio_qn_t *src);
  * Frees the memory occupied by a quantum number structure.
  * @param[in,out] qn: quantum number structure pointer to destroy
  * @return error code
- * @note This function can be safelly called even if some or all of its 
+ * @note This function can be safelly called even if some or all of the qn
  *       components have not been allocated.
  */
 int pspio_qn_free(pspio_qn_t *qn);

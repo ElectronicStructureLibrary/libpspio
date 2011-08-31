@@ -38,7 +38,7 @@ int pspio_mesh_alloc(pspio_mesh_t *mesh, const int np){
   mesh->np = np;
   for (i = 0; i < mesh->np; i++)
     {
-      m->r[i] = 0;
+      mesh->r[i] = 0;
     }
   mesh->a = 0;
   mesh->b = 0;

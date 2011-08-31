@@ -36,6 +36,10 @@
 #include "pspio_qn.h"
 
 
+/**********************************************************************
+ * Data structures                                                    *
+ **********************************************************************/
+
 /**
  * Potential structure
  */
@@ -44,6 +48,10 @@ typedef struct{
   pspio_meshfunc_t *v; /**< pseudopotential, on a radial mesh */
 } pspio_potential_t;
 
+
+/**********************************************************************
+ * Global routines                                                    *
+ **********************************************************************/
 
 /**
  * Allocates memory and preset potential structure
@@ -74,8 +82,8 @@ int pspio_potential_set(pspio_potential_t *potential, pspio_qn_t *qn, pspio_mesh
  * 
  * @param[in,out] potential: potential structure
  * @return error code
- * @note This function can be safelly called even if some or all of its 
- *       components have not been allocated.
+ * @note This function can be safelly called even if some or all of the 
+ *       potential components have not been allocated.
  */
 int pspio_potential_free(pspio_potential_t *potential);
 
