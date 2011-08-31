@@ -25,23 +25,19 @@
 int pspio_mesh_alloc(pspio_mesh_t *m, const int np){
   int i;
 
-  if (np < 2) {
-    return PSPIO_ERROR;
-  }
+  ASSERT(np > 1, PSPIO_ERROR);
 
   m = (pspio_mesh_t *) malloc (sizeof(pspio_mesh_t));
-
   if (m == NULL) {
-    return PSPIO_ENOMEM;
+    HANDLE_FATAL_ERROR (PSPIO_ENOMEM);
   }
 
   m->r = (double *) malloc (np * sizeof(double));
-
   if (m->r == NULL) {
-    free (m);
-    return PSPIO_ENOMEM;
+    HANDLE_FATAL_ERROR (PSPIO_ENOMEM);
   }
 
+  m->np = np;
   for (i = 0; i < m->np; i++)
     {
       m->r[i] = 0;
@@ -54,28 +50,18 @@ int pspio_mesh_alloc(pspio_mesh_t *m, const int np){
 }
 
 
-int pspio_mesh_set(pspio_mesh_t *m, const int type, const double a, const double b, double *r){
+int pspio_mesh_set(pspio_mesh_t *mesh, const int type, const double a, const double b, double *r){
   int i;
+
+  ASSERT( mesh != NULL, PSPIO_ERROR);
   
-  m->type = type;  
-  m->a = a;
-  m->a = b;
-
-  for (i = 0; i < m->np; i++)
+  mesh->type = type;
+  mesh->a = a;
+  mesh->a = b;
+  for (i = 0; i < mesh->np; i++)
     {
-      m->r[i] = r[i];
+      mesh->r[i] = r[i];
     }
-
-  return PSPIO_SUCCESS;
-}
-
-
-int pspio_mesh_free(pspio_mesh_t *m){
-
-  if (m != NULL) {
-    if (m->r != NULL) free (m->r);
-    free (m);
-  }
 
   return PSPIO_SUCCESS;
 }
@@ -84,16 +70,13 @@ int pspio_mesh_free(pspio_mesh_t *m){
 int pspio_mesh_copy(pspio_mesh_t *dst, pspio_mesh_t *src){
   int i;
 
-  if ( (src == NULL) || (dst != NULL) ) {
-    return PSPIO_ERROR;
+  ASSERT (src != NULL, PSPIO_ERROR);
+
+  if (dst == NULL) {
+    HANDLE_FUNC_ERROR (pspio_mesh_alloc(dst, src->np))
   }
 
-  dst = (pspio_mesh_t *)malloc(sizeof(dst));
-  if ( dst == NULL ) {
-    return PSPIO_ENOMEM;
-  }
   dst->type = src->type;
-  dst->np = src->np;
   dst->a = src->a;
   dst->b = src->b;
   for (i=0; i<src->np; i++) {
@@ -102,3 +85,15 @@ int pspio_mesh_copy(pspio_mesh_t *dst, pspio_mesh_t *src){
 
   return PSPIO_SUCCESS;
 }
+
+
+int pspio_mesh_free(pspio_mesh_t *mesh){
+
+  if (mesh != NULL) {
+    if (mesh->r != NULL) free (mesh->r);
+    free (mesh);
+  }
+
+  return PSPIO_SUCCESS;
+}
+

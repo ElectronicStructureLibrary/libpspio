@@ -76,15 +76,6 @@ int pspio_mesh_set(pspio_mesh_t *m, const int type, const double a, const double
 
 
 /**
- * Frees all memory associated with mesh structure
- * 
- * @param[in,out] mesh: mesh structure
- * @return error code
- */
-int pspio_mesh_free(pspio_mesh_t *m);
-
-
-/**
  * Duplicates a mesh structure
  * 
  * @param[out] dst: destination mesh structure pointer
@@ -92,5 +83,15 @@ int pspio_mesh_free(pspio_mesh_t *m);
  * @return error code
  */
 int pspio_mesh_copy(pspio_mesh_t *dst, pspio_mesh_t *src);
+
+
+/**
+ * Frees all memory associated with mesh structure
+ * 
+ * @param[in,out] mesh: mesh structure
+ * @return error code
+ */
+int pspio_mesh_free(pspio_mesh_t *m);
+
 
 #endif
