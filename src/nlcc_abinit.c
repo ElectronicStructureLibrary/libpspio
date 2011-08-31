@@ -90,8 +90,8 @@ int nlcc_abinit1 (pspio_nlcc_t *nlcc, double rchrg, double fchrg){
   int ir;
   int np;
   double fftmp;
-  double a;
-  double b;
+  double aa;
+  double bb;
   double *rr;
   double *ff;
   pspio_mesh_t *nlccmesh;
@@ -102,16 +102,10 @@ int nlcc_abinit1 (pspio_nlcc_t *nlcc, double rchrg, double fchrg){
   ierr = pspio_mesh_alloc(nlccmesh, np);
   
 /**< the following could become a new linear init mode for mesh */
-  a = 1.0e0 / ((double) np - 1);
-  b = 0.0e0;
-  for (ir = 0; ir < np; ir++){
-    rr[ir] = a*ir;
-  }
-  ierr = pspio_mesh_set(nlccmesh, MESH_LINEAR, a, b, rr);
   if (ierr) {
     free(rr);
     pspio_mesh_free(nlccmesh);
-    return ierr;
+    HANDLE_ERROR(ierr);
   }
 
   free(rr);
@@ -121,7 +115,7 @@ int nlcc_abinit1 (pspio_nlcc_t *nlcc, double rchrg, double fchrg){
   if(ierr) {
     pspio_nlcc_free(nlcc);
     pspio_mesh_free(nlccmesh);
-    return ierr;
+    HANDLE_ERROR(ierr);
   }
 
   ff = (double *) malloc(sizeof(nlcc->core_dens->f));
@@ -130,7 +124,7 @@ int nlcc_abinit1 (pspio_nlcc_t *nlcc, double rchrg, double fchrg){
     pspio_nlcc_free(nlcc);
     pspio_mesh_free(nlccmesh);
     free(ff);
-    return PSPIO_EVALUE;
+    HANDLE_ERROR(PSPIO_EVALUE);
   }
 
   /// fill the nlcc core density
@@ -211,26 +205,20 @@ int nlcc_abinit4 (pspio_nlcc_t *nlcc, double rchrg, double fchrg){
   double fftmp;
   double a;
   double b;
-  double *rr;
   double *ff;
   pspio_mesh_t *nlccmesh;
 
   /// init the mesh
   np = 2501;  // this is the abinit default, used with analytical core charges. Could be modified to use the potential's mesh, but there can be numerical problems with not using a linear mesh.
 
-  ierr = pspio_mesh_alloc(nlccmesh, np);
-  
-/**< the following could become a new linear init mode for mesh */
-  a = 1.0e0 / ((double) np - 1);
-  b = 0.0e0;
-  for (ir = 0; ir < np; ir++){
-    rr[ir] = a*ir;
-  }
-  ierr = pspio_mesh_set(nlccmesh, MESH_LINEAR, a, b, rr);
+   HANDLE_FUNC_ERROR(pspio_mesh_alloc(nlccmesh, np));
+
+  aa = 1.0e0 / ((double) np - 1);
+  bb = 0.0e0;
+  ierr = pspio_mesh_set_lin(nlccmesh, aa, bb);
   if (ierr) {
-    free(rr);
     pspio_mesh_free(nlccmesh);
-    return ierr;
+    HANDLE_ERROR(ierr);
   }
 
   free(rr);
@@ -240,7 +228,7 @@ int nlcc_abinit4 (pspio_nlcc_t *nlcc, double rchrg, double fchrg){
   if(ierr) {
     pspio_nlcc_free(nlcc);
     pspio_mesh_free(nlccmesh);
-    return ierr;
+    HANDLE_ERROR(ierr);
   }
 
   ff = (double *) malloc(sizeof(nlcc->core_dens->f));
@@ -249,7 +237,7 @@ int nlcc_abinit4 (pspio_nlcc_t *nlcc, double rchrg, double fchrg){
     pspio_nlcc_free(nlcc);
     pspio_mesh_free(nlccmesh);
     free(ff);
-    return PSPIO_EVALUE;
+    HANDLE_ERROR(PSPIO_EVALUE);
   }
 
   /// fill the nlcc core density
@@ -257,7 +245,7 @@ int nlcc_abinit4 (pspio_nlcc_t *nlcc, double rchrg, double fchrg){
     ierr = nlcc_ab4 (((double) ir)/((double) np-1), fftmp);
     if (ierr) {
       free(ff);
-      return ierr;
+      HANDLE_ERROR(ierr);
     }
     ff[ir] = fchrg * fftmp;
   }
@@ -267,7 +255,7 @@ int nlcc_abinit4 (pspio_nlcc_t *nlcc, double rchrg, double fchrg){
     pspio_nlcc_free(nlcc);
     pspio_mesh_free(nlccmesh);
     free(ff);
-    return ierr;
+    HANDLE_ERROR(ierr);
   }
 
   free(ff);
@@ -275,6 +263,4 @@ int nlcc_abinit4 (pspio_nlcc_t *nlcc, double rchrg, double fchrg){
   return PSPIO_SUCCESS;
 
 }
-
-
 
