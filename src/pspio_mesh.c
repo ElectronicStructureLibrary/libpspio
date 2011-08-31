@@ -21,6 +21,7 @@
 #include "pspio_mesh.h"
 #include "pspio_error.h"
 #include <stdlib.h>
+#include <string.h>
 
 int pspio_mesh_alloc(pspio_mesh_t *mesh, const int np){
   int i;
@@ -48,38 +49,30 @@ int pspio_mesh_alloc(pspio_mesh_t *mesh, const int np){
 }
 
 
-int pspio_mesh_set(pspio_mesh_t *mesh, const int type, const double a, const double b, double *r){
-  int i;
-
+int pspio_mesh_set(pspio_mesh_t *mesh, const int type, const double a, 
+		   const double b, const double *r){
   ASSERT( mesh != NULL, PSPIO_ERROR);
   
   mesh->type = type;
   mesh->a = a;
   mesh->a = b;
-  for (i = 0; i < mesh->np; i++)
-    {
-      mesh->r[i] = r[i];
-    }
+  memcpy(mesh->r, r, mesh->np * sizeof(double));
 
   return PSPIO_SUCCESS;
 }
 
 
-int pspio_mesh_copy(pspio_mesh_t *dst, pspio_mesh_t *src){
-  int i;
-
+int pspio_mesh_copy(pspio_mesh_t *dst, const pspio_mesh_t *src){
   ASSERT (src != NULL, PSPIO_ERROR);
 
   if (dst == NULL) {
-    HANDLE_FUNC_ERROR (pspio_mesh_alloc(dst, src->np))
+    HANDLE_FUNC_ERROR (pspio_mesh_alloc(dst, src->np));
   }
 
   dst->type = src->type;
   dst->a = src->a;
-  dst->b = src->b;
-  for (i=0; i<src->np; i++) {
-    dst->r[i] = src->r[i];
-  }
+  dst->a = src->b;
+  memcpy(dst->r, src->r, src->np * sizeof(double));
 
   return PSPIO_SUCCESS;
 }

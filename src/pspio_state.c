@@ -28,76 +28,36 @@
  * Global routines                                                    *
  **********************************************************************/
 
-int pspio_state_alloc(pspio_state_t *state) {
-  ASSERT(state == NULL, PSPIO_ERROR)
-  state = (pspio_state_t *)malloc(sizeof(state));
-  HANDLE_FATAL_ERROR(state == NULL, PSPIO_ENOMEM)
+int pspio_state_alloc(pspio_state_t *state, const int np) {
+  int ierr;
 
-  state->np = -1;
+  ASSERT(state == NULL, PSPIO_ERROR)
+
+  state = (pspio_state_t *)malloc(sizeof(state));
+  HANDLE_FATAL_ERROR(state == NULL, PSPIO_ENOMEM);
+
+  ierr = pspio_meshfunc_alloc(state->wf, np);
+  if (ierr) {
+    pspio_state_free(state);
+    HANDLE_ERROR (ierr);
+  }
+
   state->eigenval = 0.0;
   state->occ = 0.0;
   state->rc = 0.0;
   state->label = NULL;
-  state->wf = NULL;
-  state->wfp = NULL;
 
   return PSPIO_SUCCESS;
 }
 
 
-int pspio_state_copy(pspio_state_t *dst, pspio_state_t *src) {
+int pspio_state_set(pspio_state_t *state, const double eigenval, 
+		    const char *label, const double occ, const double rc, 
+		    pspio_mesh_t *mesh, const double *wf) {
   int s;
 
-  if ( dst != NULL ) {
-    return PSPIO_ERROR;
-  }
-  dst = (pspio_state_t *)malloc(sizeof(dst));
-  HANDLE_FATAL_ERROR(dst == NULL, PSPIO_ENOMEM)
+  ASSERT(state != NULL, PSPIO_ERROR);
 
-  ASSERT((src->wf != NULL) && (dst->wf == NULL), PSPIO_ERROR)
-  s = src->np * sizeof(double);
-  dst->wf = (double *)malloc(s);
-  memcpy(dst->wf, src->wf, s);
-
-  pspio_qn_copy(dst->qn, src->qn);
-
-  dst->eigenval = src->eigenval;
-  dst->np = src->np;
-  dst->occ = src->occ;
-  dst->rc = src->rc;
-
-  ASSERT((src->label != NULL) && (dst->label == NULL), PSPIO_ERROR)
-  s = strlen(src->label);
-  dst->label = (char *)malloc(s+1);
-  memcpy(dst->label, src->label, s);
-  dst->label[s] = 0;
-
-  ASSERT((src->wfp != NULL) && (dst->wfp == NULL), PSPIO_ERROR)
-  s = src->np * sizeof(double);
-  dst->wfp = (double *)malloc(s);
-  memcpy(dst->wfp, src->wfp, s);
-
-  return PSPIO_SUCCESS;
-}
-
-
-int pspio_state_free(pspio_state_t *state) {
-  if ( state != NULL ) {
-    free(state);
-  }
-
-  return PSPIO_SUCCESS;
-}
-
-
-int pspio_state_set(pspio_state_t *state, const int np, const double eigenval,
-      const char *label, const double occ, const double rc, const double *wf,
-      const double *wfp) {
-  int s;
-
-  ASSERT(state != NULL, PSPIO_ERROR)
-
-  state->np = np;
   state->eigenval = eigenval;
   state->occ = occ;
   state->rc = rc;
@@ -108,19 +68,45 @@ int pspio_state_set(pspio_state_t *state, const int np, const double eigenval,
   memcpy(state->label,label,s);
   state->label[s] = 0;
 
-  ASSERT((wf != NULL) && (state->wf == NULL), PSPIO_ERROR)
-  state->wf = (double *)malloc(np);
-  if ( state->wf == NULL ) {
-    return PSPIO_ERROR;
-  }
-  memcpy(state->wf,wf,np);
-
-  ASSERT((wfp != NULL) && (state->wfp == NULL), PSPIO_ERROR)
-  state->wfp = (double *)malloc(np);
-  if ( state->wfp == NULL ) {
-    return PSPIO_ERROR;
-  }
-  memcpy(state->wfp,wfp,np);
+  HANDLE_FUNC_ERROR (pspio_meshfunc_set(state->wf, mesh, wf));
 
   return PSPIO_SUCCESS;
 }
+
+
+int pspio_state_copy(pspio_state_t *dst, pspio_state_t *src) {
+  int s;
+
+  ASSERT (src != NULL , PSPIO_ERROR);
+
+  if (dst == NULL) {
+    HANDLE_FUNC_ERROR( pspio_state_alloc(dst, src->wf->mesh->np));
+  }
+
+  HANDLE_FUNC_ERROR (pspio_meshfunc_copy(dst->wf, src->wf));
+  HANDLE_FUNC_ERROR (pspio_qn_copy(dst->qn, src->qn));
+  dst->eigenval = src->eigenval;
+  dst->occ = src->occ;
+  dst->rc = src->rc;
+
+  ASSERT((src->label != NULL) && (dst->label == NULL), PSPIO_ERROR)
+  s = strlen(src->label);
+  dst->label = (char *)malloc(s+1);
+  memcpy(dst->label, src->label, s);
+  dst->label[s] = 0;
+
+  return PSPIO_SUCCESS;
+}
+
+
+int pspio_state_free(pspio_state_t *state) {
+  if ( state != NULL ) {
+    HANDLE_FUNC_ERROR (pspio_meshfunc_free(state->wf));
+    if (state->label != NULL) free(state->label);
+    free(state);
+  }
+
+  return PSPIO_SUCCESS;
+}
+
+

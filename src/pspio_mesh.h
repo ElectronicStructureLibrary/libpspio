@@ -84,7 +84,8 @@ int pspio_mesh_alloc(pspio_mesh_t *mesh, const int np);
  * @note The mesh pointer has to be allocated first with the pspio_mesh_alloc
  *       method.
  */
-int pspio_mesh_set(pspio_mesh_t *mesh, const int type, const double a, const double b, double *r);
+int pspio_mesh_set(pspio_mesh_t *mesh, const int type, const double a, 
+		   const double b, const double *r);
 
 
 /**
@@ -98,7 +99,7 @@ int pspio_mesh_set(pspio_mesh_t *mesh, const int type, const double a, const dou
  * @note The dst pointer might or might not be allocated. If it is not, then it
  *       is allocate here.
  */
-int pspio_mesh_copy(pspio_mesh_t *dst, pspio_mesh_t *src);
+int pspio_mesh_copy(pspio_mesh_t *dst, const pspio_mesh_t *src);
 
 
 /**

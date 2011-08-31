@@ -74,7 +74,22 @@ int pspio_meshfunc_alloc(pspio_meshfunc_t *func, const int np);
  * @note The func pointer has to be allocated first with the 
  *       pspio_meshfunc_alloc method.
  */
-int pspio_meshfunc_set(pspio_meshfunc_t *func, pspio_mesh_t *mesh, double *f);
+int pspio_meshfunc_set(pspio_meshfunc_t *func, const pspio_mesh_t *mesh, 
+		       const double *f);
+
+
+/**
+ * Duplicates a mesh function structure
+ * 
+ * @param[out] dst: destination mesh function structure pointer
+ * @param[in] src: source mesh function structure pointer
+ * @return error code
+ * @note The src pointer has to be allocated first with the pspio_meshfunc_alloc 
+ *       method.
+ * @note The dst pointer might or might not be allocated. If it is not, then it
+ *       is allocate here.
+ */
+int pspio_meshfunc_copy(pspio_meshfunc_t *dst, const pspio_meshfunc_t *src);
 
 
 /**

@@ -21,6 +21,7 @@
 #include "pspio_meshfunc.h"
 
 #include <stdlib.h>
+#include <string.h>
 
 int pspio_meshfunc_alloc(pspio_meshfunc_t *func, const int np){
   int i, ierr;
@@ -50,17 +51,31 @@ int pspio_meshfunc_alloc(pspio_meshfunc_t *func, const int np){
 }
 
 
-int pspio_meshfunc_set(pspio_meshfunc_t *func, pspio_mesh_t *mesh, double *f){
-  int i;
-  
+int pspio_meshfunc_set(pspio_meshfunc_t *func, const pspio_mesh_t *mesh, 
+		       const double *f){
+
   HANDLE_FUNC_ERROR (pspio_mesh_copy(func->mesh, mesh));
 
-  for (i = 0; i < func->mesh->np; i++)
-    {
-      func->f[i] = f[i];
-    }
+  memcpy(func->f, f, func->mesh->np * sizeof(double));
 
   gsl_spline_init(func->spl, func->mesh->r, func->f, func->mesh->np);
+
+  return PSPIO_SUCCESS;
+}
+
+
+int pspio_meshfunc_copy(pspio_meshfunc_t *dst, const pspio_meshfunc_t *src){
+
+  ASSERT (src != NULL, PSPIO_ERROR);
+
+  if (dst == NULL) {
+    HANDLE_FUNC_ERROR (pspio_meshfunc_alloc(dst, src->mesh->np))
+  }
+
+  HANDLE_FUNC_ERROR (pspio_mesh_copy(dst->mesh, src->mesh));
+  memcpy(dst->f, src->f, src->mesh->np * sizeof(double));
+  
+  gsl_spline_init(dst->spl, dst->mesh->r, dst->f, dst->mesh->np);
 
   return PSPIO_SUCCESS;
 }
