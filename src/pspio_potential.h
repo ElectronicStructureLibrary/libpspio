@@ -41,7 +41,7 @@
  */
 typedef struct{
   pspio_qn_t *qn;      /**< struct with quantum numbers n l j for the potential */
-  pspio_meshfunc_t *v;  /**< pseudopotential, on a radial mesh */
+  pspio_meshfunc_t *v; /**< pseudopotential, on a radial mesh */
 } pspio_potential_t;
 
 
@@ -49,20 +49,24 @@ typedef struct{
  * Allocates memory and preset potential structure
  * 
  * @param[in,out] potential: potential structure
- * @param[in] m: pointer to mesh
+ * @param[in] np: number of points in mesh
  * @return error code
+ * @note np should be larger than 1.
  */
-int pspio_potential_alloc(pspio_potential_t *potential, pspio_mesh_t *m);
+int pspio_potential_alloc(pspio_potential_t *potential, const int np);
 
 
 /**
  * Sets the potential datga.
  * @param[in,out] potential: potential structure to set
  * @param[in] qn: pointer to quantum numbers
+ * @param[in] mesh: the mesh structure
  * @param[in] v: values of the potential on the mesh
  * @return error code
+ * @note The potential pointer has to be allocated first with the
+ *       pspio_potential_alloc method.
  */
-int pspio_potential_set(pspio_potential_t *potential, pspio_qn_t *qn, double *v);
+int pspio_potential_set(pspio_potential_t *potential, pspio_qn_t *qn, pspio_mesh_t *mesh, double *v);
 
 
 /**
@@ -70,6 +74,8 @@ int pspio_potential_set(pspio_potential_t *potential, pspio_qn_t *qn, double *v)
  * 
  * @param[in,out] potential: potential structure
  * @return error code
+ * @note This function can be safelly called even if some or all of its 
+ *       components have not been allocated.
  */
 int pspio_potential_free(pspio_potential_t *potential);
 

@@ -25,7 +25,7 @@
 int pspio_meshfunc_alloc(pspio_meshfunc_t *func, const int np){
   int i, ierr;
 
-  ASSERT (np > 1, PSPIO_ERROR);
+  ASSERT (np > 1, PSPIO_EVALUE);
 
   func = (pspio_meshfunc_t *) malloc (sizeof(pspio_meshfunc_t));  
   HANDLE_FATAL_ERROR (func == NULL, PSPIO_ENOMEM);

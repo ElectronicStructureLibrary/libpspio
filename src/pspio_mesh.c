@@ -25,7 +25,7 @@
 int pspio_mesh_alloc(pspio_mesh_t *mesh, const int np){
   int i;
 
-  ASSERT(np > 1, PSPIO_ERROR);
+  ASSERT(np > 1, PSPIO_EVALUE);
 
   // Memory allocation
   mesh = (pspio_mesh_t *) malloc (sizeof(pspio_mesh_t));
