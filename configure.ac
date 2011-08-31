@@ -104,6 +104,10 @@ AC_PROG_EGREP
 # Workaround for the wrong path to install-sh on Mac systems
 AX_PROG_MKDIR_P
 
+# Init variables
+pio_core_incs=""
+AC_SUBST(pio_core_incs)
+
 # ---------------------------------------------------------------------------- #
 
 #
@@ -204,6 +208,8 @@ if test "${enable_libxc}" = "yes"; then
       FCFLAGS="${FCFLAGS} ${pio_libxc_incs}"
     fi
   fi
+else
+  pio_core_incs="${pio_core_incs} -I\$(abs_top_srcdir)/libxc"
 fi
 
 if test "${enable_xml}" = "yes"; then

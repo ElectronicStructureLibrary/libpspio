@@ -39,6 +39,8 @@ int ab2libxc (int pspxc, pspio_pspdata_t *psp_data){
 // local vars
   int xccode[2];
 #ifdef HAVE_LIBXC
+  int ii;
+  int ncorr;
   int nexch;
   int nxocc;
   xc_func_type func;
@@ -57,11 +59,9 @@ int ab2libxc (int pspxc, pspio_pspdata_t *psp_data){
     nexch = 0;
     ncorr = 0;
 
-    for 
-ii=0; ii<2; ii++){
-      if(xc_func_init(&func, xccode[ii], XC_UNPOLARIZED) != 0){
-        return PSPIO_VALUE_ERROR;
-      }
+    for (ii=0; ii<2; ii++) {
+      ASSERT(xc_func_init(&func, xccode[ii], XC_UNPOLARIZED) == 0,
+        PSPIO_EVALUE)
       switch(func.info->kind) {
         case XC_EXCHANGE:
           nexch++;
@@ -69,15 +69,14 @@ ii=0; ii<2; ii++){
           break;
         case XC_CORRELATION:
           ncorr++;
-          (*psp_data).correlation = xccode[ii]
+          (*psp_data).correlation = xccode[ii];
           break;
-        default:
       }
       xc_func_end(&func);
     }
 
-    if (nexch > 1) return PSPIO_VALUE_ERROR;
-    if (ncorr > 1) return PSPIO_VALUE_ERROR;
+    ASSERT(nexch <= 1, PSPIO_EVALUE)
+    ASSERT(ncorr <= 1, PSPIO_EVALUE)
 
 #else
 /// for the moment, presume exchange is first in abinit symbol

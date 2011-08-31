@@ -64,6 +64,9 @@ pio_built_hdrs = $(pio_fortran_mods)
 # Build targets
 #
 
+# Essential build parameters
+INCLUDES = @pio_core_incs@
+
 # Libraries
 lib_LTLIBRARIES = libpspio.la
 
