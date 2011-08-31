@@ -36,24 +36,33 @@
 #include "pspio_qn.h"
 
 
+/**********************************************************************
+ * Data structures                                                    *
+ **********************************************************************/
+
 /**
  * Projector structure
  */
 typedef struct{
-  pspio_qn_t *qn;      /**< quantum numbers for present projector */
-  double e;            /**< energy */
-  pspio_meshfunc_t *p; /**< projector on a mesh */
+  pspio_qn_t *qn;         /**< quantum numbers for present projector */
+  double energy;          /**< projector energy */
+  pspio_meshfunc_t *proj; /**< projector on a mesh */
 } pspio_projector_t;
 
+
+/**********************************************************************
+ * Global routines                                                    *
+ **********************************************************************/
 
 /**
  * Allocates memory and preset projector structure
  * 
  * @param[in,out] projector: projector structure
- * @param[in] m: pointer to mesh
+ * @param[in] np: number of points in mesh
  * @return error code
+ * @note np should be larger than 1.
  */
-int pspio_projector_alloc(pspio_projector_t *projector, pspio_mesh_t *mesh);
+int pspio_projector_alloc(pspio_projector_t *projector, const int np);
 
 
 /**
@@ -61,10 +70,14 @@ int pspio_projector_alloc(pspio_projector_t *projector, pspio_mesh_t *mesh);
  * @param[in,out] projector: projector structure to set
  * @param[in] qn: pointer to quantum numbers
  * @param[in] e: energy
+ * @param[in] mesh: pointer to mesh structure
  * @param[in] p: values of the projector on the mesh
  * @return error code
+ * @note The projector pointer has to be allocated first with the 
+ *       pspio_projector_alloc method.
  */
-int pspio_projector_set(pspio_projector_t *projector, pspio_qn_t *qn, double e, double *p);
+int pspio_projector_set(pspio_projector_t *projector, const pspio_qn_t *qn, 
+			const double e, const pspio_mesh_t *mesh, const double *p);
 
 
 /**
@@ -72,6 +85,8 @@ int pspio_projector_set(pspio_projector_t *projector, pspio_qn_t *qn, double e, 
  * 
  * @param[in,out] projector: projector structure
  * @return error code
+ * @note This function can be safelly called even if some or all of the
+ *       projector components have not been allocated.
  */
 int pspio_projector_free(pspio_projector_t *projector);
 

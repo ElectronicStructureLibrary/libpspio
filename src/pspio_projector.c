@@ -21,44 +21,37 @@
 #include "pspio_projector.h"
 #include <stdlib.h>
 
-int pspio_projector_alloc(pspio_projector_t *projector, pspio_mesh_t *mesh){
+
+int pspio_projector_alloc(pspio_projector_t *projector, const int np){
   int ierr;
-  
+
+  ASSERT (np > 1, PSPIO_EVALUE);
+
   projector = (pspio_projector_t *) malloc (sizeof(pspio_projector_t));
+  HANDLE_FATAL_ERROR (projector == NULL, PSPIO_ENOMEM);
 
-  if (projector == NULL) {
-    return PSPIO_ENOMEM;
+  ierr = pspio_meshfunc_alloc(projector->proj, np);
+  if (ierr) {
+    pspio_projector_free(projector);
+    HANDLE_ERROR (ierr);
   }
-
-  ierr = pspio_meshfunc_alloc(projector->p, mesh);
-  if (!ierr) {
-    free(projector);
-    return ierr;
-  }
-
+   
   ierr = pspio_qn_alloc(projector->qn);
   if (ierr) {
-    pspio_meshfunc_free(projector->p);
-    free(projector);
-    return ierr;
+    pspio_projector_free(projector);
+    HANDLE_ERROR (ierr);
   }
 
   return PSPIO_SUCCESS;
 }
 
 
-int pspio_projector_set(pspio_projector_t *projector, pspio_qn_t *qn, double e, double *p){
-  int ierr;
+int pspio_projector_set(pspio_projector_t *projector, const pspio_qn_t *qn, 
+			const double e, const pspio_mesh_t *mesh, const double *p){
 
-  ierr = pspio_qn_copy(qn, projector->qn);
-  if (!ierr) {
-    return ierr;
-  }
-  
-  ierr = pspio_meshfunc_set(projector->p, p);
-  if (!ierr) {
-    return ierr;
-  }
+  HANDLE_FUNC_ERROR (pspio_qn_copy(projector->qn, qn));
+  projector->energy = e;
+  HANDLE_FUNC_ERROR (pspio_meshfunc_set(projector->proj, mesh, p));
 
   return PSPIO_SUCCESS;
 }
@@ -67,7 +60,8 @@ int pspio_projector_set(pspio_projector_t *projector, pspio_qn_t *qn, double e, 
 int pspio_projector_free(pspio_projector_t *projector){
 
   if (projector != NULL) {
-    pspio_meshfunc_free(projector->p);
+    pspio_meshfunc_free(projector->proj);
+    pspio_qn_free(projector->qn);
     free(projector);
   }
 

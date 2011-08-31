@@ -27,9 +27,7 @@ int pspio_potential_alloc(pspio_potential_t *potential, const int np){
   ASSERT (np > 1, PSPIO_EVALUE);
 
   potential = (pspio_potential_t *) malloc (sizeof(pspio_potential_t));
-  if (potential == NULL) {
-    HANDLE_FATAL_ERROR (PSPIO_ENOMEM);
-  }
+  HANDLE_FATAL_ERROR (potential == NULL, PSPIO_ENOMEM);
 
   ierr = pspio_meshfunc_alloc(potential->v, np);
   if (ierr) {

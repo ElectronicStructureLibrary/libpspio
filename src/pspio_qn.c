@@ -53,7 +53,7 @@ int pspio_qn_set(pspio_qn_t *qn, const int n, const int l, const double j) {
 }
 
 
-int pspio_qn_copy(pspio_qn_t *dst, pspio_qn_t *src) {
+int pspio_qn_copy(pspio_qn_t *dst, const pspio_qn_t *src) {
   ASSERT(src != NULL, PSPIO_ERROR)
 
   if ( dst == NULL ) {

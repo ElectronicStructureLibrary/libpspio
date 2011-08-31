@@ -70,7 +70,7 @@ int pspio_qn_alloc(pspio_qn_t *qn);
  * @note The dst pointer might or might not be allocated first. If it is not,
  *        then it is allocated here.
  */
-int pspio_qn_copy(pspio_qn_t *dst, pspio_qn_t *src);
+int pspio_qn_copy(pspio_qn_t *dst, const pspio_qn_t *src);
 
 
 /**
