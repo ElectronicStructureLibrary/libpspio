@@ -38,8 +38,7 @@ pio_core_hdrs = \
   pspio_projector.h \
   pspio_qn.h \
   pspio_state.h \
-  read_upf.h \
-  xc_func.h
+  read_upf.h
 
 # Fortran source files and modules
 if DO_BUILD_FORTRAN
