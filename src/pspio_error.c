@@ -124,7 +124,7 @@ const char *pspio_error_str(const int pspio_errorid) {
       return "error in GSL";
     case PSPIO_ENOMEM:
       return "malloc failed";
-    case PSPIO_NOSUPPORT:
+    case PSPIO_ENOSUPPORT:
       return "No supported option in the pseudo-potential file";
     default:
       return "unknown error code" ;
