@@ -51,15 +51,17 @@
 /**
  * Global error handling structure
  */
-typedef struct {
+struct pspio_error_type {
   int id; /**< ID of the error */
   char *filename; /**< name of the file where the error appeared */
   int line; /**< line number in the file where the error appeared */
-  struct pspio_error_t *next; /**< next error in the chain */
-} pspio_error_t;
+  struct pspio_error_type *next; /**< next error in the chain */
+};
+typedef struct pspio_error_type pspio_error_t;
 
-/* The following is a VERY bad trick. Whoever finds better is welcome to
- * speak. */
+
+/* The following is a VERY bad trick. Whoever finds something better
+ * is welcome to speak. */
 static int pspio_error_tmp_id = 0;
 static pspio_error_t *pspio_error_chain = NULL;
 
