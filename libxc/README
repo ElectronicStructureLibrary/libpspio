@@ -1,0 +1,11 @@
+LibXC imports in Libpspio
+=========================
+
+The files in this directory have been imported from LibXC and left
+untouched, in order to provide the minimum amount of data required by
+Libpspio.
+
+For more information about LibXC, please consult the following page:
+
+  http://www.tddft.org/programs/octopus/wiki/index.php/Libxc
+
