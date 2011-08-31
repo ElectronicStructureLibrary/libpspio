@@ -53,6 +53,7 @@ typedef struct{
  * @param[in,out] func: function structure
  * @param[in] np: number of points
  * @return error code
+ * @note np should be larger than 1.
  */
 int pspio_meshfunc_alloc(pspio_meshfunc_t *func, const int np);
 
@@ -60,8 +61,11 @@ int pspio_meshfunc_alloc(pspio_meshfunc_t *func, const int np);
 /**
  * Sets the function data.
  * @param[in,out] func: function structure to set.
+ * @param[in] mesh: mesh structure.
  * @param[in] f: values of the function on the mesh.
  * @return error code
+ * @note The func pointer has to be allocated first with the 
+ *       pspio_meshfunc_alloc method.
  */
 int pspio_meshfunc_set(pspio_meshfunc_t *func, pspio_mesh_t *mesh, double *f);
 
@@ -71,6 +75,8 @@ int pspio_meshfunc_set(pspio_meshfunc_t *func, pspio_mesh_t *mesh, double *f);
  * 
  * @param[in,out] func: function structure
  * @return error code
+ * @note This function can be safelly called even if some or all of its 
+ *       compoments have not been allocated.
  */
 int pspio_meshfunc_free(pspio_meshfunc_t *func);
 
@@ -78,7 +84,7 @@ int pspio_meshfunc_free(pspio_meshfunc_t *func);
 /**
  * Returns the value of the function at an arbitrary point
  * 
- * @param[in] func: function structuer
+ * @param[in] func: function structure
  * @param[in] r: position were we want to evaluate the function
  * @param[out] f: value of the function at r
  * @return error code
@@ -89,7 +95,7 @@ int pspio_meshfunc_eval(pspio_meshfunc_t *func, const double r, double f);
 /**
  * Returns the value of the derivative of a function at an arbitrary point
  * 
- * @param[in] func: function structuer
+ * @param[in] func: function structure
  * @param[in] r: position were we want to evaluate the function
  * @param[out] fp: value of the derivative at r
  * @return error code
@@ -100,7 +106,7 @@ int pspio_meshfunc_eval_deriv(pspio_meshfunc_t *func, const double r, double fp)
 /**
  * Returns the value of the second derivative of a function at an arbitrary point
  * 
- * @param[in] func: function structuer
+ * @param[in] func: function structure
  * @param[in] r: position were we want to evaluate the function
  * @param[out] fpp: value of the second derivative at r
  * @return error code

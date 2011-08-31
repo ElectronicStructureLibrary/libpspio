@@ -72,7 +72,8 @@ int pspio_mesh_alloc(pspio_mesh_t *mesh, const int np);
  * @param[in] b: parameter b. The meaning depends on the type of mesh.
  * @param[in] r: pointer to mesh radial points. Should be of size mesh->np.
  * @return error code
- * @note The mesh pointer has to be allocated first with the pspio_mesh_alloc method.
+ * @note The mesh pointer has to be allocated first with the pspio_mesh_alloc
+ *       method.
  */
 int pspio_mesh_set(pspio_mesh_t *mesh, const int type, const double a, const double b, double *r);
 
@@ -83,8 +84,10 @@ int pspio_mesh_set(pspio_mesh_t *mesh, const int type, const double a, const dou
  * @param[out] dst: destination mesh structure pointer
  * @param[in] src: source mesh structure pointer
  * @return error code
- * @note The src pointer has to be allocated first with the pspio_mesh_alloc method.
- * @note The dst pointer might or might not be allocated. If it is not, then it is allocate here.
+ * @note The src pointer has to be allocated first with the pspio_mesh_alloc 
+ *       method.
+ * @note The dst pointer might or might not be allocated. If it is not, then it
+ *       is allocate here.
  */
 int pspio_mesh_copy(pspio_mesh_t *dst, pspio_mesh_t *src);
 
@@ -94,7 +97,8 @@ int pspio_mesh_copy(pspio_mesh_t *dst, pspio_mesh_t *src);
  * 
  * @param[in,out] mesh: mesh structure
  * @return error code
- * @note This function can be safelly called even if some or all of its compoments have not been allocated.
+ * @note This function can be safelly called even if some or all of its 
+ *       compoments have not been allocated.
  */
 int pspio_mesh_free(pspio_mesh_t *mesh);
 
