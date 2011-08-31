@@ -203,8 +203,8 @@ int nlcc_abinit4 (pspio_nlcc_t *nlcc, double rchrg, double fchrg){
   int ir;
   int np;
   double fftmp;
-  double a;
-  double b;
+  double aa;
+  double bb;
   double *ff;
   pspio_mesh_t *nlccmesh;
 
@@ -220,8 +220,6 @@ int nlcc_abinit4 (pspio_nlcc_t *nlcc, double rchrg, double fchrg){
     pspio_mesh_free(nlccmesh);
     HANDLE_ERROR(ierr);
   }
-
-  free(rr);
 
   /// allocate the nlcc object
   ierr = pspio_nlcc_alloc(nlcc, nlccmesh);
