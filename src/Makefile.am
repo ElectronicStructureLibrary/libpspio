@@ -8,8 +8,8 @@
 # Source files
 #
 
-# Hand-written - keep this in alphabetical order
-pio_srcs = \
+# C source - keep this in alphabetical order
+pio_core_srcs = \
   ab2libxc.c \
   nlcc_abinit.c \
   pspio_error.c \
@@ -25,13 +25,8 @@ pio_srcs = \
   read_abinit5.c \
   read_upf.c
 
-
-# Script-generated
-pio_built_srcs = \
-  dummy_auto.f90
-
 # C headers - keep this in alphabetical order
-pio_hdrs = \
+pio_core_hdrs = \
   libxccodes.h \
   pspio.h \
   pspio_common.h \
@@ -46,6 +41,23 @@ pio_hdrs = \
   read_upf.h \
   xc_func.h
 
+# Fortran source files and modules
+if DO_BUILD_FORTRAN
+  pio_fortran_srcs = pspio_fortran.F90
+if F90_MOD_UPPERCASE
+  pio_fortran_mods = PSPIO_FORTRAN.$(F90_MOD_EXT)
+else
+  pio_fortran_mods = pspio_fortran.$(F90_MOD_EXT)
+endif
+else
+  pio_fortran_srcs =
+  pio_fortran_mods =
+endif
+
+# Script-generated file lists
+pio_built_srcs = $(pio_fortran_srcs)
+pio_built_hdrs = $(pio_fortran_mods)
+
                     # ------------------------------------ #
 
 #
@@ -56,17 +68,20 @@ pio_hdrs = \
 lib_LTLIBRARIES = libpspio.la
 
 libpspio_la_LDFLAGS = -version-info 0:0:0
-libpspio_la_SOURCES = $(pio_srcs)
-#if DO_BUILD_FORTRAN
-#nodist_libpspio_la_SOURCES = $(pio_built_srcs)
-#endif
+libpspio_la_SOURCES = $(pio_core_srcs)
+if DO_BUILD_FORTRAN
+  nodist_libpspio_la_SOURCES = $(pio_built_srcs)
+endif
 
 # Headers
-include_HEADERS = $(pio_hdrs)
+include_HEADERS = $(pio_core_hdrs)
+if DO_BUILD_FORTRAN
+  nodist_include_HEADERS = $(pio_built_hdrs)
+endif
 
 # Fortran modules have to be cleaned explicitely
 clean-local:
-	rm -f *.mod *.MOD
+	rm -f $(pio_fortran_mods) dummy
 
                     # ------------------------------------ #
 

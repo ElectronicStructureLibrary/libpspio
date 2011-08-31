@@ -25,7 +25,7 @@
 
 # Initialize Autoconf
 AC_PREREQ(2.62)
-AC_INIT([Libpspio],[1.0],
+AC_INIT([Libpspio],[0.1],
   [https://www.tddft.org/trac/libpspio/],[libpspio])
 AC_REVISION([Autotools support for Libpspio])
 AC_CONFIG_AUX_DIR([config/gnu])
@@ -142,9 +142,18 @@ if test "${enable_fortran}" = "yes"; then
     fi
   fi
   AC_PROG_FC
+else
+  # This is an ugly trick to work around a design flaw of Libtool which
+  # systematically selects the Fortran linker whenever a Fortran file
+  # may be compiled under some circumstances.
+  FC="${CC}"
 fi
 
                     # ------------------------------------ #
+
+# Fortran compiler peculiarities
+AX_F90_MODULE_EXTENSION
+AX_F90_MODULE_CASE
 
 # Language mixing
 if test "${enable_fortran}" = "yes"; then
@@ -154,7 +163,10 @@ fi
                     # ------------------------------------ #
 
 # Inform Automake
-AM_CONDITIONAL([DO_BUILD_FORTRAN],[test "${enable_fortran}" = "yes"])
+AM_CONDITIONAL([DO_BUILD_FORTRAN],
+  [test "${enable_fortran}" = "yes"])
+AM_CONDITIONAL([F90_MOD_UPPERCASE],
+  [test "${enable_fortran}" = "yes" -a "${ax_cv_f90_mod_uppercase}" = "yes"])
 
 # ---------------------------------------------------------------------------- #
 
