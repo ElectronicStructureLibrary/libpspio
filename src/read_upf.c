@@ -29,8 +29,8 @@
 int  pspio_upf_init(FILE * fp, pspio_pspdata_t * psp_data){
   char tmp_filename[256];
   int ierr;
-  
-  pspio_upf_file_read(fp,psp_data);
+ 
+  HANDLE_FUNC_ERROR(pspio_upf_file_read(fp,psp_data));
 }
 
 int pspio_upf_file_read(FILE * fp, pspio_pspdata_t * psp_data){
@@ -41,71 +41,153 @@ int pspio_upf_file_read(FILE * fp, pspio_pspdata_t * psp_data){
   char nlcc,kind_ps[2],exchange[MAX_STRLEN];
   double zvalence,total_energy,wfc_cutoff,rho_cutoff;
   int lmax,np,n_states,n_proj;
-	wavefunction_t * wavefunctions;
-	
-  init_tag(fp,"PP_HEADER", GO_BACK);
-		
-  if(fgets(line, MAX_STRLEN, fp) == NULL) return PSPIO_EIO;
+  wavefunction_t * wavefunctions;
+  
+  //variables for the mesh
+  double *r, *drdi, *core_density;
+  
+  HANDLE_FUNC_ERROR(init_tag(fp,"PP_HEADER", GO_BACK));
+  
+  if(fgets(line, MAX_STRLEN, fp) == NULL) {
+    HANDLE_ERROR(PSPIO_EIO);
+  }
   narg = sscanf (line, "%d", &version_number);
-  //check if narg is 1
-	
-  if(fgets(line, MAX_STRLEN, fp) == NULL) return PSPIO_EIO;
+  PSPIO_ASSERT(narg==1, PSPIO_EIO);
+  
+  if(fgets(line, MAX_STRLEN, fp) == NULL) {
+    HANDLE_ERROR(PSPIO_EIO);
+  }
   narg = sscanf (line, "%2c",&symbol[0]);
-  //check if narg is 1	
-	
-  if(fgets(line, MAX_STRLEN, fp) == NULL) return PSPIO_EIO;
+  PSPIO_ASSERT(narg==1, PSPIO_EIO);		
+
+  if(fgets(line, MAX_STRLEN, fp) == NULL) {
+    HANDLE_ERROR(PSPIO_EIO);
+  }
   narg = sscanf (line, "%2c",&kind_ps[0]); // read the kind of pseudo-potentials US|NC|PAW    "Ultrasoft|Norm conserving|Projector-augmented" 
-  //check if narg is 1
+  PSPIO_ASSERT(narg==1, PSPIO_EIO);	
   if (!strncpm(kind_ps,"NC",2)) {
     printf("LIBPSP_IO can only read norm-conserving pseudo-potentials from UPF format.");
     return PSPIO_ETYPE;
   }
 	
-  if(fgets(line, MAX_STRLEN, fp) == NULL) return PSPIO_EIO;
+  if(fgets(line, MAX_STRLEN, fp) == NULL) {
+    HANDLE_ERROR(PSPIO_EIO);
+  }
   narg = sscanf (line, "%c",&nlcc); // read the nonlinear core correction. The character
-  //check if narg is 1	
+  PSPIO_ASSERT(narg==1, PSPIO_EIO);
 	
-  if(fgets(line, MAX_STRLEN, fp) == NULL) return PSPIO_EIO;
+  if(fgets(line, MAX_STRLEN, fp) == NULL) {
+    HANDLE_ERROR(PSPIO_EIO);
+  }
   narg = sscanf (line, "%s %s %s %s",&exchange); // read the exchange-correlation functional!!CORRECTION NEEDED!!!!!!! either we have to skipt or read it like in LIBXC
-  //check if narg is 1
+  PSPIO_ASSERT(narg==3, PSPIO_EIO);
 	
-  if(fgets(line, MAX_STRLEN, fp) == NULL) return PSPIO_EIO;
+  if(fgets(line, MAX_STRLEN, fp) == NULL) {
+    HANDLE_ERROR(PSPIO_EIO);
+  }
   narg = sscanf (line, "%lf",&zvalence); // read the Z valence
-  //check if narg is 1	
-	
-  if(fgets(line, MAX_STRLEN, fp) == NULL) return PSPIO_EIO;
+  PSPIO_ASSERT(narg==1, PSPIO_EIO);
+
+  if(fgets(line, MAX_STRLEN, fp) == NULL) {
+    HANDLE_ERROR(PSPIO_EIO);
+  }
   narg = sscanf (line, "%lf",&total_energy); // read the total energy
-  //check if narg is 1
-	
-  if(fgets(line, MAX_STRLEN, fp) == NULL) return PSPIO_EIO;
+  PSPIO_ASSERT(narg==1, PSPIO_EIO);
+  
+  if(fgets(line, MAX_STRLEN, fp) == NULL) {
+    HANDLE_ERROR(PSPIO_EIO);
+  }
   narg = sscanf (line, "%lf %lf",&wfc_cutoff,&rho_cutoff); //read the suggested cutoff for wfc and rho
-  //check if narg is 2
+  PSPIO_ASSERT(narg==2, PSPIO_EIO);
   
-  if(fgets(line, MAX_STRLEN, fp) == NULL) return PSPIO_EIO;
+  if(fgets(line, MAX_STRLEN, fp) == NULL) {
+    HANDLE_ERROR(PSPIO_EIO);
+  }
   narg = sscanf (line, "%d",&lmax); // read the max angular momentun component (Note: is not the lmax needed by Octopus)
-  //check if narg is 1
-	
-  if(fgets(line, MAX_STRLEN, fp) == NULL) return PSPIO_EIO;
+  PSPIO_ASSERT(narg==1, PSPIO_EIO);
+  
+  if(fgets(line, MAX_STRLEN, fp) == NULL) {
+    HANDLE_ERROR(PSPIO_EIO);
+  }
   narg = sscanf (line, "%d",&np); // read the number of points in mesh
-  //check if narg is 1
+  PSPIO_ASSERT(narg==1, PSPIO_EIO);
 	
-  if(fgets(line, MAX_STRLEN, fp) == NULL) return PSPIO_EIO;
+  if(fgets(line, MAX_STRLEN, fp) == NULL) {
+    HANDLE_ERROR(PSPIO_EIO);
+  }
   narg = sscanf (line, "%d %d",&n_states,&n_proj); // read the number of wavefunctions and projectors 
-  //check if narg is 2
-	
-  if (wavefunctions = (wavefunction_t *)malloc(n_states*sizeof(wavefunction_t)) == NULL){
-    return PSPIO_ERROR;
+  PSPIO_ASSERT(narg==2, PSPIO_EIO);
+
+  wavefunctions = (wavefunction_t *)malloc(n_states*sizeof(wavefunction_t));
+  if(wavefunctions == NULL){
+    HANDLE_FATAL_ERROR(PSPIO_ENOMEM);
+  }
+
+  //read the wavefuntions: "Wavefunctions   nl   l   occ"   
+  if(fgets(line, MAX_STRLEN, fp) == NULL) {
+    HANDLE_ERROR(PSPIO_EIO);
+  } //skip the first line
+  for (i=0; i<n_states; i++) {
+    if(fgets(line, MAX_STRLEN, fp) == NULL) {
+      HANDLE_ERROR(PSPIO_EIO);
+    }
+    narg = sscanf(line, "%2c %d %lf",&wavefunctions[i].nl[0],&wavefunctions[i].l,
+		  &wavefunctions[i].occ); // read the number of wavefunctions and projectors 
+    PSPIO_ASSERT(narg==3, PSPIO_EIO);
+  }
+  HANDLE_FUNC_ERROR(check_end_tag(fp, "PP_HEADER"));
+  
+  // Mesh info                                                                                         
+  HANDLE_FUNC_ERROR(init_tag(fp, "PP_MESH", GO_BACK));
+  HANDLE_FUNC_ERROR(init_tag(fp, "PP_R", NO_GO_BACK));
+  r = (double *)malloc(np*sizeof(double));
+  if( r == NULL){
+    HANDLE_FATAL_ERROR(PSPIO_ENOMEM);
+  }
+  for (i=0; i<np; i+4) {
+    if(fgets(line, MAX_STRLEN, fp) == NULL) {
+      HANDLE_ERROR(PSPIO_EIO);
+    }
+    narg = sscanf(line,"%lf %lf %lf %lf",&r[i],&r[i+1],&r[i+2],&r[i+3]);
+    PSPIO_ASSERT(narg==4, PSPIO_EIO);
   }
   
-  //read the wavefuntions: "Wavefunctions   nl   l   occ"   
-  if(fgets(line, MAX_STRLEN, fp) == NULL) return PSPIO_EIO; //skip the first line
-  for (i=0; i<n_states; i++) {
-    if(fgets(line, MAX_STRLEN, fp) == NULL) return PSPIO_EIO;
-    narg = sscanf (line, "%2c %d %lf",&wavefunctions[i].nl[0],&wavefunctions[i].l,
-		   &wavefunctions[i].occ); // read the number of wavefunctions and projectors 
-    //check if narg is 3
+  HANDLE_FUNC_ERROR(check_end_tag(fp, "PP_R"));
+  
+  HANDLE_FUNC_ERROR(init_tag(fp, "PP_RAB", NO_GO_BACK));
+  drdi = (double *)malloc(np*sizeof(double));
+  if (drdi == NULL) {
+    HANDLE_FATAL_ERROR(PSPIO_ENOMEM);
   }
-	
+  for (i=0; i<np; i+4) {
+    if (fgets(line, MAX_STRLEN, fp) == NULL) {
+      HANDLE_ERROR(PSPIO_EIO);
+    }
+    narg = sscanf(line,"%lf %lf %lf %lf",&drdi[i],&drdi[i+1],&drdi[i+2],&drdi[i+3]);
+    PSPIO_ASSERT(narg==4, PSPIO_EIO);
+  }                                                
+  HANDLE_FUNC_ERROR(check_end_tag(fp, "PP_RAB"));
+  HANDLE_FUNC_ERROR(check_end_tag(fp, "PP_MESH"));
+
+  //Non-linear core-corrections
+  if (nlcc) {
+    HANDLE_FUNC_ERROR(init_tag(fp, "PP_NLCC", GO_BACK));
+    core_density = (double *)malloc(np*sizeof(double));
+    if (core_density == NULL) {
+      HANDLE_FATAL_ERROR(PSPIO_ENOMEM);
+    }
+    for (i=0; i<np; i+4) {
+      if (fgets(line, MAX_STRLEN, fp) == NULL) {
+	HANDLE_ERROR(PSPIO_EIO);
+      }
+      narg = sscanf(line,"%lf %lf %lf %lf",&core_density[i],&core_density[i+1],&core_density[i+2],&core_density[i+3]);
+      PSPIO_ASSERT(narg==4, PSPIO_EIO);
+    }
+  }
+  else {
+    
+  }
+  return PSPIO_SUCCESS;
 }
 
 int init_tag(FILE * fp, char * tag, int go_back){
@@ -117,9 +199,10 @@ int init_tag(FILE * fp, char * tag, int go_back){
   strncat(compare_string,tag,strlen(tag));
   strcat(compare_string,">");
   
-  while(fgets(line, sizeof line, fp) != NULL){
-    if( strcmp(line,compare_string) ) return;
+  while (fgets(line, sizeof line, fp) != NULL){
+    if (strcmp(line,compare_string)) return PSPIO_SUCCESS;
   }
+  return PSPIO_EFILE_FORMAT;
 }
 
 int check_end_tag(FILE * fp, char * tag){
@@ -132,10 +215,10 @@ int check_end_tag(FILE * fp, char * tag){
   
   if(fgets(line, sizeof line, fp) == NULL) return PSPIO_EIO;
 
-  if( strcmp(line,compare_string) ) return;
-  else{
+  if (strcmp(line,compare_string)) return PSPIO_SUCCESS;
+  else {
     printf("PSPIO library is not able to find %s ending tag",compare_string);
-    return 1;
+    return PSPIO_EFILE_FORMAT;
   }
   
 }

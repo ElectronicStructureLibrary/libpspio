@@ -31,9 +31,11 @@
 #endif
 
 #define GO_BACK 1
+#define NO_GO_BACK 0
 #include <stdio.h>
 #include <string.h>
 #include "pspio.h"
+
 
 typedef struct{
 	char nl[2];
