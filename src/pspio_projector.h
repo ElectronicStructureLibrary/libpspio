@@ -19,7 +19,7 @@
 */
 
 /**
- * @file pspio_kb.h
+ * @file pspio_projector.h
  * @brief header file for the handling of the KB projectors
  */
 
