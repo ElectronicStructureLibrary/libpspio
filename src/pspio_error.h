@@ -44,13 +44,9 @@
 #define PSPIO_ENOMEM 7
 
 
-/**
- * Returns a string with error description.
- * @param[in] error_id: integer identifying the error.
- * @return string with error message.
- */
-const char * pspio_error_str (const int pspio_errorid);
-
+/**********************************************************************
+ * Data structures                                                    *
+ **********************************************************************/
 
 /**
  * Global error handling structure
@@ -58,7 +54,7 @@ const char * pspio_error_str (const int pspio_errorid);
 typedef struct {
   int id; /**< ID of the error */
   char *filename; /**< name of the file where the error appeared */
-  long line; /**< line number in the file where the error appeared */
+  int line; /**< line number in the file where the error appeared */
   struct pspio_error_t *next; /**< next error in the chain */
 } pspio_error_t;
 
@@ -68,17 +64,64 @@ static int pspio_error_tmp_id = 0;
 static pspio_error_t *pspio_error_chain = NULL;
 
 
+/**********************************************************************
+ * Routines                                                           *
+ **********************************************************************/
+
 /**
  * Add an error to the chain
  * @param[in] new_error: new error to add
+ * @return error code
  */
-int pspio_error_add(const char *filename, const long line);
+int pspio_error_add(const char *filename, const int line);
 
 
 /**
  * Clear the error chain
+ * @return error code
  */
 int pspio_error_free(void);
+
+
+/**
+ * Pop the first available error
+ * @return error structure pointer
+ */
+pspio_error_t *pspio_error_pop(void);
+
+
+/**
+ * Displays an error message.
+ * @param[in] error_id: integer identifying the error.
+ * @param[in] filename: source filename (use NULL if none).
+ * @param[in] line: line number in the source file (ignored if filename
+ *            is NULL).
+ * @return string with error message.
+ */
+void pspio_error_show(const int error_id, const char *filename,
+       const int line);
+
+
+/**
+ * Returns a string with error description.
+ * @param[in] error_id: integer identifying the error.
+ * @return string with error message.
+ */
+const char *pspio_error_str(const int pspio_errorid);
+
+
+/**********************************************************************
+ * Macros                                                             *
+ **********************************************************************/
+
+/**
+ * Libpspio-specific assert
+ * @param[in] condition: condition to check
+ * @param[in] error_id: error code to set if condition is false
+ */
+#define ASSERT(condition, error_id) \
+  pspio_error_tmp_id = ( condition ) ? PSPIO_SUCCESS : error_id; \
+  HANDLE_ERROR(pspio_error_tmp_id)
 
 
 /**
@@ -94,6 +137,18 @@ int pspio_error_free(void);
     pspio_ ## type_to_free ## _free(var_to_free); \
     pspio_error_add(__FILE__, __LINE__); \
     return pspio_error_tmp_id; \
+  }
+
+
+/**
+ * Error handler macro for fatal errors
+ * @param[in] error_id: error code to set before aborting
+ */
+#define HANDLE_FATAL_ERROR(condition, error_id) \
+  pspio_error_tmp_id = ( condition ) ? error_id : PSPIO_SUCCESS; \
+  if ( pspio_error_tmp_id != PSPIO_SUCCESS ) { \
+    pspio_error_show(pspio_error_tmp_id, __FILE__, __LINE__); \
+    exit(1); \
   }
 
 
@@ -119,15 +174,5 @@ int pspio_error_free(void);
     pspio_error_add(__FILE__, __LINE__); \
     return error_id; \
   }
-
-
-/**
- * Libpspio-specific assert
- * @param[in] condition: condition to check
- * @param[in] error_id: error code to set if condition is false
- */
-#define PSPIO_ASSERT(condition, error_id) \
-  pspio_error_tmp_id = ( condition ) ? PSPIO_SUCCESS : error_id; \
-  HANDLE_ERROR(pspio_error_tmp_id)
 
 #endif
