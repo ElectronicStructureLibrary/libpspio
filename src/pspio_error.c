@@ -19,11 +19,12 @@
 */
 
 #include <stdlib.h>
+#include <stdio.h>
 #include <string.h>
 #include "pspio_error.h"
 
 
-int pspio_error_add(const char *filename, const long line) {
+int pspio_error_add(const char *filename, const int line) {
   int s;
   pspio_error_t *last_err;
 
@@ -83,4 +84,47 @@ int pspio_error_free(void) {
   }
 
   return PSPIO_SUCCESS;
+}
+
+pspio_error_t *pspio_error_pop(void) {
+  pspio_error_t *first_error = NULL;
+
+  if ( pspio_error_chain != NULL ) {
+    first_error = pspio_error_chain;
+    pspio_error_chain = pspio_error_chain->next;
+  }
+
+  return first_error;
+}
+
+
+void pspio_error_show(const int error_id, const char *filename,
+       const int line) {
+  printf("libpspio: ERROR:\n  %s\n",pspio_error_str(error_id));
+  if ( filename != NULL ) {
+    printf("  in file %s:%d\n",filename,line);
+  }
+}
+
+
+const char *pspio_error_str(const int pspio_errorid) {
+  switch (pspio_errorid)
+    {
+    case PSPIO_SUCCESS:
+      return "success" ;
+    case PSPIO_ERROR:
+      return "error" ;
+    case PSPIO_ENOFILE:
+      return "file does not exist" ;
+    case PSPIO_EIO:
+      return "error in I/O" ;
+    case PSPIO_EVALUE:
+      return "value error: bad value found";
+    case PSPIO_EGSL:
+      return "error in GSL";
+    case PSPIO_ENOMEM:
+      return "malloc failed";
+    default:
+      return "unknown error code" ;
+    }
 }
