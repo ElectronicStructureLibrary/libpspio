@@ -22,25 +22,27 @@
 #include "pspio_error.h"
 #include <stdlib.h>
 
-int pspio_mesh_alloc(pspio_mesh_t *m, const int np){
+int pspio_mesh_alloc(pspio_mesh_t *mesh, const int np){
   int i;
 
   ASSERT(np > 1, PSPIO_ERROR);
 
-  m = (pspio_mesh_t *) malloc (sizeof(pspio_mesh_t));
-  HANDLE_FATAL_ERROR (m == NULL, PSPIO_ENOMEM);
+  // Memory allocation
+  mesh = (pspio_mesh_t *) malloc (sizeof(pspio_mesh_t));
+  HANDLE_FATAL_ERROR (mesh == NULL, PSPIO_ENOMEM);
 
-  m->r = (double *) malloc (np * sizeof(double));
-  HANDLE_FATAL_ERROR (m->r == NULL, PSPIO_ENOMEM);
+  mesh->r = (double *) malloc (np * sizeof(double));
+  HANDLE_FATAL_ERROR (mesh->r == NULL, PSPIO_ENOMEM);
 
-  m->np = np;
-  for (i = 0; i < m->np; i++)
+  // Presets
+  mesh->np = np;
+  for (i = 0; i < mesh->np; i++)
     {
       m->r[i] = 0;
     }
-  m->a = 0;
-  m->b = 0;
-  m->type = MESH_NONE;
+  mesh->a = 0;
+  mesh->b = 0;
+  mesh->type = MESH_NONE;
 
   return PSPIO_SUCCESS;
 }
