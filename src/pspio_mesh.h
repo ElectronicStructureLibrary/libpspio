@@ -70,7 +70,7 @@ int pspio_mesh_alloc(pspio_mesh_t *mesh, const int np);
  * @param[in] type: type of mesh. Can be LOG1, LOG2, or LINEAR.
  * @param[in] a: parameter a. The meaning depends on the type of mesh.
  * @param[in] b: parameter b. The meaning depends on the type of mesh.
- * @param[in] r: pointer to mesh radial points. Should be of size m->np.
+ * @param[in] r: pointer to mesh radial points. Should be of size mesh->np.
  * @return error code
  * @note The mesh pointer has to be allocated first with the pspio_mesh_alloc method.
  */
