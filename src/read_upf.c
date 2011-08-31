@@ -65,11 +65,11 @@ int pspio_upf_file_read(FILE * fp, pspio_pspdata_t * psp_data){
   }
   narg = sscanf (line, "%2c",&kind_ps[0]); // read the kind of pseudo-potentials US|NC|PAW    "Ultrasoft|Norm conserving|Projector-augmented" 
   PSPIO_ASSERT(narg==1, PSPIO_EIO);	
+  //LIBPSP_IO can only read norm-conserving pseudo-potentials from UPF format.
   if (!strncpm(kind_ps,"NC",2)) {
-    printf("LIBPSP_IO can only read norm-conserving pseudo-potentials from UPF format.");
-    return PSPIO_ETYPE;
+    HANDLE_ERROR(PSPIO_ENOSUPPORT);
   }
-	
+  
   if(fgets(line, MAX_STRLEN, fp) == NULL) {
     HANDLE_ERROR(PSPIO_EIO);
   }

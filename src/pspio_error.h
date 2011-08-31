@@ -42,7 +42,7 @@
 #define PSPIO_ETYPE 5
 #define PSPIO_EGSL  6
 #define PSPIO_ENOMEM 7
-
+#define PSPIO_ENOSUPPORT 8
 
 /**********************************************************************
  * Data structures                                                    *
