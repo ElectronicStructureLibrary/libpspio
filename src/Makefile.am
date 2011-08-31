@@ -13,7 +13,6 @@ pio_srcs = \
   ab2libxc.c \
   nlcc_abinit.c \
   pspio_error.c \
-  pspio_errorstr.c \
   pspio_init.c \
   pspio_mesh.c \
   pspio_meshfunc.c \
@@ -58,9 +57,9 @@ lib_LTLIBRARIES = libpspio.la
 
 libpspio_la_LDFLAGS = -version-info 0:0:0
 libpspio_la_SOURCES = $(pio_srcs)
-if DO_BUILD_FORTRAN
-  nodist_libpspio_la_SOURCES = $(pio_built_srcs)
-endif
+#if DO_BUILD_FORTRAN
+#nodist_libpspio_la_SOURCES = $(pio_built_srcs)
+#endif
 
 # Headers
 include_HEADERS = $(pio_hdrs)

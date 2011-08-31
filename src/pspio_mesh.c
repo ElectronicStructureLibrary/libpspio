@@ -28,14 +28,10 @@ int pspio_mesh_alloc(pspio_mesh_t *m, const int np){
   ASSERT(np > 1, PSPIO_ERROR);
 
   m = (pspio_mesh_t *) malloc (sizeof(pspio_mesh_t));
-  if (m == NULL) {
-    HANDLE_FATAL_ERROR (PSPIO_ENOMEM);
-  }
+  HANDLE_FATAL_ERROR (m == NULL, PSPIO_ENOMEM);
 
   m->r = (double *) malloc (np * sizeof(double));
-  if (m->r == NULL) {
-    HANDLE_FATAL_ERROR (PSPIO_ENOMEM);
-  }
+  HANDLE_FATAL_ERROR (m->r == NULL, PSPIO_ENOMEM);
 
   m->np = np;
   for (i = 0; i < m->np; i++)

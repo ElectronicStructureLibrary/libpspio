@@ -28,16 +28,12 @@ int pspio_meshfunc_alloc(pspio_meshfunc_t *func, const int np){
   ASSERT (np > 1, PSPIO_ERROR);
 
   func = (pspio_meshfunc_t *) malloc (sizeof(pspio_meshfunc_t));  
-  if (func == NULL) {
-    HANDLE_FATAL_ERROR (PSPIO_ENOMEM);
-  }
+  HANDLE_FATAL_ERROR (func == NULL, PSPIO_ENOMEM);
 
   func->f = (double *) malloc (np * sizeof(double));
-  if (func->f == NULL) {
-    HANDLE_FATAL_ERROR (PSPIO_ENOMEM);
-  }
+  HANDLE_FATAL_ERROR (func->f == NULL, PSPIO_ENOMEM);
 
-  ierr = pspio_mesh_alloc(func->mesh, np))
+  ierr = pspio_mesh_alloc(func->mesh, np);
   if (ierr) {
     pspio_meshfunc_free(func);
     HANDLE_ERROR (ierr);
