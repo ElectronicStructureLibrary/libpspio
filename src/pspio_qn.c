@@ -26,9 +26,9 @@
 #include "pspio_qn.h"
 
 int pspio_qn_alloc(pspio_qn_t *qn) {
-  PSPIO_ASSERT( qn == NULL, PSPIO_ERROR)
+  ASSERT( qn == NULL, PSPIO_ERROR)
   qn = (pspio_qn_t *)malloc(sizeof(qn));
-  PSPIO_ASSERT( qn != NULL, PSPIO_ENOMEM)
+  ASSERT( qn != NULL, PSPIO_ENOMEM)
 
   qn->n = 0;
   qn->l = 0;
@@ -39,7 +39,7 @@ int pspio_qn_alloc(pspio_qn_t *qn) {
 
 
 int pspio_qn_copy(pspio_qn_t *dst, pspio_qn_t *src) {
-  PSPIO_ASSERT(src == NULL, PSPIO_ERROR)
+  ASSERT(src != NULL, PSPIO_ERROR)
 
   if ( dst == NULL ) {
     pspio_qn_alloc(dst);
@@ -64,7 +64,7 @@ int pspio_qn_free(pspio_qn_t *qn) {
 
 int pspio_qn_set(pspio_qn_t *qn, const int n, const int l, const double j) {
 
-  PSPIO_ASSERT( (n < 0) || (l < 0) || (abs(j - (double)l) - 0.5 > 1.0e-9),
+  ASSERT((n > 0) && (l > 0) && (abs(j - (double)l) - 0.5 > 1.0e-9),
     PSPIO_EVALUE)
 
   qn->n = n;

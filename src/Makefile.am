@@ -55,6 +55,8 @@ pio_hdrs = \
 
 # Libraries
 lib_LTLIBRARIES = libpspio.la
+
+libpspio_la_LDFLAGS = -version-info 0:0:0
 libpspio_la_SOURCES = $(pio_srcs)
 if DO_BUILD_FORTRAN
   nodist_libpspio_la_SOURCES = $(pio_built_srcs)
@@ -69,6 +71,6 @@ clean-local:
 
                     # ------------------------------------ #
 
-# Explicit dependencies (if needed)
+# Explicit dependencies (if needed, e.g. with Fortran)
 # Use $(LTOBJEXT) as extension for object files
 # ...
