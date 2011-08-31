@@ -65,14 +65,15 @@ int read_abinit_header (FILE *fp, pspio_pspdata_t *psp_data, int pspcod, double 
     HANDLE_ERROR(PSPIO_EIO)
   }
   narg = sscanf (line, "%lf %lf %d", &(psp_data->z), &(psp_data->zvalence), &idum);
-  ///check narg is equal to 2
+  PSPIO_ASSERT(narg==2, PSPIO_EIO)
  
   /**< read in psp code and xc code*/
   if(fgets(line, MAX_STRLEN, fp) == NULL) {
     HANDLE_ERROR(PSPIO_EIO)
   }
   narg = sscanf (line, "%d %d %d %d %d", &pspcod, &pspxc, &(psp_data->l_max), &(psp_data->l_local), &np);
-  ///check narg is equal to 5
+  PSPIO_ASSERT(narg==5, PSPIO_EIO)
+
 
   HANDLE_FUNC_ERROR(pspio_mesh_alloc(psp_data->mesh, np))
 
@@ -92,11 +93,16 @@ int read_abinit_header (FILE *fp, pspio_pspdata_t *psp_data, int pspcod, double 
       (*psp_data).scheme = HGH;
       break;
     default:
+      HANDLE_FUNC_ERROR(pspio_mesh_free(psp_data->mesh))
       HANDLE_ERROR(PSPIO_EVALUE)
   }
 
 
-  HANDLE_FUNC_ERROR( ab2libxc(pspxc,psp_data) )
+  ierr = ab2libxc(pspxc,psp_data);
+  if (ierr){
+    HANDLE_FUNC_ERROR(pspio_mesh_free(psp_data->mesh))
+    HANDLE_ERROR(ierr)
+  }
 
   /// if we have a NLCC data line to read
   rchrg = 0.0;
@@ -104,10 +110,11 @@ int read_abinit_header (FILE *fp, pspio_pspdata_t *psp_data, int pspcod, double 
   if (pspcod == 1 || pspcod == 4 || pspcod == 5 || pspcod == 6){
   /**< read in NLCC parameters */
     if(fgets(line, MAX_STRLEN, fp) == NULL) {
+      HANDLE_FUNC_ERROR(pspio_mesh_free(psp_data->mesh))
       HANDLE_ERROR(PSPIO_EIO)
     }
     narg = sscanf (line, "%lf %lf %lf", &rchrg, &fchrg, &qchrg);
-    ///check narg is equal to 3
+    PSPIO_ASSERT(narg==3, PSPIO_EIO)
   }
 
   return PSPIO_SUCCESS;
