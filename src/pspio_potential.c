@@ -93,14 +93,9 @@ int pspio_potential_free(pspio_potential_t *potential){
  **********************************************************************/
 
 int pspio_potential_get_qn(pspio_potential_t *potential, pspio_qn_t *qn) {
-  ASSERT((potential != NULL) && (potential->qn != NULL), PSPIO_ERROR)
+  ASSERT((potential != NULL) && (potential->qn != NULL), PSPIO_ERROR);
 
-  if ( qn == NULL ) {
-    HANDLE_FUNC_ERROR(pspio_qn_alloc(qn))
-  }
-  qn->n = potential->qn->n;
-  qn->l = potential->qn->l;
-  qn->j = potential->qn->j;
+  HANDLE_FUNC_ERROR(pspio_qn_copy(potential->qn, qn));
 
   return PSPIO_SUCCESS;
 }

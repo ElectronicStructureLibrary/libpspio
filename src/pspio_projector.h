@@ -86,4 +86,19 @@ int pspio_projector_set(pspio_projector_t *projector, const pspio_qn_t *qn,
  */
 int pspio_projector_free(pspio_projector_t *projector);
 
+
+/**********************************************************************
+ * Atomic routines                                                    *
+ **********************************************************************/
+
+/**
+ * Return the quantum numbers associated with a projector.
+ * @param[in] projector: pointer to projector structure
+ * @param[out] qn: pointer to quantum numbers
+ * @return error code
+ * @note The projector pointer has to be fully set.
+ */
+int pspio_projector_get_qn(pspio_projector_t *projector, pspio_qn_t *qn);
+
+
 #endif

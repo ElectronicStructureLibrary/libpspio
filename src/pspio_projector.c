@@ -27,6 +27,10 @@
 #endif
 
 
+/**********************************************************************
+ * Global routines                                                    *
+ **********************************************************************/
+
 int pspio_projector_alloc(pspio_projector_t *projector, const int np){
   int ierr;
 
@@ -72,3 +76,18 @@ int pspio_projector_free(pspio_projector_t *projector){
 
   return PSPIO_SUCCESS;
 }
+
+
+
+/**********************************************************************
+ * Atomic routines                                                    *
+ **********************************************************************/
+
+int pspio_projector_get_qn(pspio_projector_t *projector, pspio_qn_t *qn){
+  ASSERT((projector != NULL) && (projector->qn != NULL), PSPIO_ERROR);
+
+  HANDLE_FUNC_ERROR(pspio_qn_copy(projector->qn, qn));
+
+  return PSPIO_SUCCESS;
+}
+
