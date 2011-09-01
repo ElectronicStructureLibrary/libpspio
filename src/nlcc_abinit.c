@@ -211,7 +211,7 @@ int nlcc_abinit4 (pspio_nlcc_t *nlcc, double rchrg, double fchrg){
   /// init the mesh
   np = 2501;  // this is the abinit default, used with analytical core charges. Could be modified to use the potential's mesh, but there can be numerical problems with not using a linear mesh.
 
-   HANDLE_FUNC_ERROR(pspio_mesh_alloc(nlccmesh, np));
+  HANDLE_FUNC_ERROR(pspio_mesh_alloc(nlccmesh, np));
 
   aa = 1.0e0 / ((double) np - 1);
   bb = 0.0e0;

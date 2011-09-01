@@ -52,6 +52,12 @@ int read_abinit5 (FILE *fp, pspio_pspdata_t *psp_data){
   /// read in header
   HANDLE_FUNC_ERROR (read_abinit_header(fp, psp_data, pspcod, rchrg, fchrg));
 
+  HANDLE_FUNC_ERROR(pspio_mesh_alloc (psp_data->mesh, np));
+  HANDLE_FUNC_ERROR(pspio_mesh_set_exp1 (psp_data->mesh, aa, bb));
+
+  /// pspcod 5 has a nlcc line
+  HANDLE_FUNC_ERROR (read_abinit_header_nlcc(fp, rchrg, fchrg));
+
   /// make core charge if needed
   if (rchrg > 0.0) {
     psp_data->has_nlcc = 1;

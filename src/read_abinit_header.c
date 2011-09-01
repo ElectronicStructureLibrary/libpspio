@@ -77,6 +77,7 @@ int read_abinit_header (FILE *fp, pspio_pspdata_t *psp_data, int pspcod, double 
   narg = sscanf (line, "%d %d %d %d %d", &pspcod, &pspxc, &(psp_data->l_max), &(psp_data->l_local), &np);
   PSPIO_ASSERT(narg==5, PSPIO_EIO);
 
+  psp_data->mesh->np = np;
 
   // inferred from abinit web site http://www.abinit.org/documentation/helpfiles/for-v6.8/users/abinit_help.html#5
   /* NOTE: pspcod = 5 is used also for new psp generated with the Martins code, including 2 projectors for spin orbit coupling */ 
@@ -98,10 +99,7 @@ int read_abinit_header (FILE *fp, pspio_pspdata_t *psp_data, int pspcod, double 
   }
 
 
-  ierr = ab2libxc(pspxc,psp_data);
-  if (ierr){
-    HANDLE_ERROR(ierr);
-  }
+  HANDLE_FUNC_ERROR(ierr = ab2libxc(pspxc,psp_data));
   // pspcod 5 has a bunch of extra lines
   if (pspcod == 5){
     // first line with mesh param and spin orbit flag
@@ -121,20 +119,29 @@ int read_abinit_header (FILE *fp, pspio_pspdata_t *psp_data, int pspcod, double 
 
   }
 
+  return PSPIO_SUCCESS;
+
+}
+
+
+
+/**
+* subroutine reads in full abinit header file and initializes psp_data structure with available stuff
+*@param[in]  fp         file pointer to be read in 
+*@param[out] rchrg      radius for NLCC, if any
+*@param[out] fchrg      charge for NLCC, if any
+*/
+int read_abinit_header_nlcc (FILE *fp, double rchrg, double fchrg){
+
   /// if we have a NLCC data line to read
   rchrg = 0.0;
   fchrg = 0.0;
-  if (pspcod == 1 || pspcod == 4 || pspcod == 5 || pspcod == 6){
   /**< read in NLCC parameters */
-    if(fgets(line, MAX_STRLEN, fp) == NULL) {
-      HANDLE_ERROR(PSPIO_EIO);
-    }
-    narg = sscanf (line, "%lf %lf %lf", &rchrg, &fchrg, &qchrg);
-    PSPIO_ASSERT(narg==3, PSPIO_EIO);
+  if(fgets(line, MAX_STRLEN, fp) == NULL) {
+    HANDLE_ERROR(PSPIO_EIO);
   }
-
-  HANDLE_FUNC_ERROR(pspio_mesh_alloc (psp_data->mesh, np));
-  HANDLE_FUNC_ERROR(pspio_mesh_set_exp1 (psp_data->mesh, aa, bb));
+  narg = sscanf (line, "%lf %lf %lf", &rchrg, &fchrg, &qchrg);
+  PSPIO_ASSERT(narg==3, PSPIO_EIO)
 
   return PSPIO_SUCCESS;
 
