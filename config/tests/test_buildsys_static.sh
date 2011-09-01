@@ -30,7 +30,7 @@
 
 # Check that we are in the right directory
 if test ! -s "./configure.ac" -o ! -d "psp_references"; then
-  echo "test_buildsys_fortran: Cowardly refusing to remove something from here!" >&2
+  echo "test_buildsys_plain: Cowardly refusing to remove something from here!" >&2
   exit 1
 fi
 
@@ -39,7 +39,7 @@ set -e
 
 # Set test parameters
 test_name="buildsys-test-plain"
-test_options="--enable-fortran"
+test_options="--disable-shared --enable-static"
 
 # Prepare the build
 ./wipeout.sh

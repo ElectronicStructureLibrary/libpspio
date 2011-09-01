@@ -39,7 +39,7 @@ set -e
 
 # Set test parameters
 test_name="buildsys-test-plain"
-test_options=""
+test_options="--enable-libxc"
 
 # Prepare the build
 ./wipeout.sh
