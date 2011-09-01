@@ -105,10 +105,10 @@ int pspio_meshfunc_free(pspio_meshfunc_t *func);
  * 
  * @param[in] func: function structure
  * @param[in] r: position were we want to evaluate the function
- * @param[out] f: value of the function at r
+ * @param[out] *f: value of the function at r
  * @return error code
  */
-int pspio_meshfunc_eval(pspio_meshfunc_t *func, const double r, double f);
+int pspio_meshfunc_eval(pspio_meshfunc_t *func, const double r, double *f);
 
 
 /**
@@ -116,10 +116,11 @@ int pspio_meshfunc_eval(pspio_meshfunc_t *func, const double r, double f);
  * 
  * @param[in] func: function structure
  * @param[in] r: position were we want to evaluate the function
- * @param[out] fp: value of the derivative at r
+ * @param[out] *fp: value of the derivative at r
  * @return error code
  */
-int pspio_meshfunc_eval_deriv(pspio_meshfunc_t *func, const double r, double fp);
+int pspio_meshfunc_eval_deriv(pspio_meshfunc_t *func, const double r,
+      double *fp);
 
 
 /**
@@ -127,10 +128,10 @@ int pspio_meshfunc_eval_deriv(pspio_meshfunc_t *func, const double r, double fp)
  * 
  * @param[in] func: function structure
  * @param[in] r: position were we want to evaluate the function
- * @param[out] fpp: value of the second derivative at r
+ * @param[out] *fpp: value of the second derivative at r
  * @return error code
  */
-int pspio_meshfunc_eval_deriv2(pspio_meshfunc_t *func, const double r, double fpp);
-
+int pspio_meshfunc_eval_deriv2(pspio_meshfunc_t *func, const double r,
+      double *fpp);
 
 #endif

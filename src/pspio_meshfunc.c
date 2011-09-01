@@ -86,28 +86,30 @@ int pspio_meshfunc_copy(pspio_meshfunc_t *dst, const pspio_meshfunc_t *src){
 }
 
 
-int pspio_meshfunc_eval(pspio_meshfunc_t *func, const double r, double f){
+int pspio_meshfunc_eval(pspio_meshfunc_t *func, const double r, double *f){
   ASSERT (func != NULL, PSPIO_ERROR);
   
-  f = gsl_spline_eval(func->spl, r, func->acc);
+  *f = gsl_spline_eval(func->spl, r, func->acc);
 
   return PSPIO_SUCCESS;
 }
 
 
-int pspio_meshfunc_eval_deriv(pspio_meshfunc_t *func, const double r, double fp){
+int pspio_meshfunc_eval_deriv(pspio_meshfunc_t *func, const double r,
+      double *fp){
   ASSERT (func != NULL, PSPIO_ERROR);  
 
-  fp = gsl_spline_eval_deriv(func->spl, r, func->acc);
+  *fp = gsl_spline_eval_deriv(func->spl, r, func->acc);
 
   return PSPIO_SUCCESS;
 }
 
 
-int pspio_meshfunc_eval_deriv2(pspio_meshfunc_t *func, const double r, double fpp){
+int pspio_meshfunc_eval_deriv2(pspio_meshfunc_t *func, const double r,
+      double *fpp){
   ASSERT (func != NULL, PSPIO_ERROR);  
 
-  fpp = gsl_spline_eval_deriv2(func->spl, r, func->acc);
+  *fpp = gsl_spline_eval_deriv2(func->spl, r, func->acc);
 
   return PSPIO_SUCCESS;
 }
@@ -125,4 +127,3 @@ int pspio_meshfunc_free(pspio_meshfunc_t *func){
 
   return PSPIO_SUCCESS;
 }
-
