@@ -31,7 +31,6 @@
 # C source - keep this in alphabetical order
 pio_core_srcs = \
   ab2libxc.c \
-  nlcc_abinit.c \
   pspio_error.c \
   pspio_mesh.c \
   pspio_meshfunc.c \
@@ -40,8 +39,6 @@ pio_core_srcs = \
   pspio_state.c \
   pspio_projector.c \
   pspio_nlcc.c \
-  read_abinit_header.c \
-  read_abinit5.c \
   read_upf.c \
   pspio_init.c
 
@@ -114,17 +111,3 @@ clean-local:
 # Explicit dependencies (if needed, e.g. with Fortran)
 # Use $(LTOBJEXT) as extension for object files
 # ...
-
-# FIXME: temporary fake dependencies, to compile as far as possible
-nlcc_abinit.$(LTOBJEXT) read_abinit_header.$(LTOBJEXT) read_abinit5.$(LTOBJEXT): \
-  pspio_error.$(LTOBJEXT) \
-  pspio_mesh.$(LTOBJEXT) \
-  pspio_meshfunc.$(LTOBJEXT) \
-  pspio_qn.$(LTOBJEXT) \
-  pspio_potential.$(LTOBJEXT) \
-  pspio_state.$(LTOBJEXT) \
-  pspio_projector.$(LTOBJEXT) \
-  pspio_nlcc.$(LTOBJEXT) \
-  read_abinit_header.$(LTOBJEXT) \
-  pspio_init.$(LTOBJEXT)
-
