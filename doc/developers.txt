@@ -29,9 +29,9 @@
  *
  * The headers belonging to Libpspio are included using double quotes,
  * while those coming from other libraries are included using the <toto.h>
- * convention. The config.h file is always the last to be included, as
- * it may fine-tune some already-defined parameters and work around some
- * issues.
+ * convention. The config.h file is included in the C files only and is
+ * always the last to be included, as it may fine-tune some already-defined
+ * parameters and work around some issues.
  *
  *
  * @section Private extensions of external libraries
