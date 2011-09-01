@@ -44,10 +44,10 @@ test_options="--disable-shared --enable-static"
 # Prepare the build
 ./wipeout.sh
 ./autogen.sh
-
-# Check configuration
 mkdir "tmp-${test_name}"
 cd "tmp-${test_name}"
+
+# Check configuration
 ../configure ${test_options}
 make distcheck
 make install DESTDIR="${PWD}/install"
