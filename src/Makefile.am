@@ -45,9 +45,8 @@ pio_core_srcs = \
   read_upf.c \
   pspio_init.c
 
-# C headers - keep this in alphabetical order
+# Exported C headers - keep this in alphabetical order
 pio_core_hdrs = \
-  libxccodes.h \
   pspio.h \
   pspio_common.h \
   pspio_error.h \
@@ -57,7 +56,11 @@ pio_core_hdrs = \
   pspio_projector.h \
   pspio_nlcc.h \
   pspio_qn.h \
-  pspio_state.h \
+  pspio_state.h
+
+# Internal C headers - keep this in alphabetical order
+pio_hidden_hdrs = \
+  libxccodes.h \
   read_upf.h
 
 # Fortran source files and modules
@@ -97,6 +100,7 @@ endif
 
 # Headers
 include_HEADERS = $(pio_core_hdrs)
+noinst_HEADERS = $(pio_hidden_hdrs)
 if DO_BUILD_FORTRAN
   nodist_include_HEADERS = $(pio_built_hdrs)
 endif
@@ -110,3 +114,17 @@ clean-local:
 # Explicit dependencies (if needed, e.g. with Fortran)
 # Use $(LTOBJEXT) as extension for object files
 # ...
+
+# FIXME: temporary fake dependencies, to compile as far as possible
+nlcc_abinit.$(LTOBJEXT) read_abinit_header.$(LTOBJEXT) read_abinit5.$(LTOBJEXT): \
+  pspio_error.$(LTOBJEXT) \
+  pspio_mesh.$(LTOBJEXT) \
+  pspio_meshfunc.$(LTOBJEXT) \
+  pspio_qn.$(LTOBJEXT) \
+  pspio_potential.$(LTOBJEXT) \
+  pspio_state.$(LTOBJEXT) \
+  pspio_projector.$(LTOBJEXT) \
+  pspio_nlcc.$(LTOBJEXT) \
+  read_abinit_header.$(LTOBJEXT) \
+  pspio_init.$(LTOBJEXT)
+
