@@ -21,9 +21,6 @@
 
 #include <stdio.h>
 #include <string.h>
-#ifdef HAVE_LIBXC
-#include <xc.h>
-#endif
 
 #include "pspio.h"
 #include "pspio_error.h"
@@ -31,6 +28,11 @@
 
 #if defined HAVE_CONFIG_H
 #include "config.h"
+#endif
+
+#ifdef HAVE_LIBXC
+#include <xc.h>
+#include <xc_funcs.h>
 #endif
 
 /**
