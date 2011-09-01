@@ -61,6 +61,18 @@ int pspio_potential_alloc(pspio_potential_t *potential, const int np);
 
 
 /**
+ * Gets the potential value at a given radius.
+ * @param[in] potential: potential structure to probe
+ * @param[in] r: radius
+ * @param[out] value: value of the potential
+ * @return error code
+ * @note The potential pointer has to be fully set first.
+ */
+int pspio_potential_get(pspio_potential_t *potential, double r,
+      double *value);
+
+
+/**
  * Sets the potential data.
  * @param[in,out] potential: potential structure to set
  * @param[in] qn: pointer to quantum numbers

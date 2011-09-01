@@ -56,6 +56,16 @@ int pspio_potential_alloc(pspio_potential_t *potential, const int np){
 }
 
 
+int pspio_potential_get(pspio_potential_t *potential, double r,
+      double *value) {
+  ASSERT((potential != NULL) && (potential->v != NULL), PSPIO_ERROR)
+
+  HANDLE_FUNC_ERROR(pspio_meshfunc_eval(potential->v, r, value))
+
+  return PSPIO_SUCCESS;
+}
+
+
 int pspio_potential_set(pspio_potential_t *potential, pspio_qn_t *qn, pspio_mesh_t *mesh, double *v){
 
   ASSERT (potential != NULL, PSPIO_ERROR);

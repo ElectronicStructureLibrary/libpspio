@@ -86,13 +86,21 @@ pio_built_hdrs = $(pio_fortran_mods)
 # Essential build parameters
 INCLUDES = @pio_core_incs@
 
+# If there is any Fortran source file in the library under some
+# circumstances (here when using --enable-fortran), Libtool will annoyingly
+# select the Fortran linker in ALL cases, which causes the shared object
+# to be silently screwed, the error appearing only at install time. The
+# following trick should solve this issue.
+pio_fortran_objs = $(pio_fortran_srcs:.F90=.$(LTOBJEXT))
+pio_built_objs = $(pio_fortran_objs)
+
 # Libraries
 lib_LTLIBRARIES = libpspio.la
 
 libpspio_la_LDFLAGS = -version-info 0:0:0
 libpspio_la_SOURCES = $(pio_core_srcs)
 if DO_BUILD_FORTRAN
-  nodist_libpspio_la_SOURCES = $(pio_built_srcs)
+  libpspio_la_LIBADD = $(pio_built_objs)
 endif
 
 # Headers
@@ -110,4 +118,8 @@ clean-local:
 
 # Explicit dependencies (if needed, e.g. with Fortran)
 # Use $(LTOBJEXT) as extension for object files
-# ...
+if DO_BUILD_FORTRAN
+pspio_fortran.$(LTOBJEXT): pspio_fortran.F90
+	@echo "FIXME"
+	@false
+endif
