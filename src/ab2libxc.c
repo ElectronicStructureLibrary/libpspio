@@ -31,8 +31,10 @@
 #endif
 
 #ifdef HAVE_LIBXC
-#include <xc.h>
-#include <xc_funcs.h>
+#  include <xc.h>
+#  include <xc_funcs.h>
+#else
+#  include "xc_funcs_pspio.h"
 #endif
 
 /**
