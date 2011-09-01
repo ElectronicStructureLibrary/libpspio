@@ -30,6 +30,10 @@
 #endif
 
 
+/**********************************************************************
+ * Global routines                                                    *
+ **********************************************************************/
+
 int pspio_qn_alloc(pspio_qn_t *qn) {
   ASSERT( qn == NULL, PSPIO_ERROR)
 
@@ -80,3 +84,20 @@ int pspio_qn_free(pspio_qn_t *qn) {
   return PSPIO_SUCCESS;
 }
 
+
+/**********************************************************************
+ * Utility routines                                                   *
+ **********************************************************************/
+
+int pspio_qn_cmp(pspio_qn_t *qn1, pspio_qn_t *qn2) {
+  ASSERT((qn1 != NULL) && (qn2 != NULL), PSPIO_ERROR)
+
+  if ( (qn1->n == qn2->n) && (qn1->l == qn2->l) &&
+       (abs(qn2->j - qn1->j) < 1.0e-9) ) {
+    return PSPIO_QN_EQUAL;
+  } else if ( (qn1->l == qn2->l) && (abs(qn2->j - qn1->j) < 1.0e-9) ) {
+    return PSPIO_QN_MTEQUAL;
+  } else {
+    return PSPIO_QN_DIFF;
+  }
+}

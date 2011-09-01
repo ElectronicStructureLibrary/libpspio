@@ -29,6 +29,9 @@
 #include "pspio_common.h"
 #include "pspio_error.h"
 
+#define PSPIO_QN_EQUAL   -1
+#define PSPIO_QN_MTEQUAL -2
+#define PSPIO_QN_DIFF    -3
 
 /**********************************************************************
  * Data structures                                                    *
@@ -90,5 +93,22 @@ int pspio_qn_free(pspio_qn_t *qn);
  *       method.
  */
 int pspio_qn_set(pspio_qn_t *qn, const int n, const int l, const double j);
+
+
+/**********************************************************************
+ * Utility routines                                                   *
+ **********************************************************************/
+
+/**
+ * Compares two sets of quantum numbers.
+ * @param[in] qn1: first set to compare
+ * @param[in] qn2: second set to compare
+ * @return PSPIO_QN_EQUAL for strict equality, PSPIO_QN_MTEQUAL when the
+ *         angular momenta are equal, PSPIO_QN_DIFF when different,
+ *         PSPIO_ERROR if a problem occured
+ * @note For now, the return value can be interpreted in different ways
+ *       depending on its sign.
+ */
+int pspio_qn_cmp(pspio_qn_t *qn1, pspio_qn_t *qn2);
 
 #endif
