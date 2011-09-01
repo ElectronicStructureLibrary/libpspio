@@ -135,6 +135,10 @@ int read_abinit_header (FILE *fp, pspio_pspdata_t *psp_data, int pspcod, double 
 */
 int read_abinit_header_nlcc (FILE *fp, double rchrg, double fchrg){
 
+  int narg;
+  char line[MAX_STRLEN];
+  double qchrg;
+
   /// if we have a NLCC data line to read
   rchrg = 0.0;
   fchrg = 0.0;
@@ -143,7 +147,7 @@ int read_abinit_header_nlcc (FILE *fp, double rchrg, double fchrg){
     HANDLE_ERROR(PSPIO_EIO);
   }
   narg = sscanf (line, "%lf %lf %lf", &rchrg, &fchrg, &qchrg);
-  PSPIO_ASSERT(narg==3, PSPIO_EIO)
+  PSPIO_ASSERT(narg==3, PSPIO_EIO);
 
   return PSPIO_SUCCESS;
 
