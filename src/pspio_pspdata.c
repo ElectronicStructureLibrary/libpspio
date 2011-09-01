@@ -136,14 +136,27 @@ int pspio_pspdata_free(pspio_pspdata_t *psp_data){
  * Atomic routines                                                    *
  **********************************************************************/
 
-int pspio_pspdata_potential_get(const pspio_pspdata_t *data, const int n,
-      const int l, const double j, const double r, double *value) {
-  ASSERT(data != NULL, PSPIO_ERROR)
-  ASSERT(value != NULL, PSPIO_ERROR)
-  ASSERT((n >= 0) && (l >=0) &&
-    ((j == 0) || (abs(j - (double)l) - 0.5 < 10e-9)), PSPIO_ERROR)
+int pspio_pspdata_potential_get(const pspio_pspdata_t *data, const int l,
+      const double j, const double r, double *value) {
+  ASSERT(data != NULL, PSPIO_ERROR);
+  ASSERT(value != NULL, PSPIO_ERROR);
+  ASSERT((l >=0) &&
+	 ((j == 0) || (abs(j - (double)l) - 0.5 < 10e-9)), PSPIO_ERROR);
 
-  HANDLE_FUNC_ERROR(pspio_meshfunc_eval(data->potentials[l+(int)j]->v,r,value))
+  HANDLE_FUNC_ERROR(pspio_meshfunc_eval(data->potentials[l+(int)j]->v,r,value));
+
+  return PSPIO_SUCCESS;
+}
+
+
+int pspio_pspdata_kbprojector_get(const pspio_pspdata_t *data, const int l,
+      const double j, const double r, double *value) {
+  ASSERT(data != NULL, PSPIO_ERROR);
+  ASSERT(value != NULL, PSPIO_ERROR);
+  ASSERT( (l >=0) &&
+	 ((j == 0) || (abs(j - (double)l) - 0.5 < 10e-9)), PSPIO_ERROR);
+
+  HANDLE_FUNC_ERROR(pspio_meshfunc_eval(data->kb_projectors[l+(int)j]->proj,r,value));
 
   return PSPIO_SUCCESS;
 }

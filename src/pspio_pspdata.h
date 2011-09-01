@@ -96,7 +96,8 @@ typedef struct{
   pspio_mesh_t *mesh; /**< Radial mesh - all functions should be discretized on this mesh */
 
   // The states
-  int n_states;          /**< number of electronic states */
+  int **qn_to_istate;     /**< table giving the position of the state from the quantum numbers */ 
+  int n_states;           /**< number of electronic states */
   pspio_state_t **states; /**< struct with electronic states */
 
   // The pseudopotentials
@@ -152,7 +153,6 @@ int pspio_pspdata_free(pspio_pspdata_t *psp_data);
  * Gets a potential associated with the psp_data structure for given
  * radius and angular momenta.
  * @param[in] psp_data: pointer to psp_data structure to be probed
- * @param[in] n: quantum number
  * @param[in] l: angular momentum
  * @param[in] j: total angular momentum
  * @param[in] r: radius
@@ -161,7 +161,22 @@ int pspio_pspdata_free(pspio_pspdata_t *psp_data);
  * @note This routine is called many times when using Libpspio. Please
  *       keep performance in mind when tweaking it.
  */
-int pspio_pspdata_potential_get(const pspio_pspdata_t *data, const int n,
-      const int l, const double j, const double r, double *value);
+int pspio_pspdata_potential_get(const pspio_pspdata_t *data, const int l, 
+     const double j, const double r, double *value);
+
+/**
+ * Gets a KB projector associated with the psp_data structure for given
+ * radius and angular momenta.
+ * @param[in] psp_data: pointer to psp_data structure to be probed
+ * @param[in] l: angular momentum
+ * @param[in] j: total angular momentum
+ * @param[in] r: radius
+ * @param[out] value: value of the specified projector at r
+ * @return error code.
+ * @note This routine is called many times when using Libpspio. Please
+ *       keep performance in mind when tweaking it.
+ */
+int pspio_pspdata_kbprojector_get(const pspio_pspdata_t *data, const int l,
+      const double j, const double r, double *value);
 
 #endif
