@@ -28,10 +28,8 @@
 
 #include "pspio.h"
 
-
 #define GO_BACK 1
 #define NO_GO_BACK 0
-
 
 typedef struct{
 	char nl[2];
@@ -70,7 +68,7 @@ int pspio_upf_file_read(FILE * fp, pspio_pspdata_t * psp_data);
  * @param[in] tag the tag
  * @return 0 if defined. 1 else
  */
-int tag_isdef(FILE * fp, char * tag);
+int tag_isdef(FILE * fp, const char * tag);
 
 
 /** 
@@ -80,7 +78,7 @@ int tag_isdef(FILE * fp, char * tag);
  * @param[in] go_back decides it has to go to the beginning of the file
  * @return error code
  */
-int init_tag(FILE * fp, char * tag, int go_back);
+int init_tag(FILE * fp, const char * tag, const int go_back);
 
 /** 
  * Evaluates if a tag is correctly closed
@@ -88,7 +86,7 @@ int init_tag(FILE * fp, char * tag, int go_back);
  * @param[in] tag the tag
  * @return 0 if correct. 1 else
  */
-int check_end_tag(FILE * fp, char * tag);
+int check_end_tag(FILE * fp, const char * tag);
 
 /**
  * Description
