@@ -68,14 +68,14 @@ int read_abinit_header (FILE *fp, pspio_pspdata_t *psp_data, int pspcod, double 
     HANDLE_ERROR(PSPIO_EIO);
   }
   narg = sscanf (line, "%lf %lf %d", &(psp_data->z), &(psp_data->zvalence), &idum);
-  PSPIO_ASSERT(narg==2, PSPIO_EIO)
+  PSPIO_ASSERT(narg==2, PSPIO_EIO);
  
   /**< read in psp code and xc code*/
   if(fgets(line, MAX_STRLEN, fp) == NULL) {
     HANDLE_ERROR(PSPIO_EIO);
   }
   narg = sscanf (line, "%d %d %d %d %d", &pspcod, &pspxc, &(psp_data->l_max), &(psp_data->l_local), &np);
-  PSPIO_ASSERT(narg==5, PSPIO_EIO)
+  PSPIO_ASSERT(narg==5, PSPIO_EIO);
 
 
   // inferred from abinit web site http://www.abinit.org/documentation/helpfiles/for-v6.8/users/abinit_help.html#5
@@ -109,8 +109,8 @@ int read_abinit_header (FILE *fp, pspio_pspdata_t *psp_data, int pspcod, double 
       HANDLE_ERROR(PSPIO_EIO);
     }
     narg = sscanf (line, "%lf %lf %d", &aa, &bb, &pspso);
-    PSPIO_ASSERT(narg==3, PSPIO_EIO)
-    PSPIO_ASSERT(pspso==1 || pspso==2, PSPIO_EVALUE)
+    PSPIO_ASSERT(narg==3, PSPIO_EIO);
+    PSPIO_ASSERT(pspso==1 || pspso==2, PSPIO_EVALUE);
 
     // for the moment do nothing with these lines
     for (lm=0; lm<pspso*psp_data->l_max+1; lm++){
@@ -130,7 +130,7 @@ int read_abinit_header (FILE *fp, pspio_pspdata_t *psp_data, int pspcod, double 
       HANDLE_ERROR(PSPIO_EIO);
     }
     narg = sscanf (line, "%lf %lf %lf", &rchrg, &fchrg, &qchrg);
-    PSPIO_ASSERT(narg==3, PSPIO_EIO)
+    PSPIO_ASSERT(narg==3, PSPIO_EIO);
   }
 
   HANDLE_FUNC_ERROR(pspio_mesh_alloc (psp_data->mesh, np));

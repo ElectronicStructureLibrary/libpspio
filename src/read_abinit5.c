@@ -64,7 +64,7 @@ int read_abinit5 (FILE *fp, pspio_pspdata_t *psp_data){
     HANDLE_ERROR ( PSPIO_EIO );
   }
   narg = sscanf (line, "%d %d %d %d %d", &pspcod, &pspxc, &(psp_data->l_max), &idum, &((psp_data->mesh)->np) );
-  PSPIO_ASSERT(narg==5, PSPIO_EIO)
+  PSPIO_ASSERT(narg==5, PSPIO_EIO);
 
   return PSPIO_SUCCESS;
 
