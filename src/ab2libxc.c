@@ -126,9 +126,10 @@ int ab2libxc (int pspxc, pspio_pspdata_t *psp_data){
       (*psp_data).exchange = XC_LDA_X;
       (*psp_data).correlation = XC_LDA_C_PW;
       break;
-    case 9:
-      (*psp_data).exchange = XC_LDA_X;
-      (*psp_data).correlation = XC_LDA_C_PW_RPA;
+    // FIXME: not in LibXC 1.0
+    //case 9:
+      //(*psp_data).exchange = XC_LDA_X;
+      //(*psp_data).correlation = XC_LDA_C_PW_RPA;
       break;
     case 11:
       (*psp_data).exchange = XC_GGA_X_PBE;
@@ -138,9 +139,10 @@ int ab2libxc (int pspxc, pspio_pspdata_t *psp_data){
       (*psp_data).exchange = XC_GGA_X_PBE;
       (*psp_data).correlation = XC_NONE;
       break;
-    case 13:
-      (*psp_data).exchange = XC_GGA_X_LB;
-      (*psp_data).correlation = XC_GGA_C_PW91; // this is probably incorrect - which correlation do VL Baerends use?
+    // FIXME: not in LibXC 1.0
+    //case 13:
+      //(*psp_data).exchange = XC_GGA_X_LB;
+      //(*psp_data).correlation = XC_GGA_C_PW91; // this is probably incorrect - which correlation do VL Baerends use?
       break;
     case 14:
       (*psp_data).exchange = XC_GGA_X_PBE_R;
