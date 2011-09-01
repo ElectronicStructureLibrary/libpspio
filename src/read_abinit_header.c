@@ -18,17 +18,19 @@
  $Id$
 */
 
-#ifdef HAVE_CONFIG_H
-#include "config.h"
-#endif
-
 /** subroutine to read in abinit header which is generic to all psp files for abinit */
 
 #include <stdio.h>
 #include <string.h>
+
 #include "pspio_error.h"
 #include "pspio_common.h"
 #include "pspio.h"
+
+#if defined HAVE_CONFIG_H
+#include "config.h"
+#endif
+
 
 /**
 * subroutine reads in full abinit header file and initializes psp_data structure with available stuff

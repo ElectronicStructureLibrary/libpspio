@@ -26,10 +26,6 @@
 #ifndef PSPIO_MESHFUNC_H
 #define PSPIO_MESHFUNC_H
 
-#ifdef HAVE_CONFIG_H
-#include "config.h"
-#endif
-
 #include <gsl/gsl_spline.h>
 
 #include "pspio_error.h"
@@ -39,6 +35,7 @@
 /**********************************************************************
  * Data structures                                                    *
  **********************************************************************/
+
 /**
 * Mesh function structure
 */

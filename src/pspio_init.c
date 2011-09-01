@@ -24,8 +24,14 @@
  */
 
 #include <stdio.h>
+
 #include "pspio_common.h"
 #include "pspio.h"
+
+#if defined HAVE_CONFIG_H
+#include "config.h"
+#endif
+
 
 int psp_init(char * file_name, int file_format, pspio_pspdata_t * psp_data){
   FILE * fp;

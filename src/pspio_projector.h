@@ -26,10 +26,6 @@
 #ifndef PSPIO_PROJECTOR_H
 #define PSPIO_PROJECTOR_H
 
-#ifdef HAVE_CONFIG_H
-#include "config.h"
-#endif
-
 #include "pspio_error.h"
 #include "pspio_mesh.h"
 #include "pspio_meshfunc.h"

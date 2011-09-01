@@ -18,11 +18,17 @@
  $Id$
 */
 
-#include "pspio_mesh.h"
-#include "pspio_error.h"
 #include <stdlib.h>
 #include <string.h>
 #include <math.h>
+
+#include "pspio_mesh.h"
+#include "pspio_error.h"
+
+#if defined HAVE_CONFIG_H
+#include "config.h"
+#endif
+
 
 int pspio_mesh_alloc(pspio_mesh_t *mesh, const int np){
   int i;

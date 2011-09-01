@@ -18,8 +18,14 @@
  $Id$
 */
 
-#include "pspio_nlcc.h"
 #include <stdlib.h>
+
+#include "pspio_nlcc.h"
+
+#if defined HAVE_CONFIG_H
+#include "config.h"
+#endif
+
 
 int pspio_nlcc_alloc(pspio_nlcc_t *nlcc, const int np){
   int ierr;

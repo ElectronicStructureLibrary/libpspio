@@ -25,6 +25,10 @@
 #include "pspio_error.h"
 #include "pspio_qn.h"
 
+#if defined HAVE_CONFIG_H
+#include "config.h"
+#endif
+
 
 int pspio_qn_alloc(pspio_qn_t *qn) {
   ASSERT( qn == NULL, PSPIO_ERROR)

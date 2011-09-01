@@ -26,10 +26,6 @@
 #if !defined PSPIO_QN_H
 #define PSPIO_QN_H
 
-#if defined HAVE_CONFIG_H
-#include "config.h"
-#endif
-
 #include "pspio_common.h"
 #include "pspio_error.h"
 

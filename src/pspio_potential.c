@@ -18,8 +18,14 @@
  $Id$
 */
 
-#include "pspio_potential.h"
 #include <stdlib.h>
+
+#include "pspio_potential.h"
+
+#if defined HAVE_CONFIG_H
+#include "config.h"
+#endif
+
 
 int pspio_potential_alloc(pspio_potential_t *potential, const int np){
   int ierr;

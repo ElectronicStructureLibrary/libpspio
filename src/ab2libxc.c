@@ -21,12 +21,16 @@
 
 #include <stdio.h>
 #include <string.h>
+#ifdef HAVE_LIBXC
+#include <xc.h>
+#endif
+
 #include "pspio.h"
 #include "pspio_error.h"
 #include "libxccodes.h"
 
-#ifdef HAVE_LIBXC
-#include <xc.h>
+#if defined HAVE_CONFIG_H
+#include "config.h"
 #endif
 
 /**

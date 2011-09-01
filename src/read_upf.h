@@ -26,15 +26,11 @@
 #if !defined PSPIO_READIUPF_H
 #define PSPIO_READUPF_H
 
-#if defined HAVE_CONFIG_H
-#include "config.h"
-#endif
+#include "pspio.h"
+
 
 #define GO_BACK 1
 #define NO_GO_BACK 0
-#include <stdio.h>
-#include <string.h>
-#include "pspio.h"
 
 
 typedef struct{

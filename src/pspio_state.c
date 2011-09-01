@@ -20,8 +20,13 @@
 
 #include <stdio.h>
 #include <string.h>
+
 #include "pspio_error.h"
 #include "pspio_state.h"
+
+#if defined HAVE_CONFIG_H
+#include "config.h"
+#endif
 
 
 /**********************************************************************

@@ -18,8 +18,13 @@
  $Id$
 */
 
-#include "pspio_projector.h"
 #include <stdlib.h>
+
+#include "pspio_projector.h"
+
+#if defined HAVE_CONFIG_H
+#include "config.h"
+#endif
 
 
 int pspio_projector_alloc(pspio_projector_t *projector, const int np){

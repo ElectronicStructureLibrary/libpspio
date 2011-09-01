@@ -28,10 +28,6 @@
 
 #include <stdlib.h>
 
-#if defined HAVE_CONFIG_H
-#include "config.h"
-#endif
-
 
 #define PSPIO_SUCCESS  0 
 #define PSPIO_ERROR   -1

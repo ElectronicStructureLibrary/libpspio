@@ -26,14 +26,9 @@
 #if !defined PSPIO_STATES_H
 #define PSPIO_STATES_H
 
-#include <stdlib.h>
 #include "pspio_qn.h"
 #include "pspio_mesh.h"
 #include "pspio_meshfunc.h"
-
-#if defined HAVE_CONFIG_H
-#include "config.h"
-#endif
 
 
 /**********************************************************************

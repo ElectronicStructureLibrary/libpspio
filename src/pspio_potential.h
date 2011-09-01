@@ -26,10 +26,6 @@
 #ifndef PSPIO_POTENTIAL_H
 #define PSPIO_POTENTIAL_H
 
-#ifdef HAVE_CONFIG_H
-#include "config.h"
-#endif
-
 #include "pspio_error.h"
 #include "pspio_mesh.h"
 #include "pspio_meshfunc.h"

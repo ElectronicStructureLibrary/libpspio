@@ -21,7 +21,12 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+
 #include "pspio_error.h"
+
+#if defined HAVE_CONFIG_H
+#include "config.h"
+#endif
 
 
 int pspio_error_add(const char *filename, const int line) {

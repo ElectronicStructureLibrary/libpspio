@@ -25,6 +25,11 @@
 
 #include "read_upf.h"
 
+#if defined HAVE_CONFIG_H
+#include "config.h"
+#endif
+
+
 /* start the implementations */
 /*****************************/
 int  pspio_upf_init(FILE * fp, pspio_pspdata_t * psp_data){

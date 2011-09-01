@@ -18,10 +18,15 @@
  $Id$
 */
 
-#include "pspio_meshfunc.h"
-
 #include <stdlib.h>
 #include <string.h>
+
+#include "pspio_meshfunc.h"
+
+#if defined HAVE_CONFIG_H
+#include "config.h"
+#endif
+
 
 int pspio_meshfunc_alloc(pspio_meshfunc_t *func, const int np){
   int i, ierr;

@@ -18,10 +18,6 @@
  $Id$
 */
 
-#ifdef HAVE_CONFIG_H
-#include "config.h"
-#endif
-
 /** subroutine to read in abinit psp format 4  */
 
 #include <stdio.h>
@@ -29,6 +25,11 @@
 
 #include "pspio_error.h"
 #include "pspio.h"
+
+#if defined HAVE_CONFIG_H
+#include "config.h"
+#endif
+
 
 /**
 * subroutine reads in full abinit file and initializes psp_data structure with available stuff

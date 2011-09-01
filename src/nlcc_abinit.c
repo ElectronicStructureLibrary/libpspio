@@ -18,10 +18,6 @@
  $Id$
 */
 
-#ifdef HAVE_CONFIG_H
-#include "config.h"
-#endif
-
 /** subroutine to make NLCC core charge in abinit psp format 1  */
 
 #include <math.h>
@@ -31,6 +27,10 @@
 #include "pspio_error.h"
 #include "pspio.h"
 #include "pspio_nlcc.h"
+
+#if defined HAVE_CONFIG_H
+#include "config.h"
+#endif
 
 
 /**
