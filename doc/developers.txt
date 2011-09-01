@@ -27,6 +27,12 @@
  * These headers are listed in the makefile in the "pio_hidden_hdrs"
  * variable.
  *
+ * The headers belonging to Libpspio are included using double quotes,
+ * while those coming from other libraries are included using the <toto.h>
+ * convention. The config.h file is always the last to be included, as
+ * it may fine-tune some already-defined parameters and work around some
+ * issues.
+ *
  *
  * @section Private extensions of external libraries
  *
