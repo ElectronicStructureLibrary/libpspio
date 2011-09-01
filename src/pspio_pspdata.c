@@ -22,6 +22,7 @@
 
 #include "pspio_common.h"
 #include "pspio_error.h"
+#include "pspio_meshfunc.h"
 #include "pspio_pspdata.h"
 
 #if defined HAVE_CONFIG_H
@@ -29,8 +30,12 @@
 #endif
 
 
-int psp_pspdata_init(pspio_pspdata_t *psp_data, const char *file_name, 
-		     const int file_format){
+/**********************************************************************
+ * Global routines                                                    *
+ **********************************************************************/
+
+int pspio_pspdata_init(pspio_pspdata_t *psp_data, const char *file_name,
+      const int file_format){
   FILE * fp;
   int ierr;
   int fileformat;
@@ -85,7 +90,7 @@ int psp_pspdata_init(pspio_pspdata_t *psp_data, const char *file_name,
 }
 
 
-int psp_pspdata_free(pspio_pspdata_t *psp_data){
+int pspio_pspdata_free(pspio_pspdata_t *psp_data){
   int i;
 
   if (psp_data != NULL) {
@@ -122,6 +127,23 @@ int psp_pspdata_free(pspio_pspdata_t *psp_data){
     }
 
   }
+
+  return PSPIO_SUCCESS;
+}
+
+
+/**********************************************************************
+ * Atomic routines                                                    *
+ **********************************************************************/
+
+int pspio_pspdata_potential_get(const pspio_pspdata_t *data, const int n,
+      const int l, const double j, const double r, double *value) {
+  ASSERT(data != NULL, PSPIO_ERROR)
+  ASSERT(value != NULL, PSPIO_ERROR)
+  ASSERT((n >= 0) && (l >=0) &&
+    ((j == 0) || (abs(j - (double)l) - 0.5 < 10e-9)), PSPIO_ERROR)
+
+  HANDLE_FUNC_ERROR(pspio_meshfunc_eval(data->potentials[l+(int)j]->v,r,value))
 
   return PSPIO_SUCCESS;
 }

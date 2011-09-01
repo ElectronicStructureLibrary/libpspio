@@ -132,7 +132,7 @@ typedef struct{
  * @note The file format might be UNKNOWN. In that case all the other
  *       formats are tried until the correct one is found.
  */
-int psp_pspdata_init(pspio_pspdata_t *psp_data, const char *file_name, 
+int pspio_pspdata_init(pspio_pspdata_t *psp_data, const char *file_name, 
 		     const int file_format);
 
 
@@ -141,7 +141,27 @@ int psp_pspdata_init(pspio_pspdata_t *psp_data, const char *file_name,
  * @param[in,out] psp_data: pointer to psp_data structure to be
  * @return error code.
  */
-int psp_pspdata_free(pspio_pspdata_t *psp_data);
+int pspio_pspdata_free(pspio_pspdata_t *psp_data);
 
+
+/**********************************************************************
+ * Atomic routines                                                    *
+ **********************************************************************/
+
+/**
+ * Gets a potential associated with the psp_data structure for given
+ * radius and angular momenta.
+ * @param[in] psp_data: pointer to psp_data structure to be probed
+ * @param[in] n: quantum number
+ * @param[in] l: angular momentum
+ * @param[in] j: total angular momentum
+ * @param[in] r: radius
+ * @param[out] value: value of the specified potential at r
+ * @return error code.
+ * @note This routine is called many times when using Libpspio. Please
+ *       keep performance in mind when tweaking it.
+ */
+int pspio_pspdata_potential_get(const pspio_pspdata_t *data, const int n,
+      const int l, const double j, const double r, double *value);
 
 #endif
