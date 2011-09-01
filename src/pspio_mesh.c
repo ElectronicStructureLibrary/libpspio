@@ -116,6 +116,35 @@ int pspio_mesh_init_from_points(pspio_mesh_t *mesh, const double *r) {
 }
 
 
+int pspio_mesh_init_from_parameters(pspio_mesh_t *mesh, const int type, 
+				    const double a, const double b) {
+  int i;
+
+  ASSERT(mesh != NULL, PSPIO_ERROR);
+  ASSERT(type != MESH_UNKNOWN, PSPIO_EVALUE);
+
+  mesh->type = type;
+  mesh->a = a;
+  mesh->b = b;
+
+  for (i=0; i<mesh->np; i++) {
+    switch (type) {
+    case MESH_LINEAR:
+      mesh->r[i] = a*(i+1) + b;
+      break;
+    case MESH_LOG1:
+      mesh->r[i] = b*exp(a*(i+1));
+      break;
+    case MESH_LOG2:
+      mesh->r[i] = b*exp(a*(i+1) - 1.0);
+      break;
+    }
+  }
+
+  return PSPIO_SUCCESS;
+}
+
+
 int pspio_mesh_free(pspio_mesh_t *mesh){
 
   if (mesh != NULL) {

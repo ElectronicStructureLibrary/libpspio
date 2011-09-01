@@ -117,6 +117,20 @@ int pspio_mesh_init_from_points(pspio_mesh_t *mesh, const double *r);
 
 
 /**
+ * Generates the mesh from the mesh type and parameters.
+ * @param[in,out] mesh: mesh structure to set
+ * @param[in] type: type of mesh. Can be LOG1, LOG2, or LINEAR.
+ * @param[in] a: parameter a. The meaning depends on the type of mesh.
+ * @param[in] b: parameter b. The meaning depends on the type of mesh.
+ * @return error code
+ * @note The mesh pointer has to be allocated first with the pspio_mesh_alloc
+ *       method.
+ */
+int pspio_mesh_init_from_parameters(pspio_mesh_t *mesh, const int type, 
+				    const double a, const double b);
+
+
+/**
  * Frees all memory associated with mesh structure
  * 
  * @param[in,out] mesh: mesh structure
