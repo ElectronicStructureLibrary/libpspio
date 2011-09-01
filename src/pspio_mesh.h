@@ -33,14 +33,15 @@
 #include "pspio_error.h"
 
 
-/**
-* Mesh types
-*/
-#define MESH_NONE    0
-#define MESH_LOG1    1
-#define MESH_LOG2    2
-#define MESH_LINEAR  3
-#define MESH_UNKNOWN 4
+/**********************************************************************
+ * Defines                                                            *
+ **********************************************************************/
+
+#define MESH_NONE    0 /**< mesh not set yet */
+#define MESH_LOG1    1 /**< r_i = b*exp(a*i) */
+#define MESH_LOG2    2 /**< r_i = b*(exp(a*i) - 1) */
+#define MESH_LINEAR  3 /**< r_i = a*i + b */
+#define MESH_UNKNOWN 4 /**< unkown type of mesh */
 
 
 /**********************************************************************
@@ -100,6 +101,19 @@ int pspio_mesh_set(pspio_mesh_t *mesh, const int type, const double a,
  *       is allocate here.
  */
 int pspio_mesh_copy(pspio_mesh_t *dst, const pspio_mesh_t *src);
+
+
+/**
+ * Sets the mesh data from a list of points. The function will try to determine
+ * the type of mesh. If it is not able to do it it will set it to MESH_UNKNOWN.
+ * @param[in,out] mesh: mesh structure to set
+ * @param[in] r: pointer to mesh radial points
+ * @return error code
+ * @note The mesh pointer has to be allocated first with the pspio_mesh_alloc
+ *       method.
+ * @note r should be of size mesh->np.
+ */
+int pspio_mesh_init_from_points(pspio_mesh_t *mesh, const double *r);
 
 
 /**

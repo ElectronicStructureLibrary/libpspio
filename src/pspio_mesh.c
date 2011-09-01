@@ -22,6 +22,7 @@
 #include "pspio_error.h"
 #include <stdlib.h>
 #include <string.h>
+#include <math.h>
 
 int pspio_mesh_alloc(pspio_mesh_t *mesh, const int np){
   int i;
@@ -74,6 +75,43 @@ int pspio_mesh_copy(pspio_mesh_t *dst, const pspio_mesh_t *src){
   dst->a = src->b;
   memcpy(dst->r, src->r, src->np * sizeof(double));
 
+  return PSPIO_SUCCESS;
+}
+
+
+int pspio_mesh_init_from_points(pspio_mesh_t *mesh, const double *r) {
+  ASSERT( mesh != NULL, PSPIO_ERROR);
+
+  memcpy(mesh->r, r, mesh->np * sizeof(double));
+
+  // Try linear mesh
+  mesh->a = r[1] - r[2];
+  mesh->b = r[0];
+  if (abs(r[mesh->np] - mesh->np * mesh->a + mesh->b) < 1e-16) {
+    mesh->type = MESH_LINEAR;
+    return PSPIO_SUCCESS;
+  }
+
+  // Try log1 mesh
+  mesh->a = log(r[1]/r[0]);
+  mesh->b = r[0]/exp(mesh->a);
+  if (abs(r[mesh->np] - mesh->b*exp(mesh->a*mesh->np)) < 1e-16 ) {
+    mesh->type = MESH_LOG1;
+    return PSPIO_SUCCESS;
+  }
+
+  // Try log2 mesh
+  mesh->a = log(r[1]/r[0] - 1.0);
+  mesh->b = r[0]/(exp(mesh->a) - 1.0);
+  if (abs(r[mesh->np] - mesh->b*(exp(mesh->a*mesh->np) - 1.0)) < 1e-16 ) {
+    mesh->type = MESH_LOG2;
+    return PSPIO_SUCCESS;
+  }
+
+  // Unable to determine mesh type
+  mesh->type = MESH_UNKNOWN;
+  mesh->a = 0.0;
+  mesh->b = 0.0;
   return PSPIO_SUCCESS;
 }
 
