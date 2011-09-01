@@ -22,7 +22,7 @@
  * @file read_upf.c
  * @brief implementation to read in UPF files 
  */
-
+#include <string.h>
 #include "read_upf.h"
 
 #if defined HAVE_CONFIG_H
@@ -40,7 +40,7 @@ int  pspio_upf_init(FILE * fp, pspio_pspdata_t * psp_data){
 }
 
 int pspio_upf_file_read(FILE * fp, pspio_pspdata_t * psp_data){
-  int i,j,ierr, narg;
+  int i,j,ierr, narg, id_left;
   int version_number;
   char line[MAX_STRLEN];
   char symbol[2];
@@ -53,11 +53,16 @@ int pspio_upf_file_read(FILE * fp, pspio_pspdata_t * psp_data){
   //variables for the mesh
   double *r, *drdi, *core_density;
 
+  //variables for local potential
+  double * vlocal_read;
+  pspio_qn_t * qn_empty;
+  pspio_potential_t * vlocal;
+
   //variables for the projections
   pspio_projector_t ** projectors;
   pspio_mesh_t * mesh;
 
-  double * e, * v_local;
+  double * e;
   int n_dij,ii,jj;
 
   //variables for the wavefunctions
@@ -96,9 +101,28 @@ int pspio_upf_file_read(FILE * fp, pspio_pspdata_t * psp_data){
   if(fgets(line, MAX_STRLEN, fp) == NULL) {
     HANDLE_ERROR(PSPIO_EIO);
   }
-  narg = sscanf (line, "%s %s %s %s",&exchange); // read the exchange-correlation functional!!CORRECTION NEEDED!!!!!!! either we have to skipt or read it like in LIBXC
-  PSPIO_ASSERT(narg==3, PSPIO_EIO);
-  
+
+  //store the 2 functionals (4 identifiers) into one string
+  id_left = 4;
+  i = 0;
+  j = 0;
+  while ( id_left && &line[i] != NULL){
+    if (line[i]!=' '){
+      //Save the identifier char by char
+      exchange[j] = line[i];
+      j++;
+      //Find that if it is the last char of the identifier
+      if (line[i-1] == ' ')
+	id_left--;
+      //if the next is whitespace have to included in the output
+      if (line[i+1] == ' ' ){
+	exchange[j] == ' ';
+	j++;
+      }
+    }
+    i++;
+  }
+    
   if(fgets(line, MAX_STRLEN, fp) == NULL) {
     HANDLE_ERROR(PSPIO_EIO);
   }
@@ -143,7 +167,7 @@ int pspio_upf_file_read(FILE * fp, pspio_pspdata_t * psp_data){
     HANDLE_ERROR(PSPIO_EIO);
   } //skip the first line
   
-  qn_vec = (pspio_qn_t *)malloc(n_states * sizeof(pspio_qn_t));
+  *(qn_vec) = (pspio_qn_t *)malloc(n_states * sizeof(pspio_qn_t));
   for (i=0; i<n_states; i++) {
     if(fgets(line, MAX_STRLEN, fp) == NULL) {
       HANDLE_ERROR(PSPIO_EIO);
@@ -154,7 +178,7 @@ int pspio_upf_file_read(FILE * fp, pspio_pspdata_t * psp_data){
     HANDLE_FUNC_ERROR(pspio_qn_set(qn,(int)wavefunctions[i].nl[0],wavefunctions[i].l,wavefunctions[i].occ));
     
     qn_vec[i] = qn;
-    HANDLE_FUNC_ERROR(pspio_qn_free(qn));
+    //HANDLE_FUNC_ERROR(pspio_qn_free(qn)); ??
     PSPIO_ASSERT(narg==3, PSPIO_EIO);
   }
   HANDLE_FUNC_ERROR(check_end_tag(fp, "PP_HEADER"));
@@ -175,6 +199,8 @@ int pspio_upf_file_read(FILE * fp, pspio_pspdata_t * psp_data){
   
   HANDLE_FUNC_ERROR(check_end_tag(fp, "PP_R"));
   
+ 
+
   HANDLE_FUNC_ERROR(init_tag(fp, "PP_RAB", NO_GO_BACK));
   drdi = (double *)malloc(np*sizeof(double));
   HANDLE_FATAL_ERROR(drdi == NULL,PSPIO_ENOMEM);
@@ -187,7 +213,12 @@ int pspio_upf_file_read(FILE * fp, pspio_pspdata_t * psp_data){
     PSPIO_ASSERT(narg==4, PSPIO_EIO);
   }                                                
   HANDLE_FUNC_ERROR(check_end_tag(fp, "PP_RAB"));
-  HANDLE_FUNC_ERROR(check_end_tag(fp, "PP_MESH"));
+  HANDLE_FUNC_ERROR(check_end_tag(fp, "PP_MESH")); 
+
+  //Store the mesh in the general pspio_mesh_t format
+  HANDLE_FUNC_ERROR(pspio_mesh_alloc(mesh,np));
+  HANDLE_FUNC_ERROR(pspio_mesh_init_from_points(mesh,r,drdi));
+  psp_data->mesh = mesh;
   // Mesh info end --------------------------------------------------------.....
   
   //Non-linear core-corrections ////////////////////////////////////////////////
@@ -212,26 +243,30 @@ int pspio_upf_file_read(FILE * fp, pspio_pspdata_t * psp_data){
   
   //Local component ////////////////////////////////////////////////////////////
   HANDLE_FUNC_ERROR(init_tag(fp, "PP_LOCAL",GO_BACK));
-  v_local = (double *)malloc(np*sizeof(double));
-  HANDLE_FATAL_ERROR(v_local == NULL,PSPIO_ENOMEM);
+  vlocal_read = (double *)malloc(np*sizeof(double));
+  HANDLE_FATAL_ERROR(vlocal_read == NULL,PSPIO_ENOMEM);
   
   for (i=0; i<np; i+4) {
     if (fgets(line, MAX_STRLEN, fp) == NULL) {
       HANDLE_ERROR(PSPIO_EIO);
     }
-    narg = sscanf(line,"%lf %lf %lf %lf",&v_local[i],&v_local[i+1],&v_local[i+2],&v_local[i+3]);
+    narg = sscanf(line,"%lf %lf %lf %lf",&vlocal_read[i],&vlocal_read[i+1],&vlocal_read[i+2],&vlocal_read[i+3]);
     PSPIO_ASSERT(narg==4, PSPIO_EIO);
   }
   HANDLE_FUNC_ERROR(check_end_tag(fp,"PP_LOCAL"));
+  //Store the local potential in the general data structure
+  HANDLE_FUNC_ERROR(pspio_qn_alloc(qn_empty));
+  HANDLE_FUNC_ERROR(pspio_potential_alloc(vlocal,np));
+  HANDLE_FUNC_ERROR(pspio_potential_set(vlocal,qn_empty,mesh,vlocal_read));
+  psp_data->vlocal = vlocal;
   //Local component end --------------------------------------------------------
   
   ///@warning Non-local component. Skipt form the moment ///////////////////////
   HANDLE_FUNC_ERROR(init_tag(fp,"PP_NONLOCAL",GO_BACK));
   //Allocate a mesh for every projection
-  pspio_mesh_alloc(mesh,np);
   for (i=0; i<np;i++){
     //Allocate a projector for every point
-    pspio_projector_alloc (*projectors, mesh);
+    pspio_projector_alloc (projectors, mesh);
   }
   for (i=0; i<n_proj;i++){
     HANDLE_FUNC_ERROR(init_tag(fp,"PP_BETA",NO_GO_BACK));
