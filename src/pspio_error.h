@@ -72,7 +72,9 @@ static pspio_error_t *pspio_error_chain = NULL;
 
 /**
  * Add an error to the chain
- * @param[in] new_error: new error to add
+ * @param[in] filename: source filename (use NULL if none).
+ * @param[in] line: line number in the source file (ignored if filename
+ *            is NULL).
  * @return error code
  */
 int pspio_error_add(const char *filename, const int line);
@@ -106,7 +108,7 @@ void pspio_error_show(const int error_id, const char *filename,
 
 /**
  * Returns a string with error description.
- * @param[in] error_id: integer identifying the error.
+ * @param[in] pspio_errorid: integer identifying the error.
  * @return string with error message.
  */
 const char *pspio_error_str(const int pspio_errorid);
@@ -144,6 +146,7 @@ const char *pspio_error_str(const int pspio_errorid);
 
 /**
  * Error handler macro for fatal errors
+ * @param[in] condition: condition to check
  * @param[in] error_id: error code to set before aborting
  */
 #define HANDLE_FATAL_ERROR(condition, error_id) \
@@ -168,7 +171,7 @@ const char *pspio_error_str(const int pspio_errorid);
 
 /**
  * Basic error handler macro
- * @param[id] error_id: error code to check
+ * @param[in] error_id: error code to check
  */
 #define HANDLE_ERROR(error_id) \
   if ( error_id != PSPIO_SUCCESS ) { \
