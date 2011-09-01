@@ -21,11 +21,16 @@
 #include <stdlib.h>
 
 #include "pspio_potential.h"
+#include "pspio_qn.h"
 
 #if defined HAVE_CONFIG_H
 #include "config.h"
 #endif
 
+
+/**********************************************************************
+ * Global routines                                                    *
+ **********************************************************************/
 
 int pspio_potential_alloc(pspio_potential_t *potential, const int np){
   int ierr;
@@ -69,5 +74,23 @@ int pspio_potential_free(pspio_potential_t *potential){
     pspio_meshfunc_free(potential->v);
     free(potential);
   }
+  return PSPIO_SUCCESS;
+}
+
+
+/**********************************************************************
+ * Atomic routines                                                    *
+ **********************************************************************/
+
+int pspio_potential_get_qn(pspio_potential_t *potential, pspio_qn_t *qn) {
+  ASSERT((potential != NULL) && (potential->qn != NULL), PSPIO_ERROR)
+
+  if ( qn == NULL ) {
+    HANDLE_FUNC_ERROR(pspio_qn_alloc(qn))
+  }
+  qn->n = potential->qn->n;
+  qn->l = potential->qn->l;
+  qn->j = potential->qn->j;
+
   return PSPIO_SUCCESS;
 }

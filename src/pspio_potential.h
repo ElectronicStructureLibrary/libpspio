@@ -61,7 +61,7 @@ int pspio_potential_alloc(pspio_potential_t *potential, const int np);
 
 
 /**
- * Sets the potential datga.
+ * Sets the potential data.
  * @param[in,out] potential: potential structure to set
  * @param[in] qn: pointer to quantum numbers
  * @param[in] mesh: the mesh structure
@@ -82,5 +82,19 @@ int pspio_potential_set(pspio_potential_t *potential, pspio_qn_t *qn, pspio_mesh
  *       potential components have not been allocated.
  */
 int pspio_potential_free(pspio_potential_t *potential);
+
+
+/**********************************************************************
+ * Atomic routines                                                    *
+ **********************************************************************/
+
+/**
+ * Sets the potential data.
+ * @param[in] potential: pointer to potential structure
+ * @param[out] qn: pointer to quantum numbers
+ * @return error code
+ * @note The potential pointer has to be fully set.
+ */
+int pspio_potential_get_qn(pspio_potential_t *potential, pspio_qn_t *qn);
 
 #endif
