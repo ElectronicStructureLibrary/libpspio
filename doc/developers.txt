@@ -1,7 +1,7 @@
 /**
  * @mainpage Instructions for the developers of Libpspio
  *
- * @section Introduction
+ * @section intro Introduction
  * 
  * One important aspect to pay attention to is to always distinguish clearly
  * the difference between what a developer of the library needs and what a
@@ -11,7 +11,7 @@
  * concepts are explained practically in the following sections.
  * 
  * 
- * @section C headers
+ * @section c_headers C headers
  * 
  * All headers containing data that will be accessed by the users of the
  * library should be clearly identified and preserved from name clashes.
@@ -36,11 +36,39 @@
  * placed after including config.h.
  *
  *
- * @section Private extensions of external libraries
+ * @section libext Private extensions of external libraries
  *
  * Extending privately the capabilities of an external library is not a good
  * idea on the long run, since its developers may decide at some point to
  * extend the capabilities in an incompatible way. Always prefer to discuss
  * of such extensions directly with them. You might get them earlier than
  * you expect.
- */
+ *
+ *
+ * @section indexes Indexes of states, pseudopotentials, and projectors
+ *
+ * To each pseudopotential corresponds a specific pair of l and j
+ * quantum numbers. If we assume that in a set of pseudopotentials all
+ * the l values up to lmax are present, and that j = 0 when the
+ * pseudopotentials are non-relativistic, then we can uniquely identify
+ * an l, j pair by the index i = l + int(j). Thus the pseudopotentials
+ * in psp_data should be have a size of lmax*2+1 or lmax+1, depending if
+ * the atom is treated relativistically or not, and
+ * psp_data->pseudopotentials[l+int(j)] is the pseudopotential with
+ * quantum numbers l, j.
+ *
+ * As for the states, they will also have a n quantum number associated.
+ * In that case we create a matrix qn_to_i[n-1][l+int(j)], where i is
+ * define as in the previous paragraph, such that
+ * psp_data->states[qn_to_istates[n][l+int(j)]] is the state with
+ * quantum numbers n, l, j. The size of the first dimention of the
+ * psp_data->qn_to_i matrix will be maximum value of n, while the size
+ * of the second dimention will be lmax*2+1 or lmax+1, depending if the
+ * atom is treated relativistically or not.
+ *
+ * One of these two schemes can be used for the projectors, depending if
+ * there is more than a projector for each l, j pair. For now only 
+ * norm-conserving pseudopotentials are supported, so the projectors will
+ * be stored like for the pseudopotentials.
+ *
+ **/
