@@ -31,7 +31,9 @@
  * while those coming from other libraries are included using the <toto.h>
  * convention. The config.h file is included in the C files only and is
  * always the last to be included, as it may fine-tune some already-defined
- * parameters and work around some issues.
+ * parameters and work around some issues. One noticeable exception is
+ * the conditional including of headers, which should of course be
+ * placed after including config.h.
  *
  *
  * @section Private extensions of external libraries
