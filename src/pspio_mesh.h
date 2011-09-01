@@ -52,6 +52,7 @@ typedef struct{
   double a, b; /**< Mesh parameters */
   int np;      /**< Number of points in mesh */
   double *r;   /**< Mesh points */
+  double *rab; /**< Factor required for discrete integration: rab(i) = (dr(x)/dx)_{x=i} */
 } pspio_mesh_t;
 
 
@@ -76,13 +77,15 @@ int pspio_mesh_alloc(pspio_mesh_t *mesh, const int np);
  * @param[in] type: type of mesh. Can be LOG1, LOG2, or LINEAR.
  * @param[in] a: parameter a. The meaning depends on the type of mesh.
  * @param[in] b: parameter b. The meaning depends on the type of mesh.
- * @param[in] r: pointer to mesh radial points. Should be of size mesh->np.
+ * @param[in] r: pointer to mesh radial points.
+ * @param[in] rab: pointer to discrete integration factors.
  * @return error code
  * @note The mesh pointer has to be allocated first with the pspio_mesh_alloc
  *       method.
+ * @note r and rab should be of size mesh->np.
  */
 int pspio_mesh_set(pspio_mesh_t *mesh, const int type, const double a, 
-		   const double b, const double *r);
+		   const double b, const double *r, const double *rab);
 
 
 /**
@@ -104,12 +107,16 @@ int pspio_mesh_copy(pspio_mesh_t *dst, const pspio_mesh_t *src);
  * the type of mesh. If it is not able to do it it will set it to MESH_UNKNOWN.
  * @param[in,out] mesh: mesh structure to set
  * @param[in] r: pointer to mesh radial points
+ * @param[in] rab: pointer to discrete integration factors.
  * @return error code
  * @note The mesh pointer has to be allocated first with the pspio_mesh_alloc
  *       method.
- * @note r should be of size mesh->np.
+ * @note r and rab should be of size mesh->np.
+ * @note If rab is null it will be determined automatically, otherwise 
+ *       consistency will be checked between r and rab.
  */
-int pspio_mesh_init_from_points(pspio_mesh_t *mesh, const double *r);
+int pspio_mesh_init_from_points(pspio_mesh_t *mesh, const double *r, 
+				const double *rab);
 
 
 /**

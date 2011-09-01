@@ -42,11 +42,15 @@ int pspio_mesh_alloc(pspio_mesh_t *mesh, const int np){
   mesh->r = (double *) malloc (np * sizeof(double));
   HANDLE_FATAL_ERROR (mesh->r == NULL, PSPIO_ENOMEM);
 
+  mesh->rab = (double *) malloc (np * sizeof(double));
+  HANDLE_FATAL_ERROR (mesh->rab == NULL, PSPIO_ENOMEM);
+
   // Presets
   mesh->np = np;
   for (i = 0; i < mesh->np; i++)
     {
       mesh->r[i] = 0;
+      mesh->rab[i] = 0;
     }
   mesh->a = 0;
   mesh->b = 0;
@@ -57,13 +61,14 @@ int pspio_mesh_alloc(pspio_mesh_t *mesh, const int np){
 
 
 int pspio_mesh_set(pspio_mesh_t *mesh, const int type, const double a, 
-		   const double b, const double *r){
+		   const double b, const double *r, const double *rab){
   ASSERT( mesh != NULL, PSPIO_ERROR);
   
   mesh->type = type;
   mesh->a = a;
   mesh->a = b;
   memcpy(mesh->r, r, mesh->np * sizeof(double));
+  memcpy(mesh->rab, rab, mesh->np * sizeof(double));
 
   return PSPIO_SUCCESS;
 }
@@ -80,21 +85,35 @@ int pspio_mesh_copy(pspio_mesh_t *dst, const pspio_mesh_t *src){
   dst->a = src->a;
   dst->a = src->b;
   memcpy(dst->r, src->r, src->np * sizeof(double));
+  memcpy(dst->rab, src->rab, src->np * sizeof(double));
 
   return PSPIO_SUCCESS;
 }
 
 
-int pspio_mesh_init_from_points(pspio_mesh_t *mesh, const double *r) {
+int pspio_mesh_init_from_points(pspio_mesh_t *mesh, const double *r, 
+				const double *rab) {
+  int i;
+
   ASSERT( mesh != NULL, PSPIO_ERROR);
 
   memcpy(mesh->r, r, mesh->np * sizeof(double));
+  if (rab != NULL) {
+    memcpy(mesh->rab, rab, mesh->np * sizeof(double));
+  }
 
   // Try linear mesh
   mesh->a = r[1] - r[2];
   mesh->b = r[0];
   if (abs(r[mesh->np] - mesh->np * mesh->a + mesh->b) < 1e-16) {
     mesh->type = MESH_LINEAR;
+    for (i=0; i<mesh->np; i++) {
+      if (rab != NULL) {
+	ASSERT (abs(rab[i] - mesh->a) < 1e-16, PSPIO_EVALUE);
+      } else {
+	mesh->rab[i] = mesh->a;
+      }
+    }
     return PSPIO_SUCCESS;
   }
 
@@ -103,6 +122,13 @@ int pspio_mesh_init_from_points(pspio_mesh_t *mesh, const double *r) {
   mesh->b = r[0]/exp(mesh->a);
   if (abs(r[mesh->np] - mesh->b*exp(mesh->a*mesh->np)) < 1e-16 ) {
     mesh->type = MESH_LOG1;
+    for (i=0; i<mesh->np; i++) {
+      if (rab != NULL) {
+	ASSERT (abs(rab[i] - mesh->a*r[i]) < 1e-16, PSPIO_EVALUE);
+      } else {
+	mesh->rab[i] = mesh->a*r[i];
+      }
+    }
     return PSPIO_SUCCESS;
   }
 
@@ -111,6 +137,13 @@ int pspio_mesh_init_from_points(pspio_mesh_t *mesh, const double *r) {
   mesh->b = r[0]/(exp(mesh->a) - 1.0);
   if (abs(r[mesh->np] - mesh->b*(exp(mesh->a*mesh->np) - 1.0)) < 1e-16 ) {
     mesh->type = MESH_LOG2;
+    for (i=0; i<mesh->np; i++) {
+      if (rab != NULL) {
+	ASSERT (abs(rab[i] - mesh->a*r[i]) < 1e-16, PSPIO_EVALUE);
+      } else {
+	mesh->rab[i] = mesh->a*r[i];
+      }
+    }
     return PSPIO_SUCCESS;
   }
 
@@ -137,12 +170,15 @@ int pspio_mesh_init_from_parameters(pspio_mesh_t *mesh, const int type,
     switch (type) {
     case MESH_LINEAR:
       mesh->r[i] = a*(i+1) + b;
+      mesh->rab[i] = a;
       break;
     case MESH_LOG1:
       mesh->r[i] = b*exp(a*(i+1));
+      mesh->rab[i] = a*mesh->r[i];
       break;
     case MESH_LOG2:
       mesh->r[i] = b*exp(a*(i+1) - 1.0);
+      mesh->rab[i] = a*mesh->r[i];
       break;
     }
   }
@@ -155,6 +191,7 @@ int pspio_mesh_free(pspio_mesh_t *mesh){
 
   if (mesh != NULL) {
     if (mesh->r != NULL) free (mesh->r);
+    if (mesh->rab != NULL) free (mesh->rab);
     free (mesh);
   }
 
