@@ -34,13 +34,13 @@ pio_core_srcs = \
   pspio_error.c \
   pspio_mesh.c \
   pspio_meshfunc.c \
-  pspio_qn.c \
   pspio_potential.c \
-  pspio_state.c \
   pspio_projector.c \
+  pspio_pspdata.c \
   pspio_nlcc.c \
-  read_upf.c \
-  pspio_init.c
+  pspio_qn.c \
+  pspio_state.c \
+  read_upf.c
 
 # Exported C headers - keep this in alphabetical order
 pio_core_hdrs = \
@@ -51,6 +51,7 @@ pio_core_hdrs = \
   pspio_meshfunc.h \
   pspio_potential.h \
   pspio_projector.h \
+  pspio_pspdata.h \
   pspio_nlcc.h \
   pspio_qn.h \
   pspio_state.h

@@ -27,7 +27,7 @@
 #define PSPIO_READUPF_H
 
 #include <stdio.h>
-#include "pspio.h"
+#include "pspio_pspdata.h"
 
 #define GO_BACK 1 /**< Defines that it has to go at the beginning of the file */
 #define NO_GO_BACK 0 /**< Defines that it has to stay there in the file*/

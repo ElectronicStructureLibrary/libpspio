@@ -22,7 +22,7 @@
 #include <stdio.h>
 #include <string.h>
 
-#include "pspio.h"
+#include "pspio_pspdata.h"
 #include "pspio_error.h"
 #include "libxccodes.h"
 

@@ -18,22 +18,19 @@
  $Id$
 */
 
-/**
- * @file pspio_init.c
- * @brief the main file 
- */
-
 #include <stdio.h>
 
 #include "pspio_common.h"
-#include "pspio.h"
+#include "pspio_error.h"
+#include "pspio_pspdata.h"
 
 #if defined HAVE_CONFIG_H
 #include "config.h"
 #endif
 
 
-int psp_init(char * file_name, int file_format, pspio_pspdata_t * psp_data){
+int psp_pspdata_init(pspio_pspdata_t *psp_data, const char *file_name, 
+		     const int file_format){
   FILE * fp;
   int ierr;
   int fileformat;
@@ -84,5 +81,47 @@ int psp_init(char * file_name, int file_format, pspio_pspdata_t * psp_data){
     HANDLE_ERROR(PSPIO_EIO);
   }
 
-  return 0;
+  return PSPIO_SUCCESS;
+}
+
+
+int psp_pspdata_free(pspio_pspdata_t *psp_data){
+  int i;
+
+  if (psp_data != NULL) {
+    if (psp_data->symbol != NULL) free(psp_data->symbol);
+    HANDLE_FUNC_ERROR (pspio_mesh_free(psp_data->mesh));
+
+    if (psp_data->states != NULL) {
+      for (i=0; i<psp_data->n_states; i++) {
+	HANDLE_FUNC_ERROR (pspio_state_free(psp_data->states[i]));
+      }
+      free(psp_data->states);
+    }
+
+    if (psp_data->potentials != NULL) {
+      for (i=0; i<psp_data->n_potentials; i++) {
+	HANDLE_FUNC_ERROR (pspio_potential_free(psp_data->potentials[i]));
+      }
+      free(psp_data->potentials);
+    }
+
+    if (psp_data->kb_projectors != NULL) {
+      for (i=0; i<psp_data->n_kbproj; i++) {
+	HANDLE_FUNC_ERROR (pspio_projector_free(psp_data->kb_projectors[i]));
+      }
+      free(psp_data->kb_projectors);
+    }
+
+    if (psp_data->vlocal != NULL) {
+      HANDLE_FUNC_ERROR (pspio_potential_free(psp_data->vlocal));
+    }
+
+    if (psp_data->nlcc != NULL) {
+      HANDLE_FUNC_ERROR (pspio_nlcc_free(psp_data->nlcc));
+    }
+
+  }
+
+  return PSPIO_SUCCESS;
 }
