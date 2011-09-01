@@ -179,4 +179,17 @@ int pspio_pspdata_potential_get(const pspio_pspdata_t *data, const int l,
 int pspio_pspdata_kbprojector_get(const pspio_pspdata_t *data, const int l,
       const double j, const double r, double *value);
 
+
+/**
+ * Gets a KB energy associated with the psp_data structure for given
+ * angular momenta.
+ * @param[in] psp_data: pointer to psp_data structure to be probed
+ * @param[in] l: angular momentum
+ * @param[in] j: total angular momentum
+ * @param[out] value: value of the energy of the specified projector
+ * @return error code.
+ */
+int pspio_pspdata_kbenergy_get(const pspio_pspdata_t *data, const int l,
+      const double j, double *value);
+
 #endif
