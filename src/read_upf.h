@@ -28,8 +28,8 @@
 
 #include "pspio.h"
 
-#define GO_BACK 1
-#define NO_GO_BACK 0
+#define GO_BACK 1 /**< Defines that it has to go at the beginning of the file */
+#define NO_GO_BACK 0 /**< Defines that it has to stay there in the file*/
 
 typedef struct{
 	char nl[2];
