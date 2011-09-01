@@ -26,6 +26,7 @@
 #if !defined PSPIO_READIUPF_H
 #define PSPIO_READUPF_H
 
+#include <stdio.h>
 #include "pspio.h"
 
 #define GO_BACK 1 /**< Defines that it has to go at the beginning of the file */
@@ -36,6 +37,7 @@ typedef struct{
 	int l;
 	double occ;
 } wavefunction_t;
+
 /**
  * Init the UPF file read
  * @param[in] fp a stream of the input file
