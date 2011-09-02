@@ -56,12 +56,6 @@ struct pspio_error_type {
 typedef struct pspio_error_type pspio_error_t;
 
 
-/* The following is a VERY bad trick. Whoever finds something better
- * is welcome to speak. */
-static int pspio_error_tmp_id = 0;
-static pspio_error_t *pspio_error_chain = NULL;
-
-
 /**********************************************************************
  * Routines                                                           *
  **********************************************************************/
@@ -91,10 +85,31 @@ int pspio_error_free(void);
 
 
 /**
+ * Get the current error status
+ * @return error code
+ */
+int pspio_error_get(void);
+
+
+/**
+ * Get the length of the error chain
+ * @return length of the error chain
+ */
+int pspio_error_len(void);
+
+
+/**
  * Pop the first available error
  * @return error structure pointer
  */
 pspio_error_t *pspio_error_pop(void);
+
+
+/**
+ * Set the internal error ID holder.
+ * @param[in] error_id: value of the error ID to set
+ */
+void pspio_error_set(const int error_id);
 
 
 /**
@@ -127,8 +142,8 @@ const char *pspio_error_str(const int pspio_errorid);
  * @param[in] error_id: error code to set if condition is false
  */
 #define ASSERT(condition, error_id) \
-  pspio_error_tmp_id = ( condition ) ? PSPIO_SUCCESS : error_id; \
-  HANDLE_ERROR(pspio_error_tmp_id)
+  pspio_error_set(( condition ) ? PSPIO_SUCCESS : error_id); \
+  HANDLE_ERROR(pspio_error_get())
 
 
 /**
@@ -139,11 +154,11 @@ const char *pspio_error_str(const int pspio_errorid);
  * @param[in] var_to_free: name of the variable to free when error
  */
 #define HANDLE_ALLOC_ERROR(function_call, type_to_free, var_to_free) \
-  pspio_error_tmp_id = function_call; \
-  if ( pspio_error_tmp_id != PSPIO_SUCCESS ) { \
+  pspio_error_set(function_call); \
+  if ( pspio_error_get() != PSPIO_SUCCESS ) { \
     pspio_ ## type_to_free ## _free(var_to_free); \
     pspio_error_add(__FILE__, __LINE__); \
-    return pspio_error_tmp_id; \
+    return pspio_error_get(); \
   }
 
 
@@ -153,9 +168,9 @@ const char *pspio_error_str(const int pspio_errorid);
  * @param[in] error_id: error code to set before aborting
  */
 #define HANDLE_FATAL_ERROR(condition, error_id) \
-  pspio_error_tmp_id = ( condition ) ? error_id : PSPIO_SUCCESS; \
-  if ( pspio_error_tmp_id != PSPIO_SUCCESS ) { \
-    pspio_error_show(pspio_error_tmp_id, __FILE__, __LINE__); \
+  pspio_error_set(( condition ) ? error_id : PSPIO_SUCCESS); \
+  if ( pspio_error_get() != PSPIO_SUCCESS ) { \
+    pspio_error_show(pspio_error_get(), __FILE__, __LINE__); \
     exit(1); \
   }
 
@@ -165,10 +180,10 @@ const char *pspio_error_str(const int pspio_errorid);
  * @param[in] function_call: the function to be called with all parameters
  */
 #define HANDLE_FUNC_ERROR(function_call) \
-  pspio_error_tmp_id = function_call; \
-  if ( pspio_error_tmp_id != PSPIO_SUCCESS ) { \
+  pspio_error_set(function_call); \
+  if ( pspio_error_get() != PSPIO_SUCCESS ) { \
     pspio_error_add(__FILE__, __LINE__); \
-    return pspio_error_tmp_id; \
+    return pspio_error_get(); \
   }
 
 
@@ -178,7 +193,7 @@ const char *pspio_error_str(const int pspio_errorid);
  */
 #define HANDLE_ERROR(error_id) \
   if ( error_id != PSPIO_SUCCESS ) { \
-    pspio_error_tmp_id = error_id; \
+    pspio_error_set(error_id); \
     pspio_error_add(__FILE__, __LINE__); \
     return error_id; \
   }
