@@ -439,9 +439,9 @@ int pspio_upf_file_read(FILE * fp, pspio_pspdata_t * psp_data){
   //Extra information end ------------------------------------------------------
 
   //Save the rest to the global data structure
-  //&(psp_data->title) = title;
+  psp_data->title = title;
   psp_data->symbol = symbol;
-  //psp_data->z = ; //double
+  psp_data->z = symbol_to_z(symbol) ; //double
   psp_data->zvalence = zvalence;
   //psp_data->nelvalence = ; //double
   psp_data->l_max = l_max;

@@ -10,10 +10,12 @@ void test_upf(char *file_name)
   pspio_pspdata_t *data;
 
   ierr = pspio_pspdata_init(data, file_name, UPF);
+  printf("The %s input file has been read\n",file_name);
   if (ierr) {
     pspio_error_flush();
   } else {
-    printf("Mesh number of point: %d\n", data->mesh->np);
+    if (data->mesh->np != NULL)
+      printf("Mesh number of point: %d\n", data->mesh->np);
   }
 
   pspio_pspdata_free(data);
@@ -28,7 +30,9 @@ int main(int argc, char *argv[])
     return 1;
   }
 
+  printf("The test has started\n");
   test_upf(argv[1]);
+  printf("The test has finished\n");
 
   return 0;
 }

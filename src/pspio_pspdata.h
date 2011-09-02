@@ -84,7 +84,7 @@
  */
 typedef struct{
   // general data
-  char title[STRLEN_TITLE]; /**< descriptive string for content of file read in */
+  char * title; /**< descriptive string for content of file read in */
   char *symbol;      /**< Atomic symbol */
   double z;          /**< Atomic number */
   double zvalence;   /**< charge of pseudopotential ion - valence electrons */
