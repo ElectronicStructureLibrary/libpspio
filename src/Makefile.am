@@ -94,6 +94,7 @@ noinst_PROGRAMS = \
   test \
   test_error \
   test_mesh \
+  test_meshfunc \
   test_qn \
   test_state
 
@@ -108,6 +109,10 @@ test_error_CPPFLAGS = -I$(srcdir)/../src
 test_mesh_SOURCES = test_mesh.c
 test_mesh_LDADD = -lpspio -lm
 test_mesh_CPPFLAGS = -I$(srcdir)/../src
+
+test_meshfunc_SOURCES = test_meshfunc.c
+test_meshfunc_LDADD = -lpspio -lm
+test_meshfunc_CPPFLAGS = -I$(srcdir)/../src
 
 test_qn_SOURCES = test_qn.c
 test_qn_LDADD = -lpspio -lm
