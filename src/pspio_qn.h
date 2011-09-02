@@ -33,6 +33,7 @@
 #define PSPIO_QN_MTEQUAL -2
 #define PSPIO_QN_DIFF    -3
 
+
 /**********************************************************************
  * Data structures                                                    *
  **********************************************************************/
@@ -56,7 +57,7 @@ typedef struct{
  * @param[out] qn: quantum number structure pointer to allocate
  * @return error code
  */
-int pspio_qn_alloc(pspio_qn_t *qn);
+int pspio_qn_alloc(pspio_qn_t **qn);
 
 
 /**
@@ -69,17 +70,29 @@ int pspio_qn_alloc(pspio_qn_t *qn);
  * @note The dst pointer might or might not be allocated first. If it is not,
  *        then it is allocated here.
  */
-int pspio_qn_copy(pspio_qn_t *dst, const pspio_qn_t *src);
+int pspio_qn_copy(pspio_qn_t **dst, const pspio_qn_t *src);
 
 
 /**
  * Frees the memory occupied by a quantum number structure.
  * @param[in,out] qn: quantum number structure pointer to destroy
  * @return error code
- * @note This function can be safelly called even if some or all of the qn
+ * @note This function can be safely called even if some or all of the qn
  *       components have not been allocated.
  */
-int pspio_qn_free(pspio_qn_t *qn);
+int pspio_qn_free(pspio_qn_t **qn);
+
+
+/**
+ * Gets the components of a specified quantum number structure.
+ * @param[in] qn: quantum number structure pointer to probe
+ * @param[out] n: quantum number
+ * @param[out] l: angular momentum
+ * @param[out] j: total angular momentum
+ * @return error code
+ * @note The qn pointer has to be fully set before probing it.
+ */
+int pspio_qn_get(const pspio_qn_t *qn, int *n, int *l, double *j);
 
 
 /**
@@ -92,7 +105,7 @@ int pspio_qn_free(pspio_qn_t *qn);
  * @note The qn pointer has to be allocated first with the pspio_qn_alloc
  *       method.
  */
-int pspio_qn_set(pspio_qn_t *qn, const int n, const int l, const double j);
+int pspio_qn_set(pspio_qn_t **qn, const int n, const int l, const double j);
 
 
 /**********************************************************************
@@ -109,6 +122,6 @@ int pspio_qn_set(pspio_qn_t *qn, const int n, const int l, const double j);
  * @note For now, the return value can be interpreted in different ways
  *       depending on its sign.
  */
-int pspio_qn_cmp(pspio_qn_t *qn1, pspio_qn_t *qn2);
+int pspio_qn_cmp(const pspio_qn_t *qn1, const pspio_qn_t *qn2);
 
 #endif

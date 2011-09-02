@@ -88,7 +88,7 @@ pio_built_hdrs = $(pio_fortran_mods)
 # Test programs
 #
 
-noinst_PROGRAMS = test test_error
+noinst_PROGRAMS = test test_error test_qn
 
 test_SOURCES = test.c
 test_LDADD =  -lpspio -lm
@@ -97,6 +97,10 @@ test_CPPFLAGS = -I$(srcdir)/../src
 test_error_SOURCES = test_error.c
 test_error_LDADD = -lpspio -lm
 test_error_CPPFLAGS = -I$(srcdir)/../src
+
+test_qn_SOURCES = test_qn.c
+test_qn_LDADD = -lpspio -lm
+test_qn_CPPFLAGS = -I$(srcdir)/../src
 
                     # ------------------------------------ #
 

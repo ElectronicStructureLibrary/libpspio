@@ -34,52 +34,62 @@
  * Global routines                                                    *
  **********************************************************************/
 
-int pspio_qn_alloc(pspio_qn_t *qn) {
-  ASSERT( qn == NULL, PSPIO_ERROR)
+int pspio_qn_alloc(pspio_qn_t **qn) {
+  ASSERT( *qn == NULL, PSPIO_ERROR);
 
-  qn = (pspio_qn_t *)malloc(sizeof(qn));
-  HANDLE_FATAL_ERROR (qn == NULL, PSPIO_ENOMEM);
+  *qn = (pspio_qn_t *)malloc(sizeof(pspio_qn_t));
+  HANDLE_FATAL_ERROR(*qn == NULL, PSPIO_ENOMEM);
 
-  qn->n = 0;
-  qn->l = 0;
-  qn->j = 0.0;
-
-  return PSPIO_SUCCESS;
-}
-
-
-int pspio_qn_set(pspio_qn_t *qn, const int n, const int l, const double j) {
-
-  ASSERT((n > 0) && (l > 0) && (abs(j - (double)l) - 0.5 > 1.0e-9),
-    PSPIO_EVALUE)
-
-  qn->n = n;
-  qn->l = l;
-  qn->j = j;
+  (*qn)->n = 0;
+  (*qn)->l = 0;
+  (*qn)->j = 0.0;
 
   return PSPIO_SUCCESS;
 }
 
 
-int pspio_qn_copy(pspio_qn_t *dst, const pspio_qn_t *src) {
-  ASSERT(src != NULL, PSPIO_ERROR)
+int pspio_qn_copy(pspio_qn_t **dst, const pspio_qn_t *src) {
+  ASSERT(src != NULL, PSPIO_ERROR);
 
   if ( dst == NULL ) {
-    HANDLE_FUNC_ERROR (pspio_qn_alloc(dst));
+    HANDLE_FUNC_ERROR(pspio_qn_alloc(dst));
   }
 
-  dst->n = src->n;
-  dst->l = src->l;
-  dst->j = src->j;
+  (*dst)->n = src->n;
+  (*dst)->l = src->l;
+  (*dst)->j = src->j;
 
   return PSPIO_SUCCESS;
 }
 
 
-int pspio_qn_free(pspio_qn_t *qn) {
+int pspio_qn_free(pspio_qn_t **qn) {
   if ( qn != NULL ) {
-    free(qn);
+    free(*qn);
   }
+
+  return PSPIO_SUCCESS;
+}
+
+
+int pspio_qn_get(const pspio_qn_t *qn, int *n, int *l, double *j) {
+  ASSERT(qn != NULL, PSPIO_EVALUE);
+
+  *n = qn->n;
+  *l = qn->l;
+  *j = qn->j;
+
+  return PSPIO_SUCCESS;
+}
+
+
+int pspio_qn_set(pspio_qn_t **qn, const int n, const int l, const double j) {
+  ASSERT((qn != NULL) && (*qn != NULL), PSPIO_ERROR);
+  ASSERT((n > 0) && (l > 0) && ((j == 0.0) || (abs(j - (double)l) - 0.5 < 1.0e-9)), PSPIO_EVALUE)
+
+  (*qn)->n = n;
+  (*qn)->l = l;
+  (*qn)->j = j;
 
   return PSPIO_SUCCESS;
 }
@@ -89,8 +99,8 @@ int pspio_qn_free(pspio_qn_t *qn) {
  * Utility routines                                                   *
  **********************************************************************/
 
-int pspio_qn_cmp(pspio_qn_t *qn1, pspio_qn_t *qn2) {
-  ASSERT((qn1 != NULL) && (qn2 != NULL), PSPIO_ERROR)
+int pspio_qn_cmp(const pspio_qn_t *qn1, const pspio_qn_t *qn2) {
+  ASSERT((qn1 != NULL) && (qn2 != NULL), PSPIO_ERROR);
 
   if ( (qn1->n == qn2->n) && (qn1->l == qn2->l) &&
        (abs(qn2->j - qn1->j) < 1.0e-9) ) {

@@ -26,6 +26,8 @@
 #ifndef TEST_COMMON_H
 #define TEST_COMMON_H
 
+#include "pspio_error.h"
+
 #if defined HAVE_CONFIG_H
 #include "config.h"
 #endif
@@ -36,26 +38,49 @@
  **********************************************************************/
 
 /**
- * Check the error status and the length of a variable
+ * Checks an error status
  * @param[in] stat_var: variable used to store the status
  * @param[in] stat_val: expected status value
- * @param[in] stat_var: variable used to store the length
- * @param[in] stat_val: expected length value
  * @return 0 on success, 1 on error
  */
-#define CHECK_STAT_LEN(stat_var, stat_val, len_var, len_val) \
-  if ( (stat_var != stat_val) || ( len_var != len_val) ) { \
+#define CHECK_STAT(stat_var, stat_val) \
+  if ( stat_var != stat_val ) { \
+    pspio_error_flush(); \
     return 1; \
   }
 
 
 /**
- * Display information on stderr when debug level is nonzero
+ * Checks the error status and the length of a variable
+ * @param[in] stat_var: variable used to store the status
+ * @param[in] stat_val: expected status value
+ * @param[in] len_var: variable used to store the length
+ * @param[in] len_val: expected length value
+ * @return 0 on success, 1 on error
+ */
+#define CHECK_STAT_LEN(stat_var, stat_val, len_var, len_val) \
+  if ( (stat_var != stat_val) || ( len_var != len_val) ) { \
+    pspio_error_flush(); \
+    return 1; \
+  }
+
+
+/**
+ * Displays information on stderr when debug level is nonzero
  * @param args...: what to display, as when calling printf
  */
 #define DEBUG_PRINT(...) \
   if ( DEBUG_LEVEL > 0 ) { \
     fprintf(stderr, __VA_ARGS__); \
   }
+
+
+/**
+ * Shows the status of a pointer
+ * @param[in] ptr: pointer to check
+ */
+#define PTR_STAT_SHOW(ptr) \
+  DEBUG_PRINT("*** Pointer %s is %s ***\n", #ptr, \
+    ( ptr == NULL ) ? "NULL" : "not NULL");
 
 #endif
