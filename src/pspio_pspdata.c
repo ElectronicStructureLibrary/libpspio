@@ -50,21 +50,21 @@ int pspio_pspdata_init(pspio_pspdata_t *pspdata, const char *file_name,
   switch(file_format) {
   case UNKNOWN:
     break;
-  case ABINIT_4:
-    HANDLE_FUNC_ERROR(read_abinit4(fp,pspdata));
-    break;
-  case ABINIT_5:
-    HANDLE_FUNC_ERROR(read_abinit5(fp,pspdata));
-    break;
-  case ABINIT_6:
-    HANDLE_FUNC_ERROR(read_abinit6(fp,pspdata));
-    break;
-  case ABINIT_HGH:
-    HANDLE_FUNC_ERROR(read_abinit_hgh(fp,pspdata));
-    break;
-  case ABINIT_GTH:
-    HANDLE_FUNC_ERROR(read_abinit_gth(fp,pspdata));
-    break;
+  /* case ABINIT_4: */
+  /*   HANDLE_FUNC_ERROR(read_abinit4(fp,pspdata)); */
+  /*   break; */
+  /* case ABINIT_5: */
+  /*   HANDLE_FUNC_ERROR(read_abinit5(fp,pspdata)); */
+  /*   break; */
+  /* case ABINIT_6: */
+  /*   HANDLE_FUNC_ERROR(read_abinit6(fp,pspdata)); */
+  /*   break; */
+  /* case ABINIT_HGH: */
+  /*   HANDLE_FUNC_ERROR(read_abinit_hgh(fp,pspdata)); */
+  /*   break; */
+  /* case ABINIT_GTH: */
+  /*   HANDLE_FUNC_ERROR(read_abinit_gth(fp,pspdata)); */
+  /*   break; */
   case ATOM:
     break;
   case FHI98PP:
