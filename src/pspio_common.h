@@ -26,20 +26,6 @@
  * @brief include file with low-level stuff 
  */
 
-/**
- * File formats
- */
-#define UNKNOWN -1
-#define ABINIT_4 1
-#define ABINIT_5 2
-#define ABINIT_6 3
-#define ABINIT_HGH 4
-#define ABINIT_GTH 5
-#define ATOM 6
-#define FHI98PP 7
-#define SIESTA 8
-#define UPF 9
-
 #define MAX_STRLEN 256
 #define STRLEN_TITLE 80
 
