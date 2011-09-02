@@ -39,7 +39,6 @@ int pspio_pspdata_init(pspio_pspdata_t *pspdata, const char *file_name,
       const int file_format){
   FILE * fp;
   int ierr;
-  int fileformat;
   
   // open file
   fp = fopen(file_name, "r");
@@ -47,10 +46,8 @@ int pspio_pspdata_init(pspio_pspdata_t *pspdata, const char *file_name,
     HANDLE_ERROR(PSPIO_ENOFILE);
   }
   
-  fileformat = UNKNOWN;
-
   //read from file
-  switch(fileformat) {
+  switch(file_format) {
   case UNKNOWN:
     break;
   case ABINIT_4:
