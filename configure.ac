@@ -60,6 +60,21 @@ AC_SUBST(LTOBJEXT)
 # Define global options
 #
 
+# Debugging
+# FIXME: disable debug by default when releasing
+AC_ARG_ENABLE([debug],
+  AC_HELP_STRING([--enable-debug],[Enable debug mode (default: enabled)]))
+if test "${enable_debug}" = ""; then
+  enable_debug="yes"
+fi
+
+# Fortran - Optional support
+AC_ARG_ENABLE([fortran],
+  AC_HELP_STRING([--enable-fortran],[Enable Fortran bindings (default: disabled)]))
+if test "${enable_fortran}" = ""; then
+  enable_fortran="no"
+fi
+
 # GSL - Mandatory support
 AC_ARG_WITH([gsl-incs],
   AC_HELP_STRING([--with-gsl-incs],[Includes for the GSL library]))
@@ -86,13 +101,6 @@ AC_ARG_WITH([xml-libs],
   AC_HELP_STRING([--with-xml-libs],[Link flags for the XML library]))
 if test "${enable_xml}" = ""; then
   enable_xml="no"
-fi
-
-# Fortran - Optional support
-AC_ARG_ENABLE([fortran],
-  AC_HELP_STRING([--enable-fortran],[Enable Fortran bindings (default: disabled)]))
-if test "${enable_fortran}" = ""; then
-  enable_fortran="no"
 fi
 
 # ---------------------------------------------------------------------------- #
@@ -182,6 +190,22 @@ AM_CONDITIONAL([DO_BUILD_FORTRAN],
   [test "${enable_fortran}" = "yes"])
 AM_CONDITIONAL([F90_MOD_UPPERCASE],
   [test "${enable_fortran}" = "yes" -a "${ax_cv_f90_mod_uppercase}" = "yes"])
+
+# ---------------------------------------------------------------------------- #
+
+#
+# Debugging
+#
+
+if test "${enable_debug}" = "yes"; then
+  AC_DEFINE([DEBUG_MODE],1,
+    [Define to 1 if you want to enable debug mode])
+  AC_DEFINE([DEBUG_LEVEL],1,
+    [Set to 1 if you want to enable debug mode])
+else
+  AC_DEFINE([DEBUG_LEVEL],0,
+    [Set to 1 if you want to enable debug mode])
+fi
 
 # ---------------------------------------------------------------------------- #
 
