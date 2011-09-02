@@ -14,6 +14,7 @@ void test_upf(char *file_name)
     printf("Error occured:\n");
     error_msg = pspio_error_str(ierr);
     printf("  %s\n", error_msg);
+    pspio_error_flush();
   } else {
     printf("Mesh number of point: %d\n", data->mesh->np);
   }
