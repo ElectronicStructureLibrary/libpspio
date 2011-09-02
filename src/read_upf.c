@@ -41,7 +41,7 @@ int  pspio_upf_init(FILE * fp, pspio_pspdata_t * psp_data){
 
 int pspio_upf_file_read(FILE * fp, pspio_pspdata_t * psp_data){
   int i,j,ierr, narg, id_left,dummy;
-  int version_number;
+  int version_number,kb_nc;
   char line[MAX_STRLEN];
   char symbol[2];
   char nlcc,kind_ps[2],exchange[MAX_STRLEN];
@@ -50,15 +50,15 @@ int pspio_upf_file_read(FILE * fp, pspio_pspdata_t * psp_data){
   wavefunction_t * wavefunctions;
   pspio_qn_t * qn;
   pspio_qn_t ** qn_vec;
-  //variables for the mesh
+  //Variables for the mesh
   double *r, *drdi, *core_density;
 
-  //variables for local potential
+  //Variables for local potential
   double * vlocal_read;
   pspio_qn_t * qn_empty;
   pspio_potential_t * vlocal;
 
-  //variables for the projections
+  //Variables for the projections
   pspio_projector_t ** projectors_vec;
   pspio_projector_t * projector;
   pspio_mesh_t * mesh;
@@ -70,12 +70,17 @@ int pspio_upf_file_read(FILE * fp, pspio_pspdata_t * psp_data){
   double * energy_vec;
   int n_dij,ii,jj;
 
-  //variables for the wavefunctions
+  //Variables for the wavefunctions
   double **wfs;
 
-  //variables for the valence charge
+  //Variables for the valence charge
   double * rho_read;
+
+  //Variables for extra information
+  double * proj_j_read;
   
+  kb_nc = 1;
+
   HANDLE_FUNC_ERROR(init_tag(fp,"PP_HEADER", GO_BACK));
   
   if(fgets(line, MAX_STRLEN, fp) == NULL) {
@@ -110,7 +115,7 @@ int pspio_upf_file_read(FILE * fp, pspio_pspdata_t * psp_data){
     HANDLE_ERROR(PSPIO_EIO);
   }
 
-  //store the 2 functionals (4 identifiers) into one string
+  //Store the 2 functionals (4 identifiers) into one string
   id_left = 4;
   i = 0;
   j = 0;
@@ -170,7 +175,7 @@ int pspio_upf_file_read(FILE * fp, pspio_pspdata_t * psp_data){
   wavefunctions = (wavefunction_t *)malloc(n_states*sizeof(wavefunction_t));
   HANDLE_FATAL_ERROR(wavefunctions == NULL,PSPIO_ENOMEM);
   
-  //read the wavefuntions: "Wavefunctions   nl   l   occ"   
+  //Read the wavefuntions: "Wavefunctions   nl   l   occ"   
   if(fgets(line, MAX_STRLEN, fp) == NULL) {
     HANDLE_ERROR(PSPIO_EIO);
   } //skip the first line
@@ -225,9 +230,9 @@ int pspio_upf_file_read(FILE * fp, pspio_pspdata_t * psp_data){
   HANDLE_FUNC_ERROR(pspio_mesh_alloc(mesh,np));
   HANDLE_FUNC_ERROR(pspio_mesh_init_from_points(mesh,r,drdi));
   psp_data->mesh = mesh;
-  // Mesh info end --------------------------------------------------------.....
+  // Mesh info end -------------------------------------------------------------
   
-  //Non-linear core-corrections ////////////////////////////////////////////////
+  // Non-linear core-corrections ///////////////////////////////////////////////
   if (nlcc) {
     HANDLE_FUNC_ERROR(init_tag(fp, "PP_NLCC", GO_BACK));
     core_density = (double *)malloc(np*sizeof(double));
@@ -245,9 +250,9 @@ int pspio_upf_file_read(FILE * fp, pspio_pspdata_t * psp_data){
   else {
     core_density = NULL;
   }
-  //Non-linear core-corrections end --------------------------------------------
+  // Non-linear core-corrections end -------------------------------------------
   
-  //Local component ////////////////////////////////////////////////////////////
+  // Local component ///////////////////////////////////////////////////////////
   HANDLE_FUNC_ERROR(init_tag(fp, "PP_LOCAL",GO_BACK));
   vlocal_read = (double *)malloc(np*sizeof(double));
   HANDLE_FATAL_ERROR(vlocal_read == NULL,PSPIO_ENOMEM);
@@ -265,9 +270,9 @@ int pspio_upf_file_read(FILE * fp, pspio_pspdata_t * psp_data){
   HANDLE_FUNC_ERROR(pspio_potential_alloc(vlocal,np));
   HANDLE_FUNC_ERROR(pspio_potential_set(vlocal,qn_empty,mesh,vlocal_read));
   psp_data->vlocal = vlocal;
-  //Local component end --------------------------------------------------------
+  // Local component end -------------------------------------------------------
   
-  //Non-local component. ///////////////////////////////////////////////////////
+  // Non-local component. //////////////////////////////////////////////////////
   HANDLE_FUNC_ERROR(init_tag(fp,"PP_NONLOCAL",GO_BACK));
   *(qn_vec_proj) = (pspio_qn_t *)malloc(n_states * sizeof(pspio_qn_t));
   HANDLE_FATAL_ERROR(*(qn_vec_proj) == NULL,PSPIO_ENOMEM);
@@ -285,7 +290,7 @@ int pspio_upf_file_read(FILE * fp, pspio_pspdata_t * psp_data){
     if(fgets(line, MAX_STRLEN, fp) == NULL) {
       HANDLE_ERROR(PSPIO_EIO);
     }
-    //read the number of points of projections
+    //Read the number of points of projections
     narg = sscanf(line,"%d",&proj_np);
     ASSERT(narg==1, PSPIO_EIO);
     
@@ -343,16 +348,16 @@ int pspio_upf_file_read(FILE * fp, pspio_pspdata_t * psp_data){
     HANDLE_FUNC_ERROR(pspio_projector_set(projector,qn_vec_proj[i],energy_vec[i],mesh,projector_read_vec[i]));
     projectors_vec[i] = projector;
   }
-  //Non-local component. -------------------------------------------------------
+  // Non-local component. ------------------------------------------------------
   
-  //Pseudo wavefunctions ///////////////////////////////////////////////////////
+  // Pseudo wavefunctions //////////////////////////////////////////////////////
   HANDLE_FUNC_ERROR(init_tag(fp,"PP_PSWFC",GO_BACK));
   //allocate(ps_upf%wfs(1:ps_upf%np, 1:ps_upf%n_wfs))
   //allocate memory for rows
   wfs = (double **)malloc(n_states * sizeof(double));
   HANDLE_FATAL_ERROR(wfs == NULL,PSPIO_ENOMEM);
   
-  //for each row allocate memory for columns
+  //For each row allocate memory for columns
   //From: http://www.codeproject.com/KB/cpp/pointertopointer.aspx
   for (i=0;i<n_states;i++){
     *(wfs+i) = (double*)malloc(np * sizeof(double));
@@ -371,9 +376,9 @@ int pspio_upf_file_read(FILE * fp, pspio_pspdata_t * psp_data){
     }
   }
   HANDLE_FUNC_ERROR(check_end_tag(fp,"PP_PSWFC"));
-  //Pseudo wavefunctions end ---------------------------------------------------
+  // Pseudo wavefunctions end --------------------------------------------------
 
-  //Valence charge /////////////////////////////////////////////////////////////
+  // Valence charge ////////////////////////////////////////////////////////////
   HANDLE_FUNC_ERROR(init_tag(fp,"PP_RHOATOM",GO_BACK));
   //Allocate memory to read
   rho_read = (double *)malloc(np * sizeof(double));
@@ -386,8 +391,38 @@ int pspio_upf_file_read(FILE * fp, pspio_pspdata_t * psp_data){
     ASSERT(narg==4, PSPIO_EIO);
   }
   HANDLE_FUNC_ERROR(check_end_tag(fp,"PP_RHOATOM"));
-  //Valence charge end ---------------------------------------------------------
+  // Valence charge end --------------------------------------------------------
 
+  // Extra information /////////////////////////////////////////////////////////
+  //tag_isdef is not error checked!!
+  if (tag_isdef(fp,"PP_ADDINFO")){
+    kb_nc = 2;
+    //I don't know if has to be done:
+    HANDLE_FUNC_ERROR(init_tag(fp,"PP_ADDINFO",GO_BACK));
+    for (i=0;i<n_states;i++){
+      //dummy
+      if (fgets(line, MAX_STRLEN, fp) == NULL) {
+	HANDLE_ERROR(PSPIO_EIO);
+      }
+    }
+    //Allocate memory for the reading of projection j
+    proj_j_read = (double *)malloc(n_proj * sizeof(double *));
+    HANDLE_FATAL_ERROR(proj_j_read == NULL,PSPIO_ENOMEM);
+    for (i=0;i<n_proj;i++){
+      if (fgets(line, MAX_STRLEN, fp) == NULL) {
+	HANDLE_ERROR(PSPIO_EIO);
+      }
+      narg == sscanf(line,"%d %lf",&dummy,&proj_j_read[i]);
+      ASSERT(narg==2, PSPIO_EIO); 
+    }  
+    
+    //Skip the last line
+    if (fgets(line, MAX_STRLEN, fp) == NULL) {
+      HANDLE_ERROR(PSPIO_EIO);
+    }
+  }
+  HANDLE_FUNC_ERROR(check_end_tag(fp,"PP_ADDINFO"));
+  //Extra information end ------------------------------------------------------
   return PSPIO_SUCCESS;
 }
 
@@ -422,4 +457,22 @@ int check_end_tag(FILE * fp, const char * tag){
     return PSPIO_EFILE_FORMAT;
   }
   
+}
+ 
+int tag_isdef(FILE * fp, const char * tag){
+  char line[MAX_STRLEN];
+  char * compare_string = NULL;
+  
+  //Go to the beginning of the buffer
+  rewind(fp);
+  
+  strcat(compare_string,"<");
+  strncat(compare_string,tag,strlen(tag));
+  strcat(compare_string,">");
+  
+  while (fgets(line, sizeof line, fp) != NULL){
+    if (strcmp(line,compare_string)) return PSPIO_SUCCESS;
+  }
+  //End of the buffer reached; so return false
+  return 1;
 }
