@@ -79,7 +79,7 @@ int pspio_pspdata_init(pspio_pspdata_t *pspdata, const char *file_name,
   }
   
   // close file and check for ierr being non 0
-  ierr = close(fp);
+  ierr = fclose(fp);
   if(ierr != 0){
     HANDLE_ERROR(PSPIO_EIO);
   }
