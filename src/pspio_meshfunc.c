@@ -127,7 +127,7 @@ int pspio_meshfunc_free(pspio_meshfunc_t **func){
     pspio_mesh_free(&(*func)->mesh);
     gsl_spline_free((*func)->spl);
     gsl_interp_accel_free((*func)->acc);
-    free(func);
+    free(*func);
   }
 
   return PSPIO_SUCCESS;
