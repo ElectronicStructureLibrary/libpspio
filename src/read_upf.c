@@ -88,33 +88,37 @@ int pspio_upf_file_read(FILE * fp, pspio_pspdata_t * psp_data){
   kb_nc = 1;
 
   HANDLE_FUNC_ERROR(init_tag(fp,"PP_HEADER", GO_BACK));
-  
+
+  //Read the version number
   if(fgets(line, MAX_STRLEN, fp) == NULL) {
     HANDLE_ERROR(PSPIO_EIO);
   }
   narg = sscanf (line, "%d", &version_number);
   ASSERT(narg==1, PSPIO_EIO);
   
+  //Read the atomic symbol
   if(fgets(line, MAX_STRLEN, fp) == NULL) {
     HANDLE_ERROR(PSPIO_EIO);
   }
   narg = sscanf (line, "%2c",&symbol[0]);
   ASSERT(narg==1, PSPIO_EIO);		
   
+  // read the kind of pseudo-potentials US|NC|PAW    "Ultrasoft|Norm conserving|Projector-augmented"  
   if(fgets(line, MAX_STRLEN, fp) == NULL) {
     HANDLE_ERROR(PSPIO_EIO);
   }
-  narg = sscanf (line, "%2c",&kind_ps[0]); // read the kind of pseudo-potentials US|NC|PAW    "Ultrasoft|Norm conserving|Projector-augmented" 
+  narg = sscanf (line, "%2c",&kind_ps[0]); 
   ASSERT(narg==1, PSPIO_EIO);	
   //LIBPSP_IO can only read norm-conserving pseudo-potentials from UPF format.
   if (!strncmp(kind_ps,"NC",2)) {
     HANDLE_ERROR(PSPIO_ENOSUPPORT);
   }
   
+  // read the nonlinear core correction. The character
   if(fgets(line, MAX_STRLEN, fp) == NULL) {
     HANDLE_ERROR(PSPIO_EIO);
   }
-  narg = sscanf (line, "%c",&nlcc_flag); // read the nonlinear core correction. The character
+  narg = sscanf (line, "%c",&nlcc_flag); 
   ASSERT(narg==1, PSPIO_EIO);
   
   if(fgets(line, MAX_STRLEN, fp) == NULL) {
@@ -240,7 +244,7 @@ int pspio_upf_file_read(FILE * fp, pspio_pspdata_t * psp_data){
   // Non-linear core-corrections ///////////////////////////////////////////////
   if (nlcc_flag) {
     //@todo Initialize scheme
-    scheme = 1;
+    scheme = NLCC_UNKNOWN;
     HANDLE_FUNC_ERROR(pspio_nlcc_alloc(nlcc,np));
     HANDLE_FUNC_ERROR(init_tag(fp, "PP_NLCC", GO_BACK));
     core_density = (double *)malloc(np*sizeof(double));
@@ -255,7 +259,7 @@ int pspio_upf_file_read(FILE * fp, pspio_pspdata_t * psp_data){
     }
     HANDLE_FUNC_ERROR(check_end_tag(fp,"PP_NLC"));
     //Fill the pspio_nlcc_t data structure
-    HANDLE_FUNC_ERROR(pspio_nlcc_set(nlcc,scheme/*??*/,mesh,core_density));
+    HANDLE_FUNC_ERROR(pspio_nlcc_set(nlcc,scheme,mesh,core_density));
   }
   else {
     core_density = NULL;
@@ -466,6 +470,7 @@ int init_tag(FILE * fp, const char * tag, const int go_back){
   char * compare_string = NULL;
   if (go_back) rewind(fp);
   
+  //prepare base string
   strcat(compare_string,"<");
   strncat(compare_string,tag,strlen(tag));
   strcat(compare_string,">");
