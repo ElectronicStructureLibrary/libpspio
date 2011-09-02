@@ -19,56 +19,32 @@
 */
 
 /**
- * @file pspio_info.c
+ * @file pspio_info.h
  * @brief Libpspio version information 
  */
 
-#include <stdlib.h>
-#include <stdio.h>
-#include <string.h>
-
-#include "pspio_error.h"
-#include "pspio_info.h"
-
-#if defined HAVE_CONFIG_H
-#include "config.h"
-#endif
-
+#if !defined PSPIO_INFO_H
+#define PSPIO_INFO_H
 
 /**********************************************************************
  * Global routines                                                    *
  **********************************************************************/
 
-int pspio_version(int *major, int *minor, int *micro) {
-  ASSERT((major != NULL) && (minor != NULL) && (micro != NULL), PSPIO_ERROR)
-#if !defined HAVE_CONFIG_H
-  return PSPIO_ERROR;
+/**
+ * Provide the version number of the library.
+ * @param[out] major major version number, -1 if not found
+ * @param[out] minor minor version number, -1 if not found
+ * @param[out] micro micro version number, -1 if not found
+ * @return error code
+ */
+int pspio_version(int *major, int *minor, int *micro);
+
+
+/**
+ * Provide the package string of the library.
+ * @param[out] info: package name and version
+ * @return error code
+ */
+int pspio_info_string(char *info);
+
 #endif
-
-  const char *version_string = PACKAGE_VERSION;
-
-  *major = -1;
-  *minor = -1;
-  *micro = -1;
-  sscanf(version_string,"%d.%d.%d",major,minor,micro);
-
-  return PSPIO_SUCCESS;
-}
-
-
-int pspio_info_string(char *info) {
-  ASSERT(info == NULL, PSPIO_ERROR)
-#if !defined HAVE_CONFIG_H
-  return PSPIO_ERROR;
-#endif
-
-  const char *package_string = PACKAGE_STRING;
-
-  int s = strlen(package_string);
-  info = (char *)malloc(s + 1);
-  HANDLE_FATAL_ERROR(info == NULL, PSPIO_ENOMEM)
-  strncpy(info, package_string, s);
-  info[s] = 0;
-
-  return PSPIO_SUCCESS;
-}

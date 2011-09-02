@@ -32,6 +32,7 @@
 pio_core_srcs = \
   ab2libxc.c \
   pspio_error.c \
+  pspio_info.c \
   pspio_mesh.c \
   pspio_meshfunc.c \
   pspio_potential.c \
@@ -48,6 +49,7 @@ pio_core_hdrs = \
   pspio.h \
   pspio_common.h \
   pspio_error.h \
+  pspio_info.h \
   pspio_mesh.h \
   pspio_meshfunc.h \
   pspio_potential.h \
@@ -61,17 +63,6 @@ pio_core_hdrs = \
 pio_hidden_hdrs = \
   libxccodes.h \
   read_upf.h
-
-
-# Test programs
-noinst_PROGRAMS = test test_error
-test_SOURCES = test.c
-test_LDADD =  -lpspio -lm
-test_CPPFLAGS = -I$(srcdir)/../src/
-test_error_SOURCES = test_error.c
-test_error_LDADD = -lpspio -lm
-test_error_CPPFLAGS = -I$(srcdir)/../src/
-
 
 # Fortran source files and modules
 if DO_BUILD_FORTRAN
@@ -89,6 +80,22 @@ endif
 # Script-generated file lists
 pio_built_srcs = $(pio_fortran_srcs)
 pio_built_hdrs = $(pio_fortran_mods)
+
+                    # ------------------------------------ #
+
+#
+# Test programs
+#
+
+noinst_PROGRAMS = test test_error
+
+test_SOURCES = test.c
+test_LDADD =  -lpspio -lm
+test_CPPFLAGS = -I$(srcdir)/../src
+
+test_error_SOURCES = test_error.c
+test_error_LDADD = -lpspio -lm
+test_error_CPPFLAGS = -I$(srcdir)/../src
 
                     # ------------------------------------ #
 

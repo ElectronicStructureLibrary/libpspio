@@ -9,11 +9,16 @@
 
 
 int main(void) {
-  int eid;
+  int eid, a, b, c;
+  char *info = NULL;
+
+  /* Display basic information */
+  printf("%s test\nReport bugs to %s\n\n", PACKAGE_STRING, PACKAGE_BUGREPORT);
 
   /* check empty error chain */
   printf("test_error: checking empty error chain\n");
-  printf("test_error: error chain has length %d\n", pspio_error_len());
+  printf("test_error: at the beginning, status = %d, length = %d\n",
+    eid, pspio_error_len());
   printf("test_error: BEGIN FLUSH\n");
   eid = pspio_error_flush();
   printf("test_error: END FLUSH\n");
