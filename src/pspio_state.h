@@ -60,7 +60,7 @@ typedef struct{
  * @return error code
   * @note np should be larger than 1.
  */
-int pspio_state_alloc(pspio_state_t *state, const int np);
+int pspio_state_alloc(pspio_state_t **state, const int np);
 
 
 /**
@@ -76,9 +76,9 @@ int pspio_state_alloc(pspio_state_t *state, const int np);
  * @note The state pointer is supposed to have been already allocated
  *       with pspio_state_alloc.
  */
-int pspio_state_set(pspio_state_t *state, const double eigenval,
+int pspio_state_set(pspio_state_t **state, const double eigenval,
 		    const char *label, const double occ, const double rc, 
-		    pspio_mesh_t *mesh, const double *wf);
+		    const pspio_mesh_t *mesh, const double *wf);
 
 
 /**
@@ -91,7 +91,7 @@ int pspio_state_set(pspio_state_t *state, const double eigenval,
  * @note The dst pointer might or might not be allocated. If it is not, then it
  *       is allocate here.
  */
-int pspio_state_copy(pspio_state_t *dst, pspio_state_t *src);
+int pspio_state_copy(pspio_state_t **dst, const pspio_state_t *src);
 
 
 /**
@@ -106,7 +106,7 @@ int pspio_state_copy(pspio_state_t *dst, pspio_state_t *src);
  * @note The table is allocated inside this function.
  */
 int pspio_states_lookup_table(const int n_states, const pspio_state_t **states,
-			      int **table);
+			      int ***table);
 
 
 /**
@@ -116,7 +116,6 @@ int pspio_states_lookup_table(const int n_states, const pspio_state_t **states,
  * @note This function can be safelly called even if some or all of the state 
  *       compoments have not been allocated.
  */
-int pspio_state_free(pspio_state_t *state);
-
+int pspio_state_free(pspio_state_t **state);
 
 #endif

@@ -64,6 +64,7 @@ pio_core_hdrs = \
 pio_hidden_hdrs = \
   libxccodes.h \
   read_upf.h \
+  test_common.h \
   util.h
 
 # Fortran source files and modules
@@ -89,7 +90,11 @@ pio_built_hdrs = $(pio_fortran_mods)
 # Test programs
 #
 
-noinst_PROGRAMS = test test_error test_qn
+noinst_PROGRAMS = \
+  test \
+  test_error \
+  test_qn \
+  test_state
 
 test_SOURCES = test.c
 test_LDADD =  -lpspio -lm
@@ -102,6 +107,10 @@ test_error_CPPFLAGS = -I$(srcdir)/../src
 test_qn_SOURCES = test_qn.c
 test_qn_LDADD = -lpspio -lm
 test_qn_CPPFLAGS = -I$(srcdir)/../src
+
+test_state_SOURCES = test_state.c
+test_state_LDADD = -lpspio -lm
+test_state_CPPFLAGS = -I$(srcdir)/../src
 
                     # ------------------------------------ #
 
