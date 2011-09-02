@@ -67,7 +67,7 @@ int pspio_upf_file_read(FILE * fp, pspio_pspdata_t * psp_data);
 /** 
  * Evaluates is a tag is defined
  * @param[in] fp a stream of the input file
- * @param[in] tag the tag
+ * @param[in] tag the tag. Is case-insensitive
  * @return 0 if defined. 1 else
  */
 int tag_isdef(FILE * fp, const char * tag);
@@ -76,7 +76,7 @@ int tag_isdef(FILE * fp, const char * tag);
 /** 
  * Goes to the point just after the tag 
  * @param[in] fp a stream of the input file
- * @param[in] tag the tag
+ * @param[in] tag the tag. Is case-insensitive
  * @param[in] go_back decides it has to go to the beginning of the file
  * @return error code
  */
@@ -85,7 +85,7 @@ int init_tag(FILE * fp, const char * tag, const int go_back);
 /** 
  * Evaluates if a tag is correctly closed
  * @param[in] fp a stream of the input file
- * @param[in] tag the tag
+ * @param[in] tag the tag. Is case-insensitive
  * @return 0 if correct. 1 else
  */
 int check_end_tag(FILE * fp, const char * tag);
