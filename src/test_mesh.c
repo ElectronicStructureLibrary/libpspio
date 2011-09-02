@@ -60,7 +60,7 @@ int main(void) {
 
   /* Check setting of meshes */
   DEBUG_PRINT("test_mesh: setting m1\n");
-  eid = pspio_mesh_set(&m1, MESH_LOG1, a, b, r, rab);
+  eid = pspio_mesh_set(&m1, PSPIO_MESH_LOG1, a, b, r, rab);
   eid = pspio_error_flush();
   DEBUG_PRINT("\n");
 
@@ -72,7 +72,7 @@ int main(void) {
   eid = pspio_mesh_copy(&m2, m1);
   eid = pspio_error_flush();
   DEBUG_PRINT("test_mesh: setting m2\n");
-  eid = pspio_mesh_set(&m2, MESH_LINEAR, a, b, r, rab);
+  eid = pspio_mesh_set(&m2, PSPIO_MESH_LINEAR, a, b, r, rab);
   eid = pspio_error_flush();
   DEBUG_PRINT("\n");
 
