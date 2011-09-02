@@ -192,7 +192,7 @@ int pspio_upf_file_read(FILE * fp, pspio_pspdata_t * psp_data){
   } //skip the first line
   
   *(qn_vec) = (pspio_qn_t *)malloc(n_states * sizeof(pspio_qn_t));
-  HANDLE_FATAL_ERROR(wavefunctions == NULL,PSPIO_ENOMEM);
+  HANDLE_FATAL_ERROR(*(qn_vec) == NULL,PSPIO_ENOMEM);
   for (i=0; i<n_states; i++) {
     if(fgets(line, MAX_STRLEN, fp) == NULL) {
       HANDLE_ERROR(PSPIO_EIO);
