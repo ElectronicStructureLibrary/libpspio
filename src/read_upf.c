@@ -74,21 +74,21 @@ int pspio_upf_file_read(FILE * fp, pspio_pspdata_t * psp_data){
     HANDLE_ERROR(PSPIO_EIO);
   }
   narg = sscanf (line, "%d", &version_number);
-  PSPIO_ASSERT(narg==1, PSPIO_EIO);
+  ASSERT(narg==1, PSPIO_EIO);
   
   if(fgets(line, MAX_STRLEN, fp) == NULL) {
     HANDLE_ERROR(PSPIO_EIO);
   }
   narg = sscanf (line, "%2c",&symbol[0]);
-  PSPIO_ASSERT(narg==1, PSPIO_EIO);		
+  ASSERT(narg==1, PSPIO_EIO);		
   
   if(fgets(line, MAX_STRLEN, fp) == NULL) {
     HANDLE_ERROR(PSPIO_EIO);
   }
   narg = sscanf (line, "%2c",&kind_ps[0]); // read the kind of pseudo-potentials US|NC|PAW    "Ultrasoft|Norm conserving|Projector-augmented" 
-  PSPIO_ASSERT(narg==1, PSPIO_EIO);	
+  ASSERT(narg==1, PSPIO_EIO);	
   //LIBPSP_IO can only read norm-conserving pseudo-potentials from UPF format.
-  if (!strncpm(kind_ps,"NC",2)) {
+  if (!strncmp(kind_ps,"NC",2)) {
     HANDLE_ERROR(PSPIO_ENOSUPPORT);
   }
   
@@ -96,7 +96,7 @@ int pspio_upf_file_read(FILE * fp, pspio_pspdata_t * psp_data){
     HANDLE_ERROR(PSPIO_EIO);
   }
   narg = sscanf (line, "%c",&nlcc); // read the nonlinear core correction. The character
-  PSPIO_ASSERT(narg==1, PSPIO_EIO);
+  ASSERT(narg==1, PSPIO_EIO);
   
   if(fgets(line, MAX_STRLEN, fp) == NULL) {
     HANDLE_ERROR(PSPIO_EIO);
@@ -127,37 +127,37 @@ int pspio_upf_file_read(FILE * fp, pspio_pspdata_t * psp_data){
     HANDLE_ERROR(PSPIO_EIO);
   }
   narg = sscanf (line, "%lf",&zvalence); // read the Z valence
-  PSPIO_ASSERT(narg==1, PSPIO_EIO);
+  ASSERT(narg==1, PSPIO_EIO);
   
   if(fgets(line, MAX_STRLEN, fp) == NULL) {
     HANDLE_ERROR(PSPIO_EIO);
   }
   narg = sscanf (line, "%lf",&total_energy); // read the total energy
-  PSPIO_ASSERT(narg==1, PSPIO_EIO);
+  ASSERT(narg==1, PSPIO_EIO);
   
   if(fgets(line, MAX_STRLEN, fp) == NULL) {
     HANDLE_ERROR(PSPIO_EIO);
   }
   narg = sscanf (line, "%lf %lf",&wfc_cutoff,&rho_cutoff); //read the suggested cutoff for wfc and rho
-  PSPIO_ASSERT(narg==2, PSPIO_EIO);
+  ASSERT(narg==2, PSPIO_EIO);
   
   if(fgets(line, MAX_STRLEN, fp) == NULL) {
     HANDLE_ERROR(PSPIO_EIO);
   }
   narg = sscanf (line, "%d",&lmax); // read the max angular momentun component (Note: is not the lmax needed by Octopus)
-  PSPIO_ASSERT(narg==1, PSPIO_EIO);
+  ASSERT(narg==1, PSPIO_EIO);
   
   if(fgets(line, MAX_STRLEN, fp) == NULL) {
     HANDLE_ERROR(PSPIO_EIO);
   }
   narg = sscanf (line, "%d",&np); // read the number of points in mesh
-  PSPIO_ASSERT(narg==1, PSPIO_EIO);
+  ASSERT(narg==1, PSPIO_EIO);
   
   if(fgets(line, MAX_STRLEN, fp) == NULL) {
     HANDLE_ERROR(PSPIO_EIO);
   }
   narg = sscanf (line, "%d %d",&n_states,&n_proj); // read the number of wavefunctions and projectors 
-  PSPIO_ASSERT(narg==2, PSPIO_EIO);
+  ASSERT(narg==2, PSPIO_EIO);
   
   wavefunctions = (wavefunction_t *)malloc(n_states*sizeof(wavefunction_t));
   HANDLE_FATAL_ERROR(wavefunctions == NULL,PSPIO_ENOMEM);
@@ -179,7 +179,7 @@ int pspio_upf_file_read(FILE * fp, pspio_pspdata_t * psp_data){
     
     qn_vec[i] = qn;
     //HANDLE_FUNC_ERROR(pspio_qn_free(qn)); ??
-    PSPIO_ASSERT(narg==3, PSPIO_EIO);
+    ASSERT(narg==3, PSPIO_EIO);
   }
   HANDLE_FUNC_ERROR(check_end_tag(fp, "PP_HEADER"));
   
@@ -194,7 +194,7 @@ int pspio_upf_file_read(FILE * fp, pspio_pspdata_t * psp_data){
       HANDLE_ERROR(PSPIO_EIO);
     }
     narg = sscanf(line,"%lf %lf %lf %lf",&r[i],&r[i+1],&r[i+2],&r[i+3]);
-    PSPIO_ASSERT(narg==4, PSPIO_EIO);
+    ASSERT(narg==4, PSPIO_EIO);
   }
   
   HANDLE_FUNC_ERROR(check_end_tag(fp, "PP_R"));
@@ -210,7 +210,7 @@ int pspio_upf_file_read(FILE * fp, pspio_pspdata_t * psp_data){
       HANDLE_ERROR(PSPIO_EIO);
     }
     narg = sscanf(line,"%lf %lf %lf %lf",&drdi[i],&drdi[i+1],&drdi[i+2],&drdi[i+3]);
-    PSPIO_ASSERT(narg==4, PSPIO_EIO);
+    ASSERT(narg==4, PSPIO_EIO);
   }                                                
   HANDLE_FUNC_ERROR(check_end_tag(fp, "PP_RAB"));
   HANDLE_FUNC_ERROR(check_end_tag(fp, "PP_MESH")); 
@@ -232,7 +232,7 @@ int pspio_upf_file_read(FILE * fp, pspio_pspdata_t * psp_data){
 	HANDLE_ERROR(PSPIO_EIO);
       }
       narg = sscanf(line,"%lf %lf %lf %lf",&core_density[i],&core_density[i+1],&core_density[i+2],&core_density[i+3]);
-      PSPIO_ASSERT(narg==4, PSPIO_EIO);
+      ASSERT(narg==4, PSPIO_EIO);
     }
     HANDLE_FUNC_ERROR(check_end_tag(fp,"PP_NLC"));
   }
@@ -251,7 +251,7 @@ int pspio_upf_file_read(FILE * fp, pspio_pspdata_t * psp_data){
       HANDLE_ERROR(PSPIO_EIO);
     }
     narg = sscanf(line,"%lf %lf %lf %lf",&vlocal_read[i],&vlocal_read[i+1],&vlocal_read[i+2],&vlocal_read[i+3]);
-    PSPIO_ASSERT(narg==4, PSPIO_EIO);
+    ASSERT(narg==4, PSPIO_EIO);
   }
   HANDLE_FUNC_ERROR(check_end_tag(fp,"PP_LOCAL"));
   //Store the local potential in the general data structure
@@ -284,13 +284,13 @@ int pspio_upf_file_read(FILE * fp, pspio_pspdata_t * psp_data){
     HANDLE_ERROR(PSPIO_EIO);
   }
   narg == sscanf(line,"%d",&n_dij);
-  PSPIO_ASSERT(narg==1, PSPIO_EIO);
+  ASSERT(narg==1, PSPIO_EIO);
   for (i=0;i<n_dij;i++){
     if (fgets(line, MAX_STRLEN, fp) == NULL) {
       HANDLE_ERROR(PSPIO_EIO);
     }
     narg == sscanf(line,"%d %d %lf",&ii,&jj,&e[i]);
-    PSPIO_ASSERT(narg==3, PSPIO_EIO);
+    ASSERT(narg==3, PSPIO_EIO);
     if (ii /= jj) {
       HANDLE_ERROR(PSPIO_EVALUE);
     }
@@ -321,7 +321,7 @@ int pspio_upf_file_read(FILE * fp, pspio_pspdata_t * psp_data){
 	HANDLE_ERROR(PSPIO_EIO);
       }
       narg == sscanf(line,"%lf %lf %lf %lf",&wfs[i][j],&wfs[i][j+1],&wfs[i][j+2],&wfs[i][j+3]);
-      PSPIO_ASSERT(narg==4, PSPIO_EIO);
+      ASSERT(narg==4, PSPIO_EIO);
     }
   }
   HANDLE_FUNC_ERROR(check_end_tag(fp,"PP_PSWFC"));
