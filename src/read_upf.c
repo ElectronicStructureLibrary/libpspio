@@ -44,14 +44,20 @@ int pspio_upf_file_read(FILE * fp, pspio_pspdata_t * psp_data){
   int version_number,kb_nc;
   char line[MAX_STRLEN];
   char symbol[2];
-  char nlcc,kind_ps[2],exchange[MAX_STRLEN];
+  char kind_ps[2],exchange[MAX_STRLEN];
   double zvalence,total_energy,wfc_cutoff,rho_cutoff;
-  int lmax,np,n_states,n_proj;
+  int l_max,np,n_states,n_proj;
   wavefunction_t * wavefunctions;
   pspio_qn_t * qn;
   pspio_qn_t ** qn_vec;
   //Variables for the mesh
   double *r, *drdi, *core_density;
+
+  //Variables for non-linear core-corrections
+  pspio_nlcc_t * nlcc;
+  char nlcc_flag;
+  int scheme; /**< scheme used to generate the pseudopotentials */
+
 
   //Variables for local potential
   double * vlocal_read;
@@ -108,7 +114,7 @@ int pspio_upf_file_read(FILE * fp, pspio_pspdata_t * psp_data){
   if(fgets(line, MAX_STRLEN, fp) == NULL) {
     HANDLE_ERROR(PSPIO_EIO);
   }
-  narg = sscanf (line, "%c",&nlcc); // read the nonlinear core correction. The character
+  narg = sscanf (line, "%c",&nlcc_flag); // read the nonlinear core correction. The character
   ASSERT(narg==1, PSPIO_EIO);
   
   if(fgets(line, MAX_STRLEN, fp) == NULL) {
@@ -157,7 +163,7 @@ int pspio_upf_file_read(FILE * fp, pspio_pspdata_t * psp_data){
   if(fgets(line, MAX_STRLEN, fp) == NULL) {
     HANDLE_ERROR(PSPIO_EIO);
   }
-  narg = sscanf (line, "%d",&lmax); // read the max angular momentun component (Note: is not the lmax needed by Octopus)
+  narg = sscanf (line, "%d",&l_max); // read the max angular momentun component (Note: is not the lmax needed by Octopus)
   ASSERT(narg==1, PSPIO_EIO);
   
   if(fgets(line, MAX_STRLEN, fp) == NULL) {
@@ -229,11 +235,13 @@ int pspio_upf_file_read(FILE * fp, pspio_pspdata_t * psp_data){
   //Store the mesh in the general pspio_mesh_t format
   HANDLE_FUNC_ERROR(pspio_mesh_alloc(mesh,np));
   HANDLE_FUNC_ERROR(pspio_mesh_init_from_points(mesh,r,drdi));
-  psp_data->mesh = mesh;
   // Mesh info end -------------------------------------------------------------
   
   // Non-linear core-corrections ///////////////////////////////////////////////
-  if (nlcc) {
+  if (nlcc_flag) {
+    //@todo Initialize scheme
+    scheme = 1;
+    HANDLE_FUNC_ERROR(pspio_nlcc_alloc(nlcc,np));
     HANDLE_FUNC_ERROR(init_tag(fp, "PP_NLCC", GO_BACK));
     core_density = (double *)malloc(np*sizeof(double));
     HANDLE_FATAL_ERROR(core_density == NULL,PSPIO_ENOMEM);
@@ -246,6 +254,8 @@ int pspio_upf_file_read(FILE * fp, pspio_pspdata_t * psp_data){
       ASSERT(narg==4, PSPIO_EIO);
     }
     HANDLE_FUNC_ERROR(check_end_tag(fp,"PP_NLC"));
+    //Fill the pspio_nlcc_t data structure
+    HANDLE_FUNC_ERROR(pspio_nlcc_set(nlcc,scheme/*??*/,mesh,core_density));
   }
   else {
     core_density = NULL;
@@ -269,7 +279,6 @@ int pspio_upf_file_read(FILE * fp, pspio_pspdata_t * psp_data){
   HANDLE_FUNC_ERROR(pspio_qn_alloc(qn_empty));
   HANDLE_FUNC_ERROR(pspio_potential_alloc(vlocal,np));
   HANDLE_FUNC_ERROR(pspio_potential_set(vlocal,qn_empty,mesh,vlocal_read));
-  psp_data->vlocal = vlocal;
   // Local component end -------------------------------------------------------
   
   // Non-local component. //////////////////////////////////////////////////////
@@ -423,6 +432,32 @@ int pspio_upf_file_read(FILE * fp, pspio_pspdata_t * psp_data){
   }
   HANDLE_FUNC_ERROR(check_end_tag(fp,"PP_ADDINFO"));
   //Extra information end ------------------------------------------------------
+
+  //Save the rest to the global data structure
+  //psp_data->title = "The title"; 
+  psp_data->symbol = symbol;
+  //psp_data->z = ; //double
+  psp_data->zvalence = zvalence;
+  //psp_data->nelvalence = ; //double
+  psp_data->l_max = l_max;
+  psp_data->n_kbproj = kb_nc;
+  //psp_data->wave_eq = ; //int
+  psp_data->mesh = mesh;
+  //psp_data->qn_to_istate = ; //int ** I think is not needed to fill
+  //psp_data->states = ; //psp_state_t**
+  psp_data->n_states = n_states;
+  //psp_data->scheme = ;//int
+  psp_data->n_potentials = np; //????
+  psp_data->potentials = vlocal; //I think is wrong. pspio_potential_t**
+  psp_data->n_kbproj = kb_nc;//????int
+  //psp_data->kb_projectors = ;//pspio_projector_t**
+  psp_data->l_local = l;//?? int
+  psp_data->vlocal = vlocal; //psp_potential_t *
+  //psp_data->exchange = exchange; //this is wrong as I read as string exchange and we need int
+  //psp_data->correlation = ;//int
+  psp_data->has_nlcc = (int)nlcc_flag; //
+  psp_data->nlcc = nlcc;
+
   return PSPIO_SUCCESS;
 }
 
