@@ -22,6 +22,8 @@
 #include <stdio.h>
 #include <string.h>
 
+#include <errno.h>
+
 #include "pspio_error.h"
 
 #if defined HAVE_CONFIG_H
@@ -34,7 +36,8 @@ int pspio_error_add(const char *filename, const int line) {
   pspio_error_t *last_err;
 
   if ( pspio_error_chain == NULL ) {
-    pspio_error_chain == (pspio_error_t *)malloc(sizeof(pspio_error_t));
+    pspio_error_chain = (pspio_error_t *)malloc(sizeof(pspio_error_t));
+    printf("SIZE = %d, ERRNO = %d\n", sizeof(pspio_error_t), errno);
     HANDLE_FATAL_ERROR(pspio_error_chain == NULL, PSPIO_ENOMEM)
 
     pspio_error_chain->id = pspio_error_tmp_id;

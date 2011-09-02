@@ -63,11 +63,14 @@ pio_hidden_hdrs = \
   read_upf.h
 
 
-# Test program
-noinst_PROGRAMS = test
+# Test programs
+noinst_PROGRAMS = test test_error
 test_SOURCES = test.c
 test_LDADD =  -lpspio -lm
 test_CPPFLAGS = -I$(srcdir)/../src/
+test_error_SOURCES = test_error.c
+test_error_LDADD = -lpspio -lm
+test_error_CPPFLAGS = -I$(srcdir)/../src/
 
 
 # Fortran source files and modules
