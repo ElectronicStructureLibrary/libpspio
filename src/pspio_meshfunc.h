@@ -59,7 +59,7 @@ typedef struct{
  * @return error code
  * @note np should be larger than 1.
  */
-int pspio_meshfunc_alloc(pspio_meshfunc_t *func, const int np);
+int pspio_meshfunc_alloc(pspio_meshfunc_t **func, const int np);
 
 
 /**
@@ -71,7 +71,7 @@ int pspio_meshfunc_alloc(pspio_meshfunc_t *func, const int np);
  * @note The func pointer has to be allocated first with the 
  *       pspio_meshfunc_alloc method.
  */
-int pspio_meshfunc_set(pspio_meshfunc_t *func, const pspio_mesh_t *mesh, 
+int pspio_meshfunc_set(pspio_meshfunc_t **func, const pspio_mesh_t *mesh, 
 		       const double *f);
 
 
@@ -86,7 +86,7 @@ int pspio_meshfunc_set(pspio_meshfunc_t *func, const pspio_mesh_t *mesh,
  * @note The dst pointer might or might not be allocated. If it is not, then it
  *       is allocate here.
  */
-int pspio_meshfunc_copy(pspio_meshfunc_t *dst, const pspio_meshfunc_t *src);
+int pspio_meshfunc_copy(pspio_meshfunc_t **dst, const pspio_meshfunc_t *src);
 
 
 /**
@@ -97,7 +97,7 @@ int pspio_meshfunc_copy(pspio_meshfunc_t *dst, const pspio_meshfunc_t *src);
  * @note This function can be safelly called even if some or all of the func 
  *       compoments have not been allocated.
  */
-int pspio_meshfunc_free(pspio_meshfunc_t *func);
+int pspio_meshfunc_free(pspio_meshfunc_t **func);
 
 
 /**
@@ -108,7 +108,8 @@ int pspio_meshfunc_free(pspio_meshfunc_t *func);
  * @param[out] *f: value of the function at r
  * @return error code
  */
-int pspio_meshfunc_eval(pspio_meshfunc_t *func, const double r, double *f);
+int pspio_meshfunc_eval(const pspio_meshfunc_t *func, const double r,
+      double *f);
 
 
 /**
@@ -119,7 +120,7 @@ int pspio_meshfunc_eval(pspio_meshfunc_t *func, const double r, double *f);
  * @param[out] *fp: value of the derivative at r
  * @return error code
  */
-int pspio_meshfunc_eval_deriv(pspio_meshfunc_t *func, const double r,
+int pspio_meshfunc_eval_deriv(const pspio_meshfunc_t *func, const double r,
       double *fp);
 
 
@@ -131,7 +132,7 @@ int pspio_meshfunc_eval_deriv(pspio_meshfunc_t *func, const double r,
  * @param[out] *fpp: value of the second derivative at r
  * @return error code
  */
-int pspio_meshfunc_eval_deriv2(pspio_meshfunc_t *func, const double r,
+int pspio_meshfunc_eval_deriv2(const pspio_meshfunc_t *func, const double r,
       double *fpp);
 
 #endif
