@@ -72,6 +72,9 @@ int pspio_upf_file_read(FILE * fp, pspio_pspdata_t * psp_data){
 
   //variables for the wavefunctions
   double **wfs;
+
+  //variables for the valence charge
+  double * rho_read;
   
   HANDLE_FUNC_ERROR(init_tag(fp,"PP_HEADER", GO_BACK));
   
@@ -369,7 +372,22 @@ int pspio_upf_file_read(FILE * fp, pspio_pspdata_t * psp_data){
   }
   HANDLE_FUNC_ERROR(check_end_tag(fp,"PP_PSWFC"));
   //Pseudo wavefunctions end ---------------------------------------------------
-  
+
+  //Valence charge /////////////////////////////////////////////////////////////
+  HANDLE_FUNC_ERROR(init_tag(fp,"PP_RHOATOM",GO_BACK));
+  //Allocate memory to read
+  rho_read = (double *)malloc(np * sizeof(double));
+  HANDLE_FATAL_ERROR(rho_read == NULL,PSPIO_ENOMEM);
+  for (i=0;i<np;i+4){
+    if (fgets(line, MAX_STRLEN, fp) == NULL) {
+      HANDLE_ERROR(PSPIO_EIO);
+    }
+    narg == sscanf(line,"%lf %lf %lf %lf",&rho_read[i],&rho_read[i+1],&rho_read[i+2],&rho_read[i+3]);
+    ASSERT(narg==4, PSPIO_EIO);
+  }
+  HANDLE_FUNC_ERROR(check_end_tag(fp,"PP_RHOATOM"));
+  //Valence charge end ---------------------------------------------------------
+
   return PSPIO_SUCCESS;
 }
 
