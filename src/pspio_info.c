@@ -39,9 +39,9 @@
 
 /**
  * Provide the version number of the library.
- * *param[out] major: major version number, -1 if not found
- * *param[out] minor: minor version number, -1 if not found
- * *param[out] micro: micro version number, -1 if not found
+ * @param[out] major major version number, -1 if not found
+ * @param[out] minor minor version number, -1 if not found
+ * @param[out] micro micro version number, -1 if not found
  * @return error code
  */
 int pspio_version(int *major, int *minor, int *micro) {
@@ -56,10 +56,11 @@ int pspio_version(int *major, int *minor, int *micro) {
   *minor = -1
   *micro = -1
   sscanf(version_string,"%d.%d.%d",major,minor,micro);
+}
 
 /**
  * Provide the package string of the library.
- * *param[out] info: package name and version
+ * @param[out] info: package name and version
  * @return error code
  */
 int pspio_info_string(char *info) {
