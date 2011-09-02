@@ -77,6 +77,13 @@ int pspio_error_add(const char *filename, const int line);
 
 
 /**
+ * Flush the error chain
+ * @return error code
+ */
+int pspio_error_flush(void);
+
+
+/**
  * Clear the error chain
  * @return error code
  */

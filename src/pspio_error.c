@@ -79,12 +79,27 @@ int pspio_error_add(const char *filename, const int line) {
   return PSPIO_SUCCESS;
 }
 
+
+int pspio_error_flush(void) {
+  pspio_error_t *cursor = pspio_error_chain;
+
+  while ( cursor != NULL ) {
+    printf("libpspio: ERROR: %s\n  at %s:%d\n",
+      pspio_error_str(cursor->id), cursor->filename, cursor->line);
+    cursor = cursor->next;
+  }
+
+  return pspio_error_free();
+}
+
+
 int pspio_error_free(void) {
   pspio_error_t *first_err;
 
   while ( pspio_error_chain != NULL ) {
     first_err = pspio_error_chain;
     pspio_error_chain = pspio_error_chain->next;
+    free(first_err->filename);
     free(first_err);
   }
 
