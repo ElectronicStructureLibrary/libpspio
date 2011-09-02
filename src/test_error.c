@@ -111,6 +111,12 @@ int main(void) {
   CHECK_STAT_LEN(eid, PSPIO_SUCCESS, pspio_error_len(), 0)
   DEBUG_PRINT("\n");
 
+  /* Destroy error-handling structures */
+  DEBUG_PRINT("test_error: destroying error-handling structures\n");
+  eid = pspio_error_free();
+  CHECK_STAT_LEN(eid, PSPIO_SUCCESS, pspio_error_len(), 0)
+  DEBUG_PRINT("\n");
+
   DEBUG_PRINT("=== END test_error ===\n")
 
   return 0;
