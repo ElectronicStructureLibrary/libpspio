@@ -40,7 +40,8 @@ pio_core_srcs = \
   pspio_nlcc.c \
   pspio_qn.c \
   pspio_state.c \
-  read_upf.c
+  read_upf.c \
+  test.c
 
 # Exported C headers - keep this in alphabetical order
 pio_core_hdrs = \
@@ -60,6 +61,14 @@ pio_core_hdrs = \
 pio_hidden_hdrs = \
   libxccodes.h \
   read_upf.h
+
+
+# Test program
+noinst_PROGRAMS = test
+test_SOURCES = test.c
+test_LDADD =  -lpspio -lm
+test_CPPFLAGS = -I$(srcdir)/../src/
+
 
 # Fortran source files and modules
 if DO_BUILD_FORTRAN
