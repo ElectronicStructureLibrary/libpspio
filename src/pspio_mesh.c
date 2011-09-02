@@ -55,7 +55,7 @@ int pspio_mesh_alloc(pspio_mesh_t **mesh, const int np){
     }
   (*mesh)->a = 0;
   (*mesh)->b = 0;
-  (*mesh)->type = MESH_NONE;
+  (*mesh)->type = PSPIO_MESH_NONE;
 
   return PSPIO_SUCCESS;
 }
@@ -113,7 +113,7 @@ int pspio_mesh_init_from_points(pspio_mesh_t **mesh, const double *r,
   (*mesh)->a = r[1] - r[2];
   (*mesh)->b = r[0];
   if (abs(r[(*mesh)->np] - (*mesh)->np * (*mesh)->a + (*mesh)->b) < 1e-16) {
-    (*mesh)->type = MESH_LINEAR;
+    (*mesh)->type = PSPIO_MESH_LINEAR;
     for (i=0; i<(*mesh)->np; i++) {
       if (rab != NULL) {
 	ASSERT (abs(rab[i] - (*mesh)->a) < 1e-16, PSPIO_EVALUE);
@@ -128,7 +128,7 @@ int pspio_mesh_init_from_points(pspio_mesh_t **mesh, const double *r,
   (*mesh)->a = log(r[1]/r[0]);
   (*mesh)->b = r[0]/exp((*mesh)->a);
   if (abs(r[(*mesh)->np] - (*mesh)->b*exp((*mesh)->a*(*mesh)->np)) < 1e-16 ) {
-    (*mesh)->type = MESH_LOG1;
+    (*mesh)->type = PSPIO_MESH_LOG1;
     for (i=0; i<(*mesh)->np; i++) {
       if (rab != NULL) {
 	ASSERT (abs(rab[i] - (*mesh)->a*r[i]) < 1e-16, PSPIO_EVALUE);
@@ -143,7 +143,7 @@ int pspio_mesh_init_from_points(pspio_mesh_t **mesh, const double *r,
   (*mesh)->a = log(r[1]/r[0] - 1.0);
   (*mesh)->b = r[0]/(exp((*mesh)->a) - 1.0);
   if (abs(r[(*mesh)->np] - (*mesh)->b*(exp((*mesh)->a*(*mesh)->np) - 1.0)) < 1e-16 ) {
-    (*mesh)->type = MESH_LOG2;
+    (*mesh)->type = PSPIO_MESH_LOG2;
     for (i=0; i<(*mesh)->np; i++) {
       if (rab != NULL) {
 	ASSERT (abs(rab[i] - (*mesh)->a*r[i]) < 1e-16, PSPIO_EVALUE);
@@ -155,7 +155,7 @@ int pspio_mesh_init_from_points(pspio_mesh_t **mesh, const double *r,
   }
 
   // Unable to determine mesh type
-  (*mesh)->type = MESH_UNKNOWN;
+  (*mesh)->type = PSPIO_MESH_UNKNOWN;
   (*mesh)->a = 0.0;
   (*mesh)->b = 0.0;
   return PSPIO_SUCCESS;
@@ -167,7 +167,7 @@ int pspio_mesh_init_from_parameters(pspio_mesh_t **mesh, const int type,
   int i;
 
   ASSERT(*mesh != NULL, PSPIO_ERROR);
-  ASSERT(type != MESH_UNKNOWN, PSPIO_EVALUE);
+  ASSERT(type != PSPIO_MESH_UNKNOWN, PSPIO_EVALUE);
 
   (*mesh)->type = type;
   (*mesh)->a = a;
@@ -175,15 +175,15 @@ int pspio_mesh_init_from_parameters(pspio_mesh_t **mesh, const int type,
 
   for (i=0; i<(*mesh)->np; i++) {
     switch (type) {
-    case MESH_LINEAR:
+    case PSPIO_MESH_LINEAR:
       (*mesh)->r[i] = a*(i+1) + b;
       (*mesh)->rab[i] = a;
       break;
-    case MESH_LOG1:
+    case PSPIO_MESH_LOG1:
       (*mesh)->r[i] = b*exp(a*(i+1));
       (*mesh)->rab[i] = a*(*mesh)->r[i];
       break;
-    case MESH_LOG2:
+    case PSPIO_MESH_LOG2:
       (*mesh)->r[i] = b*exp(a*(i+1) - 1.0);
       (*mesh)->rab[i] = a*(*mesh)->r[i];
       break;
