@@ -36,7 +36,7 @@ int main(void) {
   pspio_qn_t *qn1 = NULL, *qn2 = NULL;
 
   /* Display basic information */
-  DEBUG_PRINT("%s - test_error\nReport bugs to %s\n\n", PACKAGE_STRING,
+  DEBUG_PRINT("%s - test_qn\nReport bugs to %s\n\n", PACKAGE_STRING,
     PACKAGE_BUGREPORT);
   DEBUG_PRINT("=== BEGIN test_qn ===\n\n");
 
