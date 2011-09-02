@@ -47,7 +47,7 @@ int symbol_to_z(const char *symbol, double z){
   ASSERT ( symbol != NULL, PSPIO_EVALUE);
 
   for (i=0; i<112; i++) {
-    if (streq(symbol, symbols[i])) {
+    if (strncmp(symbol, symbols[i], 2)) {
       z = i + 1.0;
       return PSPIO_SUCCESS;
     }
@@ -60,7 +60,7 @@ int symbol_to_z(const char *symbol, double z){
 int z_to_symbol(const double z, char *symbol){
   ASSERT ( (z < 113.0 && z > 0.0), PSPIO_EVALUE);
 
-  symbol = symbols[(int)z-1];
+  strncpy(symbol, symbols[(int)z-1], 3);
 
   return PSPIO_SUCCESS;
 }

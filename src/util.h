@@ -40,7 +40,6 @@
  * Routines                                                           *
  **********************************************************************/
 
-
 /**
  * Given the atomic number, returns the symbol
  *
