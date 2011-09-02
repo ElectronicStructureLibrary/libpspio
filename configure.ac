@@ -151,6 +151,9 @@ fi
 AC_PROG_CC
 AC_PROG_CPP
 
+# C compiler peculiarities
+AM_PROG_CC_C_O
+
                     # ------------------------------------ #
 
 # Look for the Fortran compiler
@@ -165,14 +168,7 @@ if test "${enable_fortran}" = "yes"; then
     fi
   fi
   AC_PROG_FC
-else
-  # This is an ugly trick to work around a design flaw of Libtool which
-  # systematically selects the Fortran linker whenever a Fortran file
-  # may be compiled under some circumstances.
-  FC="${CC}"
 fi
-
-                    # ------------------------------------ #
 
 # Fortran compiler peculiarities
 AX_F90_MODULE_EXTENSION
