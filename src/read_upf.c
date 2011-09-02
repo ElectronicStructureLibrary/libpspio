@@ -40,7 +40,7 @@ int  pspio_upf_init(FILE * fp, pspio_pspdata_t * psp_data){
 }
 
 int pspio_upf_file_read(FILE * fp, pspio_pspdata_t * psp_data){
-  int i,j,ierr, narg, id_left;
+  int i,j,ierr, narg, id_left,dummy;
   int version_number;
   char line[MAX_STRLEN];
   char symbol[2];
@@ -59,10 +59,15 @@ int pspio_upf_file_read(FILE * fp, pspio_pspdata_t * psp_data){
   pspio_potential_t * vlocal;
 
   //variables for the projections
-  pspio_projector_t ** projectors;
+  pspio_projector_t ** projectors_vec;
+  pspio_projector_t * projector;
   pspio_mesh_t * mesh;
-
-  double * e;
+  pspio_qn_t * qn_proj;
+  pspio_qn_t ** qn_vec_proj;
+  int l, proj_np;
+  double * projector_read;
+  double ** projector_read_vec;
+  double * energy_vec;
   int n_dij,ii,jj;
 
   //variables for the wavefunctions
@@ -168,6 +173,7 @@ int pspio_upf_file_read(FILE * fp, pspio_pspdata_t * psp_data){
   } //skip the first line
   
   *(qn_vec) = (pspio_qn_t *)malloc(n_states * sizeof(pspio_qn_t));
+  HANDLE_FATAL_ERROR(wavefunctions == NULL,PSPIO_ENOMEM);
   for (i=0; i<n_states; i++) {
     if(fgets(line, MAX_STRLEN, fp) == NULL) {
       HANDLE_ERROR(PSPIO_EIO);
@@ -196,11 +202,8 @@ int pspio_upf_file_read(FILE * fp, pspio_pspdata_t * psp_data){
     narg = sscanf(line,"%lf %lf %lf %lf",&r[i],&r[i+1],&r[i+2],&r[i+3]);
     ASSERT(narg==4, PSPIO_EIO);
   }
-  
   HANDLE_FUNC_ERROR(check_end_tag(fp, "PP_R"));
   
- 
-
   HANDLE_FUNC_ERROR(init_tag(fp, "PP_RAB", NO_GO_BACK));
   drdi = (double *)malloc(np*sizeof(double));
   HANDLE_FATAL_ERROR(drdi == NULL,PSPIO_ENOMEM);
@@ -261,23 +264,51 @@ int pspio_upf_file_read(FILE * fp, pspio_pspdata_t * psp_data){
   psp_data->vlocal = vlocal;
   //Local component end --------------------------------------------------------
   
-  ///@warning Non-local component. Skipt form the moment ///////////////////////
+  //Non-local component. ///////////////////////////////////////////////////////
   HANDLE_FUNC_ERROR(init_tag(fp,"PP_NONLOCAL",GO_BACK));
-  //Allocate a mesh for every projection
-  for (i=0; i<np;i++){
-    //Allocate a projector for every point
-    pspio_projector_alloc (projectors, mesh);
-  }
-  for (i=0; i<n_proj;i++){
+  *(qn_vec_proj) = (pspio_qn_t *)malloc(n_states * sizeof(pspio_qn_t));
+  HANDLE_FATAL_ERROR(*(qn_vec_proj) == NULL,PSPIO_ENOMEM);
+  //Alloc memory for all projections
+  *(projector_read_vec) = (double *)malloc(n_proj * sizeof(double) * np); 
+  HANDLE_FATAL_ERROR(*(projector_read_vec) == NULL,PSPIO_ENOMEM);
+  for (i=0;i<n_proj;i++){
     HANDLE_FUNC_ERROR(init_tag(fp,"PP_BETA",NO_GO_BACK));
-    //Some reads
-    //The following call may fail: ps_upf.F90:284 of Octopus
-    HANDLE_FUNC_ERROR(check_end_tag(fp,"PP_BETA"));
+    if(fgets(line, MAX_STRLEN, fp) == NULL) {
+      HANDLE_ERROR(PSPIO_EIO);
+    }
+    narg = sscanf(line,"%d %d",&dummy,&l);
+    ASSERT(narg==2, PSPIO_EIO);
+
+    if(fgets(line, MAX_STRLEN, fp) == NULL) {
+      HANDLE_ERROR(PSPIO_EIO);
+    }
+    //read the number of points of projections
+    narg = sscanf(line,"%d",&proj_np);
+    ASSERT(narg==1, PSPIO_EIO);
+    
+    //In any case; alloc memory for the entire mesh
+    projector_read = (double *)malloc(np * sizeof(double));
+    HANDLE_FATAL_ERROR(projector_read == NULL,PSPIO_ENOMEM);
+    
+    for (j=0;j<proj_np;j+4){
+      if (fgets(line, MAX_STRLEN, fp) == NULL) {
+	HANDLE_ERROR(PSPIO_EIO);
+      }
+      narg = sscanf(line,"%lf %lf %lf %lf",&projector_read[j],&projector_read[j+1],&projector_read[j+2],&projector_read[j+3]);
+      ASSERT(narg==4, PSPIO_EIO);
+    }
+    //Fill with zeros
+    for (j=proj_np;j<np;j++)
+      projector_read[i] = 0.0;
+   
+    projector_read_vec[i] = projector_read;
+    HANDLE_FUNC_ERROR(pspio_qn_alloc(qn_proj));
+    HANDLE_FUNC_ERROR(pspio_qn_set(qn,0,l,0.0));
+    qn_vec_proj[i] = qn_proj;
   }
-  
   HANDLE_FUNC_ERROR(init_tag(fp,"PP_DIJ",NO_GO_BACK));
-  e = (double *)malloc(n_proj*sizeof(double));
-  HANDLE_FATAL_ERROR(e == NULL,PSPIO_ENOMEM);
+  energy_vec = (double *)malloc(n_proj*sizeof(double));
+  HANDLE_FATAL_ERROR(energy_vec == NULL,PSPIO_ENOMEM);
   
   //Read the number of n_dij 
   if (fgets(line, MAX_STRLEN, fp) == NULL) {
@@ -285,11 +316,12 @@ int pspio_upf_file_read(FILE * fp, pspio_pspdata_t * psp_data){
   }
   narg == sscanf(line,"%d",&n_dij);
   ASSERT(narg==1, PSPIO_EIO);
+
   for (i=0;i<n_dij;i++){
     if (fgets(line, MAX_STRLEN, fp) == NULL) {
       HANDLE_ERROR(PSPIO_EIO);
     }
-    narg == sscanf(line,"%d %d %lf",&ii,&jj,&e[i]);
+    narg == sscanf(line,"%d %d %lf",&ii,&jj,&energy_vec[i]);
     ASSERT(narg==3, PSPIO_EIO);
     if (ii /= jj) {
       HANDLE_ERROR(PSPIO_EVALUE);
@@ -297,7 +329,16 @@ int pspio_upf_file_read(FILE * fp, pspio_pspdata_t * psp_data){
   }
   HANDLE_FUNC_ERROR(check_end_tag(fp,"PP_DIJ"));
   HANDLE_FUNC_ERROR(check_end_tag(fp,"PP_NONLOCAL"));
-  ///@warning Non-local component. Skipt form the moment end -------------------
+  
+  //Save the projections to the general data structure
+  *(projectors_vec) = (pspio_projector_t *)malloc(n_proj * sizeof(pspio_projector_t));
+  HANDLE_FATAL_ERROR(*(projectors_vec) == NULL, PSPIO_ENOMEM);
+  for (i=0;i<n_proj;i++){ 
+    HANDLE_FUNC_ERROR(pspio_projector_alloc(projector,np));
+    HANDLE_FUNC_ERROR(pspio_projector_set(projector,qn_vec_proj[i],energy_vec[i],mesh,projector_read_vec[i]));
+    projectors_vec[i] = projector;
+  }
+  //Non-local component. -------------------------------------------------------
   
   //Pseudo wavefunctions ///////////////////////////////////////////////////////
   HANDLE_FUNC_ERROR(init_tag(fp,"PP_PSWFC",GO_BACK));
