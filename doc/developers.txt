@@ -51,20 +51,23 @@
  * quantum numbers. If we assume that in a set of pseudopotentials all
  * the l values up to lmax are present, and that j = 0 when the
  * pseudopotentials are non-relativistic, then we can uniquely identify
- * an l, j pair by the index i = l + int(j). Thus the pseudopotentials
+ * an l, j pair by the index i = l + (int)j. Thus the pseudopotentials
  * in psp_data should be have a size of lmax*2+1 or lmax+1, depending if
  * the atom is treated relativistically or not, and
- * psp_data->pseudopotentials[l+int(j)] is the pseudopotential with
- * quantum numbers l, j.
+ * psp_data->pseudopotentials[l+(int)j)] is the pseudopotential with
+ * quantum numbers l, j. A macro is available to get the index: LJ_TO_I(l,j).
+ * We strongly advise using the macro in all situations.
  *
  * As for the states, they will also have a n quantum number associated.
- * In that case we create a matrix qn_to_i[n-1][l+int(j)], where i is
- * define as in the previous paragraph, such that
- * psp_data->states[qn_to_istates[n][l+int(j)]] is the state with
+ * In that case we create a lookup table qn_to_i[n-1][l+(int)j], where 
+ * i is define as in the previous paragraph, such that
+ * psp_data->states[qn_to_istates[n][l+(int)j]] is the state with
  * quantum numbers n, l, j. The size of the first dimention of the
- * psp_data->qn_to_i matrix will be maximum value of n, while the size
+ * lookup table will be maximum value of n, while the size
  * of the second dimention will be lmax*2+1 or lmax+1, depending if the
- * atom is treated relativistically or not.
+ * atom is treated relativistically or not. A function is available to
+ * build the lookup table (pspio_states_build_lookup): given a list of
+ * quantum numbers, returns the lookup table.
  *
  * One of these two schemes can be used for the projectors, depending if
  * there is more than a projector for each l, j pair. For now only 

@@ -62,7 +62,8 @@ pio_core_hdrs = \
 # Internal C headers - keep this in alphabetical order
 pio_hidden_hdrs = \
   libxccodes.h \
-  read_upf.h
+  read_upf.h \
+  util.h
 
 # Fortran source files and modules
 if DO_BUILD_FORTRAN

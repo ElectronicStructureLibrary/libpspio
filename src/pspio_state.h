@@ -95,6 +95,21 @@ int pspio_state_copy(pspio_state_t *dst, pspio_state_t *src);
 
 
 /**
+ * Creates a lookup table where are stored the indexes of the states corresponding to 
+ * some quantum numbers.
+ * @param[in] n_states: the number of states
+ * @param[in] states: the list of states
+ * @param[out] table: lookup table with indexes of the states.
+ * @return error code
+ * @note The index of a state in the list of states is given by 
+ * table[state->qn->n][state->qn->l + (int)states->qn->j]
+ * @note The table is allocated inside this function.
+ */
+int pspio_states_lookup_table(const int n_states, const pspio_state_t **states,
+			      int **table);
+
+
+/**
  * Deallocates a state structure pointer.
  * @param[in,out] state: state structure pointer to destroy
  * @return error code

@@ -24,6 +24,7 @@
 #include "pspio_error.h"
 #include "pspio_meshfunc.h"
 #include "pspio_pspdata.h"
+#include "util.h"
 
 #if defined HAVE_CONFIG_H
 #include "config.h"
@@ -34,7 +35,7 @@
  * Global routines                                                    *
  **********************************************************************/
 
-int pspio_pspdata_init(pspio_pspdata_t *psp_data, const char *file_name,
+int pspio_pspdata_init(pspio_pspdata_t *pspdata, const char *file_name,
       const int file_format){
   FILE * fp;
   int ierr;
@@ -53,19 +54,19 @@ int pspio_pspdata_init(pspio_pspdata_t *psp_data, const char *file_name,
   case UNKNOWN:
     break;
   case ABINIT_4:
-    HANDLE_FUNC_ERROR(read_abinit4(fp,psp_data));
+    HANDLE_FUNC_ERROR(read_abinit4(fp,pspdata));
     break;
   case ABINIT_5:
-    HANDLE_FUNC_ERROR(read_abinit5(fp,psp_data));
+    HANDLE_FUNC_ERROR(read_abinit5(fp,pspdata));
     break;
   case ABINIT_6:
-    HANDLE_FUNC_ERROR(read_abinit6(fp,psp_data));
+    HANDLE_FUNC_ERROR(read_abinit6(fp,pspdata));
     break;
   case ABINIT_HGH:
-    HANDLE_FUNC_ERROR(read_abinit_hgh(fp,psp_data));
+    HANDLE_FUNC_ERROR(read_abinit_hgh(fp,pspdata));
     break;
   case ABINIT_GTH:
-    HANDLE_FUNC_ERROR(read_abinit_gth(fp,psp_data));
+    HANDLE_FUNC_ERROR(read_abinit_gth(fp,pspdata));
     break;
   case ATOM:
     break;
@@ -74,7 +75,7 @@ int pspio_pspdata_init(pspio_pspdata_t *psp_data, const char *file_name,
   case SIESTA:
     break;
   case UPF:
-    HANDLE_FUNC_ERROR(pspio_upf_init(fp,psp_data));
+    HANDLE_FUNC_ERROR(pspio_upf_init(fp,pspdata));
     break;
   default:
     return PSPIO_EFILE_FORMAT;
@@ -90,41 +91,43 @@ int pspio_pspdata_init(pspio_pspdata_t *psp_data, const char *file_name,
 }
 
 
-int pspio_pspdata_free(pspio_pspdata_t *psp_data){
+int pspio_pspdata_free(pspio_pspdata_t *pspdata){
   int i;
 
-  if (psp_data != NULL) {
-    if (psp_data->symbol != NULL) free(psp_data->symbol);
-    HANDLE_FUNC_ERROR (pspio_mesh_free(psp_data->mesh));
+  if (pspdata != NULL) {
+    if (pspdata->symbol != NULL) free(pspdata->symbol);
+    HANDLE_FUNC_ERROR (pspio_mesh_free(pspdata->mesh));
 
-    if (psp_data->states != NULL) {
-      for (i=0; i<psp_data->n_states; i++) {
-	HANDLE_FUNC_ERROR (pspio_state_free(psp_data->states[i]));
+    if (pspdata->states != NULL) {
+      for (i=0; i<pspdata->n_states; i++) {
+	HANDLE_FUNC_ERROR (pspio_state_free(pspdata->states[i]));
       }
-      free(psp_data->states);
+      free(pspdata->states);
     }
 
-    if (psp_data->potentials != NULL) {
-      for (i=0; i<psp_data->n_potentials; i++) {
-	HANDLE_FUNC_ERROR (pspio_potential_free(psp_data->potentials[i]));
+    if (pspdata->potentials != NULL) {
+      for (i=0; i<pspdata->n_potentials; i++) {
+	HANDLE_FUNC_ERROR (pspio_potential_free(pspdata->potentials[i]));
       }
-      free(psp_data->potentials);
+      free(pspdata->potentials);
     }
 
-    if (psp_data->kb_projectors != NULL) {
-      for (i=0; i<psp_data->n_kbproj; i++) {
-	HANDLE_FUNC_ERROR (pspio_projector_free(psp_data->kb_projectors[i]));
+    if (pspdata->kb_projectors != NULL) {
+      for (i=0; i<pspdata->n_kbproj; i++) {
+	HANDLE_FUNC_ERROR (pspio_projector_free(pspdata->kb_projectors[i]));
       }
-      free(psp_data->kb_projectors);
+      free(pspdata->kb_projectors);
     }
 
-    if (psp_data->vlocal != NULL) {
-      HANDLE_FUNC_ERROR (pspio_potential_free(psp_data->vlocal));
+    if (pspdata->vlocal != NULL) {
+      HANDLE_FUNC_ERROR (pspio_potential_free(pspdata->vlocal));
     }
 
-    if (psp_data->nlcc != NULL) {
-      HANDLE_FUNC_ERROR (pspio_nlcc_free(psp_data->nlcc));
+    if (pspdata->nlcc != NULL) {
+      HANDLE_FUNC_ERROR (pspio_nlcc_free(pspdata->nlcc));
     }
+
+    
 
   }
 
@@ -143,7 +146,7 @@ int pspio_pspdata_potential_get(const pspio_pspdata_t *data, const int l,
   ASSERT((l >=0) &&
 	 ((j == 0) || (abs(j - (double)l) - 0.5 < 10e-9)), PSPIO_ERROR);
 
-  HANDLE_FUNC_ERROR(pspio_meshfunc_eval(data->potentials[l+(int)j]->v,r,value));
+  HANDLE_FUNC_ERROR(pspio_meshfunc_eval(data->potentials[LJ_TO_I(l,j)]->v,r,value));
 
   return PSPIO_SUCCESS;
 }
@@ -155,7 +158,7 @@ int pspio_pspdata_kbprojector_get(const pspio_pspdata_t *data, const int l,
   ASSERT( (l >=0) &&
 	 ((j == 0) || (abs(j - (double)l) - 0.5 < 10e-9)), PSPIO_ERROR);
 
-  HANDLE_FUNC_ERROR(pspio_meshfunc_eval(data->kb_projectors[l+(int)j]->proj,r,value));
+  HANDLE_FUNC_ERROR(pspio_meshfunc_eval(data->kb_projectors[LJ_TO_I(l,j)]->proj,r,value));
 
   return PSPIO_SUCCESS;
 }
@@ -167,7 +170,7 @@ int pspio_pspdata_kbenergy_get(const pspio_pspdata_t *data, const int l,
   ASSERT( (l >=0) &&
 	 ((j == 0) || (abs(j - (double)l) - 0.5 < 10e-9)), PSPIO_ERROR);
 
-  *value = data->kb_projectors[l+(int)j]->energy;
+  *value = data->kb_projectors[LJ_TO_I(l,j)]->energy;
 
   return PSPIO_SUCCESS;
 }

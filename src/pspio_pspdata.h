@@ -96,7 +96,7 @@ typedef struct{
   pspio_mesh_t *mesh; /**< Radial mesh - all functions should be discretized on this mesh */
 
   // The states
-  int **qn_to_istate;     /**< table giving the position of the state from the quantum numbers */ 
+  int **qn_to_istate;     /**< lookup table giving the position of the state from the quantum numbers */ 
   int n_states;           /**< number of electronic states */
   pspio_state_t **states; /**< struct with electronic states */
 

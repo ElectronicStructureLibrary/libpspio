@@ -23,6 +23,7 @@
 
 #include "pspio_error.h"
 #include "pspio_state.h"
+#include "util.h"
 
 #if defined HAVE_CONFIG_H
 #include "config.h"
@@ -99,6 +100,40 @@ int pspio_state_copy(pspio_state_t *dst, pspio_state_t *src) {
   dst->label = (char *)malloc(s+1);
   memcpy(dst->label, src->label, s);
   dst->label[s] = 0;
+
+  return PSPIO_SUCCESS;
+}
+
+
+int pspio_states_lookup_table(const int n_states, const pspio_state_t **states, 
+			    int **table){
+  int i, nmax, lmax, rel, lsize;
+  pspio_qn_t *qn;
+
+  ASSERT ( states != NULL, PSPIO_EVALUE);
+  ASSERT ( table == NULL, PSPIO_EVALUE);
+
+  nmax = 0; lmax = 0, rel = 0;
+  for (i=0; i<n_states; i++) {
+    qn = states[i]->qn;
+    rel = (qn->j != 0.0) ? 1 : 0;
+    nmax = max(nmax, qn->n);
+    lmax = max(lmax, qn->l);
+  }
+
+  lsize = rel ? lmax*2+1 : lmax+1;
+  table = (int *) malloc (nmax * sizeof(int *));
+  HANDLE_FATAL_ERROR (table == NULL, PSPIO_ENOMEM);
+  for (i=0; i<n_states; i++) {
+    table[i] = (double *) malloc (lsize * sizeof(double));
+    HANDLE_FATAL_ERROR (table[i] == NULL, PSPIO_ENOMEM);
+  }
+
+  memset(table, -1, nmax*lsize*sizeof(int));
+  for (i==0; i<n_states; i++) {
+    qn = states[i]->qn;
+    table[qn->n][LJ_TO_I(qn->l,qn->j)] = i;
+  }
 
   return PSPIO_SUCCESS;
 }
