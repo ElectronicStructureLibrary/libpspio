@@ -40,6 +40,9 @@ int pspio_mesh_alloc(pspio_mesh_t **mesh, const int np){
   *mesh = (pspio_mesh_t *) malloc (sizeof(pspio_mesh_t));
   HANDLE_FATAL_ERROR (*mesh == NULL, PSPIO_ENOMEM);
 
+  (*mesh)->r = NULL;
+  (*mesh)->rab = NULL;
+
   (*mesh)->r = (double *) malloc (np * sizeof(double));
   HANDLE_FATAL_ERROR ((*mesh)->r == NULL, PSPIO_ENOMEM);
 
@@ -64,8 +67,8 @@ int pspio_mesh_alloc(pspio_mesh_t **mesh, const int np){
 int pspio_mesh_set(pspio_mesh_t **mesh, const int type, const double a, 
 		   const double b, const double *r, const double *rab){
   ASSERT((*mesh) != NULL, PSPIO_ERROR);
-  ASSERT(sizeof(r) / sizeof(double) == (*mesh)->np, PSPIO_ERROR);
-  ASSERT(sizeof(rab) / sizeof(double) == (*mesh)->np, PSPIO_ERROR);
+  //ASSERT(sizeof(r) / sizeof(double) == (*mesh)->np, PSPIO_ERROR);
+  //ASSERT(sizeof(rab) / sizeof(double) == (*mesh)->np, PSPIO_ERROR);
   
   (*mesh)->type = type;
   (*mesh)->a = a;
@@ -79,8 +82,8 @@ int pspio_mesh_set(pspio_mesh_t **mesh, const int type, const double a,
 
 int pspio_mesh_copy(pspio_mesh_t **dst, const pspio_mesh_t *src){
   ASSERT (src != NULL, PSPIO_ERROR);
-  ASSERT(sizeof(src->r) / sizeof(double) == src->np, PSPIO_ERROR);
-  ASSERT(sizeof(src->rab) / sizeof(double) == src->np, PSPIO_ERROR);
+  //ASSERT(sizeof(src->r) / sizeof(double) == src->np, PSPIO_ERROR);
+  //ASSERT(sizeof(src->rab) / sizeof(double) == src->np, PSPIO_ERROR);
 
   if (*dst == NULL) {
     HANDLE_FUNC_ERROR (pspio_mesh_alloc(dst, src->np));
@@ -196,7 +199,7 @@ int pspio_mesh_init_from_parameters(pspio_mesh_t **mesh, const int type,
 
 int pspio_mesh_free(pspio_mesh_t **mesh){
 
-  if (mesh != NULL) {
+  if (*mesh != NULL) {
     if ((*mesh)->r != NULL) free ((*mesh)->r);
     if ((*mesh)->rab != NULL) free ((*mesh)->rab);
     free (*mesh);

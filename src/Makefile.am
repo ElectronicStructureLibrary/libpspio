@@ -93,6 +93,7 @@ pio_built_hdrs = $(pio_fortran_mods)
 noinst_PROGRAMS = \
   test \
   test_error \
+  test_mesh \
   test_qn \
   test_state
 
@@ -103,6 +104,10 @@ test_CPPFLAGS = -I$(srcdir)/../src
 test_error_SOURCES = test_error.c
 test_error_LDADD = -lpspio -lm
 test_error_CPPFLAGS = -I$(srcdir)/../src
+
+test_mesh_SOURCES = test_mesh.c
+test_mesh_LDADD = -lpspio -lm
+test_mesh_CPPFLAGS = -I$(srcdir)/../src
 
 test_qn_SOURCES = test_qn.c
 test_qn_LDADD = -lpspio -lm

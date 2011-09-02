@@ -43,6 +43,10 @@ int pspio_state_alloc(pspio_state_t **state, const int np) {
   *state = (pspio_state_t *)malloc(sizeof(state));
   HANDLE_FATAL_ERROR(*state == NULL, PSPIO_ENOMEM);
 
+  (*state)->qn = NULL;
+  (*state)->label = NULL;
+  (*state)->wf = NULL;
+
   ierr = pspio_meshfunc_alloc(&(*state)->wf, np);
   if (ierr) {
     pspio_state_free(state);
