@@ -35,18 +35,14 @@ int pspio_error_add(const char *filename, const int line) {
 
   if ( pspio_error_chain == NULL ) {
     pspio_error_chain == (pspio_error_t *)malloc(sizeof(pspio_error_t));
-    if ( pspio_error_chain == NULL ) {
-      return PSPIO_ERROR;
-    }
+    HANDLE_FATAL_ERROR(pspio_error_chain == NULL, PSPIO_ENOMEM)
 
     pspio_error_chain->id = pspio_error_tmp_id;
     pspio_error_chain->line = line;
     pspio_error_chain->next = NULL;
     s = strlen(filename);
     pspio_error_chain->filename = (char *)malloc(s + 1);
-    if ( pspio_error_chain->filename == NULL ) {
-      return PSPIO_ERROR;
-    }
+    HANDLE_FATAL_ERROR(pspio_error_chain->filename == NULL, PSPIO_ENOMEM)
     memcpy(pspio_error_chain->filename,filename,s);
     pspio_error_chain->filename[s] = 0;
     pspio_error_tmp_id = 0;
@@ -120,9 +116,9 @@ pspio_error_t *pspio_error_pop(void) {
 
 void pspio_error_show(const int error_id, const char *filename,
        const int line) {
-  printf("libpspio: ERROR:\n  %s\n",pspio_error_str(error_id));
+  printf("libpspio: ERROR: %s\n",pspio_error_str(error_id));
   if ( filename != NULL ) {
-    printf("  in file %s:%d\n",filename,line);
+    printf("  at %s:%d\n",filename,line);
   }
 }
 
