@@ -290,6 +290,7 @@ int pspio_upf_file_read(FILE * fp, pspio_pspdata_t * psp_data){
     projector_read = (double *)malloc(np * sizeof(double));
     HANDLE_FATAL_ERROR(projector_read == NULL,PSPIO_ENOMEM);
     
+    //Read the projections
     for (j=0;j<proj_np;j+4){
       if (fgets(line, MAX_STRLEN, fp) == NULL) {
 	HANDLE_ERROR(PSPIO_EIO);
@@ -297,10 +298,11 @@ int pspio_upf_file_read(FILE * fp, pspio_pspdata_t * psp_data){
       narg = sscanf(line,"%lf %lf %lf %lf",&projector_read[j],&projector_read[j+1],&projector_read[j+2],&projector_read[j+3]);
       ASSERT(narg==4, PSPIO_EIO);
     }
-    //Fill with zeros
+    //Fill with zeros, if any left
     for (j=proj_np;j<np;j++)
       projector_read[i] = 0.0;
    
+    //Store in the vector
     projector_read_vec[i] = projector_read;
     HANDLE_FUNC_ERROR(pspio_qn_alloc(qn_proj));
     HANDLE_FUNC_ERROR(pspio_qn_set(qn,0,l,0.0));

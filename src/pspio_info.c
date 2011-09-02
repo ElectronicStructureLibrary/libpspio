@@ -19,7 +19,7 @@
 */
 
 /**
- * @file pspio_version.h
+ * @file pspio_info.c
  * @brief Libpspio version information 
  */
 
@@ -78,5 +78,3 @@ int pspio_info_string(char *info) {
 
   return PSPIO_SUCCESS;
 }
-
-#endif
