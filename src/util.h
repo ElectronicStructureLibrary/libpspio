@@ -35,4 +35,31 @@
 
 #define LJ_TO_I(l,j)  (l+(int)j)
 
+
+/**********************************************************************
+ * Routines                                                           *
+ **********************************************************************/
+
+
+/**
+ * Given the atomic number, returns the symbol
+ *
+ * @param[in] z: atomic number
+ * @param[out] symbol: the symbol
+ * @return error code
+ * @note z should be larger than 0 and smaller than 113.
+ */
+int z_to_symbol(const double z, char *symbol);
+
+
+/**
+ * Given the symbol, returns the atomic number
+ *
+ * @param[in] symbol: the symbol
+ * @param[out] z: atomic number
+ * @return error code
+ */
+int symbol_to_z(const char *symbol, double z);
+
+
 #endif

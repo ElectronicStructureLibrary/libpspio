@@ -124,8 +124,6 @@ int pspio_pspdata_free(pspio_pspdata_t *pspdata){
       HANDLE_FUNC_ERROR (pspio_nlcc_free(pspdata->nlcc));
     }
 
-    
-
   }
 
   return PSPIO_SUCCESS;

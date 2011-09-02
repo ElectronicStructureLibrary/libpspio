@@ -42,7 +42,8 @@ pio_core_srcs = \
   pspio_qn.c \
   pspio_state.c \
   read_upf.c \
-  test.c
+  test.c \
+  util.c
 
 # Exported C headers - keep this in alphabetical order
 pio_core_hdrs = \
