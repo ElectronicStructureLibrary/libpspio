@@ -62,6 +62,12 @@ int main(void) {
   DEBUG_PRINT("test_mesh: setting m1\n");
   eid = pspio_mesh_set(&m1, PSPIO_MESH_LOG1, a, b, r, rab);
   eid = pspio_error_flush();
+  DEBUG_PRINT("test_mesh: initializing m1 from parameters\n");
+  eid = pspio_mesh_init_from_parameters(&m1, PSPIO_MESH_LOG1, a, b);
+  eid = pspio_error_flush();
+  DEBUG_PRINT("test_mesh: initializing m1 from points\n");
+  eid = pspio_mesh_init_from_points(&m1, r, rab);
+  eid = pspio_error_flush();
   DEBUG_PRINT("\n");
 
   /* Check copy of meshes */

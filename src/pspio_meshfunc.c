@@ -29,7 +29,7 @@
 
 
 int pspio_meshfunc_alloc(pspio_meshfunc_t **func, const int np){
-  int i, ierr;
+  int ierr;
 
   ASSERT(np > 1, PSPIO_EVALUE);
   ASSERT(*func == NULL, PSPIO_ERROR);
@@ -60,6 +60,8 @@ int pspio_meshfunc_set(pspio_meshfunc_t **func, const pspio_mesh_t *mesh,
 
   HANDLE_FUNC_ERROR (pspio_mesh_copy(&(*func)->mesh, mesh));
   memcpy((*func)->f, f, (*func)->mesh->np * sizeof(double));
+  gsl_spline_init((*func)->spl, (*func)->mesh->r, (*func)->f,
+		  (*func)->mesh->np) ;
 
   return PSPIO_SUCCESS;
 }
@@ -75,7 +77,7 @@ int pspio_meshfunc_copy(pspio_meshfunc_t **dst, const pspio_meshfunc_t *src){
 
   HANDLE_FUNC_ERROR (pspio_mesh_copy(&(*dst)->mesh, src->mesh));
   memcpy((*dst)->f, src->f, src->mesh->np * sizeof(double));
-  
+
   gsl_spline_init((*dst)->spl, (*dst)->mesh->r, (*dst)->f,
 		  (*dst)->mesh->np) ;
 
@@ -86,7 +88,7 @@ int pspio_meshfunc_copy(pspio_meshfunc_t **dst, const pspio_meshfunc_t *src){
 int pspio_meshfunc_eval(const pspio_meshfunc_t *func, const double r,
       double *f){
   ASSERT (func != NULL, PSPIO_ERROR);
-  
+
   *f = gsl_spline_eval(func->spl, r, func->acc);
 
   return PSPIO_SUCCESS;
