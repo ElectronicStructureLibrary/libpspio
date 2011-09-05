@@ -34,24 +34,22 @@ int pspio_meshfunc_alloc(pspio_meshfunc_t **func, const int np){
   ASSERT(np > 1, PSPIO_EVALUE);
   ASSERT(*func == NULL, PSPIO_ERROR);
 
-  *func = (pspio_meshfunc_t *) malloc (sizeof(pspio_meshfunc_t));  
+  *func = (pspio_meshfunc_t *) malloc (sizeof(pspio_meshfunc_t));
   HANDLE_FATAL_ERROR (*func == NULL, PSPIO_ENOMEM);
 
   (*func)->f = (double *) malloc (np * sizeof(double));
   HANDLE_FATAL_ERROR ((*func)->f == NULL, PSPIO_ENOMEM);
+  memset((*func)->f, 0, np*sizeof(double));
 
+  (*func)->mesh = NULL;
   ierr = pspio_mesh_alloc(&(*func)->mesh, np);
   if (ierr) {
     pspio_meshfunc_free(func);
     HANDLE_ERROR (ierr);
   }
+
   (*func)->spl = gsl_spline_alloc(gsl_interp_cspline, np);
   (*func)->acc = gsl_interp_accel_alloc();
-
-  for (i = 0; i < np; i++)
-    {
-      (*func)->f[i] = 0;
-    }
   
   return PSPIO_SUCCESS;
 }
@@ -61,11 +59,7 @@ int pspio_meshfunc_set(pspio_meshfunc_t **func, const pspio_mesh_t *mesh,
 		       const double *f){
 
   HANDLE_FUNC_ERROR (pspio_mesh_copy(&(*func)->mesh, mesh));
-
   memcpy((*func)->f, f, (*func)->mesh->np * sizeof(double));
-
-  gsl_spline_init((*func)->spl, (*func)->mesh->r, (*func)->f,
-    (*func)->mesh->np);
 
   return PSPIO_SUCCESS;
 }
@@ -74,7 +68,6 @@ int pspio_meshfunc_set(pspio_meshfunc_t **func, const pspio_mesh_t *mesh,
 int pspio_meshfunc_copy(pspio_meshfunc_t **dst, const pspio_meshfunc_t *src){
 
   ASSERT (src != NULL, PSPIO_ERROR);
-  ASSERT(dst != NULL, PSPIO_ERROR);
 
   if (*dst == NULL) {
     HANDLE_FUNC_ERROR (pspio_meshfunc_alloc(dst, src->mesh->np))
@@ -84,7 +77,7 @@ int pspio_meshfunc_copy(pspio_meshfunc_t **dst, const pspio_meshfunc_t *src){
   memcpy((*dst)->f, src->f, src->mesh->np * sizeof(double));
   
   gsl_spline_init((*dst)->spl, (*dst)->mesh->r, (*dst)->f,
-    (*dst)->mesh->np);
+		  (*dst)->mesh->np) ;
 
   return PSPIO_SUCCESS;
 }
@@ -124,10 +117,11 @@ int pspio_meshfunc_free(pspio_meshfunc_t **func){
 
   if (*func != NULL) {
     if ((*func)->f != NULL) free((*func)->f);
-    pspio_mesh_free(&(*func)->mesh);
+    HANDLE_FUNC_ERROR(pspio_mesh_free(&(*func)->mesh));
     gsl_spline_free((*func)->spl);
     gsl_interp_accel_free((*func)->acc);
     free(*func);
+    *func = NULL;
   }
 
   return PSPIO_SUCCESS;

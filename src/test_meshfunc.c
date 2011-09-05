@@ -34,6 +34,8 @@
 int main(void) {
   const double r[] = {0.0, 0.05, 0.10, 0.20, 0.40, 0.65, 0.85, 1.00};
   const double rab[] = {0.05, 0.05, 0.20, 0.20, 0.20, 0.20, 0.05, 0.05};
+  const double f[] = {1.0, 2.0, 4.0, 8.0, 16.0, 32.0, 64.0, 128.0};
+  const double g[] = {0.0, 1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0};
   const double a = 1.0;
   const double b = 2.0;
   const int np = sizeof(r) / sizeof(double);
@@ -76,7 +78,7 @@ int main(void) {
 
   /* Check setting of mesh functions */
   DEBUG_PRINT("test_meshfunc: setting f1\n");
-  eid = pspio_meshfunc_set(&f1, m1, r);
+  eid = pspio_meshfunc_set(&f1, m1, f);
   eid = pspio_error_flush();
   DEBUG_PRINT("\n");
 
@@ -88,7 +90,7 @@ int main(void) {
   eid = pspio_meshfunc_copy(&f2, f1);
   eid = pspio_error_flush();
   DEBUG_PRINT("test_meshfunc: setting f2\n");
-  eid = pspio_meshfunc_set(&f2, &m2, rab);
+  eid = pspio_meshfunc_set(&f2, m2, g);
   eid = pspio_error_flush();
   DEBUG_PRINT("\n");
 

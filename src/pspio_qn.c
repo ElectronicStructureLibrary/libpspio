@@ -51,7 +51,7 @@ int pspio_qn_alloc(pspio_qn_t **qn) {
 int pspio_qn_copy(pspio_qn_t **dst, const pspio_qn_t *src) {
   ASSERT(src != NULL, PSPIO_ERROR);
 
-  if ( dst == NULL ) {
+  if ( *dst == NULL ) {
     HANDLE_FUNC_ERROR(pspio_qn_alloc(dst));
   }
 
@@ -66,6 +66,7 @@ int pspio_qn_copy(pspio_qn_t **dst, const pspio_qn_t *src) {
 int pspio_qn_free(pspio_qn_t **qn) {
   if ( qn != NULL ) {
     free(*qn);
+    *qn = NULL;
   }
 
   return PSPIO_SUCCESS;

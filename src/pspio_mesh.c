@@ -31,7 +31,6 @@
 
 
 int pspio_mesh_alloc(pspio_mesh_t **mesh, const int np){
-  int i;
 
   ASSERT(np > 1, PSPIO_EVALUE);
   ASSERT(*mesh == NULL, PSPIO_ERROR);
@@ -51,11 +50,8 @@ int pspio_mesh_alloc(pspio_mesh_t **mesh, const int np){
 
   // Presets
   (*mesh)->np = np;
-  for (i = 0; i < (*mesh)->np; i++)
-    {
-      (*mesh)->r[i] = 0;
-      (*mesh)->rab[i] = 0;
-    }
+  memset((*mesh)->r, 0, np*sizeof(double));
+  memset((*mesh)->rab, 0, np*sizeof(double));
   (*mesh)->a = 0;
   (*mesh)->b = 0;
   (*mesh)->type = PSPIO_MESH_NONE;
@@ -67,9 +63,7 @@ int pspio_mesh_alloc(pspio_mesh_t **mesh, const int np){
 int pspio_mesh_set(pspio_mesh_t **mesh, const int type, const double a, 
 		   const double b, const double *r, const double *rab){
   ASSERT((*mesh) != NULL, PSPIO_ERROR);
-  //ASSERT(sizeof(r) / sizeof(double) == (*mesh)->np, PSPIO_ERROR);
-  //ASSERT(sizeof(rab) / sizeof(double) == (*mesh)->np, PSPIO_ERROR);
-  
+
   (*mesh)->type = type;
   (*mesh)->a = a;
   (*mesh)->a = b;
@@ -82,8 +76,6 @@ int pspio_mesh_set(pspio_mesh_t **mesh, const int type, const double a,
 
 int pspio_mesh_copy(pspio_mesh_t **dst, const pspio_mesh_t *src){
   ASSERT (src != NULL, PSPIO_ERROR);
-  //ASSERT(sizeof(src->r) / sizeof(double) == src->np, PSPIO_ERROR);
-  //ASSERT(sizeof(src->rab) / sizeof(double) == src->np, PSPIO_ERROR);
 
   if (*dst == NULL) {
     HANDLE_FUNC_ERROR (pspio_mesh_alloc(dst, src->np));
@@ -104,8 +96,8 @@ int pspio_mesh_init_from_points(pspio_mesh_t **mesh, const double *r,
   int i;
 
   ASSERT(*mesh != NULL, PSPIO_ERROR);
-  ASSERT(sizeof(r) / sizeof(double) == (*mesh)->np, PSPIO_ERROR);
-  ASSERT(sizeof(rab) / sizeof(double) == (*mesh)->np, PSPIO_ERROR);
+  //ASSERT(sizeof(r) / sizeof(double) == (*mesh)->np, PSPIO_ERROR);
+  //ASSERT(sizeof(rab) / sizeof(double) == (*mesh)->np, PSPIO_ERROR);
 
   memcpy((*mesh)->r, r, (*mesh)->np * sizeof(double));
   if (rab != NULL) {
@@ -190,6 +182,8 @@ int pspio_mesh_init_from_parameters(pspio_mesh_t **mesh, const int type,
       (*mesh)->r[i] = b*exp(a*(i+1) - 1.0);
       (*mesh)->rab[i] = a*(*mesh)->r[i];
       break;
+    default:
+      return PSPIO_EVALUE;
     }
   }
 
@@ -203,6 +197,7 @@ int pspio_mesh_free(pspio_mesh_t **mesh){
     if ((*mesh)->r != NULL) free ((*mesh)->r);
     if ((*mesh)->rab != NULL) free ((*mesh)->rab);
     free (*mesh);
+    *mesh = NULL;
   }
 
   return PSPIO_SUCCESS;
