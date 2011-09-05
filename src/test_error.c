@@ -30,6 +30,12 @@
 #include "test_common.h"
 
 
+int test_assert(const int i){
+  ASSERT(i == 0, PSPIO_EVALUE);
+  return PSPIO_SUCCESS;
+}
+
+
 int main(void) {
   int eid = pspio_error_get();
 
@@ -109,6 +115,15 @@ int main(void) {
   DEBUG_PRINT("test_error: after pspio_error_flush, status = %d, length = %d\n",
     eid, pspio_error_len());
   CHECK_STAT_LEN(eid, PSPIO_SUCCESS, pspio_error_len(), 0)
+  DEBUG_PRINT("\n");
+
+  /* Check ASSERT macro */
+  DEBUG_PRINT("test_error: checking ASSERT macro (1==0)\n");
+  eid = test_assert(1);
+  eid = pspio_error_flush();
+  DEBUG_PRINT("test_error: checking ASSERT macro (0==0)\n");
+  eid = test_assert(0);
+  eid = pspio_error_flush();
   DEBUG_PRINT("\n");
 
   /* Destroy error-handling structures */

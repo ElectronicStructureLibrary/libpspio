@@ -142,24 +142,11 @@ const char *pspio_error_str(const int pspio_errorid);
  * @param[in] error_id: error code to set if condition is false
  */
 #define ASSERT(condition, error_id) \
-  pspio_error_set(( condition ) ? PSPIO_SUCCESS : error_id); \
-  HANDLE_ERROR(pspio_error_get())
-
-
-/**
- * Error handler macro that frees memory upon error after calling a
- * function
- * @param[in] function_call: the function to be called with all parameters
- * @param[in] type_to_free: type of variable to free when error
- * @param[in] var_to_free: name of the variable to free when error
- */
-#define HANDLE_ALLOC_ERROR(function_call, type_to_free, var_to_free) \
-  pspio_error_set(function_call); \
-  if ( pspio_error_get() != PSPIO_SUCCESS ) { \
-    pspio_ ## type_to_free ## _free(var_to_free); \
+  if (!(condition)) {		    \
+    pspio_error_set(error_id); \
     pspio_error_add(__FILE__, __LINE__); \
-    return pspio_error_get(); \
-  }
+    return error_id; \
+  } 
 
 
 /**
