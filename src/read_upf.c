@@ -88,28 +88,22 @@ int pspio_upf_file_read(FILE * fp, pspio_pspdata_t * psp_data){
   
   kb_nc = 1;
 
-  printf("read_upf has started\n");
   HANDLE_FUNC_ERROR(init_tag(fp,"PP_HEADER", GO_BACK));
-
-  printf("init_tag finished\n");
-
+  
   //Read the version number
   if(fgets(line, MAX_STRLEN, fp) == NULL) {
     HANDLE_ERROR(PSPIO_EIO);
   }
   narg = sscanf (line, "%d", &version_number);
   ASSERT(narg==1, PSPIO_EIO);
-  printf("VERSION NUMBER = %d\n",version_number);
-  
+    
   //Read the atomic symbol
   if(fgets(line, MAX_STRLEN, fp) == NULL) {
     HANDLE_ERROR(PSPIO_EIO);
   }
   
-  printf("read line : %s",line);
   symbol = (char *)malloc(2*sizeof(char));
   HANDLE_FATAL_ERROR(symbol == NULL,PSPIO_ENOMEM);
-  printf("SYMBOL = %s\n",line);
   symbol = strtok(line," ");
   
     
@@ -453,7 +447,6 @@ int pspio_upf_file_read(FILE * fp, pspio_pspdata_t * psp_data){
   //Save the rest to the global data structure
   psp_data->title = title;
   psp_data->symbol = symbol;
-  printf("%s is the symbol\n",symbol);
   psp_data->z = symbol_to_z(symbol) ; //double
   psp_data->zvalence = zvalence;
   //psp_data->nelvalence = ; //double
