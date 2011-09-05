@@ -44,8 +44,8 @@ int pspio_upf_file_read(FILE * fp, pspio_pspdata_t * psp_data){
   int i,j,ierr, narg, id_left,dummy;
   int version_number,kb_nc;
   char line[MAX_STRLEN],title[] = "UPF file";
-  char symbol[2];
-  char kind_ps[2],exchange[MAX_STRLEN];
+  char * symbol, * kind_ps;
+  char exchange[MAX_STRLEN];
   double zvalence,total_energy,wfc_cutoff,rho_cutoff;
   int l_max,np,n_states,n_proj;
   wavefunction_t * wavefunctions;
@@ -88,7 +88,10 @@ int pspio_upf_file_read(FILE * fp, pspio_pspdata_t * psp_data){
   
   kb_nc = 1;
 
+  printf("read_upf has started\n");
   HANDLE_FUNC_ERROR(init_tag(fp,"PP_HEADER", GO_BACK));
+
+  printf("init_tag finished\n");
 
   //Read the version number
   if(fgets(line, MAX_STRLEN, fp) == NULL) {
@@ -96,26 +99,35 @@ int pspio_upf_file_read(FILE * fp, pspio_pspdata_t * psp_data){
   }
   narg = sscanf (line, "%d", &version_number);
   ASSERT(narg==1, PSPIO_EIO);
+  printf("VERSION NUMBER = %d\n",version_number);
   
   //Read the atomic symbol
   if(fgets(line, MAX_STRLEN, fp) == NULL) {
     HANDLE_ERROR(PSPIO_EIO);
   }
-  narg = sscanf (line, "%2c",&symbol[0]);
-  ASSERT(narg==1, PSPIO_EIO);		
   
+  printf("read line : %s",line);
+  symbol = (char *)malloc(2*sizeof(char));
+  HANDLE_FATAL_ERROR(symbol == NULL,PSPIO_ENOMEM);
+  printf("SYMBOL = %s\n",line);
+  symbol = strtok(line," ");
+  
+    
   // read the kind of pseudo-potentials US|NC|PAW    "Ultrasoft|Norm conserving|Projector-augmented"  
   if(fgets(line, MAX_STRLEN, fp) == NULL) {
     HANDLE_ERROR(PSPIO_EIO);
   }
-  narg = sscanf (line, "%2c",&kind_ps[0]); 
-  ASSERT(narg==1, PSPIO_EIO);	
+   
+  kind_ps = (char *)malloc(2*sizeof(char));
+  HANDLE_FATAL_ERROR(kind_ps == NULL,PSPIO_ENOMEM);
+  kind_ps = strtok(line," ");
+  	
   //LIBPSP_IO can only read norm-conserving pseudo-potentials from UPF format.
   if (!strncmp(kind_ps,"NC",2)) {
     HANDLE_ERROR(PSPIO_ENOSUPPORT);
   }
   
-  // read the nonlinear core correction. The character
+   // read the nonlinear core correction. The character
   if(fgets(line, MAX_STRLEN, fp) == NULL) {
     HANDLE_ERROR(PSPIO_EIO);
   }
@@ -441,6 +453,7 @@ int pspio_upf_file_read(FILE * fp, pspio_pspdata_t * psp_data){
   //Save the rest to the global data structure
   psp_data->title = title;
   psp_data->symbol = symbol;
+  printf("%s is the symbol\n",symbol);
   psp_data->z = symbol_to_z(symbol) ; //double
   psp_data->zvalence = zvalence;
   //psp_data->nelvalence = ; //double
@@ -468,95 +481,100 @@ int pspio_upf_file_read(FILE * fp, pspio_pspdata_t * psp_data){
 
 int init_tag(FILE * fp, const char * tag, const int go_back){
   char line[MAX_STRLEN];
-  char * compare_string = NULL;
-  char * result_string = NULL;
-  int i;
+  char * init_tag = NULL;
+  char * read_string = NULL;
+  int i, length;
 
   if (go_back) rewind(fp);
   
   //Prepare base string
-  compare_string = (char *)malloc((strlen(tag)+2) * sizeof(char));
-  HANDLE_FATAL_ERROR(compare_string == NULL,PSPIO_ENOMEM);
-  strcat(compare_string,"<");
-  strncat(compare_string,tag,strlen(tag));
-  strcat(compare_string,">");
-  for (i=0;compare_string[i]; i++)
-    compare_string[i] = tolower(compare_string[i]);
-    
+  init_tag = (char *)malloc((strlen(tag)+2) * sizeof(char));
+  HANDLE_FATAL_ERROR(init_tag == NULL,PSPIO_ENOMEM);
+  strcat(init_tag,"<");
+  strncat(init_tag,tag,strlen(tag));
+  strcat(init_tag,">");
+  for (i=0;init_tag[i]; i++)
+    init_tag[i] = tolower(init_tag[i]);
+  
   while (fgets(line, sizeof line, fp) != NULL){
+    //Skip white spaces
+    if (line[0] == ' ')
+      read_string = strtok(line," ");
+    else 
+      read_string = line;
     //Lowercase line
-    for (i=0;line[i]; i++)
-      line[i] = tolower(line[i]);
-    //Find out if the tag is inside the line and if yes, go to the first char *
-    result_string = strstr(compare_string,line);
-    if (result_string != NULL){
-      if (strncmp(result_string,compare_string,strlen(compare_string))) return PSPIO_SUCCESS;
-    }
+    for (i=0;read_string[i]; i++)
+      read_string[i] = tolower(read_string[i]);
+    
+    if (strncmp(read_string,init_tag,strlen(init_tag))==0) return PSPIO_SUCCESS;
   }
   return PSPIO_EFILE_FORMAT;
 }
 
 int check_end_tag(FILE * fp, const char * tag){
   char line[MAX_STRLEN];
-  char * compare_string = NULL;
-  char * result_string = NULL;
+  char * ending_tag = NULL;
+  char * read_string = NULL;
   int i;
   
   //Prepare base string
-  compare_string = (char *)malloc((strlen(tag)+3) * sizeof(char));
-  HANDLE_FATAL_ERROR(compare_string == NULL,PSPIO_ENOMEM);
-  strcat(compare_string,"</");
-  strncat(compare_string,tag,strlen(tag));
-  strcat(compare_string,">");
-  for (i=0;compare_string[i]; i++)
-    compare_string[i] = tolower(compare_string[i]);
+  ending_tag = (char *)malloc((strlen(tag)+3) * sizeof(char));
+  HANDLE_FATAL_ERROR(ending_tag == NULL,PSPIO_ENOMEM);
+  strcat(ending_tag,"</");
+  strncat(ending_tag,tag,strlen(tag));
+  strcat(ending_tag,">");
+  for (i=0;ending_tag[i]; i++)
+    ending_tag[i] = tolower(ending_tag[i]);
   
   if(fgets(line, sizeof line, fp) == NULL){
     HANDLE_ERROR(PSPIO_EIO);
   }
+  //Skip white spaces
+  if (line[0] == ' ')
+    read_string = strtok(line," ");
+  else 
+    read_string = line;
   //Lowercase line
   for (i=0;line[i]; i++)
-    line[i] = tolower(line[i]);
+    read_string[i] = tolower(read_string[i]);
 
-  //Compare with the ending tag 
-  
-  //Find out if the tag is inside the line and if yes, go to the first char *
-  result_string = strstr(compare_string,line);
-  if (strncmp(result_string,compare_string,strlen(compare_string))) return PSPIO_SUCCESS;
+  //Compare with the ending tag   
+  if (strncmp(read_string,ending_tag,strlen(ending_tag))) return PSPIO_SUCCESS;
   else {
-    printf("PSPIO library is not able to find %s ending tag",compare_string);
+    printf("PSPIO library is not able to find %s ending tag",ending_tag);
     return PSPIO_EFILE_FORMAT;
   }
-  
 }
 
 int tag_isdef(FILE * fp, const char * tag){
   char line[MAX_STRLEN];
-  char * compare_string = NULL;
-  char * result_string = NULL;
+  char * init_tag = NULL; 
+  char * read_string = NULL;
   int i;
   
   //Go to the beginning of the buffer
   rewind(fp);
   
   //Prepare base string
-  compare_string = (char *)malloc((strlen(tag)+2) * sizeof(char));
-  HANDLE_FATAL_ERROR(compare_string == NULL,PSPIO_ENOMEM);
+  init_tag = (char *)malloc((strlen(tag)+2) * sizeof(char));
+  HANDLE_FATAL_ERROR(init_tag == NULL,PSPIO_ENOMEM);
+  strcat(init_tag,"<");
+  strncat(init_tag,tag,strlen(tag));
+  strcat(init_tag,">");
+  for (i=0;init_tag[i]; i++)
+    init_tag[i] = tolower(init_tag[i]);
   
-  strcat(compare_string,"<");
-  strncat(compare_string,tag,strlen(tag));
-  strcat(compare_string,">");
-  for (i=0;compare_string[i]; i++)
-    compare_string[i] = tolower(compare_string[i]);
-  
-  while (fgets(line, sizeof line, fp) != NULL){
+  while (fgets(line, sizeof line, fp) != NULL){ 
+    //Skip white spaces
+    if (line[0] == ' ')
+      read_string = strtok(line," ");
+    else 
+      read_string = line;
     //Lowercase line
     for (i=0;line[i]; i++)
       line[i] = tolower(line[i]);
-    //Find out if the tag is inside the line and if yes, go to the first char *
-    result_string = strstr(compare_string,line);
-    if (result_string != NULL)
-      if (strncmp(result_string,compare_string,strlen(compare_string))) return PSPIO_SUCCESS;
+    
+    if (strncmp(read_string,init_tag,strlen(init_tag))) return PSPIO_SUCCESS;
   }
   //End of the buffer reached; so return false
   return 1;
