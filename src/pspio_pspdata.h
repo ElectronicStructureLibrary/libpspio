@@ -130,8 +130,8 @@ typedef struct{
  * @note The file format might be UNKNOWN. In that case all the other
  *       formats are tried until the correct one is found.
  */
-int pspio_pspdata_init(pspio_pspdata_t *psp_data, const char *file_name, 
-		     const int file_format);
+int pspio_pspdata_init(pspio_pspdata_t **psp_data, const char *file_name, 
+		       const int file_format);
 
 
 /**
@@ -139,7 +139,7 @@ int pspio_pspdata_init(pspio_pspdata_t *psp_data, const char *file_name,
  * @param[in,out] psp_data: pointer to psp_data structure to be
  * @return error code.
  */
-int pspio_pspdata_free(pspio_pspdata_t *psp_data);
+int pspio_pspdata_free(pspio_pspdata_t **psp_data);
 
 
 /**********************************************************************

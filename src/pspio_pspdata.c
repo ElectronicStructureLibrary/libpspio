@@ -35,7 +35,7 @@
  * Global routines                                                    *
  **********************************************************************/
 
-int pspio_pspdata_init(pspio_pspdata_t *pspdata, const char *file_name,
+int pspio_pspdata_init(pspio_pspdata_t **pspdata, const char *file_name,
       const int file_format){
   FILE * fp;
   int ierr;
@@ -72,7 +72,7 @@ int pspio_pspdata_init(pspio_pspdata_t *pspdata, const char *file_name,
   case SIESTA:
     break;
   case UPF:
-    HANDLE_FUNC_ERROR(pspio_upf_init(fp,pspdata));
+    HANDLE_FUNC_ERROR(pspio_upf_init(fp, pspdata));
     break;
   default:
     return PSPIO_EFILE_FORMAT;
@@ -88,40 +88,51 @@ int pspio_pspdata_init(pspio_pspdata_t *pspdata, const char *file_name,
 }
 
 
-int pspio_pspdata_free(pspio_pspdata_t *pspdata){
+int pspio_pspdata_free(pspio_pspdata_t **pspdata){
   int i;
 
-  if (pspdata != NULL) {
-    if (pspdata->symbol != NULL) free(pspdata->symbol);
-    HANDLE_FUNC_ERROR (pspio_mesh_free(pspdata->mesh));
+  if (*pspdata != NULL) {
+    // Free symbol
+    if ((*pspdata)->symbol != NULL) free((*pspdata)->symbol);
 
-    if (pspdata->states != NULL) {
-      for (i=0; i<pspdata->n_states; i++) {
-	HANDLE_FUNC_ERROR (pspio_state_free(pspdata->states[i]));
+    // Free mesh
+    HANDLE_FUNC_ERROR (pspio_mesh_free(&(*pspdata)->mesh));
+
+    // Free states and lookup table
+    if ((*pspdata)->states != NULL) {
+      for (i=0; i<(*pspdata)->n_states; i++) {
+	HANDLE_FUNC_ERROR (pspio_state_free(&(*pspdata)->states[i]));
       }
-      free(pspdata->states);
+      free((*pspdata)->states);
     }
-
-    if (pspdata->potentials != NULL) {
-      for (i=0; i<pspdata->n_potentials; i++) {
-	HANDLE_FUNC_ERROR (pspio_potential_free(pspdata->potentials[i]));
+    if ((*pspdata)->qn_to_istate != NULL) {
+      for (i=0; (*pspdata)->qn_to_istate[i]!=NULL; i++) {
+	free((*pspdata)->qn_to_istate[i]);
       }
-      free(pspdata->potentials);
     }
 
-    if (pspdata->kb_projectors != NULL) {
-      for (i=0; i<pspdata->n_kbproj; i++) {
-	HANDLE_FUNC_ERROR (pspio_projector_free(pspdata->kb_projectors[i]));
+    // Free potentials
+    if ((*pspdata)->potentials != NULL) {
+      for (i=0; i<(*pspdata)->n_potentials; i++) {
+	HANDLE_FUNC_ERROR (pspio_potential_free(&(*pspdata)->potentials[i]));
       }
-      free(pspdata->kb_projectors);
+      free((*pspdata)->potentials);
     }
 
-    if (pspdata->vlocal != NULL) {
-      HANDLE_FUNC_ERROR (pspio_potential_free(pspdata->vlocal));
+    // Free KB projectors
+    if ((*pspdata)->kb_projectors != NULL) {
+      for (i=0; i<(*pspdata)->n_kbproj; i++) {
+	HANDLE_FUNC_ERROR (pspio_projector_free(&(*pspdata)->kb_projectors[i]));
+      }
+      free((*pspdata)->kb_projectors);
+    }
+    if ((*pspdata)->vlocal != NULL) {
+      HANDLE_FUNC_ERROR (pspio_potential_free(&(*pspdata)->vlocal));
     }
 
-    if (pspdata->nlcc != NULL) {
-      HANDLE_FUNC_ERROR (pspio_nlcc_free(pspdata->nlcc));
+    // Free xc
+    if ((*pspdata)->xc != NULL) {
+      HANDLE_FUNC_ERROR (pspio_xc_free(&(*pspdata)->xc));
     }
 
   }
