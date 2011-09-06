@@ -39,15 +39,20 @@ int pspio_state_alloc(pspio_state_t **state, const int np) {
 
   ASSERT(state != NULL, PSPIO_ERROR);
   ASSERT(*state == NULL, PSPIO_ERROR);
+  ASSERT(np > 1, PSPIO_EVALUE);
 
-  *state = (pspio_state_t *)malloc(sizeof(state));
+  *state = (pspio_state_t *)malloc(sizeof(pspio_state_t));
   HANDLE_FATAL_ERROR(*state == NULL, PSPIO_ENOMEM);
 
-  (*state)->qn = NULL;
-  (*state)->label = NULL;
   (*state)->wf = NULL;
-
   ierr = pspio_meshfunc_alloc(&(*state)->wf, np);
+  if (ierr) {
+    pspio_state_free(state);
+    HANDLE_ERROR (ierr);
+  }
+
+  (*state)->qn = NULL;
+  ierr = pspio_qn_alloc(&(*state)->qn);
   if (ierr) {
     pspio_state_free(state);
     HANDLE_ERROR (ierr);
@@ -63,8 +68,8 @@ int pspio_state_alloc(pspio_state_t **state, const int np) {
 
 
 int pspio_state_set(pspio_state_t **state, const double eigenval, 
-		    const char *label, const double occ, const double rc, 
-		    const pspio_mesh_t *mesh, const double *wf) {
+		    const char *label, const pspio_qn_t *qn, const double occ, 
+		    const double rc, const pspio_mesh_t *mesh, const double *wf) {
   int s;
 
   ASSERT(*state != NULL, PSPIO_ERROR);
@@ -73,12 +78,13 @@ int pspio_state_set(pspio_state_t **state, const double eigenval,
   (*state)->occ = occ;
   (*state)->rc = rc;
 
-  ASSERT((label != NULL) && ((*state)->label == NULL), PSPIO_ERROR)
+  ASSERT((label != NULL) && ((*state)->label == NULL), PSPIO_ERROR);
   s = strlen(label);
   (*state)->label = (char *)malloc(s + 1);
   memcpy((*state)->label,label,s);
   (*state)->label[s] = 0;
 
+  HANDLE_FUNC_ERROR (pspio_qn_copy(&(*state)->qn, qn));
   HANDLE_FUNC_ERROR (pspio_meshfunc_set(&(*state)->wf, mesh, wf));
 
   return PSPIO_SUCCESS;
@@ -110,15 +116,17 @@ int pspio_state_copy(pspio_state_t **dst, const pspio_state_t *src) {
 }
 
 
-int pspio_states_lookup_table(const int n_states, const pspio_state_t **states, 
+int pspio_states_lookup_table(const int n_states, pspio_state_t **states, 
 			    int ***table_ptr){
-  int i, nmax, lmax, rel, lsize;
-  int **table;
+  int i, j, nmax, lmax, rel, lsize;
   pspio_qn_t *qn;
+  int **table;
 
+  ASSERT(n_states > 0,   PSPIO_EVALUE);
   ASSERT(states != NULL, PSPIO_EVALUE);
-  ASSERT(*table_ptr == NULL, PSPIO_EVALUE);
+  ASSERT(table_ptr != NULL, PSPIO_EVALUE);
 
+  // Determine dimentions of the table
   nmax = 0; lmax = 0, rel = 0;
   for (i=0; i<n_states; i++) {
     qn = states[i]->qn;
@@ -126,32 +134,44 @@ int pspio_states_lookup_table(const int n_states, const pspio_state_t **states,
     nmax = max(nmax, qn->n);
     lmax = max(lmax, qn->l);
   }
-
+  nmax++;
   lsize = rel ? lmax*2+1 : lmax+1;
-  *table_ptr = (int *) malloc (nmax * sizeof(int *));
-  HANDLE_FATAL_ERROR (*table_ptr == NULL, PSPIO_ENOMEM);
-  table = *table_ptr;
-  for (i=0; i<n_states; i++) {
-    table[i] = (double *) malloc (lsize * sizeof(double));
-    HANDLE_FATAL_ERROR (table[i] == NULL, PSPIO_ENOMEM);
-  }
 
-  memset(table, -1, nmax*lsize*sizeof(int));
-  for (i==0; i<n_states; i++) {
-    qn = states[i]->qn;
+  // Allocate memory and preset table
+  table = malloc ( (nmax+1) * sizeof(int*));
+  HANDLE_FATAL_ERROR (table == NULL, PSPIO_ENOMEM);
+  for(i=0; i<nmax; i++) {
+    table[i] = malloc(lsize*sizeof(int));
+    HANDLE_FATAL_ERROR (table[i] == NULL, PSPIO_ENOMEM);
+    memset(table[i], -1, lsize*sizeof(int));
+  }
+  table[nmax] = NULL;
+
+  // Build lookup table
+  for (i=0; i<n_states; i++) {
+    qn = states[i]->qn;    
     table[qn->n][LJ_TO_I(qn->l,qn->j)] = i;
   }
 
+  *table_ptr = table;
   return PSPIO_SUCCESS;
 }
 
 
 int pspio_state_free(pspio_state_t **state) {
+
   if ( *state != NULL ) {
     HANDLE_FUNC_ERROR(pspio_meshfunc_free(&(*state)->wf));
+    HANDLE_FUNC_ERROR(pspio_qn_free(&(*state)->qn));
     if ((*state)->label != NULL) free((*state)->label);
     free(*state);
+    *state = NULL;
   }
 
   return PSPIO_SUCCESS;
 }
+
+
+/**********************************************************************
+ * Atomic routines                                                    *
+ **********************************************************************/

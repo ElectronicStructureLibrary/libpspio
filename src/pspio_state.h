@@ -68,6 +68,7 @@ int pspio_state_alloc(pspio_state_t **state, const int np);
  * @param[in,out] state: state structure pointer to set
  * @param[in] eigenval: eigenvalue
  * @param[in] label: string describing the state
+ * @param[in] qn: pointer to quatum numbers
  * @param[in] occ: occupation number
  * @param[in] rc: cutoff radius
  * @param[in] mesh: the radial mesh
@@ -77,21 +78,8 @@ int pspio_state_alloc(pspio_state_t **state, const int np);
  *       with pspio_state_alloc.
  */
 int pspio_state_set(pspio_state_t **state, const double eigenval,
-		    const char *label, const double occ, const double rc, 
-		    const pspio_mesh_t *mesh, const double *wf);
-
-
-/**
- * Duplicates a state structure pointer.
- * @param[out] dst: destination state structure pointer
- * @param[in] src: source state structure pointer
- * @return error code
- * @note The src pointer has to be allocated first with the pspio_state_alloc 
- *       method.
- * @note The dst pointer might or might not be allocated. If it is not, then it
- *       is allocate here.
- */
-int pspio_state_copy(pspio_state_t **dst, const pspio_state_t *src);
+		    const char *label, const pspio_qn_t *qn, const double occ, 
+		    const double rc, const pspio_mesh_t *mesh, const double *wf);
 
 
 /**
@@ -105,7 +93,7 @@ int pspio_state_copy(pspio_state_t **dst, const pspio_state_t *src);
  * table[state->qn->n][state->qn->l + (int)states->qn->j]
  * @note The table is allocated inside this function.
  */
-int pspio_states_lookup_table(const int n_states, const pspio_state_t **states,
+int pspio_states_lookup_table(const int n_states, pspio_state_t **states,
 			      int ***table);
 
 
