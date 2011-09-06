@@ -22,7 +22,6 @@
 #include <stdio.h>
 #include <string.h>
 
-#include "pspio_pspdata.h"
 #include "pspio_error.h"
 #include "libxccodes.h"
 
@@ -42,7 +41,7 @@
 *@param[in]  pspxc      abinit xc code
 *@param[out] psp_data   pseudopotential xc info is filled with libxc codes
 */
-int ab2libxc (int pspxc, pspio_pspdata_t *psp_data){
+int ab2libxc (const int pspxc, int exchange, int correlation){
 
 // local vars
   int xccode[2];
@@ -83,13 +82,13 @@ int ab2libxc (int pspxc, pspio_pspdata_t *psp_data){
       xc_func_end(&func);
     }
 
-    ASSERT(nexch <= 1, PSPIO_EVALUE)
-    ASSERT(ncorr <= 1, PSPIO_EVALUE)
+    ASSERT(nexch <= 1, PSPIO_EVALUE);
+    ASSERT(ncorr <= 1, PSPIO_EVALUE);
 
 #else
 /// for the moment, presume exchange is first in abinit symbol
-    (*psp_data).exchange = xccode[0];
-    (*psp_data).correlation = xccode[1];
+    exchange = xccode[0];
+    correlation = xccode[1];
 #endif
     
     /// we are done
@@ -99,32 +98,32 @@ int ab2libxc (int pspxc, pspio_pspdata_t *psp_data){
   // positive value of pspxc: we need to convert
   switch(pspxc){
     case 0:
-      (*psp_data).exchange = XC_NONE;
-      (*psp_data).correlation = XC_NONE;
+      exchange = XC_NONE;
+      correlation = XC_NONE;
       break;
     case 1:
-      (*psp_data).exchange = XC_LDA_XC_TETER93;
-      (*psp_data).correlation = XC_LDA_XC_TETER93;
+      exchange = XC_LDA_XC_TETER93;
+      correlation = XC_LDA_XC_TETER93;
       break;
     case 2:
-      (*psp_data).exchange = XC_LDA_X;
-      (*psp_data).correlation = XC_LDA_C_PZ_MOD;
+      exchange = XC_LDA_X;
+      correlation = XC_LDA_C_PZ_MOD;
       break;
     case 4:
-      (*psp_data).exchange = XC_LDA_X;
-      (*psp_data).correlation = XC_LDA_C_WIGNER;
+      exchange = XC_LDA_X;
+      correlation = XC_LDA_C_WIGNER;
       break;
     case 5:
-      (*psp_data).exchange = XC_LDA_X;
-      (*psp_data).correlation = XC_LDA_C_HL;
+      exchange = XC_LDA_X;
+      correlation = XC_LDA_C_HL;
       break;
     case 6:
-      (*psp_data).exchange = XC_LDA_X;
-      (*psp_data).correlation = XC_LDA_C_XALPHA;
+      exchange = XC_LDA_X;
+      correlation = XC_LDA_C_XALPHA;
       break;
     case 7:
-      (*psp_data).exchange = XC_LDA_X;
-      (*psp_data).correlation = XC_LDA_C_PW;
+      exchange = XC_LDA_X;
+      correlation = XC_LDA_C_PW;
       break;
     // FIXME: not in LibXC 1.0
     //case 9:
@@ -132,45 +131,45 @@ int ab2libxc (int pspxc, pspio_pspdata_t *psp_data){
       //(*psp_data).correlation = XC_LDA_C_PW_RPA;
       break;
     case 11:
-      (*psp_data).exchange = XC_GGA_X_PBE;
-      (*psp_data).correlation = XC_GGA_C_PBE;
+      exchange = XC_GGA_X_PBE;
+      correlation = XC_GGA_C_PBE;
       break;
     case 12:
-      (*psp_data).exchange = XC_GGA_X_PBE;
-      (*psp_data).correlation = XC_NONE;
+      exchange = XC_GGA_X_PBE;
+      correlation = XC_NONE;
       break;
     // FIXME: not in LibXC 1.0
     //case 13:
-      //(*psp_data).exchange = XC_GGA_X_LB;
-      //(*psp_data).correlation = XC_GGA_C_PW91; // this is probably incorrect - which correlation do VL Baerends use?
+      //exchange = XC_GGA_X_LB;
+      //correlation = XC_GGA_C_PW91; // this is probably incorrect - which correlation do VL Baerends use?
       break;
     case 14:
-      (*psp_data).exchange = XC_GGA_X_PBE_R;
-      (*psp_data).correlation = XC_GGA_C_PBE;
+      exchange = XC_GGA_X_PBE_R;
+      correlation = XC_GGA_C_PBE;
       break;
     case 15:
-      (*psp_data).exchange = XC_GGA_X_RPBE;
-      (*psp_data).correlation = XC_GGA_C_PBE; // is this correct? correlation for RPBE?
+      exchange = XC_GGA_X_RPBE;
+      correlation = XC_GGA_C_PBE; // is this correct? correlation for RPBE?
       break;
     case 16:
-      (*psp_data).exchange = XC_GGA_XC_HCTH_93;
-      (*psp_data).correlation = XC_GGA_XC_HCTH_93;
+      exchange = XC_GGA_XC_HCTH_93;
+      correlation = XC_GGA_XC_HCTH_93;
       break;
     case 17:
-      (*psp_data).exchange = XC_GGA_XC_HCTH_120;
-      (*psp_data).correlation = XC_GGA_XC_HCTH_120;
+      exchange = XC_GGA_XC_HCTH_120;
+      correlation = XC_GGA_XC_HCTH_120;
       break;
     case 23:
-      (*psp_data).exchange = XC_GGA_X_WC;
-      (*psp_data).correlation = XC_GGA_C_PBE;
+      exchange = XC_GGA_X_WC;
+      correlation = XC_GGA_C_PBE;
       break;
     case 26:
-      (*psp_data).exchange = XC_GGA_XC_HCTH_147;
-      (*psp_data).correlation = XC_GGA_XC_HCTH_147;
+      exchange = XC_GGA_XC_HCTH_147;
+      correlation = XC_GGA_XC_HCTH_147;
       break;
     case 27:
-      (*psp_data).exchange = XC_GGA_XC_HCTH_407;
-      (*psp_data).correlation = XC_GGA_XC_HCTH_407;
+      exchange = XC_GGA_XC_HCTH_407;
+      correlation = XC_GGA_XC_HCTH_407;
       break;
 
 // the following are not in libxc?

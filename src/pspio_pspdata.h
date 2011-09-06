@@ -31,7 +31,7 @@
 #include "pspio_potential.h"
 #include "pspio_state.h"
 #include "pspio_projector.h"
-#include "pspio_nlcc.h"
+#include "pspio_xc.h"
 
 
 /**********************************************************************
@@ -112,10 +112,7 @@ typedef struct{
   pspio_potential_t *vlocal;        /**< local potential for the KB form of the pseudopotentials */ 
 
   // Exchange and correlation data, including non-linear core corrections
-  int exchange;       /**< exchange functional id, taken from libxc conventions */
-  int correlation;    /**< correlation functional id, taken from libxc conventions */
-  int has_nlcc;       /**< flag for presence of NLCC */
-  pspio_nlcc_t *nlcc; /**< NLCC structure */
+  pspio_xc_t *xc; /**< xc structure */
 
 } pspio_pspdata_t;
 
