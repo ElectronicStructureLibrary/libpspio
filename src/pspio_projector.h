@@ -58,7 +58,7 @@ typedef struct{
  * @return error code
  * @note np should be larger than 1.
  */
-int pspio_projector_alloc(pspio_projector_t *projector, const int np);
+int pspio_projector_alloc(pspio_projector_t **projector, const int np);
 
 
 /**
@@ -72,7 +72,7 @@ int pspio_projector_alloc(pspio_projector_t *projector, const int np);
  * @note The projector pointer has to be allocated first with the 
  *       pspio_projector_alloc method.
  */
-int pspio_projector_set(pspio_projector_t *projector, const pspio_qn_t *qn, 
+int pspio_projector_set(pspio_projector_t **projector, const pspio_qn_t *qn, 
 			const double e, const pspio_mesh_t *mesh, const double *p);
 
 
@@ -84,7 +84,7 @@ int pspio_projector_set(pspio_projector_t *projector, const pspio_qn_t *qn,
  * @note This function can be safelly called even if some or all of the
  *       projector components have not been allocated.
  */
-int pspio_projector_free(pspio_projector_t *projector);
+int pspio_projector_free(pspio_projector_t **projector);
 
 
 /**********************************************************************
@@ -92,13 +92,26 @@ int pspio_projector_free(pspio_projector_t *projector);
  **********************************************************************/
 
 /**
- * Return the quantum numbers associated with a projector.
- * @param[in] projector: pointer to projector structure
- * @param[out] qn: pointer to quantum numbers
+ * Returns the value of the projector at an arbitrary point
+ * 
+ * @param[in] projector: projector structure
+ * @param[in] r: position were we want to evaluate the projector
+ * @param[out] *p: value of the projector at r
  * @return error code
  * @note The projector pointer has to be fully set.
  */
-int pspio_projector_get_qn(pspio_projector_t *projector, pspio_qn_t *qn);
+int pspio_projector_eval(pspio_projector_t *projector, const double r,
+			 double *p);
+
+/**
+ * Returns the energy of the projector
+ * 
+ * @param[in] projector: projector structure
+ * @param[out] *e: value of the projector energy
+ * @return error code
+ * @note The projector pointer has to be fully set.
+ */
+int pspio_projector_energy(pspio_projector_t *projector, double *e);
 
 
 #endif

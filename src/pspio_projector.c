@@ -31,21 +31,23 @@
  * Global routines                                                    *
  **********************************************************************/
 
-int pspio_projector_alloc(pspio_projector_t *projector, const int np){
+int pspio_projector_alloc(pspio_projector_t **projector, const int np){
   int ierr;
 
   ASSERT (np > 1, PSPIO_EVALUE);
 
-  projector = (pspio_projector_t *) malloc (sizeof(pspio_projector_t));
-  HANDLE_FATAL_ERROR (projector == NULL, PSPIO_ENOMEM);
+  *projector = (pspio_projector_t *) malloc (sizeof(pspio_projector_t));
+  HANDLE_FATAL_ERROR (*projector == NULL, PSPIO_ENOMEM);
 
-  ierr = pspio_meshfunc_alloc(projector->proj, np);
+  (*projector)->proj = NULL;
+  ierr = pspio_meshfunc_alloc(&(*projector)->proj, np);
   if (ierr) {
     pspio_projector_free(projector);
     HANDLE_ERROR (ierr);
   }
-   
-  ierr = pspio_qn_alloc(projector->qn);
+
+  (*projector)->qn = NULL;
+  ierr = pspio_qn_alloc(&(*projector)->qn);
   if (ierr) {
     pspio_projector_free(projector);
     HANDLE_ERROR (ierr);
@@ -55,39 +57,50 @@ int pspio_projector_alloc(pspio_projector_t *projector, const int np){
 }
 
 
-int pspio_projector_set(pspio_projector_t *projector, const pspio_qn_t *qn, 
+int pspio_projector_set(pspio_projector_t **projector, const pspio_qn_t *qn, 
 			const double e, const pspio_mesh_t *mesh, const double *p){
 
-  HANDLE_FUNC_ERROR (pspio_qn_copy(projector->qn, qn));
-  projector->energy = e;
-  HANDLE_FUNC_ERROR (pspio_meshfunc_set(projector->proj, mesh, p));
+  HANDLE_FUNC_ERROR (pspio_qn_copy(&(*projector)->qn, qn));
+  (*projector)->energy = e;
+  HANDLE_FUNC_ERROR (pspio_meshfunc_set(&(*projector)->proj, mesh, p));
 
   return PSPIO_SUCCESS;
 }
 
 
-int pspio_projector_free(pspio_projector_t *projector){
+int pspio_projector_free(pspio_projector_t **projector){
 
-  if (projector != NULL) {
-    pspio_meshfunc_free(projector->proj);
-    pspio_qn_free(projector->qn);
-    free(projector);
+  if (*projector != NULL) {
+    pspio_meshfunc_free(&(*projector)->proj);
+    pspio_qn_free(&(*projector)->qn);
+    free(*projector);
+    *projector = NULL;
   }
 
   return PSPIO_SUCCESS;
 }
-
 
 
 /**********************************************************************
  * Atomic routines                                                    *
  **********************************************************************/
 
-int pspio_projector_get_qn(pspio_projector_t *projector, pspio_qn_t *qn){
-  ASSERT((projector != NULL) && (projector->qn != NULL), PSPIO_ERROR);
+int pspio_projector_eval(pspio_projector_t *projector, const double r,
+			 double *p){
+  ASSERT(projector != NULL, PSPIO_ERROR);
 
-  HANDLE_FUNC_ERROR(pspio_qn_copy(projector->qn, qn));
+  HANDLE_FUNC_ERROR(pspio_meshfunc_eval(projector->proj, r, p));
 
   return PSPIO_SUCCESS;
 }
+
+
+int pspio_projector_energy(pspio_projector_t *projector, double *e) {
+  ASSERT(projector != NULL, PSPIO_ERROR);
+
+  *e = projector->energy;
+
+  return PSPIO_SUCCESS;
+}
+
 
