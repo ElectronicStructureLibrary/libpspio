@@ -28,6 +28,10 @@
 #endif
 
 
+/**********************************************************************
+ * Global routines                                                    *
+ **********************************************************************/
+
 int pspio_meshfunc_alloc(pspio_meshfunc_t **func, const int np){
   int ierr;
 
@@ -85,6 +89,25 @@ int pspio_meshfunc_copy(pspio_meshfunc_t **dst, const pspio_meshfunc_t *src){
 }
 
 
+int pspio_meshfunc_free(pspio_meshfunc_t **func){
+
+  if (*func != NULL) {
+    if ((*func)->f != NULL) free((*func)->f);
+    HANDLE_FUNC_ERROR(pspio_mesh_free(&(*func)->mesh));
+    gsl_spline_free((*func)->spl);
+    gsl_interp_accel_free((*func)->acc);
+    free(*func);
+    *func = NULL;
+  }
+
+  return PSPIO_SUCCESS;
+}
+
+
+/**********************************************************************
+ * Atomic routines                                                    *
+ **********************************************************************/
+
 int pspio_meshfunc_eval(const pspio_meshfunc_t *func, const double r,
       double *f){
   ASSERT (func != NULL, PSPIO_ERROR);
@@ -114,17 +137,3 @@ int pspio_meshfunc_eval_deriv2(const pspio_meshfunc_t *func, const double r,
   return PSPIO_SUCCESS;
 }
 
-
-int pspio_meshfunc_free(pspio_meshfunc_t **func){
-
-  if (*func != NULL) {
-    if ((*func)->f != NULL) free((*func)->f);
-    HANDLE_FUNC_ERROR(pspio_mesh_free(&(*func)->mesh));
-    gsl_spline_free((*func)->spl);
-    gsl_interp_accel_free((*func)->acc);
-    free(*func);
-    *func = NULL;
-  }
-
-  return PSPIO_SUCCESS;
-}

@@ -100,6 +100,10 @@ int pspio_meshfunc_copy(pspio_meshfunc_t **dst, const pspio_meshfunc_t *src);
 int pspio_meshfunc_free(pspio_meshfunc_t **func);
 
 
+/**********************************************************************
+ * Atomic routines                                                    *
+ **********************************************************************/
+
 /**
  * Returns the value of the function at an arbitrary point
  * 

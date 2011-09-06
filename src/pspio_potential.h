@@ -57,7 +57,7 @@ typedef struct{
  * @return error code
  * @note np should be larger than 1.
  */
-int pspio_potential_alloc(pspio_potential_t *potential, const int np);
+int pspio_potential_alloc(pspio_potential_t **potential, const int np);
 
 
 /**
@@ -68,7 +68,7 @@ int pspio_potential_alloc(pspio_potential_t *potential, const int np);
  * @return error code
  * @note The potential pointer has to be fully set first.
  */
-int pspio_potential_get(pspio_potential_t *potential, double r,
+int pspio_potential_get(pspio_potential_t **potential, const double r,
       double *value);
 
 
@@ -82,7 +82,8 @@ int pspio_potential_get(pspio_potential_t *potential, double r,
  * @note The potential pointer has to be allocated first with the
  *       pspio_potential_alloc method.
  */
-int pspio_potential_set(pspio_potential_t *potential, pspio_qn_t *qn, pspio_mesh_t *mesh, double *v);
+int pspio_potential_set(pspio_potential_t **potential, const pspio_qn_t *qn, 
+			const pspio_mesh_t *mesh, const double *v);
 
 
 /**
@@ -93,7 +94,7 @@ int pspio_potential_set(pspio_potential_t *potential, pspio_qn_t *qn, pspio_mesh
  * @note This function can be safelly called even if some or all of the 
  *       potential components have not been allocated.
  */
-int pspio_potential_free(pspio_potential_t *potential);
+int pspio_potential_free(pspio_potential_t **potential);
 
 
 /**********************************************************************
@@ -101,12 +102,16 @@ int pspio_potential_free(pspio_potential_t *potential);
  **********************************************************************/
 
 /**
- * Sets the potential data.
- * @param[in] potential: pointer to potential structure
- * @param[out] qn: pointer to quantum numbers
+ * Returns the value of the potential at an arbitrary point
+ * 
+ * @param[in] potential: potential structure
+ * @param[in] r: position were we want to evaluate the function
+ * @param[out] *v: value of the potential at r
  * @return error code
  * @note The potential pointer has to be fully set.
  */
-int pspio_potential_get_qn(pspio_potential_t *potential, pspio_qn_t *qn);
+int pspio_potential_eval(const pspio_potential_t *potential, const double r,
+      double *v);
+
 
 #endif
