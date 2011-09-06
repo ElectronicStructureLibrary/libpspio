@@ -35,6 +35,8 @@
 int pspio_potential_alloc(pspio_potential_t **potential, const int np){
   int ierr;
 
+  ASSERT(potential != NULL, PSPIO_ERROR);
+  ASSERT(*potential == NULL, PSPIO_ERROR);
   ASSERT (np > 1, PSPIO_EVALUE);
 
   *potential = (pspio_potential_t *) malloc (sizeof(pspio_potential_t));
@@ -83,6 +85,7 @@ int pspio_potential_free(pspio_potential_t **potential){
 
   if (*potential != NULL) {
     HANDLE_FUNC_ERROR ( pspio_meshfunc_free(&(*potential)->v));
+    HANDLE_FUNC_ERROR ( pspio_qn_free(&(*potential)->qn));
     free(*potential);
     *potential = NULL;
   }
