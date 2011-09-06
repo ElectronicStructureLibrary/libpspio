@@ -35,8 +35,9 @@
 int pspio_meshfunc_alloc(pspio_meshfunc_t **func, const int np){
   int ierr;
 
-  ASSERT(np > 1, PSPIO_EVALUE);
+  ASSERT(func != NULL, PSPIO_ERROR);
   ASSERT(*func == NULL, PSPIO_ERROR);
+  ASSERT(np > 1, PSPIO_EVALUE);
 
   *func = (pspio_meshfunc_t *) malloc (sizeof(pspio_meshfunc_t));
   HANDLE_FATAL_ERROR (*func == NULL, PSPIO_ENOMEM);

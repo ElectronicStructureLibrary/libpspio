@@ -55,14 +55,14 @@ int nlcc_ab1(double x, double y){
     y = 0.0e0;
   }
 //  Take care of difficult limits near x=0, 1/2, and 1
-  else if (abs(x) <= 1.e-09) {
+  else if (fabs(x) <= 1.e-09) {
     y = 1.e0;
   }
-  else if (abs(x-0.5e0) <= 1.e-04) {
+  else if (fabs(x-0.5e0) <= 1.e-04) {
 //  (this limit and next are more troublesome for numerical cancellation)
     y = c21+(x-0.5e0)*(c22+(x-0.5e0)*(c23+(x-0.5e0)*c24));
   }
-  else if (abs(x-1.e0) <= 1.e-04) {
+  else if (fabs(x-1.e0) <= 1.e-04) {
     y = c31+(x-1.0e0)*(c32+(x-1.0e0)*(c33+(x-1.0e0)*c34));
   }
   else {

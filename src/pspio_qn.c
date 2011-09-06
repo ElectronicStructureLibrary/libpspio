@@ -86,7 +86,8 @@ int pspio_qn_get(const pspio_qn_t *qn, int *n, int *l, double *j) {
 
 int pspio_qn_set(pspio_qn_t **qn, const int n, const int l, const double j) {
   ASSERT((qn != NULL) && (*qn != NULL), PSPIO_ERROR);
-  ASSERT((n > 0) && (l > 0) && ((j == 0.0) || (abs(j - (double)l) - 0.5 < 1.0e-9)), PSPIO_EVALUE)
+  ASSERT( (n > 0) && (l >= 0), PSPIO_EVALUE);
+  ASSERT( (j == 0.0) || (fabs(j - (double)l) - 0.5 < 1.0e-8), PSPIO_EVALUE);
 
   (*qn)->n = n;
   (*qn)->l = l;
@@ -104,9 +105,9 @@ int pspio_qn_cmp(const pspio_qn_t *qn1, const pspio_qn_t *qn2) {
   ASSERT((qn1 != NULL) && (qn2 != NULL), PSPIO_ERROR);
 
   if ( (qn1->n == qn2->n) && (qn1->l == qn2->l) &&
-       (abs(qn2->j - qn1->j) < 1.0e-9) ) {
+       (fabs(qn2->j - qn1->j) < 1.0e-9) ) {
     return PSPIO_QN_EQUAL;
-  } else if ( (qn1->l == qn2->l) && (abs(qn2->j - qn1->j) < 1.0e-9) ) {
+  } else if ( (qn1->l == qn2->l) && (fabs(qn2->j - qn1->j) < 1.0e-9) ) {
     return PSPIO_QN_MTEQUAL;
   } else {
     return PSPIO_QN_DIFF;

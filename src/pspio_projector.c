@@ -34,6 +34,8 @@
 int pspio_projector_alloc(pspio_projector_t **projector, const int np){
   int ierr;
 
+  ASSERT(projector != NULL, PSPIO_ERROR);
+  ASSERT(*projector == NULL, PSPIO_ERROR);
   ASSERT (np > 1, PSPIO_EVALUE);
 
   *projector = (pspio_projector_t *) malloc (sizeof(pspio_projector_t));

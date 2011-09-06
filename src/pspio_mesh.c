@@ -32,8 +32,9 @@
 
 int pspio_mesh_alloc(pspio_mesh_t **mesh, const int np){
 
-  ASSERT(np > 1, PSPIO_EVALUE);
+  ASSERT(mesh != NULL, PSPIO_ERROR);
   ASSERT(*mesh == NULL, PSPIO_ERROR);
+  ASSERT(np > 1, PSPIO_EVALUE);
 
   // Memory allocation
   *mesh = (pspio_mesh_t *) malloc (sizeof(pspio_mesh_t));
@@ -107,11 +108,11 @@ int pspio_mesh_init_from_points(pspio_mesh_t **mesh, const double *r,
   // Try linear mesh
   (*mesh)->a = r[1] - r[2];
   (*mesh)->b = r[0];
-  if (abs(r[(*mesh)->np] - (*mesh)->np * (*mesh)->a + (*mesh)->b) < 1e-16) {
+  if (fabs(r[(*mesh)->np] - (*mesh)->np * (*mesh)->a + (*mesh)->b) < 1e-16) {
     (*mesh)->type = PSPIO_MESH_LINEAR;
     for (i=0; i<(*mesh)->np; i++) {
       if (rab != NULL) {
-	ASSERT (abs(rab[i] - (*mesh)->a) < 1e-16, PSPIO_EVALUE);
+	ASSERT (fabs(rab[i] - (*mesh)->a) < 1e-16, PSPIO_EVALUE);
       } else {
 	(*mesh)->rab[i] = (*mesh)->a;
       }
@@ -122,11 +123,11 @@ int pspio_mesh_init_from_points(pspio_mesh_t **mesh, const double *r,
   // Try log1 mesh
   (*mesh)->a = log(r[1]/r[0]);
   (*mesh)->b = r[0]/exp((*mesh)->a);
-  if (abs(r[(*mesh)->np] - (*mesh)->b*exp((*mesh)->a*(*mesh)->np)) < 1e-16 ) {
+  if (fabs(r[(*mesh)->np] - (*mesh)->b*exp((*mesh)->a*(*mesh)->np)) < 1e-16 ) {
     (*mesh)->type = PSPIO_MESH_LOG1;
     for (i=0; i<(*mesh)->np; i++) {
       if (rab != NULL) {
-	ASSERT (abs(rab[i] - (*mesh)->a*r[i]) < 1e-16, PSPIO_EVALUE);
+	ASSERT (fabs(rab[i] - (*mesh)->a*r[i]) < 1e-16, PSPIO_EVALUE);
       } else {
 	(*mesh)->rab[i] = (*mesh)->a*r[i];
       }
@@ -137,11 +138,11 @@ int pspio_mesh_init_from_points(pspio_mesh_t **mesh, const double *r,
   // Try log2 mesh
   (*mesh)->a = log(r[1]/r[0] - 1.0);
   (*mesh)->b = r[0]/(exp((*mesh)->a) - 1.0);
-  if (abs(r[(*mesh)->np] - (*mesh)->b*(exp((*mesh)->a*(*mesh)->np) - 1.0)) < 1e-16 ) {
+  if (fabs(r[(*mesh)->np] - (*mesh)->b*(exp((*mesh)->a*(*mesh)->np) - 1.0)) < 1e-16 ) {
     (*mesh)->type = PSPIO_MESH_LOG2;
     for (i=0; i<(*mesh)->np; i++) {
       if (rab != NULL) {
-	ASSERT (abs(rab[i] - (*mesh)->a*r[i]) < 1e-16, PSPIO_EVALUE);
+	ASSERT (fabs(rab[i] - (*mesh)->a*r[i]) < 1e-16, PSPIO_EVALUE);
       } else {
 	(*mesh)->rab[i] = (*mesh)->a*r[i];
       }
