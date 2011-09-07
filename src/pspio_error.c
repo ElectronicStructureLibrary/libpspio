@@ -170,7 +170,7 @@ const char *pspio_error_str(const int pspio_errorid) {
     case PSPIO_ENOMEM:
       return "malloc failed";
     case PSPIO_ENOSUPPORT:
-      return "No supported option in the pseudo-potential file";
+      return "Unsupported option in the pseudo-potential file";
     default:
       return "unknown error code" ;
     }
