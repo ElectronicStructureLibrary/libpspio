@@ -69,21 +69,41 @@ pio_hidden_hdrs = \
   util.h
 
 # Fortran source files and modules
-if DO_BUILD_FORTRAN
-  pio_fortran_srcs = pspio_fortran.F90
+pio_fortran_srcs = pspio_fortran.F90
 if F90_MOD_UPPERCASE
   pio_fortran_mods = PSPIO_FORTRAN.$(F90_MOD_EXT)
 else
   pio_fortran_mods = pspio_fortran.$(F90_MOD_EXT)
 endif
-else
-  pio_fortran_srcs =
-  pio_fortran_mods =
-endif
 
 # Script-generated file lists
 pio_built_srcs = $(pio_fortran_srcs)
 pio_built_hdrs = $(pio_fortran_mods)
+
+                    # ------------------------------------ #
+
+#
+# Build targets
+#
+
+# Essential build parameters
+INCLUDES = @pio_core_incs@
+
+# Libraries
+lib_LTLIBRARIES = libpspio.la
+
+libpspio_la_LDFLAGS = -version-info 0:0:0
+libpspio_la_SOURCES = $(pio_core_srcs)
+if DO_BUILD_FORTRAN
+  nodist_libpspio_la_SOURCES = $(pio_built_srcs)
+endif
+
+# Headers
+include_HEADERS = $(pio_core_hdrs)
+noinst_HEADERS = $(pio_hidden_hdrs)
+if DO_BUILD_FORTRAN
+  nodist_include_HEADERS = $(pio_built_hdrs)
+endif
 
                     # ------------------------------------ #
 
@@ -136,46 +156,11 @@ test_xc_CPPFLAGS = -I$(srcdir)/../src
                     # ------------------------------------ #
 
 #
-# Build targets
+# Explicit targets
 #
 
-# Essential build parameters
-INCLUDES = @pio_core_incs@
-
-# If there is any Fortran source file in the library under some
-# circumstances (here when using --enable-fortran), Libtool will annoyingly
-# select the Fortran linker in ALL cases, which causes the shared object
-# to be silently screwed, the error appearing only at install time. The
-# following trick should solve this issue.
-pio_fortran_objs = $(pio_fortran_srcs:.F90=.$(LTOBJEXT))
-pio_built_objs = $(pio_fortran_objs)
-
-# Libraries
-lib_LTLIBRARIES = libpspio.la
-
-libpspio_la_LDFLAGS = -version-info 0:0:0
-libpspio_la_SOURCES = $(pio_core_srcs)
-if DO_BUILD_FORTRAN
-  libpspio_la_LIBADD = $(pio_built_objs)
-endif
-
-# Headers
-include_HEADERS = $(pio_core_hdrs)
-noinst_HEADERS = $(pio_hidden_hdrs)
-if DO_BUILD_FORTRAN
-  nodist_include_HEADERS = $(pio_built_hdrs)
-endif
-
 # Fortran modules have to be cleaned explicitely
+# Note: the 'dummy' pseudo-file is there in case the variable would be empty.
 clean-local:
 	rm -f $(pio_fortran_mods) dummy
 
-                    # ------------------------------------ #
-
-# Explicit dependencies (if needed, e.g. with Fortran)
-# Use $(LTOBJEXT) as extension for object files
-if DO_BUILD_FORTRAN
-pspio_fortran.$(LTOBJEXT): pspio_fortran.F90
-	@echo "FIXME"
-	@false
-endif

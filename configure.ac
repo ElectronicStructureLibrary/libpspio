@@ -48,12 +48,6 @@ AC_CANONICAL_TARGET
 AM_INIT_AUTOMAKE(1.10)
 AM_CONFIG_HEADER([config.h])
 
-# Initialize Libtool
-LT_INIT
-LT_PREREQ([2.2.2])
-LTOBJEXT="lo"
-AC_SUBST(LTOBJEXT)
-
 # ---------------------------------------------------------------------------- #
 
 #
@@ -186,6 +180,26 @@ AM_CONDITIONAL([DO_BUILD_FORTRAN],
   [test "${enable_fortran}" = "yes"])
 AM_CONDITIONAL([F90_MOD_UPPERCASE],
   [test "${enable_fortran}" = "yes" -a "${ax_cv_f90_mod_uppercase}" = "yes"])
+
+# ---------------------------------------------------------------------------- #
+
+#
+# Libtool
+#
+
+# Initialize Libtool
+LT_INIT
+LT_PREREQ([2.2.2])
+LTOBJEXT="lo"
+AC_SUBST(LTOBJEXT)
+
+# Trick to have Libtool properly handling C/Fortran mixing
+if test "$enable_fortran" = "yes"; then
+  FCLD='$(FC)'
+else
+  FCLD='$(CCLD)'
+fi
+AC_SUBST(FCLD)
 
 # ---------------------------------------------------------------------------- #
 
