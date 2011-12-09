@@ -138,7 +138,7 @@ if test "${CC}" != "" -a ! -x "${CC}"; then
   if test ! -x "${pio_cc_probe}"; then
     AC_PATH_PROG([pio_cc_path],[${pio_cc_probe}])
     if test "${pio_cc_path}" = ""; then
-      AC_MSG_ERROR([could not run C compiler "${FC}"])
+      AC_MSG_ERROR([could not run C compiler "${CC}"])
     fi
   fi
 fi
