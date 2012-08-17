@@ -24,7 +24,7 @@
  */
 #include <string.h>
 #include <ctype.h>
-#include "read_upf.h"
+#include "upf.h"
 #include "util.h"
 
 #if defined HAVE_CONFIG_H
@@ -32,7 +32,7 @@
 #endif
 
 
-int  pspio_upf_init(FILE *fp, pspio_pspdata_t **pspdata){
+int pspio_upf_init(FILE *fp, pspio_pspdata_t **pspdata){
  
   HANDLE_FUNC_ERROR(pspio_upf_file_read(fp, pspdata));
 
@@ -101,63 +101,49 @@ int pspio_upf_file_read(FILE *fp, pspio_pspdata_t **pspdata){
   if(fgets(line, MAX_STRLEN, fp) == NULL) {
     HANDLE_ERROR(PSPIO_EIO);
   }
+  strncpy(xc_string, line, 21); //the xc string should always the first 21 chars of the line
+  HANDLE_FUNC_ERROR (upf_to_libxc(xc_string, &exchange, &correlation));
 
-  //Store the 2 functionals (4 identifiers) into one string
-  id_left = 4;
-  i = 0;
-  j = 0;
-  while ( id_left && &line[i] != NULL){
-    if (line[i]!=' '){
-      //Save the identifier char by char
-      xc_string[j] = line[i];
-      j++;
-      //Find that if it is the last char of the identifier
-      if (line[i-1] == ' ') id_left--;
-
-      //if the next is whitespace have to included in the output
-      if (line[i+1] == ' ' ){
-	xc_string[j] = ' ';
-	j++;
-      }
-    }
-    i++;
-  }
-  HANDLE_FUNC_ERROR (pwscf2libxc(xc_string, exchange, correlation));
-    
+  // read the Z valence
   if(fgets(line, MAX_STRLEN, fp) == NULL) {
     HANDLE_ERROR(PSPIO_EIO);
   }
-  narg = sscanf (line, "%lf",&(*pspdata)->zvalence); // read the Z valence
+  narg = sscanf (line, "%lf",&(*pspdata)->zvalence);
   ASSERT(narg==1, PSPIO_EIO);
 
+  // read the total energy
   if(fgets(line, MAX_STRLEN, fp) == NULL) {
     HANDLE_ERROR(PSPIO_EIO);
   }
-  narg = sscanf (line, "%lf",&total_energy); // read the total energy
+  narg = sscanf (line, "%lf",&total_energy);
   ASSERT(narg==1, PSPIO_EIO);
   
+  //read the suggested cutoff for wfc and rho
   if(fgets(line, MAX_STRLEN, fp) == NULL) {
     HANDLE_ERROR(PSPIO_EIO);
   }
-  narg = sscanf (line, "%lf %lf",&wfc_cutoff,&rho_cutoff); //read the suggested cutoff for wfc and rho
+  narg = sscanf (line, "%lf %lf",&wfc_cutoff,&rho_cutoff);
   ASSERT(narg==2, PSPIO_EIO);
   
+  // read the max angular momentun component
   if(fgets(line, MAX_STRLEN, fp) == NULL) {
     HANDLE_ERROR(PSPIO_EIO);
   }
-  narg = sscanf (line, "%d",&(*pspdata)->l_max); // read the max angular momentun component
+  narg = sscanf (line, "%d",&(*pspdata)->l_max);
   ASSERT(narg==1, PSPIO_EIO);
   
+  // read the number of points in mesh
   if(fgets(line, MAX_STRLEN, fp) == NULL) {
     HANDLE_ERROR(PSPIO_EIO);
   }
-  narg = sscanf (line, "%d",&np); // read the number of points in mesh
+  narg = sscanf (line, "%d",&np);
   ASSERT(narg==1, PSPIO_EIO);
   
+  // read the number of wavefunctions and projectors 
   if(fgets(line, MAX_STRLEN, fp) == NULL) {
     HANDLE_ERROR(PSPIO_EIO);
   }
-  narg = sscanf (line, "%d %d", &(*pspdata)->n_states, &(*pspdata)->n_kbproj); // read the number of wavefunctions and projectors 
+  narg = sscanf (line, "%d %d", &(*pspdata)->n_states, &(*pspdata)->n_kbproj);
   ASSERT(narg==2, PSPIO_EIO);
 
   //Skip info on wavefunctions, as it is repeated in the PP_PSWFC block

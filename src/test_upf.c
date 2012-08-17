@@ -20,13 +20,13 @@
 
 /**
  * @file test_upf.c
- * @brief checks read_upf.c and read_upf.h 
+ * @brief checks read_upf.c and upf.h 
  */
 
 #include <stdlib.h>
 #include <stdio.h>
 
-#include "read_upf.h"
+#include "upf.h"
 #include "pspio_pspdata.h"
 #include "test_common.h"
 

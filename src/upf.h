@@ -1,5 +1,5 @@
 /*
- Copyright (C) 2011 J. Alberdi, M. Oliveira, Y. Pouillon, and M. Verstraete
+ Copyright (C) 2011-2012 J. Alberdi, M. Oliveira, Y. Pouillon, and M. Verstraete
  
  This program is free software; you can redistribute it and/or modify
  it under the terms of the GNU Lesser General Public License as published by
@@ -19,24 +19,29 @@
  */
 
 /**
- * @file read_upf.h
- * @brief header file for reading the UPF files
+ * @file upf.h
+ * @brief header file for all UPF related routines
  */
 
-#if !defined PSPIO_READIUPF_H
-#define PSPIO_READUPF_H
+#if !defined PSPIO_UPF_H
+#define PSPIO_UPF_H
 
 #include <stdio.h>
+
 #include "pspio_pspdata.h"
 
-#define GO_BACK 1 /**< Defines that it has to go at the beginning of the file */
+
+/**********************************************************************
+ * Defines                                                            *
+ **********************************************************************/
+
+#define GO_BACK    1 /**< Defines that it has to go at the beginning of the file */
 #define NO_GO_BACK 0 /**< Defines that it has to stay there in the file*/
 
-typedef struct{
-	char nl[2];
-	int l;
-	double occ;
-} wavefunction_t;
+
+/**********************************************************************
+ * Global routines                                                    *
+ **********************************************************************/
 
 /**
  * Init the UPF file read
@@ -65,10 +70,10 @@ int pspio_upf_file_read(FILE * fp, pspio_pspdata_t **pspdata);
 
 
 /** 
- * Evaluates is a tag is defined
+ * Evaluates if a tag is defined
  * @param[in] fp a stream of the input file
- * @param[in] tag the tag. Is case-insensitive
- * @return 0 if defined. 1 else
+ * @param[in] tag the tag. It is case-insensitive
+ * @return 0 if defined, 1 otherwise
  */
 int tag_isdef(FILE * fp, const char * tag);
 
@@ -76,8 +81,8 @@ int tag_isdef(FILE * fp, const char * tag);
 /** 
  * Goes to the point just after the tag 
  * @param[in] fp a stream of the input file
- * @param[in] tag the tag. Is case-insensitive
- * @param[in] go_back decides it has to go to the beginning of the file
+ * @param[in] tag the tag. It is case-insensitive
+ * @param[in] go_back decides if it has to go to the beginning of the file
  * @return error code
  */
 int init_tag(FILE * fp, const char * tag, const int go_back);
@@ -85,21 +90,28 @@ int init_tag(FILE * fp, const char * tag, const int go_back);
 /** 
  * Evaluates if a tag is correctly closed
  * @param[in] fp a stream of the input file
- * @param[in] tag the tag. Is case-insensitive
- * @return 0 if correct. 1 else
+ * @param[in] tag the tag. It is case-insensitive
+ * @return 0 if correct, 1 otherwise
  */
 int check_end_tag(FILE * fp, const char * tag);
 
-/**
- * Description
- * @param[in,out] pspdata the data structure
- */
-int pspio_upf_cutoff_radii(pspio_pspdata_t * pspdata);
 
 /**
- * checks normalization of the pseudo wavefunctions
- * @param[in,out] pspdata the data structure
- */   
-int pspio_upf_check_rphi(pspio_pspdata_t * pspdata);
+* subroutine converts pwcf xc string to libxc codes
+*@param[in]  xc_string: pwscf string
+*@param[out] exchange: libxc code for exchange
+*@param[out] correlation: libxc code for correlation
+*/
+int upf_to_libxc (const char *xc_string, int *exchange, int *correlation);
+
+
+/**
+* subroutine converts libxc codes to pwcf xc string
+*@param[in] exchange: libxc code for exchange
+*@param[in] correlation: libxc code for correlation
+*@param[out]  xc_string: pwscf string
+*/
+int upf_from_libxc (const int exchange, const int correlation, char *xc_string);
+
 
 #endif

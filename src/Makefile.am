@@ -41,8 +41,8 @@ pio_core_srcs = \
   pspio_qn.c \
   pspio_state.c \
   pspio_xc.c \
-  pwscf2libxc.c \
-  read_upf.c \
+  upf.c \
+  upf_xc.c \
   util.c
 
 
@@ -65,8 +65,8 @@ pio_core_hdrs = \
 # Internal C headers - keep this in alphabetical order
 pio_hidden_hdrs = \
   libxccodes.h \
-  read_upf.h \
   test_common.h \
+  upf.h \
   util.h
 
 # Fortran source files and modules
