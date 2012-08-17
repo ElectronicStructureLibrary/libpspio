@@ -44,24 +44,24 @@ typedef struct{
  * @param[in,out] psp_data the data structure
  * @return error code
  */
-int pspio_upf_init(FILE * fp, pspio_pspdata_t * psp_data);
+int pspio_upf_init(FILE * fp, pspio_pspdata_t **psp_data);
 
 
 /**
  * Finalize the file reading
- * @param[in,out] psp_data the data structure
+ * @param[in,out] pspdata the data structure
  * @return error code
  */
-int pspio_upf_end(pspio_pspdata_t * psp_data);
+int pspio_upf_end(pspio_pspdata_t **psp_data);
 
 
 /**
  * Read the UPF file
  * @param[in] fp a stream of the input file
- * @param[in,out] psp_data the data structure
+ * @param[in,out] pspdata the data structure
  * @return error code
  */
-int pspio_upf_file_read(FILE * fp, pspio_pspdata_t * psp_data);
+int pspio_upf_file_read(FILE * fp, pspio_pspdata_t **pspdata);
 
 
 /** 
@@ -92,14 +92,14 @@ int check_end_tag(FILE * fp, const char * tag);
 
 /**
  * Description
- * @param[in,out] psp_data the data structure
+ * @param[in,out] pspdata the data structure
  */
-int pspio_upf_cutoff_radii(pspio_pspdata_t * psp_data);
+int pspio_upf_cutoff_radii(pspio_pspdata_t * pspdata);
 
 /**
  * checks normalization of the pseudo wavefunctions
- * @param[in,out] psp_data the data structure
+ * @param[in,out] pspdata the data structure
  */   
-int pspio_upf_check_rphi(pspio_pspdata_t * psp_data);
+int pspio_upf_check_rphi(pspio_pspdata_t * pspdata);
 
 #endif

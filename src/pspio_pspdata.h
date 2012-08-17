@@ -90,7 +90,7 @@ typedef struct{
   double zvalence;   /**< charge of pseudopotential ion - valence electrons */
   double nelvalence; /**< number of electrons - normally equal to zion, except for special cases for ions */
   int l_max;         /**< maximal angular momentum channel */
-  int wave_eq;       /**< type of wave equation which was solved: Dirac, Scalar Relativisticof the License, or Schroedinger */
+  int wave_eq;       /**< type of wave equation which was solved: Dirac, Scalar Relativistic, or Schroedinger */
 
   // The radial mesh.
   pspio_mesh_t *mesh; /**< Radial mesh - all functions should be discretized on this mesh */
@@ -113,6 +113,9 @@ typedef struct{
 
   // Exchange and correlation data, including non-linear core corrections
   pspio_xc_t *xc; /**< xc structure */
+
+  // Valence density
+  pspio_meshfunc_t *rho_valence; /**< Valence density */
 
 } pspio_pspdata_t;
 

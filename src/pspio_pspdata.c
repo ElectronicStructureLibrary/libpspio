@@ -39,13 +39,31 @@ int pspio_pspdata_init(pspio_pspdata_t **pspdata, const char *file_name,
       const int file_format){
   FILE * fp;
   int ierr;
+
+  ASSERT( pspdata != NULL, PSPIO_EVALUE);
+  ASSERT( *pspdata == NULL, PSPIO_EVALUE);
   
+  // Memory allocation
+  *pspdata = (pspio_pspdata_t *) malloc (sizeof(pspio_pspdata_t));
+  HANDLE_FATAL_ERROR (*pspdata == NULL, PSPIO_ENOMEM);
+
+  // Nullify pointers
+  (*pspdata)->symbol = NULL;
+  (*pspdata)->mesh = NULL;
+  (*pspdata)->states = NULL;
+  (*pspdata)->qn_to_istate = NULL;
+  (*pspdata)->potentials = NULL;
+  (*pspdata)->kb_projectors = NULL;
+  (*pspdata)->vlocal = NULL;
+  (*pspdata)->xc = NULL;
+  (*pspdata)->rho_valence = NULL;
+
   // open file
   fp = fopen(file_name, "r");
   if(fp == NULL) {
     HANDLE_ERROR(PSPIO_ENOFILE);
   }
-  
+
   //read from file
   switch(file_format) {
   case UNKNOWN:
@@ -133,6 +151,11 @@ int pspio_pspdata_free(pspio_pspdata_t **pspdata){
     // Free xc
     if ((*pspdata)->xc != NULL) {
       HANDLE_FUNC_ERROR (pspio_xc_free(&(*pspdata)->xc));
+    }
+
+    // Free valence density
+    if ((*pspdata)->rho_valence != NULL) {
+      HANDLE_FUNC_ERROR (pspio_meshfunc_free(&(*pspdata)->rho_valence));
     }
 
   }

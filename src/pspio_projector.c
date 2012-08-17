@@ -106,3 +106,13 @@ int pspio_projector_energy(pspio_projector_t *projector, double *e) {
 }
 
 
+int pspio_projector_l(pspio_projector_t *projector, int *l) {
+  ASSERT(projector != NULL, PSPIO_ERROR);
+
+  int n;
+  double j;
+
+  HANDLE_FUNC_ERROR(pspio_qn_get( projector->qn, &n, l, &j));
+
+  return PSPIO_SUCCESS;
+}

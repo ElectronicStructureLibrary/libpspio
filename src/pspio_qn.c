@@ -87,7 +87,7 @@ int pspio_qn_get(const pspio_qn_t *qn, int *n, int *l, double *j) {
 
 int pspio_qn_set(pspio_qn_t **qn, const int n, const int l, const double j) {
   ASSERT((qn != NULL) && (*qn != NULL), PSPIO_ERROR);
-  ASSERT( (n > 0) && (l >= 0), PSPIO_EVALUE);
+  ASSERT(l >= 0, PSPIO_EVALUE);
   ASSERT( (j == 0.0) || (fabs(j - (double)l) - 0.5 < 1.0e-8), PSPIO_EVALUE);
 
   (*qn)->n = n;

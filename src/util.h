@@ -33,7 +33,7 @@
 #define min(x,y)  ((x<y) ? (x) : (y))
 #define max(x,y)  ((x<y) ? (y) : (x))
 
-#define LJ_TO_I(l,j)  (l+(int)j)
+#define LJ_TO_I(x,y)  (x+(int)y)
 
 
 /**********************************************************************

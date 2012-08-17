@@ -113,5 +113,14 @@ int pspio_projector_eval(pspio_projector_t *projector, const double r,
  */
 int pspio_projector_energy(pspio_projector_t *projector, double *e);
 
+/**
+ * Returns the angular momentum of the projector
+ * 
+ * @param[in] projector: projector structure
+ * @param[out] *l: value of the projector angular momentum
+ * @return error code
+ * @note The projector pointer has to be fully set.
+ */
+int pspio_projector_l(pspio_projector_t *projector, int *l);
 
 #endif

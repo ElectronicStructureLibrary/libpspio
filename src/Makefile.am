@@ -41,6 +41,7 @@ pio_core_srcs = \
   pspio_qn.c \
   pspio_state.c \
   pspio_xc.c \
+  pwscf2libxc.c \
   read_upf.c \
   util.c
 
@@ -119,6 +120,7 @@ noinst_PROGRAMS = \
   test_potential \
   test_projector \
   test_state \
+  test_upf \
   test_xc
 
 test_error_SOURCES = test_error.c
@@ -148,6 +150,10 @@ test_qn_CPPFLAGS = -I$(srcdir)/../src
 test_state_SOURCES = test_state.c
 test_state_LDADD = -lpspio -lm
 test_state_CPPFLAGS = -I$(srcdir)/../src
+
+test_upf_SOURCES = test_upf.c
+test_upf_LDADD = -lpspio -lm
+test_upf_CPPFLAGS = -I$(srcdir)/../src
 
 test_xc_SOURCES = test_xc.c
 test_xc_LDADD = -lpspio -lm

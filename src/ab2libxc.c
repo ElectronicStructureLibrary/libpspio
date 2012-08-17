@@ -38,8 +38,9 @@
 
 /**
 * subroutine converts abinit pspxc code to libxc codes
-*@param[in]  pspxc      abinit xc code
-*@param[out] psp_data   pseudopotential xc info is filled with libxc codes
+*@param[in]  pspxc: abinit xc code
+*@param[out] exchange: libxc code for exchange
+*@param[out] correlation: libxc code for correlation
 */
 int ab2libxc (const int pspxc, int exchange, int correlation){
 
