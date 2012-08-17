@@ -113,4 +113,17 @@ int pspio_xc_nlcc_set(pspio_xc_t **xc, const pspio_mesh_t *mesh,
  */
 int pspio_xc_free(pspio_xc_t **xc);
 
+
+/**********************************************************************
+ * Atomic routines                                                    *
+ **********************************************************************/
+
+/**
+ * Returns if xc has non-linear core-corrections
+ * @param[in] xc: xc structure
+ * @param[out] has_nlcc: true if xc has nlcc, false otherwise
+ * @return error code
+ */
+int pspio_xc_has_nlcc(pspio_xc_t *xc, int *has_nlcc);
+
 #endif

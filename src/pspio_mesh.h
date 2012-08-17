@@ -144,4 +144,18 @@ int pspio_mesh_init_from_parameters(pspio_mesh_t **mesh, const int type,
 int pspio_mesh_free(pspio_mesh_t **mesh);
 
 
+
+/**********************************************************************
+ * Atomic routines                                                    *
+ **********************************************************************/
+
+/**
+ * Returns the number of points in the mesh
+ * 
+ * @param[in] mesh: mesh structure
+ * @param[out] np: the number of points
+ * @return error code
+ */
+int pspio_mesh_get_np(pspio_mesh_t *mesh, int *np);
+
 #endif

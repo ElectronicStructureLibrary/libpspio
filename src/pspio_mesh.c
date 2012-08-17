@@ -203,3 +203,12 @@ int pspio_mesh_free(pspio_mesh_t **mesh){
 
   return PSPIO_SUCCESS;
 }
+
+
+int pspio_mesh_get_np(pspio_mesh_t *mesh, int *np) {
+  ASSERT(mesh != NULL, PSPIO_ERROR);
+
+  *np = mesh->np;
+
+  return PSPIO_SUCCESS;
+}

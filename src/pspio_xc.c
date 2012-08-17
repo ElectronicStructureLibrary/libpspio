@@ -94,3 +94,12 @@ int pspio_xc_free(pspio_xc_t **xc){
 
   return PSPIO_SUCCESS;
 }
+
+
+int pspio_xc_has_nlcc(pspio_xc_t *xc, int *has_nlcc) {
+  ASSERT (xc != NULL, PSPIO_EVALUE);
+
+  *has_nlcc = (xc->nlcc_scheme != PSPIO_NLCC_NONE);
+
+  return PSPIO_SUCCESS;
+}
