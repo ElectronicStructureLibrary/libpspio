@@ -42,7 +42,7 @@ int pspio_state_alloc(pspio_state_t **state, const int np) {
   ASSERT(np > 1, PSPIO_EVALUE);
 
   *state = (pspio_state_t *)malloc(sizeof(pspio_state_t));
-  HANDLE_FATAL_ERROR(*state == NULL, PSPIO_ENOMEM);
+  ASSERT(*state != NULL, PSPIO_ENOMEM);
 
   (*state)->wf = NULL;
   ierr = pspio_meshfunc_alloc(&(*state)->wf, np);
@@ -139,10 +139,10 @@ int pspio_states_lookup_table(const int n_states, pspio_state_t **states,
 
   // Allocate memory and preset table
   table = malloc ( (nmax+1) * sizeof(int*));
-  HANDLE_FATAL_ERROR (table == NULL, PSPIO_ENOMEM);
+  ASSERT(table != NULL, PSPIO_ENOMEM);
   for(i=0; i<nmax; i++) {
     table[i] = malloc(lsize*sizeof(int));
-    HANDLE_FATAL_ERROR (table[i] == NULL, PSPIO_ENOMEM);
+    ASSERT(table[i] != NULL, PSPIO_ENOMEM);
     memset(table[i], -1, lsize*sizeof(int));
   }
   table[nmax] = NULL;

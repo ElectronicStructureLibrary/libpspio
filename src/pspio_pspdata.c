@@ -1,5 +1,5 @@
 /*
- Copyright (C) 2011 J. Alberdi, M. Oliveira, Y. Pouillon, and M. Verstraete
+ Copyright (C) 2011-2012 J. Alberdi, M. Oliveira, Y. Pouillon, and M. Verstraete
 
  This program is free software; you can redistribute it and/or modify
  it under the terms of the GNU Lesser General Public License as published by
@@ -38,14 +38,13 @@
 int pspio_pspdata_init(pspio_pspdata_t **pspdata, const char *file_name,
       const int file_format){
   FILE * fp;
-  int ierr;
 
-  ASSERT( pspdata != NULL, PSPIO_EVALUE);
-  ASSERT( *pspdata == NULL, PSPIO_EVALUE);
+  ASSERT(pspdata != NULL, PSPIO_EVALUE);
+  ASSERT(*pspdata == NULL, PSPIO_EVALUE);
   
   // Memory allocation
   *pspdata = (pspio_pspdata_t *) malloc (sizeof(pspio_pspdata_t));
-  HANDLE_FATAL_ERROR (*pspdata == NULL, PSPIO_ENOMEM);
+  ASSERT(*pspdata != NULL, PSPIO_ENOMEM);
 
   // Nullify pointers
   (*pspdata)->symbol = NULL;
@@ -90,17 +89,44 @@ int pspio_pspdata_init(pspio_pspdata_t **pspdata, const char *file_name,
   case SIESTA:
     break;
   case UPF:
-    HANDLE_FUNC_ERROR(pspio_upf_init(fp, pspdata));
+    HANDLE_FUNC_ERROR(pspio_upf_read(fp, pspdata));
     break;
   default:
     return PSPIO_EFILE_FORMAT;
   }
   
   // close file and check for ierr being non 0
-  ierr = fclose(fp);
-  if(ierr != 0){
-    HANDLE_ERROR(PSPIO_EIO);
+  ASSERT(fclose(fp) == 0, PSPIO_EIO);
+
+  return PSPIO_SUCCESS;
+}
+
+
+int pspio_pspdata_write(const pspio_pspdata_t *pspdata, const char *file_name,
+      const int file_format){
+  FILE * fp;
+
+  ASSERT(pspdata != NULL, PSPIO_EVALUE);
+  
+  // open file
+  fp = fopen(file_name, "w");
+  if(fp == NULL) {
+    HANDLE_ERROR(PSPIO_ENOFILE);
   }
+
+  //write to file
+  switch(file_format) {
+  case UNKNOWN:
+    break;
+  case UPF:
+    HANDLE_FUNC_ERROR(pspio_upf_write(fp, pspdata));
+    break;
+  default:
+    return PSPIO_EFILE_FORMAT;
+  }
+  
+  // close file and check for ierr being non 0
+  ASSERT(fclose(fp) == 0, PSPIO_EIO);
 
   return PSPIO_SUCCESS;
 }

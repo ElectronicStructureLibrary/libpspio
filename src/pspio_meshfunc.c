@@ -40,10 +40,10 @@ int pspio_meshfunc_alloc(pspio_meshfunc_t **func, const int np){
   ASSERT(np > 1, PSPIO_EVALUE);
 
   *func = (pspio_meshfunc_t *) malloc (sizeof(pspio_meshfunc_t));
-  HANDLE_FATAL_ERROR (*func == NULL, PSPIO_ENOMEM);
+  ASSERT(*func != NULL, PSPIO_ENOMEM);
 
   (*func)->f = (double *) malloc (np * sizeof(double));
-  HANDLE_FATAL_ERROR ((*func)->f == NULL, PSPIO_ENOMEM);
+  ASSERT((*func)->f != NULL, PSPIO_ENOMEM);
   memset((*func)->f, 0, np*sizeof(double));
 
   (*func)->mesh = NULL;

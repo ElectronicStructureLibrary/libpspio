@@ -66,7 +66,7 @@ int pspio_info_string(char *info) {
 
   int s = strlen(package_string);
   info = (char *)malloc(s + 1);
-  HANDLE_FATAL_ERROR(info == NULL, PSPIO_ENOMEM)
+  ASSERT(info != NULL, PSPIO_ENOMEM)
   strncpy(info, package_string, s);
   info[s] = 0;
 

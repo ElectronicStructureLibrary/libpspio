@@ -36,10 +36,10 @@ int pspio_projector_alloc(pspio_projector_t **projector, const int np){
 
   ASSERT(projector != NULL, PSPIO_ERROR);
   ASSERT(*projector == NULL, PSPIO_ERROR);
-  ASSERT (np > 1, PSPIO_EVALUE);
+  ASSERT(np > 1, PSPIO_EVALUE);
 
   *projector = (pspio_projector_t *) malloc (sizeof(pspio_projector_t));
-  HANDLE_FATAL_ERROR (*projector == NULL, PSPIO_ENOMEM);
+  ASSERT(*projector != NULL, PSPIO_ENOMEM);
 
   (*projector)->proj = NULL;
   ierr = pspio_meshfunc_alloc(&(*projector)->proj, np);

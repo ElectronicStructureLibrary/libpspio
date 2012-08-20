@@ -35,8 +35,8 @@ int main(int argc, char *argv[]) {
   int eid;
   pspio_pspdata_t *pspdata = NULL;
 
-  if(argc != 2){
-    printf("Usage:\n%s file\n", argv[0]);
+  if(argc != 3){
+    printf("Usage:\n%s input_file output_file\n", argv[0]);
     return 1;
   }
 
@@ -48,6 +48,12 @@ int main(int argc, char *argv[]) {
   /* check parsing of UPF file */
   DEBUG_PRINT("test_upf: parsing file %s\n", argv[1]);
   eid = pspio_pspdata_init(&pspdata, argv[1], UPF);
+  eid = pspio_error_flush();
+  DEBUG_PRINT("\n");
+
+  /* check writing of UPF file */
+  DEBUG_PRINT("test_upf: writing file %s\n", argv[2]);
+  eid = pspio_pspdata_write(pspdata, argv[2], UPF);
   eid = pspio_error_flush();
   DEBUG_PRINT("\n");
   

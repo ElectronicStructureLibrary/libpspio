@@ -40,8 +40,11 @@ pio_core_srcs = \
   pspio_pspdata.c \
   pspio_qn.c \
   pspio_state.c \
+  pspio_upf.c \
   pspio_xc.c \
-  upf.c \
+  upf_read.c \
+  upf_tag.c \
+  upf_write.c \
   upf_xc.c \
   util.c
 
@@ -59,6 +62,7 @@ pio_core_hdrs = \
   pspio_pspdata.h \
   pspio_qn.h \
   pspio_state.h \
+  pspio_upf.h \
   pspio_xc.h
 
 

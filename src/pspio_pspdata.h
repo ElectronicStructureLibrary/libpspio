@@ -136,6 +136,15 @@ typedef struct{
 int pspio_pspdata_init(pspio_pspdata_t **psp_data, const char *file_name, 
 		       const int file_format);
 
+/**
+ * Writes the psp_data to a given file.
+ * @param[in] psp_data: pointer to psp_data structure
+ * @param[out] file_name: file write to.
+ * @param[in] file_format: the format of file_name.
+ * @return error code.
+ */
+int pspio_pspdata_write(const pspio_pspdata_t *psp_data, const char *file_name, 
+		       const int file_format);
 
 /**
  * Frees all memory associated with psp_data structure
