@@ -19,7 +19,7 @@
 */
 
 /** 
- * @file upf.c
+ * @file pspio_upf.c
  * @brief implementation to read and write in UPF files 
  */
 #include <string.h>
@@ -42,8 +42,8 @@ int pspio_upf_read(FILE *fp, pspio_pspdata_t **pspdata){
     HANDLE_FUNC_ERROR(upf_read_nlcc(fp, np, pspdata));
   }
   HANDLE_FUNC_ERROR(upf_read_nonlocal(fp, np, pspdata));
-  HANDLE_FUNC_ERROR(upf_read_local(fp, np, pspdata));
   HANDLE_FUNC_ERROR(upf_read_pswfc(fp, np, pspdata));
+  HANDLE_FUNC_ERROR(upf_read_local(fp, np, pspdata));
   HANDLE_FUNC_ERROR(upf_read_rhoatom(fp, np, pspdata));
 
   return PSPIO_SUCCESS;
@@ -60,8 +60,8 @@ int pspio_upf_write(FILE *fp, pspio_pspdata_t *pspdata){
   if (has_nlcc) {
     HANDLE_FUNC_ERROR(upf_write_nlcc(fp, pspdata));
   }
-  HANDLE_FUNC_ERROR(upf_write_nonlocal(fp, pspdata));
   HANDLE_FUNC_ERROR(upf_write_local(fp, pspdata));
+  HANDLE_FUNC_ERROR(upf_write_nonlocal(fp, pspdata));
   HANDLE_FUNC_ERROR(upf_write_pswfc(fp, pspdata));
   HANDLE_FUNC_ERROR(upf_write_rhoatom(fp, pspdata));
 

@@ -34,6 +34,7 @@
 int main(void) {
   int eid = PSPIO_SUCCESS;
   pspio_qn_t *qn1 = NULL, *qn2 = NULL;
+  char label[10];
 
   /* Display basic information */
   DEBUG_PRINT("%s - test_qn\nReport bugs to %s\n\n", PACKAGE_STRING,
@@ -90,6 +91,18 @@ int main(void) {
   eid = pspio_qn_set(&qn2, 1, 2, 1.5);
   eid = pspio_error_flush();
   CHECK_STAT(pspio_qn_cmp(qn2, qn1), PSPIO_QN_DIFF);
+  DEBUG_PRINT("\n");
+
+  /* Check quantum numbers labels */
+  DEBUG_PRINT("test_qn: printing quantum number label\n");
+  eid = pspio_qn_set(&qn1, 1, 0, 0.0);
+  eid = pspio_qn_label(qn1, label);
+  eid = pspio_error_flush();
+  DEBUG_PRINT("test_qn:  label 1 = '%s' (should be '1s')\n", label);
+  eid = pspio_qn_set(&qn1, 2, 1, 1.5);
+  eid = pspio_qn_label(qn1, label);
+  eid = pspio_error_flush();
+  DEBUG_PRINT("test_qn:  label 2 = '%s' (should be '2p1.5')\n", label);
   DEBUG_PRINT("\n");
 
   /* Destroy quantum numbers */

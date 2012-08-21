@@ -37,7 +37,7 @@ int upf_read_header(FILE *fp, int *np, pspio_pspdata_t **pspdata){
   int version_number, i;
   char *kind_ps;
   char nlcc_flag;
-  char xc_string[MAX_STRLEN];
+  char xc_string[20];
   int exchange, correlation;
   double total_energy, wfc_cutoff, rho_cutoff;
 
@@ -86,9 +86,9 @@ int upf_read_header(FILE *fp, int *np, pspio_pspdata_t **pspdata){
   ASSERT( fgets(line, MAX_STRLEN, fp) != NULL, PSPIO_EIO);
   ASSERT( sscanf(line, "%lf %lf",&wfc_cutoff,&rho_cutoff) == 2, PSPIO_EIO);
   
-  // read the max angular momentun component
+  // read the max angular momentun component of the KB projectors
   ASSERT( fgets(line, MAX_STRLEN, fp) != NULL, PSPIO_EIO);
-  ASSERT( sscanf(line, "%d",&(*pspdata)->l_max) == 1, PSPIO_EIO);
+  ASSERT( sscanf(line, "%d",&(*pspdata)->kb_l_max) == 1, PSPIO_EIO);
   
   // read the number of points in mesh
   ASSERT( fgets(line, MAX_STRLEN, fp) != NULL, PSPIO_EIO);
@@ -120,7 +120,8 @@ int upf_read_header(FILE *fp, int *np, pspio_pspdata_t **pspdata){
 
 int upf_read_mesh(FILE *fp, const int np, pspio_pspdata_t **pspdata){
   char line[MAX_STRLEN];
-  int i;
+  int i, j, nargs;
+  double tmp[4];
   double *r, *drdi;
 
   //Find init tag
@@ -137,7 +138,9 @@ int upf_read_mesh(FILE *fp, const int np, pspio_pspdata_t **pspdata){
   HANDLE_FUNC_ERROR(init_tag(fp, "PP_R", NO_GO_BACK));
   for (i=0; i<np; i+=4) {
     ASSERT( fgets(line, MAX_STRLEN, fp) != NULL, PSPIO_EIO);
-    ASSERT( sscanf(line,"%lf %lf %lf %lf",&r[i],&r[i+1],&r[i+2],&r[i+3]) == 4, PSPIO_EIO);
+    nargs = sscanf(line,"%lf %lf %lf %lf",&tmp[0],&tmp[1],&tmp[2],&tmp[3]);
+    ASSERT(nargs < 5 && nargs > 0, PSPIO_EIO);
+    for (j=0; j<nargs; j++) r[i+j] = tmp[j];
   }
   HANDLE_FUNC_ERROR(check_end_tag(fp, "PP_R"));
   
@@ -145,7 +148,9 @@ int upf_read_mesh(FILE *fp, const int np, pspio_pspdata_t **pspdata){
   HANDLE_FUNC_ERROR(init_tag(fp, "PP_RAB", NO_GO_BACK));
   for (i=0; i<np; i+=4) {
     ASSERT( fgets(line, MAX_STRLEN, fp) != NULL, PSPIO_EIO);
-    ASSERT( sscanf(line,"%lf %lf %lf %lf",&drdi[i],&drdi[i+1],&drdi[i+2],&drdi[i+3]) == 4, PSPIO_EIO);
+    nargs = sscanf(line,"%lf %lf %lf %lf",&tmp[0],&tmp[1],&tmp[2],&tmp[3]);
+    ASSERT(nargs < 5 && nargs > 0, PSPIO_EIO);
+    for (j=0; j<nargs; j++) drdi[i+j] = tmp[j];
   }
   HANDLE_FUNC_ERROR(check_end_tag(fp, "PP_RAB"));
 
@@ -166,27 +171,30 @@ int upf_read_mesh(FILE *fp, const int np, pspio_pspdata_t **pspdata){
 
 int upf_read_nlcc(FILE *fp, const int np, pspio_pspdata_t **pspdata){
   char line[MAX_STRLEN];
-  int i;
-  double *density;
+  int i, j, nargs;
+  double tmp[4];
+  double *rho;
 
   //Find init tag
   HANDLE_FUNC_ERROR(init_tag(fp, "PP_NLCC", GO_BACK));
 
   //Allocate memory
-  density = (double *)malloc(np*sizeof(double));
-  ASSERT( density != NULL, PSPIO_ENOMEM);
+  rho = (double *)malloc(np*sizeof(double));
+  ASSERT( rho != NULL, PSPIO_ENOMEM);
 
-  //Read core density
+  //Read core rho
   for (i=0; i<np; i+=4) {
     ASSERT( fgets(line, MAX_STRLEN, fp) != NULL, PSPIO_EIO);
-    ASSERT( sscanf(line,"%lf %lf %lf %lf",&density[i],&density[i+1],&density[i+2],&density[i+3]) == 4, PSPIO_EIO);
+    nargs = sscanf(line,"%lf %lf %lf %lf",&tmp[0],&tmp[1],&tmp[2],&tmp[3]);
+    ASSERT(nargs < 5 && nargs > 0, PSPIO_EIO);
+    for (j=0; j<nargs; j++) rho[i+j] = tmp[j];
   }
 
   //Store the non-linear core corrections in the pspdata structure
-  HANDLE_FUNC_ERROR(pspio_xc_nlcc_set(&(*pspdata)->xc, (*pspdata)->mesh, density));
+  HANDLE_FUNC_ERROR(pspio_xc_nlcc_set(&(*pspdata)->xc, (*pspdata)->mesh, rho));
 
   //Free memory
-  free(density);
+  free(rho);
 
   //Check end tag
   HANDLE_FUNC_ERROR(check_end_tag(fp,"PP_NLCC"));
@@ -296,8 +304,9 @@ int upf_read_nonlocal(FILE *fp, const int np, pspio_pspdata_t **pspdata){
 
 int upf_read_local(FILE *fp, const int np, pspio_pspdata_t **pspdata){
   char line[MAX_STRLEN];
+  int i, j, nargs, n, l;
   double *vlocal;
-  int i, j, n, l;
+  double tmp[4];
   pspio_qn_t *qn = NULL;
 
   //Find init tag
@@ -323,8 +332,13 @@ int upf_read_local(FILE *fp, const int np, pspio_pspdata_t **pspdata){
   //Read local potential
   for (i=0; i<np; i+=4) {
     ASSERT( fgets(line, MAX_STRLEN, fp) != NULL,  PSPIO_EIO);
-    ASSERT( sscanf(line,"%lf %lf %lf %lf",&vlocal[i],&vlocal[i+1],&vlocal[i+2],&vlocal[i+3]) == 4, PSPIO_EIO);
+    nargs = sscanf(line,"%lf %lf %lf %lf",&tmp[0],&tmp[1],&tmp[2],&tmp[3]);
+    ASSERT(nargs < 5 && nargs > 0, PSPIO_EIO);
+    for (j=0; j<nargs; j++) vlocal[i+j] = tmp[j];
   }
+
+  //Convert from Rydbergs
+  for (i=0; i<np; i++) vlocal[i] /= 2.0;
 
   //Store the local potential in the pspdata structure
   HANDLE_FUNC_ERROR( pspio_qn_set(&qn, 0, (*pspdata)->l_local, 0.0));
@@ -345,9 +359,10 @@ int upf_read_local(FILE *fp, const int np, pspio_pspdata_t **pspdata){
 int upf_read_pswfc(FILE *fp, const int np, pspio_pspdata_t **pspdata){
   char line[MAX_STRLEN];
   char label[2];
-  int i, j, l;
+  int i, j, k, nargs, l, lmax;
   double occ;
   double *wf;
+  double tmp[4];
   pspio_qn_t *qn = NULL;
 
   //Find init tag
@@ -364,22 +379,30 @@ int upf_read_pswfc(FILE *fp, const int np, pspio_pspdata_t **pspdata){
   for (j=0; j<(*pspdata)->n_states; j++) (*pspdata)->states[j] = NULL;
 
   //Read states
-  for (j=0; j<(*pspdata)->n_states; j++) {
+  lmax = -1;
+  for (k=0; k<(*pspdata)->n_states; k++) {
     //Read the quantum numbers and occupations
     ASSERT( fgets(line, MAX_STRLEN, fp) != NULL, PSPIO_EIO);
     ASSERT( sscanf(line, "%2c %d %lf", &label[0], &l, &occ) == 3, PSPIO_EIO);
-    HANDLE_FUNC_ERROR( pspio_qn_set(&qn, (int)label[0], l, 0.0));
+    HANDLE_FUNC_ERROR(pspio_qn_set(&qn, (int)label[0], l, 0.0));
+    lmax = max(l, lmax);
 
     //Read wavefunction
     for (i=0; i<np; i+=4) {
       ASSERT( fgets(line, MAX_STRLEN, fp) != NULL, PSPIO_EIO);
-      ASSERT( sscanf(line,"%lf %lf %lf %lf", &wf[i], &wf[i+1], &wf[i+2], &wf[i+3]) == 4, PSPIO_EIO);
+      nargs = sscanf(line,"%lf %lf %lf %lf", &tmp[0], &tmp[1], &tmp[2], &tmp[3]);
+      ASSERT(nargs < 5 && nargs > 0, PSPIO_EIO);
+      for (j=0; j<nargs; j++) wf[i+j] = tmp[j];
     }
 
+    //UPF uses the wavefunctions multiplied by r
+    for (i=0; i<np; i++) wf[i] /= (*pspdata)->mesh->r[i];
+
     //Store the state in the pspdata structure
-    HANDLE_FUNC_ERROR (pspio_state_alloc( &(*pspdata)->states[j], np));
-    HANDLE_FUNC_ERROR (pspio_state_set( &(*pspdata)->states[j], 0.0, label, qn, occ, 0.0, (*pspdata)->mesh, wf));
+    HANDLE_FUNC_ERROR (pspio_state_alloc( &(*pspdata)->states[k], np));
+    HANDLE_FUNC_ERROR (pspio_state_set( &(*pspdata)->states[k], 0.0, label, qn, occ, 0.0, (*pspdata)->mesh, wf));
   }
+  (*pspdata)->l_max = lmax;
 
   //Free memory
   free(wf);
@@ -394,8 +417,9 @@ int upf_read_pswfc(FILE *fp, const int np, pspio_pspdata_t **pspdata){
 
 int upf_read_rhoatom(FILE *fp, const int np, pspio_pspdata_t **pspdata){
   char line[MAX_STRLEN];
-  int i;
+  int i, j, nargs;
   double *rho_read;
+  double tmp[4];
 
   //Find init tag
   HANDLE_FUNC_ERROR(init_tag(fp,"PP_RHOATOM",GO_BACK));
@@ -407,8 +431,13 @@ int upf_read_rhoatom(FILE *fp, const int np, pspio_pspdata_t **pspdata){
   //Read valence density
   for (i=0; i<np; i+=4){
     ASSERT( fgets(line, MAX_STRLEN, fp) != NULL, PSPIO_EIO);
-    ASSERT( sscanf(line,"%lf %lf %lf %lf",&rho_read[i],&rho_read[i+1],&rho_read[i+2],&rho_read[i+3]) == 4, PSPIO_EIO);
+    nargs = sscanf(line,"%lf %lf %lf %lf", &tmp[0], &tmp[1],&tmp[2], &tmp[3]);
+    ASSERT(nargs < 5 && nargs > 0, PSPIO_EIO);
+    for (j=0; j<nargs; j++) rho_read[i+j] = tmp[j];
   }
+
+  //UPF uses the density multiplied by 4*Pi*r*r
+  for (i=0; i<np; i++) rho_read[i] /= 4.0*M_PI*(*pspdata)->mesh->r[i]*(*pspdata)->mesh->r[i];
 
   //Store the density in the pspdata structure
   HANDLE_FUNC_ERROR(pspio_meshfunc_alloc(&(*pspdata)->rho_valence, np));

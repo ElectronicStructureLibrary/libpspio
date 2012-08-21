@@ -84,7 +84,7 @@
  */
 typedef struct{
   // general data
-  char * title; /**< descriptive string for content of file read in */
+  char * title;      /**< descriptive string for content of file read in */
   char *symbol;      /**< Atomic symbol */
   double z;          /**< Atomic number */
   double zvalence;   /**< charge of pseudopotential ion - valence electrons */
@@ -102,20 +102,21 @@ typedef struct{
 
   // The pseudopotentials
   int scheme;                    /**< scheme used to generate the pseudopotentials */
-  int n_potentials;              /**< Number of pseudopotentials */
+  int n_potentials;              /**< number of pseudopotentials */
   pspio_potential_t **potentials; /**< struc with pseudopotentials */ 
 
   // Kleinman and Bylander non-local projectors
-  int n_kbproj;                     /**< Number of Kleinman and Bylander projectors */
+  int n_kbproj;                      /**< number of Kleinman and Bylander projectors */
   pspio_projector_t **kb_projectors; /**< Kleinman and Bylander projectors */
-  int l_local;                      /**< angular momentum channel of local potential */
-  pspio_potential_t *vlocal;        /**< local potential for the KB form of the pseudopotentials */ 
+  int l_local;                       /**< angular momentum channel of local potential */
+  int kb_l_max;                      /**< maximum angular momentum of KB projectors*/
+  pspio_potential_t *vlocal;         /**< local potential for the KB form of the pseudopotentials */ 
 
   // Exchange and correlation data, including non-linear core corrections
   pspio_xc_t *xc; /**< xc structure */
 
   // Valence density
-  pspio_meshfunc_t *rho_valence; /**< Valence density */
+  pspio_meshfunc_t *rho_valence; /**< valence density */
 
 } pspio_pspdata_t;
 

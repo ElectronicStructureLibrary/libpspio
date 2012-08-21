@@ -207,11 +207,12 @@ int upf_to_libxc(const char *xc_string, int *exchange, int *correlation);
 
 
 /**
-* subroutine converts libxc codes to pwcf xc string
+* subroutine converts libxc codes to pwcf xc names
 *@param[in] exchange: libxc code for exchange
 *@param[in] correlation: libxc code for correlation
-*@param[out]  xc_string: pwscf string
+*@param[out] longname: pwscf xc long name
+*@param[out] shortname: pwscf xc short name
 */
-int upf_from_libxc(const int exchange, const int correlation, char *xc_string);
+int upf_from_libxc(const int exchange, const int correlation, char *longname, char *shortname);
 
 #endif

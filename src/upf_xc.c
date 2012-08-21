@@ -37,7 +37,7 @@
 #endif
 
 
-int upf_to_libxc (const char *xc_string, int *exchange, int *correlation){
+int upf_to_libxc (const char xc_string[20], int *exchange, int *correlation){
   char exch[]  = "     ";
   char corr[]  = "     ";
   char gradx[] = "     ";
@@ -114,93 +114,110 @@ int upf_to_libxc (const char *xc_string, int *exchange, int *correlation){
 }
 
 
-int upf_from_libxc (const int exchange, const int correlation, char *xc_string){
-  char exch[]  = "     ";
-  char corr[]  = "     ";
-  char gradx[] = "     ";
-  char gradc[] = "     ";
+int upf_from_libxc (const int exchange, const int correlation, char longname[20], char shortname[4]){
+  char exch[4], corr[4], gradx[4], gradc[4];
 
   //Exchange:
   if (exchange == 0) {
-    strcpy(exch, "NOX  ");
-    strcpy(gradx,"NOGX ");
+    strcpy(exch, "NOX ");
+    strcpy(gradx,"NOGX");
   } else if (exchange == XC_LDA_X) {
-    strcpy(exch, "SLA  ");
-    strcpy(gradx,"NOGX ");
+    strcpy(exch, "SLA ");
+    strcpy(gradx,"NOGX");
   } else if (exchange == XC_GGA_X_B88) {
-    strcpy(exch, "SLA  ");
-    strcpy(gradx,"B88  ");
+    strcpy(exch, "SLA ");
+    strcpy(gradx,"B88 ");
   } else if (exchange == XC_GGA_X_PW91) {
-    strcpy(exch, "SLA  ");
-    strcpy(gradx,"GGX  ");
+    strcpy(exch, "SLA ");
+    strcpy(gradx,"GGX ");
   } else if (exchange == XC_GGA_X_PBE) {
-    strcpy(exch, "SLA  ");
-    strcpy(gradx,"PBX  ");
+    strcpy(exch, "SLA ");
+    strcpy(gradx,"PBX ");
   } else if (exchange == XC_GGA_X_PBE_SOL) {
-    strcpy(exch, "SLA  ");
-    strcpy(gradx,"PSX  ");
+    strcpy(exch, "SLA ");
+    strcpy(gradx,"PSX ");
   } else if (exchange == XC_GGA_X_PBE_R) {
-    strcpy(exch, "SLA  ");
-    strcpy(gradx,"RPB  ");
+    strcpy(exch, "SLA ");
+    strcpy(gradx,"RPB ");
   } else if (exchange == XC_GGA_X_WC) {
-    strcpy(exch, "SLA  ");
-    strcpy(gradx,"WCX  ");
+    strcpy(exch, "SLA ");
+    strcpy(gradx,"WCX ");
   } else if (exchange == XC_MGGA_X_TPSS) {
-    strcpy(exch, "SLA  ");
-    strcpy(gradx,"TPSS ");
+    strcpy(exch, "SLA ");
+    strcpy(gradx,"TPSS");
   }
 
-  //Exchange:
+  //Correlation:
   if (correlation == 0) {
-    strcpy(corr, "NOC  ");
-    strcpy(gradc,"NOGC ");
+    strcpy(corr, "NOC ");
+    strcpy(gradc,"NOGC");
   } else if (correlation == XC_LDA_C_PZ) {
-    strcpy(corr, "PZ   ");
-    strcpy(gradc,"NOGC ");
+    strcpy(corr, "PZ  ");
+    strcpy(gradc,"NOGC");
   } else if (correlation == XC_LDA_C_VWN) {
-    strcpy(corr, "VWN  ");
-    strcpy(gradc,"NOGC ");
+    strcpy(corr, "VWN ");
+    strcpy(gradc,"NOGC");
   } else if (correlation == XC_LDA_C_PW) {
-    strcpy(corr, "PW   ");
-    strcpy(gradc,"NOGC ");
+    strcpy(corr, "PW  ");
+    strcpy(gradc,"NOGC");
   } else if (correlation == XC_LDA_C_WIGNER) {
-    strcpy(corr, "WIGNER");
-    strcpy(gradc,"NOGC  ");
+    strcpy(corr, "WIG ");
+    strcpy(gradc,"NOGC");
   } else if (correlation == XC_LDA_C_HL) {
-    strcpy(corr, "HL   ");
-    strcpy(gradc,"NOGC ");
+    strcpy(corr, "HL  ");
+    strcpy(gradc,"NOGC");
   } else if (correlation == XC_LDA_C_OB_PZ) {
-    strcpy(corr, "OPZ  ");
-    strcpy(gradc,"NOGC ");
+    strcpy(corr, "OPZ ");
+    strcpy(gradc,"NOGC");
   } else if (correlation == XC_LDA_C_OB_PW) {
-    strcpy(corr, "OPW  ");
-    strcpy(gradc,"NOGC ");
+    strcpy(corr, "OPW ");
+    strcpy(gradc,"NOGC");
   } else if (correlation == XC_LDA_C_GL) {
-    strcpy(corr, "GL   ");
-    strcpy(gradc,"NOGC ");
+    strcpy(corr, "GL  ");
+    strcpy(gradc,"NOGC");
   } else if (correlation == XC_GGA_C_PW91) {
-    strcpy(corr, "PW   ");
-    strcpy(gradc,"GGC  ");
+    strcpy(corr, "PW  ");
+    strcpy(gradc,"GGC ");
   } else if (correlation == XC_GGA_C_PBE) {
-    strcpy(corr, "PW   ");
-    strcpy(gradc,"PBC  ");
+    strcpy(corr, "PW  ");
+    strcpy(gradc,"PBC ");
   } else if (correlation == XC_GGA_C_P86) {
-    strcpy(corr, "PZ   ");
-    strcpy(gradc,"P86  ");
+    strcpy(corr, "PZ  ");
+    strcpy(gradc,"P86 ");
   } else if (correlation == XC_GGA_C_PBE_SOL) {
-    strcpy(corr, "PW   ");
-    strcpy(gradc,"PSC  ");
+    strcpy(corr, "PW  ");
+    strcpy(gradc,"PSC ");
   } else if (correlation == XC_MGGA_C_TPSS) {
-    strcpy(corr, "PW   ");
-    strcpy(gradc,"TPSS ");
+    strcpy(corr, "PW  ");
+    strcpy(gradc,"TPSS");
   }
   
-  //Create string
-  strcpy(xc_string, " ");
-  strncat(xc_string, exch, 5);
-  strncat(xc_string, corr, 5);
-  strncat(xc_string, gradx, 5);
-  strncat(xc_string, gradc, 5);
+  //Create longname
+  /*  strcpy(longname, "");
+  strncat(longname, exch, 5);
+  strncat(longname, corr, 5);
+  strncat(longname, gradx, 5);
+  strncat(longname, gradc, 5);
+  */
+  sprintf(longname, "%4s %4s %4s %4s ", exch, corr, gradx, gradc);
+
+  //Shorname
+  strcpy(shortname,"    ");
+  if (exchange == XC_LDA_X) {
+    strcpy(shortname, corr);
+  } else if (exchange == XC_GGA_X_PBE && correlation == XC_GGA_C_PBE) {
+    strcpy(shortname,"PBE");
+  } else if (exchange == XC_GGA_X_B88 && correlation == XC_LDA_C_PZ) {
+    strcpy(shortname,"B88");
+  } else if (exchange == XC_GGA_X_B88 && correlation == XC_GGA_C_P86) {
+    strcpy(shortname,"BP");
+  } else if (exchange == XC_GGA_X_WC && correlation == XC_GGA_C_PBE) {
+    strcpy(shortname,"WC");
+  } else if (exchange == XC_MGGA_X_TPSS && correlation == XC_MGGA_C_TPSS) {
+    strcpy(shortname,"TPSS");
+  } else {
+    strcpy(shortname,"");
+  }
 
   return PSPIO_SUCCESS;
 }
