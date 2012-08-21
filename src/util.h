@@ -1,5 +1,5 @@
 /*
- Copyright (C) 2011 J. Alberdi, M. Oliveira, Y. Pouillon, and M. Verstraete
+ Copyright (C) 2011-2012 J. Alberdi, M. Oliveira, Y. Pouillon, and M. Verstraete
 
  This program is free software; you can redistribute it and/or modify
  it under the terms of the GNU Lesser General Public License as published by
@@ -25,6 +25,13 @@
  * @file util.h
  * @brief include file with some useful macros and defines 
  */
+
+/**********************************************************************
+ * Defines                                                            *
+ **********************************************************************/
+
+# define M_PI 3.14159265358979323846  /* pi */
+
 
 /**********************************************************************
  * Macros                                                             *
