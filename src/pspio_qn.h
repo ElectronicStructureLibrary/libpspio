@@ -109,6 +109,35 @@ int pspio_qn_set(pspio_qn_t **qn, const int n, const int l, const double j);
 
 
 /**********************************************************************
+ * Atomic routines                                                    *
+ **********************************************************************/
+
+/**
+ * Returns the main quantum number
+ * @param[in] qn: set of quantum numbers
+ * @param[out] n: main quantum number
+ * @return error code
+ */
+int pspio_qn_get_n(const pspio_qn_t *qn, int *n);
+
+/**
+ * Returns the angular momentum quantum number
+ * @param[in] qn: set of quantum numbers
+ * @param[out] l: angular momentum quantum number
+ * @return error code
+ */
+int pspio_qn_get_l(const pspio_qn_t *qn, int *l);
+
+/**
+ * Returns the total angular momentum quantum number
+ * @param[in] qn: set of quantum numbers
+ * @param[out] j: total angular momentum quantum number
+ * @return error code
+ */
+int pspio_qn_get_j(const pspio_qn_t *qn, double *j);
+
+
+/**********************************************************************
  * Utility routines                                                   *
  **********************************************************************/
 
@@ -123,5 +152,14 @@ int pspio_qn_set(pspio_qn_t **qn, const int n, const int l, const double j);
  *       depending on its sign.
  */
 int pspio_qn_cmp(const pspio_qn_t *qn1, const pspio_qn_t *qn2);
+
+
+/**
+ * Returns a label that identifies the set of quantum numbers
+ * @param[in] qn: set of quantum numbers
+ * @param[out] label: 
+ * @return error code
+ */
+int pspio_qn_label(const pspio_qn_t *qn, char *s);
 
 #endif

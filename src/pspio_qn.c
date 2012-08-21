@@ -99,6 +99,35 @@ int pspio_qn_set(pspio_qn_t **qn, const int n, const int l, const double j) {
 
 
 /**********************************************************************
+ * Atomic routines                                                    *
+ **********************************************************************/
+
+int pspio_qn_get_n(const pspio_qn_t *qn, int *n) {
+  ASSERT(qn != NULL, PSPIO_ERROR);
+
+  *n = qn->n;
+
+  return PSPIO_SUCCESS;
+}
+
+int pspio_qn_get_l(const pspio_qn_t *qn, int *l) {
+  ASSERT(qn != NULL, PSPIO_ERROR);
+
+  *l = qn->l;
+
+  return PSPIO_SUCCESS;
+}
+
+int pspio_qn_get_j(const pspio_qn_t *qn, double *j) {
+  ASSERT(qn != NULL, PSPIO_ERROR);
+
+  *j = qn->j;
+
+  return PSPIO_SUCCESS;
+}
+
+
+/**********************************************************************
  * Utility routines                                                   *
  **********************************************************************/
 
@@ -113,4 +142,18 @@ int pspio_qn_cmp(const pspio_qn_t *qn1, const pspio_qn_t *qn2) {
   } else {
     return PSPIO_QN_DIFF;
   }
+}
+
+int pspio_qn_label(const pspio_qn_t *qn, char *s) {
+  char llabel[4] = "spdf";
+
+  ASSERT(qn != NULL, PSPIO_ERROR);
+
+  if (qn->j == 0.0) {
+    sprintf(s, "%1u%1c", qn->n, llabel[qn->l]);
+  } else {
+    sprintf(s, "%1d%1c%3.1f", qn->n, llabel[qn->l], qn->j);
+  }
+
+  return PSPIO_SUCCESS;
 }
