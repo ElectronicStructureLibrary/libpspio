@@ -27,6 +27,10 @@
 #endif
 
 
+/**********************************************************************
+ * Global routines                                                    *
+ **********************************************************************/
+
 int pspio_xc_alloc(pspio_xc_t **xc, const int nlcc_scheme, const int np){
   int ierr;
 
@@ -96,10 +100,32 @@ int pspio_xc_free(pspio_xc_t **xc){
 }
 
 
+/**********************************************************************
+ * Atomic routines                                                    *
+ **********************************************************************/
+
+int pspio_xc_get_id(pspio_xc_t *xc, int *exchange, int *correlation){
+  ASSERT (xc != NULL, PSPIO_EVALUE);
+
+  *exchange = xc->exchange;
+  *correlation = xc->correlation;
+
+  return PSPIO_SUCCESS;
+}
+
 int pspio_xc_has_nlcc(pspio_xc_t *xc, int *has_nlcc) {
   ASSERT (xc != NULL, PSPIO_EVALUE);
 
   *has_nlcc = (xc->nlcc_scheme != PSPIO_NLCC_NONE);
+
+  return PSPIO_SUCCESS;
+}
+
+int pspio_xc_nlcc_eval(const pspio_xc_t *xc, const double r, double *core_dens) {
+  ASSERT(xc != NULL, PSPIO_ERROR);
+  ASSERT(xc->nlcc_scheme != PSPIO_NLCC_NONE, PSPIO_ERROR);
+
+  HANDLE_FUNC_ERROR(pspio_meshfunc_eval(xc->core_dens, r, core_dens));
 
   return PSPIO_SUCCESS;
 }

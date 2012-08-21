@@ -119,11 +119,31 @@ int pspio_xc_free(pspio_xc_t **xc);
  **********************************************************************/
 
 /**
+ * Returns the xc identifiers
+ * @param[in] xc: xc structure
+ * @param[out] exchange: identifier
+ * @param[out] correlation: identifier
+ * @return error code
+ */
+int pspio_xc_get_id(pspio_xc_t *xc, int *exchange, int *correlation);
+
+/**
  * Returns if xc has non-linear core-corrections
  * @param[in] xc: xc structure
  * @param[out] has_nlcc: true if xc has nlcc, false otherwise
  * @return error code
  */
 int pspio_xc_has_nlcc(pspio_xc_t *xc, int *has_nlcc);
+
+/**
+ * Returns the value of the core density at an arbitrary point
+ * @param[in] xc: xc structure
+ * @param[in] r: position were we want to evaluate the core density
+ * @param[out] *core_dens: value of the core density at r
+ * @return error code
+ * @note The xc pointer has to be fully set.
+ */
+int pspio_xc_nlcc_eval(const pspio_xc_t *xc, const double r, double *core_dens);
+
 
 #endif
