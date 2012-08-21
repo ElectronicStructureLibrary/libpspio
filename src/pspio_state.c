@@ -1,5 +1,5 @@
 /*
- Copyright (C) 2011 J. Alberdi, M. Oliveira, Y. Pouillon, and M. Verstraete
+ Copyright (C) 2011-2012 J. Alberdi, M. Oliveira, Y. Pouillon, and M. Verstraete
 
  This program is free software; you can redistribute it and/or modify
  it under the terms of the GNU Lesser General Public License as published by
@@ -175,3 +175,35 @@ int pspio_state_free(pspio_state_t **state) {
 /**********************************************************************
  * Atomic routines                                                    *
  **********************************************************************/
+
+int pspio_state_wf_eval(const pspio_state_t *state, const double r, double *wf){
+  ASSERT(state != NULL, PSPIO_ERROR);
+  
+  HANDLE_FUNC_ERROR(pspio_meshfunc_eval(state->wf, r, wf));
+
+  return PSPIO_SUCCESS;
+}
+
+int pspio_state_get_label(const pspio_state_t *state, char *label){
+  ASSERT(state != NULL, PSPIO_ERROR);
+  
+  strcpy(label, state->label);
+
+  return PSPIO_SUCCESS;
+}
+
+int pspio_state_get_l(const pspio_state_t *state, int *l){
+  ASSERT(state != NULL, PSPIO_ERROR);
+  
+  HANDLE_FUNC_ERROR(pspio_qn_get_l(state->qn, l));
+
+  return PSPIO_SUCCESS;
+}
+
+int pspio_state_get_occ(const pspio_state_t *state, double *occ){
+  ASSERT(state != NULL, PSPIO_ERROR);
+  
+  *occ = state->occ;
+
+  return PSPIO_SUCCESS;
+}

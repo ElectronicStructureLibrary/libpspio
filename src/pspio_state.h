@@ -45,7 +45,6 @@ typedef struct{
   char *label;          /**< string describing the electronic state - eg 2s or 4d1.5 */
   double rc;            /**< cutoff radii used for pseudopotential generation */
   pspio_meshfunc_t *wf; /**< Wavefunction */
-  
 } pspio_state_t;
 
 
@@ -105,5 +104,44 @@ int pspio_states_lookup_table(const int n_states, pspio_state_t **states,
  *       compoments have not been allocated.
  */
 int pspio_state_free(pspio_state_t **state);
+
+
+/**********************************************************************
+ * Atomic routines                                                    *
+ **********************************************************************/
+
+/**
+ * Returns the value of the states wavefunction at an arbitrary point
+ * @param[in] state: state structure
+ * @param[in] r: position were we want to evaluate the wavefunction
+ * @param[out] *wf: value of the wavefunction at r
+ * @return error code
+ */
+int pspio_state_wf_eval(const pspio_state_t *state, const double r, double *wf);
+
+/**
+ * Returns the state label
+ * @param[in] state: state structure
+ * @param[out] label
+ * @return error code
+ */
+int pspio_state_get_label(const pspio_state_t *state, char *label);
+
+/**
+ * Returns the angular momentum quantum number
+ * @param[in] state: state structure
+ * @param[out] l: the angular momentum quantum number
+ * @return error code
+ */
+int pspio_state_get_l(const pspio_state_t *state, int *l);
+
+/**
+ * Returns the state occupancies
+ * @param[in] state: state structure
+ * @param[out] occ: the occupancies
+ * @return error code
+ */
+int pspio_state_get_occ(const pspio_state_t *state, double *occ);
+
 
 #endif
