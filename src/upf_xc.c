@@ -193,12 +193,6 @@ int upf_from_libxc (const int exchange, const int correlation, char longname[20]
   }
   
   //Create longname
-  /*  strcpy(longname, "");
-  strncat(longname, exch, 5);
-  strncat(longname, corr, 5);
-  strncat(longname, gradx, 5);
-  strncat(longname, gradc, 5);
-  */
   sprintf(longname, "%4s %4s %4s %4s ", exch, corr, gradx, gradc);
 
   //Shorname
