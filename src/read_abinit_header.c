@@ -61,7 +61,7 @@ int read_abinit_header (FILE *fp, pspio_pspdata_t *psp_data, int pspcod, double 
     HANDLE_ERROR(PSPIO_EIO);
   }
   minlen = strlen(line) > STRLEN_TITLE ? STRLEN_TITLE : strlen(line);
-  if (strncpy((*psp_data).title, line, minlen) == NULL){
+  if (strncpy((*psp_data).info, line, minlen) == NULL){
     HANDLE_ERROR(PSPIO_EIO);
   }
  

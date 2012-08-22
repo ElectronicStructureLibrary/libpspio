@@ -48,6 +48,7 @@ int pspio_pspdata_init(pspio_pspdata_t **pspdata, const char *file_name,
   ASSERT(*pspdata != NULL, PSPIO_ENOMEM);
 
   // Nullify pointers
+  (*pspdata)->info = NULL;
   (*pspdata)->symbol = NULL;
   (*pspdata)->mesh = NULL;
   (*pspdata)->states = NULL;
@@ -137,6 +138,9 @@ int pspio_pspdata_free(pspio_pspdata_t **pspdata){
   int i;
 
   if (*pspdata != NULL) {
+    // Free info
+    if ((*pspdata)->info != NULL) free((*pspdata)->info);
+
     // Free symbol
     if ((*pspdata)->symbol != NULL) free((*pspdata)->symbol);
 

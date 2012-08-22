@@ -44,6 +44,14 @@
  **********************************************************************/
 
 /**
+ * Read the UPF info section
+ * @param[in] fp a stream of the input file
+ * @param[inout] pspdata the data structure
+ * @return error code
+ */
+int upf_read_info(FILE *fp, pspio_pspdata_t **pspdata);
+
+/**
  * Read the UPF header
  * @param[in] fp a stream of the input file
  * @param[inout] pspdata the data structure
@@ -104,6 +112,14 @@ int upf_read_rhoatom(FILE *fp, const int np, pspio_pspdata_t **pspdata);
 /**********************************************************************
  * upf_write routines                                                 *
  **********************************************************************/
+
+/**
+ * Write the UPF info
+ * @param[in] fp a stream of the input file
+ * @param[inout] pspdata the data structure
+ * @return error code
+ */
+int upf_write_info(FILE *fp, const pspio_pspdata_t *pspdata);
 
 /**
  * Write the UPF header
@@ -177,22 +193,13 @@ int upf_write_addinfo(FILE *fp, const pspio_pspdata_t *pspdata);
  **********************************************************************/
 
 /**
- * Evaluates if a tag is defined
- * @param[in] fp a stream of the input file
- * @param[in] tag the tag. It is case-insensitive
- * @return 0 if defined, 1 otherwise
- */
-int tag_isdef(FILE * fp, const char * tag);
-
-
-/**
  * Goes to the point just after the tag 
  * @param[in] fp a stream of the input file
  * @param[in] tag the tag. It is case-insensitive
  * @param[in] go_back decides if it has to go to the beginning of the file
  * @return error code
  */
-int init_tag(FILE * fp, const char * tag, const int go_back);
+int upf_tag_init(FILE * fp, const char * tag, const int go_back);
 
 /**
  * Evaluates if a tag is correctly closed
@@ -200,7 +207,15 @@ int init_tag(FILE * fp, const char * tag, const int go_back);
  * @param[in] tag the tag. It is case-insensitive
  * @return 0 if correct, 1 otherwise
  */
-int check_end_tag(FILE * fp, const char * tag);
+int upf_tag_check_end(FILE * fp, const char * tag);
+
+/**
+ * Evaluates if a tag is defined
+ * @param[in] fp a stream of the input file
+ * @param[in] tag the tag. It is case-insensitive
+ * @return 0 if defined, 1 otherwise
+ */
+int upf_tag_isdef(FILE * fp, const char * tag);
 
 
 /**********************************************************************

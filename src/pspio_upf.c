@@ -35,9 +35,11 @@
 int pspio_upf_read(FILE *fp, pspio_pspdata_t **pspdata){
   int np, has_nlcc;
 
+  HANDLE_FUNC_ERROR(upf_read_info(fp, pspdata));
+
   //At the moment the wave equation type is not defined in the header,
   //so we set it to 0 if the ADDINFO tag is not present, and to DIRAC if it is
-  if (tag_isdef(fp,"PP_ADDINFO")){
+  if (upf_tag_isdef(fp,"PP_ADDINFO")){
     (*pspdata)->wave_eq = DIRAC;
   } else {
     (*pspdata)->wave_eq = 0;
@@ -62,6 +64,7 @@ int pspio_upf_write(FILE *fp, const pspio_pspdata_t *pspdata){
 
   ASSERT (pspdata != NULL, PSPIO_ERROR);
 
+  HANDLE_FUNC_ERROR(upf_write_info(fp, pspdata));
   HANDLE_FUNC_ERROR(upf_write_header(fp, pspdata));
   HANDLE_FUNC_ERROR(upf_write_mesh(fp, pspdata));
   HANDLE_FUNC_ERROR(pspio_xc_has_nlcc(pspdata->xc, &has_nlcc));

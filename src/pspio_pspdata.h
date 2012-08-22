@@ -84,7 +84,7 @@
  */
 typedef struct{
   // general data
-  char * title;      /**< descriptive string for content of file read in */
+  char *info;       /**< descriptive string for content of file read in. Nothing should ever be assumed about its content. */
   char *symbol;      /**< Atomic symbol */
   double z;          /**< Atomic number */
   double zvalence;   /**< charge of pseudopotential ion - valence electrons */

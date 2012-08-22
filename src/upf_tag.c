@@ -32,7 +32,7 @@
 #endif
 
 
-int init_tag(FILE * fp, const char * tag, const int go_back){
+int upf_tag_init(FILE * fp, const char * tag, const int go_back){
   char line[MAX_STRLEN];
   char * init_tag = NULL;
   char * read_string = NULL;
@@ -43,7 +43,7 @@ int init_tag(FILE * fp, const char * tag, const int go_back){
   //Prepare base string
   init_tag = (char *)malloc((strlen(tag)+2) * sizeof(char));
   ASSERT(init_tag != NULL, PSPIO_ENOMEM);
-  strcpy(init_tag, "");
+  init_tag[0] = 0;
   strcat(init_tag,"<");
   strncat(init_tag,tag,strlen(tag));
   strcat(init_tag,">");
@@ -65,7 +65,7 @@ int init_tag(FILE * fp, const char * tag, const int go_back){
   return PSPIO_EFILE_FORMAT;
 }
 
-int check_end_tag(FILE * fp, const char * tag){
+int upf_tag_check_end(FILE * fp, const char * tag){
   char line[MAX_STRLEN];
   char * ending_tag = NULL;
   char * read_string = NULL;
@@ -74,14 +74,14 @@ int check_end_tag(FILE * fp, const char * tag){
   //Prepare base string
   ending_tag = (char *)malloc((strlen(tag)+3) * sizeof(char));
   ASSERT( ending_tag != NULL, PSPIO_ENOMEM);
-  strcpy(ending_tag, "");
+  ending_tag[0] = 0;
   strcat(ending_tag,"</");
   strncat(ending_tag,tag,strlen(tag));
   strcat(ending_tag,">");
   for (i=0;ending_tag[i]; i++)
     ending_tag[i] = tolower(ending_tag[i]);
   
-  ASSERT( fgets(line, sizeof line, fp) != NULL, PSPIO_EIO);
+  ASSERT(fgets(line, sizeof line, fp) != NULL, PSPIO_EIO);
   //Skip white spaces
   if (line[0] == ' ')
     read_string = strtok(line," ");
@@ -92,14 +92,14 @@ int check_end_tag(FILE * fp, const char * tag){
     read_string[i] = tolower(read_string[i]);
 
   //Compare with the ending tag
-  if (strncmp(read_string,ending_tag,strlen(ending_tag)) == 0) return PSPIO_SUCCESS;
+  if (strncmp(read_string,ending_tag,strlen(ending_tag)) == 0) 
+    return PSPIO_SUCCESS;
   else {
-    printf("PSPIO library is not able to find %s ending tag",ending_tag);
     return PSPIO_EFILE_FORMAT;
   }
 }
 
-int tag_isdef(FILE * fp, const char * tag){
+int upf_tag_isdef(FILE * fp, const char * tag){
   char line[MAX_STRLEN];
   char * init_tag = NULL; 
   char * read_string = NULL;
@@ -109,9 +109,9 @@ int tag_isdef(FILE * fp, const char * tag){
   rewind(fp);
   
   //Prepare base string
-  init_tag = (char *)malloc((strlen(tag)+2) * sizeof(char));
+  init_tag = (char *)malloc((strlen(tag)+3) * sizeof(char));
   ASSERT( init_tag != NULL, PSPIO_ENOMEM);
-  strcpy(init_tag, "");
+  init_tag[0] = 0;
   strcat(init_tag,"<");
   strncat(init_tag,tag,strlen(tag));
   strcat(init_tag,">");

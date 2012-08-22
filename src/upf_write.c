@@ -32,6 +32,14 @@
 #include "config.h"
 #endif
 
+int upf_write_info(FILE *fp, const pspio_pspdata_t *pspdata){
+
+  fprintf(fp, "<PP_INFO>\n");
+  fprintf(fp, "%s", pspdata->info);
+  fprintf(fp, "</PP_INFO>\n");
+
+  return PSPIO_SUCCESS;
+}
 
 int upf_write_header(FILE *fp, const pspio_pspdata_t *pspdata){
   int is, l;
@@ -266,7 +274,6 @@ int upf_write_rhoatom(FILE *fp, const pspio_pspdata_t *pspdata){
 int upf_write_addinfo(FILE *fp, const pspio_pspdata_t *pspdata){
   int is, n, l;
   double occ, j;
-  double xmin, zmesh, rmax, a;
   char label[5];
 
   //Write init tag

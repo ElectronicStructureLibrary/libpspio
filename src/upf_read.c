@@ -31,6 +31,41 @@
 #include "config.h"
 #endif
 
+int upf_read_info(FILE *fp, pspio_pspdata_t **pspdata){
+  char line[MAX_STRLEN];
+  int il, nlines = 0;
+
+  //Find init tag
+  HANDLE_FUNC_ERROR(upf_tag_init(fp,"PP_INFO", GO_BACK));
+
+  //Count how many lines we have
+  while (upf_tag_check_end(fp, "PP_INFO") != PSPIO_SUCCESS) {
+    nlines += 1;
+    if (fp == NULL) {
+      HANDLE_ERROR(PSPIO_EIO);
+    }
+  }
+
+  //Go back
+  HANDLE_FUNC_ERROR(upf_tag_init(fp,"PP_INFO", GO_BACK));
+
+  //Allocate memory
+  (*pspdata)->info = (char *)malloc(1*sizeof(char));
+  ASSERT((*pspdata)->info != NULL, PSPIO_ENOMEM);
+
+  //Store all the lines
+  for (il=0; il<11; il++) {
+    ASSERT(fgets(line, MAX_STRLEN, fp) != NULL, PSPIO_EIO);
+    (*pspdata)->info = realloc((*pspdata)->info, strlen((*pspdata)->info)+ strlen(line));
+    ASSERT((*pspdata)->info != NULL, PSPIO_ENOMEM);
+    strcat((*pspdata)->info, line);
+  }
+
+  //Check end tag
+  HANDLE_FUNC_ERROR(upf_tag_check_end(fp,"PP_INFO"));
+
+  return PSPIO_SUCCESS;
+}
 
 int upf_read_header(FILE *fp, int *np, pspio_pspdata_t **pspdata){
   char line[MAX_STRLEN];
@@ -42,7 +77,7 @@ int upf_read_header(FILE *fp, int *np, pspio_pspdata_t **pspdata){
   double wfc_cutoff, rho_cutoff;
 
   //Find init tag
-  HANDLE_FUNC_ERROR(init_tag(fp,"PP_HEADER", GO_BACK));
+  HANDLE_FUNC_ERROR(upf_tag_init(fp,"PP_HEADER", GO_BACK));
 
   //Read the version number
   ASSERT( fgets(line, MAX_STRLEN, fp) != NULL, PSPIO_EIO);
@@ -112,7 +147,7 @@ int upf_read_header(FILE *fp, int *np, pspio_pspdata_t **pspdata){
   HANDLE_FUNC_ERROR(pspio_xc_set(&(*pspdata)->xc, exchange, correlation));
 
   //Check end tag
-  HANDLE_FUNC_ERROR(check_end_tag(fp, "PP_HEADER"));
+  HANDLE_FUNC_ERROR(upf_tag_check_end(fp, "PP_HEADER"));
 
   return PSPIO_SUCCESS;
 }
@@ -125,7 +160,7 @@ int upf_read_mesh(FILE *fp, const int np, pspio_pspdata_t **pspdata){
   double *r, *drdi;
 
   //Find init tag
-  HANDLE_FUNC_ERROR(init_tag(fp, "PP_MESH", GO_BACK));
+  HANDLE_FUNC_ERROR(upf_tag_init(fp, "PP_MESH", GO_BACK));
 
   //Allocate memory
   r = (double *)malloc(np*sizeof(double));
@@ -135,24 +170,24 @@ int upf_read_mesh(FILE *fp, const int np, pspio_pspdata_t **pspdata){
   ASSERT(drdi != NULL, PSPIO_ENOMEM);
 
   //Read mesh points
-  HANDLE_FUNC_ERROR(init_tag(fp, "PP_R", NO_GO_BACK));
+  HANDLE_FUNC_ERROR(upf_tag_init(fp, "PP_R", NO_GO_BACK));
   for (i=0; i<np; i+=4) {
     ASSERT( fgets(line, MAX_STRLEN, fp) != NULL, PSPIO_EIO);
     nargs = sscanf(line,"%lf %lf %lf %lf",&tmp[0],&tmp[1],&tmp[2],&tmp[3]);
     ASSERT(nargs < 5 && nargs > 0, PSPIO_EIO);
     for (j=0; j<nargs; j++) r[i+j] = tmp[j];
   }
-  HANDLE_FUNC_ERROR(check_end_tag(fp, "PP_R"));
+  HANDLE_FUNC_ERROR(upf_tag_check_end(fp, "PP_R"));
   
   //Read Rab
-  HANDLE_FUNC_ERROR(init_tag(fp, "PP_RAB", NO_GO_BACK));
+  HANDLE_FUNC_ERROR(upf_tag_init(fp, "PP_RAB", NO_GO_BACK));
   for (i=0; i<np; i+=4) {
     ASSERT( fgets(line, MAX_STRLEN, fp) != NULL, PSPIO_EIO);
     nargs = sscanf(line,"%lf %lf %lf %lf",&tmp[0],&tmp[1],&tmp[2],&tmp[3]);
     ASSERT(nargs < 5 && nargs > 0, PSPIO_EIO);
     for (j=0; j<nargs; j++) drdi[i+j] = tmp[j];
   }
-  HANDLE_FUNC_ERROR(check_end_tag(fp, "PP_RAB"));
+  HANDLE_FUNC_ERROR(upf_tag_check_end(fp, "PP_RAB"));
 
   //Store the mesh in the pspdata structure
   HANDLE_FUNC_ERROR(pspio_mesh_alloc(&(*pspdata)->mesh, np));
@@ -163,7 +198,7 @@ int upf_read_mesh(FILE *fp, const int np, pspio_pspdata_t **pspdata){
   free(drdi);
 
   //Check end tag
-  HANDLE_FUNC_ERROR(check_end_tag(fp, "PP_MESH")); 
+  HANDLE_FUNC_ERROR(upf_tag_check_end(fp, "PP_MESH")); 
 
   return PSPIO_SUCCESS;
 }
@@ -176,7 +211,7 @@ int upf_read_nlcc(FILE *fp, const int np, pspio_pspdata_t **pspdata){
   double *rho;
 
   //Find init tag
-  HANDLE_FUNC_ERROR(init_tag(fp, "PP_NLCC", GO_BACK));
+  HANDLE_FUNC_ERROR(upf_tag_init(fp, "PP_NLCC", GO_BACK));
 
   //Allocate memory
   rho = (double *)malloc(np*sizeof(double));
@@ -197,7 +232,7 @@ int upf_read_nlcc(FILE *fp, const int np, pspio_pspdata_t **pspdata){
   free(rho);
 
   //Check end tag
-  HANDLE_FUNC_ERROR(check_end_tag(fp,"PP_NLCC"));
+  HANDLE_FUNC_ERROR(upf_tag_check_end(fp,"PP_NLCC"));
 
   return PSPIO_SUCCESS;
 }
@@ -212,7 +247,7 @@ int upf_read_nonlocal(FILE *fp, const int np, pspio_pspdata_t **pspdata){
   pspio_qn_t *qn = NULL;
 
   //Find init tag
-  HANDLE_FUNC_ERROR(init_tag(fp,"PP_NONLOCAL",GO_BACK));
+  HANDLE_FUNC_ERROR(upf_tag_init(fp,"PP_NONLOCAL",GO_BACK));
 
   //Allocate memory
   HANDLE_FUNC_ERROR(pspio_qn_alloc(&qn));
@@ -232,7 +267,7 @@ int upf_read_nonlocal(FILE *fp, const int np, pspio_pspdata_t **pspdata){
   memset(ekb, 0, (*pspdata)->n_kbproj*sizeof(double));
 
   // We start by reading the KB energies, as it is more convinient this way
-  HANDLE_FUNC_ERROR(init_tag(fp,"PP_DIJ",NO_GO_BACK));
+  HANDLE_FUNC_ERROR(upf_tag_init(fp,"PP_DIJ",NO_GO_BACK));
 
   //Read the number of n_dij
   ASSERT( fgets(line, MAX_STRLEN, fp) != NULL, PSPIO_EIO);
@@ -246,12 +281,12 @@ int upf_read_nonlocal(FILE *fp, const int np, pspio_pspdata_t **pspdata){
   }
 
   //Check end tag
-  HANDLE_FUNC_ERROR(check_end_tag(fp,"PP_DIJ"));
-  HANDLE_FUNC_ERROR(check_end_tag(fp,"PP_NONLOCAL"));
+  HANDLE_FUNC_ERROR(upf_tag_check_end(fp,"PP_DIJ"));
+  HANDLE_FUNC_ERROR(upf_tag_check_end(fp,"PP_NONLOCAL"));
 
   //In the case of a fully-relativistic calculation, there is extra information in the ADDINFO tag
   if ((*pspdata)->wave_eq == DIRAC) {
-    HANDLE_FUNC_ERROR(init_tag(fp,"PP_ADDINFO",GO_BACK));
+    HANDLE_FUNC_ERROR(upf_tag_init(fp,"PP_ADDINFO",GO_BACK));
     //Skip the lines with the wavefunctions info
     for (i=0; i<(*pspdata)->n_states; i++) {
       ASSERT( fgets(line, MAX_STRLEN, fp) != NULL, PSPIO_EIO);
@@ -266,10 +301,10 @@ int upf_read_nonlocal(FILE *fp, const int np, pspio_pspdata_t **pspdata){
   }
 
   // Now we go back and read the projector functions
-  HANDLE_FUNC_ERROR(init_tag(fp,"PP_NONLOCAL",GO_BACK));
+  HANDLE_FUNC_ERROR(upf_tag_init(fp,"PP_NONLOCAL",GO_BACK));
 
   for (i=0; i<(*pspdata)->n_kbproj; i++){
-    HANDLE_FUNC_ERROR(init_tag(fp,"PP_BETA",NO_GO_BACK));
+    HANDLE_FUNC_ERROR(upf_tag_init(fp,"PP_BETA",NO_GO_BACK));
 
     ASSERT( fgets(line, MAX_STRLEN, fp) != NULL, PSPIO_EIO);
     ASSERT( sscanf(line,"%d %d", &ii, &l) == 2, PSPIO_EIO);
@@ -293,6 +328,9 @@ int upf_read_nonlocal(FILE *fp, const int np, pspio_pspdata_t **pspdata){
     HANDLE_FUNC_ERROR(pspio_qn_set(&qn, 0, l, proj_j[i]));
     HANDLE_FUNC_ERROR(pspio_projector_alloc( &((*pspdata)->kb_projectors[i]), np));
     HANDLE_FUNC_ERROR(pspio_projector_set( &(*pspdata)->kb_projectors[i], qn, ekb[i], (*pspdata)->mesh, projector_read));
+
+    //Check end tag
+    HANDLE_FUNC_ERROR(upf_tag_check_end(fp,"PP_BETA"));
   }
 
   //Free memory
@@ -313,7 +351,7 @@ int upf_read_local(FILE *fp, const int np, pspio_pspdata_t **pspdata){
   pspio_qn_t *qn = NULL;
 
   //Find init tag
-  HANDLE_FUNC_ERROR(init_tag(fp, "PP_LOCAL",GO_BACK));
+  HANDLE_FUNC_ERROR(upf_tag_init(fp, "PP_LOCAL",GO_BACK));
 
   //Allocate memory
   HANDLE_FUNC_ERROR(pspio_qn_alloc(&qn));
@@ -353,7 +391,7 @@ int upf_read_local(FILE *fp, const int np, pspio_pspdata_t **pspdata){
   HANDLE_FUNC_ERROR( pspio_qn_free(&(qn)));
 
   //Check end tag
-  HANDLE_FUNC_ERROR(check_end_tag(fp,"PP_LOCAL"));
+  HANDLE_FUNC_ERROR(upf_tag_check_end(fp,"PP_LOCAL"));
 
   return PSPIO_SUCCESS;
 }
@@ -386,7 +424,7 @@ int upf_read_pswfc(FILE *fp, const int np, pspio_pspdata_t **pspdata){
 
   //In the case of a fully-relativistic calculation, there is extra information in the ADDINFO tag
   if ((*pspdata)->wave_eq == DIRAC) {
-    HANDLE_FUNC_ERROR(init_tag(fp,"PP_ADDINFO",GO_BACK));
+    HANDLE_FUNC_ERROR(upf_tag_init(fp,"PP_ADDINFO",GO_BACK));
     for (is=0; is<(*pspdata)->n_states; is++) {
       ASSERT(fgets(line, MAX_STRLEN, fp) != NULL, PSPIO_EIO);
       ASSERT(sscanf(line,"%1d%1c %d %d %lf %lf", &n, &ll, &i, &l, &j[is], &occ) == 6, PSPIO_EIO);
@@ -396,7 +434,7 @@ int upf_read_pswfc(FILE *fp, const int np, pspio_pspdata_t **pspdata){
   }
 
   //Find init tag
-  HANDLE_FUNC_ERROR(init_tag(fp,"PP_PSWFC",GO_BACK));
+  HANDLE_FUNC_ERROR(upf_tag_init(fp,"PP_PSWFC",GO_BACK));
 
   //Read states
   lmax = -1;
@@ -431,7 +469,7 @@ int upf_read_pswfc(FILE *fp, const int np, pspio_pspdata_t **pspdata){
   HANDLE_FUNC_ERROR (pspio_qn_free(&(qn)));
 
   //Check end tag
-  HANDLE_FUNC_ERROR(check_end_tag(fp,"PP_PSWFC"));
+  HANDLE_FUNC_ERROR(upf_tag_check_end(fp,"PP_PSWFC"));
 
   return PSPIO_SUCCESS;
 }
@@ -444,7 +482,7 @@ int upf_read_rhoatom(FILE *fp, const int np, pspio_pspdata_t **pspdata){
   double tmp[4];
 
   //Find init tag
-  HANDLE_FUNC_ERROR(init_tag(fp,"PP_RHOATOM",GO_BACK));
+  HANDLE_FUNC_ERROR(upf_tag_init(fp,"PP_RHOATOM",GO_BACK));
 
   //Allocate memory
   rho_read = (double *)malloc(np * sizeof(double));
@@ -469,7 +507,7 @@ int upf_read_rhoatom(FILE *fp, const int np, pspio_pspdata_t **pspdata){
   free(rho_read);
 
   //Check end tag
-  HANDLE_FUNC_ERROR(check_end_tag(fp,"PP_RHOATOM"));
+  HANDLE_FUNC_ERROR(upf_tag_check_end(fp,"PP_RHOATOM"));
 
   return PSPIO_SUCCESS;
 }
