@@ -37,7 +37,8 @@ int main(void) {
   const int np = sizeof(r) / sizeof(double);
 
   int eid;
-  double pr, e;
+  int l;
+  double pr, e, j;
   pspio_mesh_t *mesh = NULL;
   pspio_qn_t *qn = NULL;
   pspio_projector_t *proj1 = NULL, *proj2 = NULL;
@@ -92,9 +93,17 @@ int main(void) {
   eid = pspio_error_flush();
   DEBUG_PRINT("test_projector: result=%f\n", pr);
   DEBUG_PRINT("test_projector: evaluating energy of proj1 (should be 2.0)\n");
-  eid = pspio_projector_energy(proj1, &e);
+  eid = pspio_projector_get_energy(proj1, &e);
   eid = pspio_error_flush();
   DEBUG_PRINT("test_projector: result=%f\n", e);
+  DEBUG_PRINT("test_projector: evaluating angular momentum of proj1 (should be 2)\n");
+  eid = pspio_projector_get_l(proj1, &l);
+  eid = pspio_error_flush();
+  DEBUG_PRINT("test_projector: result=%d\n", l);
+  DEBUG_PRINT("test_projector: evaluating angular momentum of proj1 (should be 0.0)\n");
+  eid = pspio_projector_get_j(proj1, &j);
+  eid = pspio_error_flush();
+  DEBUG_PRINT("test_projector: result=%3.1f\n", j);
   DEBUG_PRINT("\n");
 
   /* Destroy projector */

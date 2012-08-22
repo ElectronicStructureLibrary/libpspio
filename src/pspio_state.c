@@ -185,9 +185,20 @@ int pspio_state_wf_eval(const pspio_state_t *state, const double r, double *wf){
 }
 
 int pspio_state_get_label(const pspio_state_t *state, char *label){
+  int s;
+
+  ASSERT(state != NULL, PSPIO_ERROR);
+  s = strlen(state->label);
+  memcpy(label,state->label,s);
+  label[s] = 0;
+
+  return PSPIO_SUCCESS;
+}
+
+int pspio_state_get_n(const pspio_state_t *state, int *n){
   ASSERT(state != NULL, PSPIO_ERROR);
   
-  strcpy(label, state->label);
+  HANDLE_FUNC_ERROR(pspio_qn_get_n(state->qn, n));
 
   return PSPIO_SUCCESS;
 }
@@ -196,6 +207,14 @@ int pspio_state_get_l(const pspio_state_t *state, int *l){
   ASSERT(state != NULL, PSPIO_ERROR);
   
   HANDLE_FUNC_ERROR(pspio_qn_get_l(state->qn, l));
+
+  return PSPIO_SUCCESS;
+}
+
+int pspio_state_get_j(const pspio_state_t *state, double *j){
+  ASSERT(state != NULL, PSPIO_ERROR);
+  
+  HANDLE_FUNC_ERROR(pspio_qn_get_j(state->qn, j));
 
   return PSPIO_SUCCESS;
 }

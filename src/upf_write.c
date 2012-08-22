@@ -24,6 +24,7 @@
  */
 #include <string.h>
 #include <ctype.h>
+#include <math.h>
 #include "upf.h"
 #include "util.h"
 
@@ -158,7 +159,7 @@ int upf_write_nonlocal(FILE *fp, const pspio_pspdata_t *pspdata){
 
   //Write projectors
   for (ikb=0; ikb<pspdata->n_kbproj; ikb++) {
-    HANDLE_FUNC_ERROR(pspio_projector_l(pspdata->kb_projectors[ikb], &l));
+    HANDLE_FUNC_ERROR(pspio_projector_get_l(pspdata->kb_projectors[ikb], &l));
     fprintf(fp, "  <PP_BETA>\n");
     fprintf(fp, "%5d%5d             Beta    L\n", ikb+1, l);
     fprintf(fp, "%6d\n", pspdata->mesh->np);
@@ -175,7 +176,7 @@ int upf_write_nonlocal(FILE *fp, const pspio_pspdata_t *pspdata){
   fprintf(fp, "  <PP_DIJ>\n");
   fprintf(fp, "%5d                  Number of nonzero Dij\n", pspdata->n_kbproj);
   for (ikb=0; ikb<pspdata->n_kbproj; ikb++) {
-    HANDLE_FUNC_ERROR(pspio_projector_energy(pspdata->kb_projectors[ikb], &ekb));
+    HANDLE_FUNC_ERROR(pspio_projector_get_energy(pspdata->kb_projectors[ikb], &ekb));
     ekb /= 2.0;
     fprintf(fp, "%5d%5d%19.11E\n", ikb+1, ikb+1, ekb);
   }
@@ -257,6 +258,42 @@ int upf_write_rhoatom(FILE *fp, const pspio_pspdata_t *pspdata){
 
   //Write end tag
   fprintf(fp, "\n</PP_RHOATOM>\n");
+
+  return PSPIO_SUCCESS;
+}
+
+
+int upf_write_addinfo(FILE *fp, const pspio_pspdata_t *pspdata){
+  int is, n, l;
+  double occ, j;
+  double xmin, zmesh, rmax, a;
+  char label[5];
+
+  //Write init tag
+  fprintf(fp, "<PP_ADDINFO>\n");
+
+  //Write wavefunctions data
+  for (is=0; is<pspdata->n_states; is++) {
+    HANDLE_FUNC_ERROR(pspio_state_get_label(pspdata->states[is], &label[0]));
+    HANDLE_FUNC_ERROR(pspio_state_get_n(pspdata->states[is], &n));
+    HANDLE_FUNC_ERROR(pspio_state_get_l(pspdata->states[is], &l));
+    HANDLE_FUNC_ERROR(pspio_state_get_j(pspdata->states[is], &j));
+    HANDLE_FUNC_ERROR(pspio_state_get_occ(pspdata->states[is], &occ));
+    fprintf(fp, "%2s  %1d  %1d  %4.2f  %4.2f\n", label, n, l, j, occ);
+  }
+
+  //Write projectors data
+  for (is=0; is<pspdata->n_kbproj; is++) {
+    HANDLE_FUNC_ERROR(pspio_projector_get_l(pspdata->kb_projectors[is], &l));
+    HANDLE_FUNC_ERROR(pspio_projector_get_j(pspdata->kb_projectors[is], &j));
+    fprintf(fp, "  %2d  %4.2f\n", l, j);
+  }
+
+  //Write extra line (we will put all the numbers to zero for the moment)
+  fprintf(fp, "  %12.6f%12.6f%12.6f%12.6f\n", 0.0, 0.0, 0.0, 0.0);
+
+  //Write end tag
+  fprintf(fp, "</PP_ADDINFO>\n");
 
   return PSPIO_SUCCESS;
 }

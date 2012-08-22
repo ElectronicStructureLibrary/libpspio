@@ -39,7 +39,7 @@ int upf_read_header(FILE *fp, int *np, pspio_pspdata_t **pspdata){
   char nlcc_flag;
   char xc_string[20];
   int exchange, correlation;
-  double total_energy, wfc_cutoff, rho_cutoff;
+  double wfc_cutoff, rho_cutoff;
 
   //Find init tag
   HANDLE_FUNC_ERROR(init_tag(fp,"PP_HEADER", GO_BACK));
@@ -64,7 +64,7 @@ int upf_read_header(FILE *fp, int *np, pspio_pspdata_t **pspdata){
     //At the moment LIBPSP_IO can only read norm-conserving pseudo-potentials
     HANDLE_ERROR(PSPIO_ENOSUPPORT);
   }
-  
+
   // read the nonlinear core correction
   ASSERT( fgets(line, MAX_STRLEN, fp) != NULL, PSPIO_EIO);
   ASSERT( sscanf(line, "%1s", &nlcc_flag) == 1, PSPIO_EIO);
@@ -72,7 +72,7 @@ int upf_read_header(FILE *fp, int *np, pspio_pspdata_t **pspdata){
   //Exchange-correlation functional
   ASSERT( fgets(line, MAX_STRLEN, fp) != NULL, PSPIO_EIO);
   strncpy(xc_string, line, 21); //the xc string should always the first 21 chars of the line
-  HANDLE_FUNC_ERROR( upf_to_libxc(xc_string, &exchange, &correlation));
+  HANDLE_FUNC_ERROR(upf_to_libxc(xc_string, &exchange, &correlation));
 
   // read the Z valence
   ASSERT( fgets(line, MAX_STRLEN, fp) != NULL, PSPIO_EIO);
@@ -224,7 +224,7 @@ int upf_read_nonlocal(FILE *fp, const int np, pspio_pspdata_t **pspdata){
   ASSERT(projector_read != NULL, PSPIO_ENOMEM);
 
   (*pspdata)->kb_projectors = (pspio_projector_t **)malloc( (*pspdata)->n_kbproj*sizeof(pspio_projector_t *));
-  ASSERT( (*pspdata)->kb_projectors != NULL, PSPIO_ENOMEM);
+  ASSERT((*pspdata)->kb_projectors != NULL, PSPIO_ENOMEM);
   for (i=0; i<(*pspdata)->n_kbproj; i++) (*pspdata)->kb_projectors[i] = NULL;
 
   ekb = (double *)malloc((*pspdata)->n_kbproj*sizeof(double));
@@ -249,8 +249,8 @@ int upf_read_nonlocal(FILE *fp, const int np, pspio_pspdata_t **pspdata){
   HANDLE_FUNC_ERROR(check_end_tag(fp,"PP_DIJ"));
   HANDLE_FUNC_ERROR(check_end_tag(fp,"PP_NONLOCAL"));
 
-  //There might be extra information in the ADDINFO tag
-  if (tag_isdef(fp,"PP_ADDINFO")){
+  //In the case of a fully-relativistic calculation, there is extra information in the ADDINFO tag
+  if ((*pspdata)->wave_eq == DIRAC) {
     HANDLE_FUNC_ERROR(init_tag(fp,"PP_ADDINFO",GO_BACK));
     //Skip the lines with the wavefunctions info
     for (i=0; i<(*pspdata)->n_states; i++) {
@@ -326,7 +326,7 @@ int upf_read_local(FILE *fp, const int np, pspio_pspdata_t **pspdata){
   for (i=0; i<(*pspdata)->l_max+1; i++) {
     n = 0;
     for (j=0; j<(*pspdata)->n_kbproj; j++) {
-      HANDLE_FUNC_ERROR(pspio_projector_l( (*pspdata)->kb_projectors[j], &l));
+      HANDLE_FUNC_ERROR(pspio_projector_get_l((*pspdata)->kb_projectors[j], &l));
       if (l == i) n++;
     }
     if (n == 0) (*pspdata)->l_local = i;
@@ -361,15 +361,13 @@ int upf_read_local(FILE *fp, const int np, pspio_pspdata_t **pspdata){
 
 int upf_read_pswfc(FILE *fp, const int np, pspio_pspdata_t **pspdata){
   char line[MAX_STRLEN];
-  char label[2];
-  int i, j, k, nargs, l, lmax;
+  int is, ir, i;
+  char ll, label[3];
+  int nargs, n, l, lmax;
   double occ;
-  double *wf;
+  double *j, *wf;
   double tmp[4];
   pspio_qn_t *qn = NULL;
-
-  //Find init tag
-  HANDLE_FUNC_ERROR(init_tag(fp,"PP_PSWFC",GO_BACK));
 
   //Allocate memory
   HANDLE_FUNC_ERROR(pspio_qn_alloc(&qn));
@@ -377,38 +375,59 @@ int upf_read_pswfc(FILE *fp, const int np, pspio_pspdata_t **pspdata){
   wf = (double *)malloc(np * sizeof(double));
   ASSERT(wf != NULL, PSPIO_ENOMEM);
 
+  j = (double *)malloc((*pspdata)->n_states*sizeof(double));
+  ASSERT(j != NULL, PSPIO_ENOMEM);
+
   (*pspdata)->states = (pspio_state_t **)malloc( (*pspdata)->n_states*sizeof(pspio_state_t *));
   ASSERT( (*pspdata)->states != NULL, PSPIO_ENOMEM);
-  for (j=0; j<(*pspdata)->n_states; j++) (*pspdata)->states[j] = NULL;
+  for (is=0; is<(*pspdata)->n_states; is++) {
+    (*pspdata)->states[is] = NULL;
+  }
+
+  //In the case of a fully-relativistic calculation, there is extra information in the ADDINFO tag
+  if ((*pspdata)->wave_eq == DIRAC) {
+    HANDLE_FUNC_ERROR(init_tag(fp,"PP_ADDINFO",GO_BACK));
+    for (is=0; is<(*pspdata)->n_states; is++) {
+      ASSERT(fgets(line, MAX_STRLEN, fp) != NULL, PSPIO_EIO);
+      ASSERT(sscanf(line,"%1d%1c %d %d %lf %lf", &n, &ll, &i, &l, &j[is], &occ) == 6, PSPIO_EIO);
+    }
+  } else {
+    for (is=0; is<(*pspdata)->n_states; is++) j[is] = 0.0;
+  }
+
+  //Find init tag
+  HANDLE_FUNC_ERROR(init_tag(fp,"PP_PSWFC",GO_BACK));
 
   //Read states
   lmax = -1;
-  for (k=0; k<(*pspdata)->n_states; k++) {
+  for (is=0; is<(*pspdata)->n_states; is++) {
     //Read the quantum numbers and occupations
-    ASSERT( fgets(line, MAX_STRLEN, fp) != NULL, PSPIO_EIO);
-    ASSERT( sscanf(line, "%2c %d %lf", &label[0], &l, &occ) == 3, PSPIO_EIO);
-    HANDLE_FUNC_ERROR(pspio_qn_set(&qn, (int)label[0], l, 0.0));
+    ASSERT(fgets(line, MAX_STRLEN, fp) != NULL, PSPIO_EIO);
+    ASSERT(sscanf(line, "%1d%1c %d %lf", &n, &ll, &l, &occ) == 4, PSPIO_EIO);
+    sprintf(label, "%1d%1c", n, ll);
+    HANDLE_FUNC_ERROR(pspio_qn_set(&qn, n, l, j[is]));
     lmax = max(l, lmax);
 
     //Read wavefunction
-    for (i=0; i<np; i+=4) {
-      ASSERT( fgets(line, MAX_STRLEN, fp) != NULL, PSPIO_EIO);
+    for (ir=0; ir<np; ir+=4) {
+      ASSERT(fgets(line, MAX_STRLEN, fp) != NULL, PSPIO_EIO);
       nargs = sscanf(line,"%lf %lf %lf %lf", &tmp[0], &tmp[1], &tmp[2], &tmp[3]);
       ASSERT(nargs < 5 && nargs > 0, PSPIO_EIO);
-      for (j=0; j<nargs; j++) wf[i+j] = tmp[j];
+      for (i=0; i<nargs; i++) wf[ir+i] = tmp[i];
     }
 
     //UPF uses the wavefunctions multiplied by r
-    for (i=0; i<np; i++) wf[i] /= (*pspdata)->mesh->r[i];
+    for (ir=0; ir<np; ir++) wf[ir] /= (*pspdata)->mesh->r[ir];
 
     //Store the state in the pspdata structure
-    HANDLE_FUNC_ERROR (pspio_state_alloc( &(*pspdata)->states[k], np));
-    HANDLE_FUNC_ERROR (pspio_state_set( &(*pspdata)->states[k], 0.0, label, qn, occ, 0.0, (*pspdata)->mesh, wf));
+    HANDLE_FUNC_ERROR(pspio_state_alloc(&(*pspdata)->states[is], np));
+    HANDLE_FUNC_ERROR(pspio_state_set(&(*pspdata)->states[is], 0.0, label, qn, occ, 0.0, (*pspdata)->mesh, wf));
   }
   (*pspdata)->l_max = lmax;
 
   //Free memory
   free(wf);
+  free(j);
   HANDLE_FUNC_ERROR (pspio_qn_free(&(qn)));
 
   //Check end tag

@@ -97,7 +97,7 @@ int pspio_projector_eval(pspio_projector_t *projector, const double r,
 }
 
 
-int pspio_projector_energy(pspio_projector_t *projector, double *e) {
+int pspio_projector_get_energy(pspio_projector_t *projector, double *e) {
   ASSERT(projector != NULL, PSPIO_ERROR);
 
   *e = projector->energy;
@@ -106,13 +106,19 @@ int pspio_projector_energy(pspio_projector_t *projector, double *e) {
 }
 
 
-int pspio_projector_l(pspio_projector_t *projector, int *l) {
+int pspio_projector_get_l(pspio_projector_t *projector, int *l) {
   ASSERT(projector != NULL, PSPIO_ERROR);
 
-  int n;
-  double j;
+  HANDLE_FUNC_ERROR(pspio_qn_get_l(projector->qn, l));
 
-  HANDLE_FUNC_ERROR(pspio_qn_get( projector->qn, &n, l, &j));
+  return PSPIO_SUCCESS;
+}
+
+
+int pspio_projector_get_j(pspio_projector_t *projector, double *j) {
+  ASSERT(projector != NULL, PSPIO_ERROR);
+
+  HANDLE_FUNC_ERROR(pspio_qn_get_j(projector->qn, j));
 
   return PSPIO_SUCCESS;
 }

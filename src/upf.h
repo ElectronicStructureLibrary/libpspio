@@ -43,7 +43,7 @@
  * upf_read routines                                                  *
  **********************************************************************/
 
-/** 
+/**
  * Read the UPF header
  * @param[in] fp a stream of the input file
  * @param[inout] pspdata the data structure
@@ -51,7 +51,7 @@
  */
 int upf_read_header(FILE *fp, int *np, pspio_pspdata_t **pspdata);
 
-/** 
+/**
  * Read the mesh
  * @param[in] fp a stream of the input file
  * @param[inout] pspdata the data structure
@@ -59,7 +59,7 @@ int upf_read_header(FILE *fp, int *np, pspio_pspdata_t **pspdata);
  */
 int upf_read_mesh(FILE *fp, const int np, pspio_pspdata_t **pspdata);
 
-/** 
+/**
  * Read the non-linear core-corrections
  * @param[in] fp a stream of the input file
  * @param[inout] pspdata the data structure
@@ -67,7 +67,7 @@ int upf_read_mesh(FILE *fp, const int np, pspio_pspdata_t **pspdata);
  */
 int upf_read_nlcc(FILE *fp, const int np, pspio_pspdata_t **pspdata);
 
-/** 
+/**
  * Read the non-local projectors
  * @param[in] fp a stream of the input file
  * @param[inout] pspdata the data structure
@@ -75,7 +75,7 @@ int upf_read_nlcc(FILE *fp, const int np, pspio_pspdata_t **pspdata);
  */
 int upf_read_nonlocal(FILE *fp, const int np, pspio_pspdata_t **pspdata);
 
-/** 
+/**
  * Read the local part of the pseudos
  * @param[in] fp a stream of the input file
  * @param[inout] pspdata the data structure
@@ -83,7 +83,7 @@ int upf_read_nonlocal(FILE *fp, const int np, pspio_pspdata_t **pspdata);
  */
 int upf_read_local(FILE *fp, const int np, pspio_pspdata_t **pspdata);
 
-/** 
+/**
  * Read the pseudo-wavefunctions
  * @param[in] fp a stream of the input file
  * @param[inout] pspdata the data structure
@@ -91,7 +91,7 @@ int upf_read_local(FILE *fp, const int np, pspio_pspdata_t **pspdata);
  */
 int upf_read_pswfc(FILE *fp, const int np, pspio_pspdata_t **pspdata);
 
-/** 
+/**
  * Read the valence electronic charge
  * @param[in] fp a stream of the input file
  * @param[inout] pspdata the data structure
@@ -105,7 +105,7 @@ int upf_read_rhoatom(FILE *fp, const int np, pspio_pspdata_t **pspdata);
  * upf_write routines                                                 *
  **********************************************************************/
 
-/** 
+/**
  * Write the UPF header
  * @param[in] fp a stream of the input file
  * @param[inout] pspdata the data structure
@@ -113,7 +113,7 @@ int upf_read_rhoatom(FILE *fp, const int np, pspio_pspdata_t **pspdata);
  */
 int upf_write_header(FILE *fp, const pspio_pspdata_t *pspdata);
 
-/** 
+/**
  * Write the mesh
  * @param[in] fp a stream of the input file
  * @param[inout] pspdata the data structure
@@ -121,7 +121,7 @@ int upf_write_header(FILE *fp, const pspio_pspdata_t *pspdata);
  */
 int upf_write_mesh(FILE *fp, const pspio_pspdata_t *pspdata);
 
-/** 
+/**
  * Write the non-linear core-corrections
  * @param[in] fp a stream of the input file
  * @param[inout] pspdata the data structure
@@ -129,7 +129,7 @@ int upf_write_mesh(FILE *fp, const pspio_pspdata_t *pspdata);
  */
 int upf_write_nlcc(FILE *fp, const pspio_pspdata_t *pspdata);
 
-/** 
+/**
  * Write the non-local projectors
  * @param[in] fp a stream of the input file
  * @param[inout] pspdata the data structure
@@ -137,7 +137,7 @@ int upf_write_nlcc(FILE *fp, const pspio_pspdata_t *pspdata);
  */
 int upf_write_nonlocal(FILE *fp, const pspio_pspdata_t *pspdata);
 
-/** 
+/**
  * Write the local part of the pseudos
  * @param[in] fp a stream of the input file
  * @param[inout] pspdata the data structure
@@ -145,7 +145,7 @@ int upf_write_nonlocal(FILE *fp, const pspio_pspdata_t *pspdata);
  */
 int upf_write_local(FILE *fp, const pspio_pspdata_t *pspdata);
 
-/** 
+/**
  * Write the pseudo-wavefunctions
  * @param[in] fp a stream of the input file
  * @param[inout] pspdata the data structure
@@ -153,7 +153,7 @@ int upf_write_local(FILE *fp, const pspio_pspdata_t *pspdata);
  */
 int upf_write_pswfc(FILE *fp, const pspio_pspdata_t *pspdata);
 
-/** 
+/**
  * Write the valence electronic charge
  * @param[in] fp a stream of the input file
  * @param[inout] pspdata the data structure
@@ -161,12 +161,22 @@ int upf_write_pswfc(FILE *fp, const pspio_pspdata_t *pspdata);
  */
 int upf_write_rhoatom(FILE *fp, const pspio_pspdata_t *pspdata);
 
+/**
+ * Write the valence electronic charge
+ * @param[in] fp a stream of the input file
+ * @param[inout] pspdata the data structure
+ * @return error code
+ * @note This should only be called when the pseudopotentials
+ *       where obtained from a fully relativistic calculation
+ */
+int upf_write_addinfo(FILE *fp, const pspio_pspdata_t *pspdata);
+
 
 /**********************************************************************
  * upf_tag routines                                                   *
  **********************************************************************/
 
-/** 
+/**
  * Evaluates if a tag is defined
  * @param[in] fp a stream of the input file
  * @param[in] tag the tag. It is case-insensitive
@@ -175,7 +185,7 @@ int upf_write_rhoatom(FILE *fp, const pspio_pspdata_t *pspdata);
 int tag_isdef(FILE * fp, const char * tag);
 
 
-/** 
+/**
  * Goes to the point just after the tag 
  * @param[in] fp a stream of the input file
  * @param[in] tag the tag. It is case-insensitive
@@ -184,7 +194,7 @@ int tag_isdef(FILE * fp, const char * tag);
  */
 int init_tag(FILE * fp, const char * tag, const int go_back);
 
-/** 
+/**
  * Evaluates if a tag is correctly closed
  * @param[in] fp a stream of the input file
  * @param[in] tag the tag. It is case-insensitive
@@ -198,21 +208,23 @@ int check_end_tag(FILE * fp, const char * tag);
  **********************************************************************/
 
 /**
-* subroutine converts pwcf xc string to libxc codes
-*@param[in]  xc_string: pwscf string
-*@param[out] exchange: libxc code for exchange
-*@param[out] correlation: libxc code for correlation
-*/
+ * Converts pwcf xc string to libxc codes
+ * @param[in]  xc_string: pwscf string
+ * @param[out] exchange: libxc code for exchange
+ * @param[out] correlation: libxc code for correlation
+ * @return error code
+ */
 int upf_to_libxc(const char *xc_string, int *exchange, int *correlation);
 
 
 /**
-* subroutine converts libxc codes to pwcf xc names
-*@param[in] exchange: libxc code for exchange
-*@param[in] correlation: libxc code for correlation
-*@param[out] longname: pwscf xc long name
-*@param[out] shortname: pwscf xc short name
-*/
+ * Converts libxc codes to pwcf xc names
+ * @param[in] exchange: libxc code for exchange
+ * @param[in] correlation: libxc code for correlation
+ * @param[out] longname: pwscf xc long name
+ * @param[out] shortname: pwscf xc short name
+ * @return error code
+ */
 int upf_from_libxc(const int exchange, const int correlation, char *longname, char *shortname);
 
 #endif

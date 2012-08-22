@@ -128,12 +128,28 @@ int pspio_state_wf_eval(const pspio_state_t *state, const double r, double *wf);
 int pspio_state_get_label(const pspio_state_t *state, char *label);
 
 /**
+ * Returns the main quantum number
+ * @param[in] state: state structure
+ * @param[out] n: the main  quantum number
+ * @return error code
+ */
+int pspio_state_get_n(const pspio_state_t *state, int *n);
+
+/**
  * Returns the angular momentum quantum number
  * @param[in] state: state structure
  * @param[out] l: the angular momentum quantum number
  * @return error code
  */
 int pspio_state_get_l(const pspio_state_t *state, int *l);
+
+/**
+ * Returns the total angular momentum quantum number
+ * @param[in] state: state structure
+ * @param[out] j: the total angular momentum quantum number
+ * @return error code
+ */
+int pspio_state_get_j(const pspio_state_t *state, double *j);
 
 /**
  * Returns the state occupancies

@@ -24,6 +24,7 @@
 #include "pspio_error.h"
 #include "pspio_meshfunc.h"
 #include "pspio_pspdata.h"
+#include "pspio_upf.h"
 #include "util.h"
 
 #if defined HAVE_CONFIG_H

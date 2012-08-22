@@ -50,7 +50,7 @@ int pspio_upf_read(FILE * fp, pspio_pspdata_t **psp_data);
  * @param[in] psp_data the data structure
  * @return error code
  */
-int pspio_upf_write(FILE * fp, pspio_pspdata_t *psp_data);
+int pspio_upf_write(FILE * fp, const pspio_pspdata_t *psp_data);
 
 
 #endif
