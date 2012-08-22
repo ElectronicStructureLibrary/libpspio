@@ -33,6 +33,9 @@
 
 
 int upf_write_header(FILE *fp, const pspio_pspdata_t *pspdata){
+  int is, l;
+  double occ;
+  char label[5];
   int has_nlcc, exchange, correlation;
   char shortname[4], longname[20];
 
@@ -63,25 +66,31 @@ int upf_write_header(FILE *fp, const pspio_pspdata_t *pspdata){
   fprintf(fp, " %20s  %4s Exchange-Correlation functional\n", longname, shortname);
 
   //Write the Z valence
-  fprintf(fp, "\n", pspdata->zvalence);
+  fprintf(fp, "%17.11f      Z valence\n", pspdata->zvalence);
 
   //Write the total energy
-  fprintf(fp, "\n");
+  fprintf(fp, "%17.11f      Total energy\n", pspdata->total_energy);
   
   //Write the suggested cutoff for wfc and rho
-  fprintf(fp, "\n");
+  fprintf(fp, "%11.7f%11.7f Suggested cutoff for wfc and rho\n", 0.0, 0.0);
   
   //Write the max angular momentun component
-  fprintf(fp, "%d \n", pspdata->kb_l_max);
+  fprintf(fp, "%5d                  Max angular momentum component\n", pspdata->kb_l_max);
  
   //Write the number of points in mesh
-  fprintf(fp, "\n");
+  fprintf(fp, "%5d                  Number of points in mesh\n", pspdata->mesh->np);
   
   //Write the number of wavefunctions and projectors 
-  fprintf(fp, "\n");
+  fprintf(fp, "%5d%5d             Number of Wavefunctions, Number of Projectors\n", pspdata->n_states, pspdata->n_kbproj);
 
   //Write wavefunctions info
-  fprintf(fp, "\n");
+  fprintf(fp, " Wavefunctions         nl  l   occ\n");
+  for (is=0; is<pspdata->n_states; is++) {
+    HANDLE_FUNC_ERROR(pspio_state_get_label(pspdata->states[is], &label[0]));
+    HANDLE_FUNC_ERROR(pspio_state_get_l(pspdata->states[is], &l));
+    HANDLE_FUNC_ERROR(pspio_state_get_occ(pspdata->states[is], &occ));    
+    fprintf(fp, "                       %2s%3d%6.2f\n", label, l, occ);    
+  }
 
   //Write end tag
   fprintf(fp, "</PP_HEADER>\n");
@@ -141,9 +150,36 @@ int upf_write_nlcc(FILE *fp, const pspio_pspdata_t *pspdata){
 
 
 int upf_write_nonlocal(FILE *fp, const pspio_pspdata_t *pspdata){
+  int ikb, l, i;
+  double proj, ekb;
 
   //Write init tag
   fprintf(fp, "<PP_NONLOCAL>\n");
+
+  //Write projectors
+  for (ikb=0; ikb<pspdata->n_kbproj; ikb++) {
+    HANDLE_FUNC_ERROR(pspio_projector_l(pspdata->kb_projectors[ikb], &l));
+    fprintf(fp, "  <PP_BETA>\n");
+    fprintf(fp, "%5d%5d             Beta    L\n", ikb+1, l);
+    fprintf(fp, "%6d\n", pspdata->mesh->np);
+    for (i=0; i<pspdata->mesh->np; i++) {
+      HANDLE_FUNC_ERROR(pspio_projector_eval(pspdata->kb_projectors[ikb], pspdata->mesh->r[i], &proj));
+      if (i != 0 && i % 4 == 0) fprintf(fp, "\n");
+      proj *= 2.0*pspdata->mesh->r[i];
+      fprintf(fp, " %18.11E", proj);
+    }
+    fprintf(fp, "\n  </PP_BETA>\n");
+  }
+
+  //Write the KB energies
+  fprintf(fp, "  <PP_DIJ>\n");
+  fprintf(fp, "%5d                  Number of nonzero Dij\n", pspdata->n_kbproj);
+  for (ikb=0; ikb<pspdata->n_kbproj; ikb++) {
+    HANDLE_FUNC_ERROR(pspio_projector_energy(pspdata->kb_projectors[ikb], &ekb));
+    ekb /= 2.0;
+    fprintf(fp, "%5d%5d%19.11E\n", ikb+1, ikb+1, ekb);
+  }
+  fprintf(fp, "  </PP_DIJ>\n");
 
   //Write end tag
   fprintf(fp, "</PP_NONLOCAL>\n");

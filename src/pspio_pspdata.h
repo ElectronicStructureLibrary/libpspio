@@ -91,6 +91,7 @@ typedef struct{
   double nelvalence; /**< number of electrons - normally equal to zion, except for special cases for ions */
   int l_max;         /**< maximal angular momentum channel */
   int wave_eq;       /**< type of wave equation which was solved: Dirac, Scalar Relativistic, or Schroedinger */
+  double total_energy; /**< the total energy of the pseudo atom */
 
   // The radial mesh.
   pspio_mesh_t *mesh; /**< Radial mesh - all functions should be discretized on this mesh */

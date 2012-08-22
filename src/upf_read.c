@@ -80,7 +80,7 @@ int upf_read_header(FILE *fp, int *np, pspio_pspdata_t **pspdata){
 
   // read the total energy
   ASSERT( fgets(line, MAX_STRLEN, fp) != NULL, PSPIO_EIO);
-  ASSERT( sscanf(line, "%lf",&total_energy) == 1, PSPIO_EIO);
+  ASSERT( sscanf(line, "%lf",&(*pspdata)->total_energy) == 1, PSPIO_EIO);
   
   //read the suggested cutoff for wfc and rho
   ASSERT( fgets(line, MAX_STRLEN, fp) != NULL, PSPIO_EIO);
@@ -242,7 +242,7 @@ int upf_read_nonlocal(FILE *fp, const int np, pspio_pspdata_t **pspdata){
     ASSERT( fgets(line, MAX_STRLEN, fp) != NULL, PSPIO_EIO);
     ASSERT( sscanf(line,"%d %d %lf", &ii, &jj, &energy) == 3, PSPIO_EIO);
     ASSERT(ii == jj, PSPIO_EVALUE);
-    ekb[ii-1] = energy;
+    ekb[ii-1] = energy*2.0;
   }
 
   //Check end tag
@@ -284,7 +284,10 @@ int upf_read_nonlocal(FILE *fp, const int np, pspio_pspdata_t **pspdata){
       ASSERT( sscanf(line,"%lf %lf %lf %lf",&projector_read[j],&projector_read[j+1],&projector_read[j+2],&projector_read[j+3]) == 4, PSPIO_EIO);
     }
     //Fill with zeros, if any left
-    for (j=proj_np; j<np; j++) projector_read[i] = 0.0;
+    for (j=proj_np; j<np; j++) projector_read[j] = 0.0;
+
+    //Convert units
+    for (j=0; j<np; j++) projector_read[j] /= 2.0*(*pspdata)->mesh->r[j];
 
     //Store the projectors in the pspdata structure
     HANDLE_FUNC_ERROR(pspio_qn_set(&qn, 0, l, proj_j[i]));
