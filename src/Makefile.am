@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2011 J. Alberdi, M. Oliveira, Y. Pouillon, and M. Verstraete
+# Copyright (C) 2011-2012 J. Alberdi, M. Oliveira, Y. Pouillon, and M. Verstraete
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as published by
@@ -32,6 +32,7 @@
 pio_core_srcs = \
   ab2libxc.c \
   pspio_error.c \
+  pspio_fortran_c.c \
   pspio_info.c \
   pspio_mesh.c \
   pspio_meshfunc.c \
@@ -69,21 +70,25 @@ pio_core_hdrs = \
 # Internal C headers - keep this in alphabetical order
 pio_hidden_hdrs = \
   libxccodes.h \
+  string_f.h \
   test_common.h \
   upf.h \
   util.h
 
 # Fortran source files and modules
-pio_fortran_srcs = pspio_fortran.F90
+pio_fortran_srcs = pspio_fortran_f.F90
 if F90_MOD_UPPERCASE
-  pio_fortran_mods = PSPIO_FORTRAN.$(F90_MOD_EXT)
+  pio_fortran_mods = PSPIO_FORTRAN_TYPES_M.@ax_cv_f90_modext@ \
+                     PSPIO_FORTAN_LIB_M.@ax_cv_f90_modext@
 else
-  pio_fortran_mods = pspio_fortran.$(F90_MOD_EXT)
+  pio_fortran_mods = pspio_fortran_types_m.@ax_cv_f90_modext@ \
+                     pspio_fortran_lib_m.@ax_cv_f90_modext@
 endif
 
 # Script-generated file lists
 pio_built_srcs = $(pio_fortran_srcs)
 pio_built_hdrs = $(pio_fortran_mods)
+
 
                     # ------------------------------------ #
 
@@ -118,6 +123,7 @@ endif
 
 noinst_PROGRAMS = \
   test_error \
+  test_fortran \
   test_mesh \
   test_meshfunc \
   test_qn \
@@ -130,6 +136,10 @@ noinst_PROGRAMS = \
 test_error_SOURCES = test_error.c
 test_error_LDADD = -lpspio -lm
 test_error_CPPFLAGS = -I$(srcdir)/../src
+
+test_fortran_SOURCES = test_fortran.F90
+test_fortran_LDADD = -lpspio -lm
+test_fortran_CPPFLAGS = -I$(srcdir)/../src
 
 test_mesh_SOURCES = test_mesh.c
 test_mesh_LDADD = -lpspio -lm

@@ -166,12 +166,18 @@ fi
 
 # Fortran compiler peculiarities
 AX_F90_MODULE_EXTENSION
+AC_SUBST(ax_cv_f90_modext)
 AX_F90_MODULE_CASE
 
 # Language mixing
 if test "${enable_fortran}" = "yes"; then
   AC_FC_WRAPPERS
 fi
+
+# Need to know the size of a Fortran integer
+ACX_FC_INTEGER_SIZE
+ACX_CC_FORTRAN_INT
+
 
                     # ------------------------------------ #
 

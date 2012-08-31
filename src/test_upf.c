@@ -15,12 +15,12 @@
  along with this program; if not, write to the Free Software
  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
- $Id: test_error.c 229 2011-09-05 13:17:03Z micael $
+ $Id$
 */
 
 /**
  * @file test_upf.c
- * @brief checks read_upf.c and upf.h 
+ * @brief checks pspio_upf.c and pspio_upf.h 
  */
 
 #include <stdlib.h>
