@@ -35,18 +35,27 @@
  * pspio_pspdata                                                      *
  **********************************************************************/
 
-CC_FORTRAN_INT FC_FUNC_(pspio_f90_pspdata_init, PSPIO_F90_PSPDATA_INIT)
-  (void **pspdata, CC_FORTRAN_INT *format, STR_F_TYPE filename STR_ARG1)
+CC_FORTRAN_INT FC_FUNC_(pspio_f90_pspdata_init, PSPIO_F90_PSPDATA_READ)
+  (void **pspdata)
 {
   pspio_pspdata_t *pspdata_p = NULL;
+  int ierr;
+
+  ierr = (CC_FORTRAN_INT) pspio_pspdata_init(&pspdata_p);
+  *pspdata = (void *) pspdata_p;
+
+  return ierr;
+}
+
+CC_FORTRAN_INT FC_FUNC_(pspio_f90_pspdata_read, PSPIO_F90_PSPDATA_READ)
+  (void **pspdata, CC_FORTRAN_INT *format, STR_F_TYPE filename STR_ARG1)
+{
   char *filename_c;
   int ierr;
 
   TO_C_STR1(filename, filename_c);
-  ierr = (CC_FORTRAN_INT) pspio_pspdata_init(&pspdata_p, filename_c, (int) (*format));
+  ierr = (CC_FORTRAN_INT) pspio_pspdata_read( (pspio_pspdata_t **)(pspdata), filename_c, (int) (*format));
   free(filename_c);
-
-  *pspdata = (void *) pspdata_p;
 
   return ierr;
 }
@@ -72,6 +81,17 @@ CC_FORTRAN_INT FC_FUNC_(pspio_f90_pspdata_free, PSPIO_F90_PSPDATA_FREE)
      
 }
 
+/**********************************************************************
+ * pspio_mesh                                                         *
+ **********************************************************************/
+
+CC_FORTRAN_INT FC_FUNC_(pspio_f90_mesh_get_np, PSPIO_F90_MESH_GET_NP)
+  (void ** pspdata, CC_FORTRAN_INT *np)
+{
+
+  return (CC_FORTRAN_INT) pspio_mesh_get_np( ((pspio_pspdata_t *)(*pspdata))->mesh, np);
+
+}
 
 /**********************************************************************
  * pspio_error                                                        *

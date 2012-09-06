@@ -78,11 +78,11 @@ pio_hidden_hdrs = \
 # Fortran source files and modules
 pio_fortran_srcs = pspio_fortran_f.F90
 if F90_MOD_UPPERCASE
-  pio_fortran_mods = PSPIO_FORTRAN_TYPES_M.@ax_cv_f90_modext@ \
-                     PSPIO_FORTAN_LIB_M.@ax_cv_f90_modext@
+  pio_fortran_mods = PSPIO_F90_TYPES_M.@ax_cv_f90_modext@ \
+                     PSPIO_F90_LIB_M.@ax_cv_f90_modext@
 else
-  pio_fortran_mods = pspio_fortran_types_m.@ax_cv_f90_modext@ \
-                     pspio_fortran_lib_m.@ax_cv_f90_modext@
+  pio_fortran_mods = pspio_f90_types_m.@ax_cv_f90_modext@ \
+                     pspio_f90_lib_m.@ax_cv_f90_modext@
 endif
 
 # Script-generated file lists

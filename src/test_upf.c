@@ -45,9 +45,15 @@ int main(int argc, char *argv[]) {
     PACKAGE_BUGREPORT);
   DEBUG_PRINT("=== BEGIN test_upf ===\n\n");
 
+  /* init pspdata */
+  DEBUG_PRINT("test_upf: initializing pspdata\n");
+  eid = pspio_pspdata_init(&pspdata);
+  eid = pspio_error_flush();
+  DEBUG_PRINT("\n");
+
   /* check parsing of UPF file */
   DEBUG_PRINT("test_upf: parsing file %s\n", argv[1]);
-  eid = pspio_pspdata_init(&pspdata, argv[1], UPF);
+  eid = pspio_pspdata_read(&pspdata, argv[1], UPF);
   eid = pspio_error_flush();
   DEBUG_PRINT("\n");
 

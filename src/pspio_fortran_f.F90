@@ -17,46 +17,64 @@
 !! $Id$
 
 
-module pspio_fortran_types_m
+module pspio_f90_types_m
   implicit none
 
-  integer, public, parameter :: pspio_f_kind = selected_real_kind(14)
+  integer, public, parameter :: pspio_f90_kind = selected_real_kind(14)
 
-  type pspio_f_pointer_t
+  type pspio_f90_pointer_t
     private
     integer, pointer :: buffer
-  end type pspio_f_pointer_t
+  end type pspio_f90_pointer_t
 
-end module pspio_fortran_types_m
+end module pspio_f90_types_m
 
 
-module pspio_fortran_lib_m
-  use pspio_fortran_types_m
+module pspio_f90_lib_m
+  use pspio_f90_types_m
   implicit none
 
   integer, parameter ::     &
-       PSPIO_UPF = 9
+       PSPIO_UNKNOWN = -1,  &
+       PSPIO_UPF     = 9
+
+  integer, parameter ::     &
+       PSPIO_SUCCESS = 0
 
   ! pspio_pspdata
   interface
-    integer function pspio_f90_pspdata_init(pspdata, format, filename)
-      use pspio_fortran_types_m
-      type(pspio_f_pointer_t), intent(inout) :: pspdata
-      integer,                 intent(in)    :: format
-      character(len=*),        intent(in)    :: filename
+    integer function pspio_f90_pspdata_init(pspdata)
+      use pspio_f90_types_m
+      type(pspio_f90_pointer_t), intent(inout) :: pspdata
     end function pspio_f90_pspdata_init
 
+    integer function pspio_f90_pspdata_read(pspdata, format, filename)
+      use pspio_f90_types_m
+      type(pspio_f90_pointer_t), intent(inout) :: pspdata
+      integer,                   intent(in)    :: format
+      character(len=*),          intent(in)    :: filename
+    end function pspio_f90_pspdata_read
+
     integer function pspio_f90_pspdata_write(pspdata, format, filename)
-      use pspio_fortran_types_m
-      type(pspio_f_pointer_t), intent(in) :: pspdata
-      integer,                 intent(in) :: format
-      character(len=*),        intent(in) :: filename
+      use pspio_f90_types_m
+      type(pspio_f90_pointer_t), intent(in) :: pspdata
+      integer,                   intent(in) :: format
+      character(len=*),          intent(in) :: filename
     end function pspio_f90_pspdata_write
 
     integer function pspio_f90_pspdata_free(pspdata)
-      use pspio_fortran_types_m
-      type(pspio_f_pointer_t), intent(inout) :: pspdata
+      use pspio_f90_types_m
+      type(pspio_f90_pointer_t), intent(inout) :: pspdata
     end function pspio_f90_pspdata_free
+  end interface
+
+  ! pspio_mesh
+  interface
+    integer function pspio_f90_mesh_get_np(pspdata, np)
+      use pspio_f90_types_m
+      type(pspio_f90_pointer_t), intent(in)  :: pspdata
+      integer,                   intent(out) :: np
+    end function pspio_f90_mesh_get_np
   end interface
 
   ! pspio_error
@@ -65,4 +83,4 @@ module pspio_fortran_lib_m
     end function pspio_f90_error_flush
   end interface
 
-end module pspio_fortran_lib_m
+end module pspio_f90_lib_m

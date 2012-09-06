@@ -127,80 +127,39 @@ typedef struct{
  **********************************************************************/
 
 /**
- * Initialize the psp_data with the data read from a given input file.
- * @param[in,out] psp_data: pointer to psp_data structure to be initialized
+ * Initialize pspdata with null vales.
+ * @param[in,out] pspdata: pointer to pspdata structure to be initialized
+ * @return error code.
+ */
+int pspio_pspdata_init(pspio_pspdata_t **pspdata);
+
+/**
+ * Fill pspdata with the data read from a given file.
+ * @param[in,out] pspdata: pointer to pspdata structure to be filled
  * @param[in] file_name: file to be parsed.
  * @param[in] file_format: the format of file_name.
  * @return error code.
  * @note The file format might be UNKNOWN. In that case all the other
  *       formats are tried until the correct one is found.
  */
-int pspio_pspdata_init(pspio_pspdata_t **psp_data, const char *file_name, 
+int pspio_pspdata_read(pspio_pspdata_t **pspdata, const char *file_name, 
 		       const int file_format);
 
 /**
- * Writes the psp_data to a given file.
- * @param[in] psp_data: pointer to psp_data structure
+ * Writes the pspdata to a given file.
+ * @param[in] pspdata: pointer to pspdata structure
  * @param[out] file_name: file write to.
  * @param[in] file_format: the format of file_name.
  * @return error code.
  */
-int pspio_pspdata_write(const pspio_pspdata_t *psp_data, const char *file_name, 
+int pspio_pspdata_write(const pspio_pspdata_t *pspdata, const char *file_name, 
 		       const int file_format);
 
 /**
- * Frees all memory associated with psp_data structure
- * @param[in,out] psp_data: pointer to psp_data structure to be
+ * Frees all memory associated with pspdata structure
+ * @param[in,out] pspdata: pointer to pspdata structure to be
  * @return error code.
  */
-int pspio_pspdata_free(pspio_pspdata_t **psp_data);
-
-
-/**********************************************************************
- * Atomic routines                                                    *
- **********************************************************************/
-
-/**
- * Gets a potential associated with the psp_data structure for given
- * radius and angular momenta.
- * @param[in] data: pointer to psp_data structure to be probed
- * @param[in] l: angular momentum
- * @param[in] j: total angular momentum
- * @param[in] r: radius
- * @param[out] value: value of the specified potential at r
- * @return error code.
- * @note This routine is called many times when using Libpspio. Please
- *       keep performance in mind when tweaking it.
- */
-int pspio_pspdata_potential_get(const pspio_pspdata_t *data, const int l, 
-     const double j, const double r, double *value);
-
-/**
- * Gets a KB projector associated with the psp_data structure for given
- * radius and angular momenta.
- * @param[in] data: pointer to psp_data structure to be probed
- * @param[in] l: angular momentum
- * @param[in] j: total angular momentum
- * @param[in] r: radius
- * @param[out] value: value of the specified projector at r
- * @return error code.
- * @note This routine is called many times when using Libpspio. Please
- *       keep performance in mind when tweaking it.
- */
-int pspio_pspdata_kbprojector_get(const pspio_pspdata_t *data, const int l,
-      const double j, const double r, double *value);
-
-
-/**
- * Gets a KB energy associated with the psp_data structure for given
- * angular momenta.
- * @param[in] data: pointer to psp_data structure to be probed
- * @param[in] l: angular momentum
- * @param[in] j: total angular momentum
- * @param[out] value: value of the energy of the specified projector
- * @return error code.
- */
-int pspio_pspdata_kbenergy_get(const pspio_pspdata_t *data, const int l,
-      const double j, double *value);
+int pspio_pspdata_free(pspio_pspdata_t **pspdata);
 
 #endif

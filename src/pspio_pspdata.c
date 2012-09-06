@@ -36,10 +36,7 @@
  * Global routines                                                    *
  **********************************************************************/
 
-int pspio_pspdata_init(pspio_pspdata_t **pspdata, const char *file_name,
-      const int file_format){
-  FILE * fp;
-
+int pspio_pspdata_init(pspio_pspdata_t **pspdata) {
   ASSERT(pspdata != NULL, PSPIO_EVALUE);
   ASSERT(*pspdata == NULL, PSPIO_EVALUE);
   
@@ -47,17 +44,46 @@ int pspio_pspdata_init(pspio_pspdata_t **pspdata, const char *file_name,
   *pspdata = (pspio_pspdata_t *) malloc (sizeof(pspio_pspdata_t));
   ASSERT(*pspdata != NULL, PSPIO_ENOMEM);
 
-  // Nullify pointers
+  // Nullify pointers and initialize all values to 0
   (*pspdata)->info = NULL;
   (*pspdata)->symbol = NULL;
+  (*pspdata)->z = 0.0;
+  (*pspdata)->zvalence = 0.0;
+  (*pspdata)->nelvalence = 0.0;
+  (*pspdata)->l_max = 0;
+  (*pspdata)->wave_eq = 0;
+  (*pspdata)->total_energy = 0.0;
+
   (*pspdata)->mesh = NULL;
-  (*pspdata)->states = NULL;
+
   (*pspdata)->qn_to_istate = NULL;
+  (*pspdata)->n_states = 0;
+  (*pspdata)->states = NULL;
+
+  (*pspdata)->scheme = 0;
+  (*pspdata)->n_potentials = 0;
   (*pspdata)->potentials = NULL;
+
+  (*pspdata)->n_kbproj = 0;
   (*pspdata)->kb_projectors = NULL;
+  (*pspdata)->l_local = 0;
+  (*pspdata)->kb_l_max = 0;
   (*pspdata)->vlocal = NULL;
+
   (*pspdata)->xc = NULL;
+
   (*pspdata)->rho_valence = NULL;
+
+  return PSPIO_SUCCESS;
+}
+
+int pspio_pspdata_read(pspio_pspdata_t **pspdata, const char *file_name,
+      const int file_format){
+  int ierr;
+  FILE * fp;
+
+  ASSERT(pspdata != NULL, PSPIO_EVALUE);
+  ASSERT(*pspdata != NULL, PSPIO_EVALUE);
 
   // open file
   fp = fopen(file_name, "r");
@@ -66,41 +92,21 @@ int pspio_pspdata_init(pspio_pspdata_t **pspdata, const char *file_name,
   }
 
   //read from file
-  switch(file_format) {
-  case UNKNOWN:
-    break;
-  /* case ABINIT_4: */
-  /*   HANDLE_FUNC_ERROR(read_abinit4(fp,pspdata)); */
-  /*   break; */
-  /* case ABINIT_5: */
-  /*   HANDLE_FUNC_ERROR(read_abinit5(fp,pspdata)); */
-  /*   break; */
-  /* case ABINIT_6: */
-  /*   HANDLE_FUNC_ERROR(read_abinit6(fp,pspdata)); */
-  /*   break; */
-  /* case ABINIT_HGH: */
-  /*   HANDLE_FUNC_ERROR(read_abinit_hgh(fp,pspdata)); */
-  /*   break; */
-  /* case ABINIT_GTH: */
-  /*   HANDLE_FUNC_ERROR(read_abinit_gth(fp,pspdata)); */
-  /*   break; */
-  case ATOM:
-    break;
-  case FHI98PP:
-    break;
-  case SIESTA:
-    break;
-  case UPF:
-    HANDLE_FUNC_ERROR(pspio_upf_read(fp, pspdata));
-    break;
-  default:
-    return PSPIO_EFILE_FORMAT;
-  }
-  
-  // close file and check for ierr being non 0
+  ierr = PSPIO_EFILE_FORMAT;
+  if (ierr && (file_format == ABINIT_4   || file_format == UNKNOWN) ) ierr = PSPIO_ENOSUPPORT;
+  if (ierr && (file_format == ABINIT_5   || file_format == UNKNOWN) ) ierr = PSPIO_ENOSUPPORT;
+  if (ierr && (file_format == ABINIT_6   || file_format == UNKNOWN) ) ierr = PSPIO_ENOSUPPORT;
+  if (ierr && (file_format == ABINIT_HGH || file_format == UNKNOWN) ) ierr = PSPIO_ENOSUPPORT;
+  if (ierr && (file_format == ABINIT_GTH || file_format == UNKNOWN) ) ierr = PSPIO_ENOSUPPORT;
+  if (ierr && (file_format == ATOM       || file_format == UNKNOWN) ) ierr = PSPIO_ENOSUPPORT;
+  if (ierr && (file_format == FHI98PP    || file_format == UNKNOWN) ) ierr = PSPIO_ENOSUPPORT;
+  if (ierr && (file_format == SIESTA     || file_format == UNKNOWN) ) ierr = PSPIO_ENOSUPPORT;
+  if (ierr && (file_format == UPF        || file_format == UNKNOWN) ) ierr = pspio_upf_read(fp, pspdata);
+
+  // close file
   ASSERT(fclose(fp) == 0, PSPIO_EIO);
 
-  return PSPIO_SUCCESS;
+  return ierr;
 }
 
 
@@ -138,55 +144,65 @@ int pspio_pspdata_free(pspio_pspdata_t **pspdata){
   int i;
 
   if (*pspdata != NULL) {
-    // Free info
+
+    // General data
     if ((*pspdata)->info != NULL) free((*pspdata)->info);
-
-    // Free symbol
     if ((*pspdata)->symbol != NULL) free((*pspdata)->symbol);
+    (*pspdata)->z = 0.0;
+    (*pspdata)->zvalence = 0.0;
+    (*pspdata)->nelvalence = 0.0;
+    (*pspdata)->l_max = 0;
+    (*pspdata)->wave_eq = 0;
+    (*pspdata)->total_energy = 0.0;
 
-    // Free mesh
-    HANDLE_FUNC_ERROR (pspio_mesh_free(&(*pspdata)->mesh));
+    // Mesh
+    HANDLE_FUNC_ERROR(pspio_mesh_free(&(*pspdata)->mesh));
 
-    // Free states and lookup table
-    if ((*pspdata)->states != NULL) {
-      for (i=0; i<(*pspdata)->n_states; i++) {
-	HANDLE_FUNC_ERROR (pspio_state_free(&(*pspdata)->states[i]));
-      }
-      free((*pspdata)->states);
-    }
+    // States
     if ((*pspdata)->qn_to_istate != NULL) {
       for (i=0; (*pspdata)->qn_to_istate[i]!=NULL; i++) {
 	free((*pspdata)->qn_to_istate[i]);
       }
     }
+    (*pspdata)->n_states = 0;
+    if ((*pspdata)->states != NULL) {
+      for (i=0; i<(*pspdata)->n_states; i++) {
+	HANDLE_FUNC_ERROR(pspio_state_free(&(*pspdata)->states[i]));
+      }
+      free((*pspdata)->states);
+    }
 
-    // Free potentials
+    // Potentials
+    (*pspdata)->scheme = 0;
+    (*pspdata)->n_potentials = 0;
     if ((*pspdata)->potentials != NULL) {
       for (i=0; i<(*pspdata)->n_potentials; i++) {
-	HANDLE_FUNC_ERROR (pspio_potential_free(&(*pspdata)->potentials[i]));
+	HANDLE_FUNC_ERROR(pspio_potential_free(&(*pspdata)->potentials[i]));
       }
       free((*pspdata)->potentials);
     }
 
-    // Free KB projectors
+    // KB projectors
     if ((*pspdata)->kb_projectors != NULL) {
       for (i=0; i<(*pspdata)->n_kbproj; i++) {
-	HANDLE_FUNC_ERROR (pspio_projector_free(&(*pspdata)->kb_projectors[i]));
+	HANDLE_FUNC_ERROR(pspio_projector_free(&(*pspdata)->kb_projectors[i]));
       }
       free((*pspdata)->kb_projectors);
     }
+    (*pspdata)->l_local = 0;
+    (*pspdata)->kb_l_max = 0;
     if ((*pspdata)->vlocal != NULL) {
-      HANDLE_FUNC_ERROR (pspio_potential_free(&(*pspdata)->vlocal));
+      HANDLE_FUNC_ERROR(pspio_potential_free(&(*pspdata)->vlocal));
     }
 
-    // Free xc
+    // XC
     if ((*pspdata)->xc != NULL) {
-      HANDLE_FUNC_ERROR (pspio_xc_free(&(*pspdata)->xc));
+      HANDLE_FUNC_ERROR(pspio_xc_free(&(*pspdata)->xc));
     }
 
-    // Free valence density
+    // Valence density
     if ((*pspdata)->rho_valence != NULL) {
-      HANDLE_FUNC_ERROR (pspio_meshfunc_free(&(*pspdata)->rho_valence));
+      HANDLE_FUNC_ERROR(pspio_meshfunc_free(&(*pspdata)->rho_valence));
     }
 
   }
@@ -195,42 +211,3 @@ int pspio_pspdata_free(pspio_pspdata_t **pspdata){
 }
 
 
-/**********************************************************************
- * Atomic routines                                                    *
- **********************************************************************/
-
-int pspio_pspdata_potential_get(const pspio_pspdata_t *data, const int l,
-      const double j, const double r, double *value) {
-  ASSERT(data != NULL, PSPIO_ERROR);
-  ASSERT(value != NULL, PSPIO_ERROR);
-  ASSERT((l >=0) &&
-	 ((j == 0) || (abs(j - (double)l) - 0.5 < 10e-9)), PSPIO_ERROR);
-
-  HANDLE_FUNC_ERROR(pspio_meshfunc_eval(data->potentials[LJ_TO_I(l,j)]->v,r,value));
-
-  return PSPIO_SUCCESS;
-}
-
-int pspio_pspdata_kbprojector_get(const pspio_pspdata_t *data, const int l,
-      const double j, const double r, double *value) {
-  ASSERT(data != NULL, PSPIO_ERROR);
-  ASSERT(value != NULL, PSPIO_ERROR);
-  ASSERT( (l >=0) &&
-	 ((j == 0) || (abs(j - (double)l) - 0.5 < 10e-9)), PSPIO_ERROR);
-
-  HANDLE_FUNC_ERROR(pspio_meshfunc_eval(data->kb_projectors[LJ_TO_I(l,j)]->proj,r,value));
-
-  return PSPIO_SUCCESS;
-}
-
-int pspio_pspdata_kbenergy_get(const pspio_pspdata_t *data, const int l,
-      const double j, double *value) {
-  ASSERT(data != NULL, PSPIO_ERROR);
-  ASSERT(value != NULL, PSPIO_ERROR);
-  ASSERT( (l >=0) &&
-	 ((j == 0) || (abs(j - (double)l) - 0.5 < 10e-9)), PSPIO_ERROR);
-
-  *value = data->kb_projectors[LJ_TO_I(l,j)]->energy;
-
-  return PSPIO_SUCCESS;
-}

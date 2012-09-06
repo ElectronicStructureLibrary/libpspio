@@ -17,19 +17,25 @@
 !! $Id$
 
 program test_fortran
-  use pspio_fortran_types_m
-  use pspio_fortran_lib_m
+  use pspio_f90_types_m
+  use pspio_f90_lib_m
   implicit none
 
-  integer :: ierr
+  integer :: ierr, np
   character(len=100) :: file_in, file_out
-  type(pspio_f_pointer_t) :: pspdata
-
+  type(pspio_f90_pointer_t) :: pspdata
   
+  ierr = pspio_f90_pspdata_init(pspdata)
+  if (ierr /= 0) ierr = pspio_f90_error_flush()
+
   write(*,'("UPF filename to read:")')
   read(*,'(A)') file_in
-  ierr = pspio_f90_pspdata_init(pspdata, PSPIO_UPF, file_in)
+  ierr = pspio_f90_pspdata_read(pspdata, PSPIO_UPF, file_in)
   if (ierr /= 0) ierr = pspio_f90_error_flush()
+
+  ierr = pspio_f90_mesh_get_np(pspdata, np)
+  if (ierr /= 0) ierr = pspio_f90_error_flush()
+  write(*,'("Mesh number of points: ", I6)') np
 
   write(*,'("UPF filename to write:")')
   read(*,'(A)') file_out
