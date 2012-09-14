@@ -158,4 +158,14 @@ int pspio_mesh_free(pspio_mesh_t **mesh);
  */
 int pspio_mesh_get_np(pspio_mesh_t *mesh, int *np);
 
+
+/**
+ * Returns the points of the mesh
+ * 
+ * @param[in] mesh: mesh structure
+ * @param[out] r: pointer to array of points
+ * @return error code
+ */
+int pspio_mesh_get_r(pspio_mesh_t *mesh, double *r);
+
 #endif
