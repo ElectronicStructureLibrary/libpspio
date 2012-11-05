@@ -25,6 +25,7 @@
 #include "pspio_meshfunc.h"
 #include "pspio_pspdata.h"
 #include "pspio_upf.h"
+#include "pspio_fhi.h"
 #include "util.h"
 
 #if defined HAVE_CONFIG_H
@@ -99,12 +100,15 @@ int pspio_pspdata_read(pspio_pspdata_t **pspdata, const char *file_name,
   if (ierr && (file_format == ABINIT_HGH || file_format == UNKNOWN) ) ierr = PSPIO_ENOSUPPORT;
   if (ierr && (file_format == ABINIT_GTH || file_format == UNKNOWN) ) ierr = PSPIO_ENOSUPPORT;
   if (ierr && (file_format == ATOM       || file_format == UNKNOWN) ) ierr = PSPIO_ENOSUPPORT;
-  if (ierr && (file_format == FHI98PP    || file_format == UNKNOWN) ) ierr = PSPIO_ENOSUPPORT;
   if (ierr && (file_format == SIESTA     || file_format == UNKNOWN) ) ierr = PSPIO_ENOSUPPORT;
+  if (ierr && (file_format == FHI98PP    || file_format == UNKNOWN) ) ierr = pspio_fhi_read(fp, pspdata);
   if (ierr && (file_format == UPF        || file_format == UNKNOWN) ) ierr = pspio_upf_read(fp, pspdata);
 
   // close file
   ASSERT(fclose(fp) == 0, PSPIO_EIO);
+
+  // create states lookup table
+  HANDLE_FUNC_ERROR(pspio_states_lookup_table((*pspdata)->n_states, (*pspdata)->states, &(*pspdata)->qn_to_istate));
 
   return ierr;
 }
@@ -125,6 +129,9 @@ int pspio_pspdata_write(const pspio_pspdata_t *pspdata, const char *file_name,
   //write to file
   switch(file_format) {
   case UNKNOWN:
+    break;
+  case FHI98PP:
+    HANDLE_FUNC_ERROR(pspio_fhi_write(fp, pspdata));
     break;
   case UPF:
     HANDLE_FUNC_ERROR(pspio_upf_write(fp, pspdata));

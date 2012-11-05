@@ -32,6 +32,7 @@
 pio_core_srcs = \
   ab2libxc.c \
   pspio_error.c \
+  pspio_fhi.c \
   pspio_info.c \
   pspio_mesh.c \
   pspio_meshfunc.c \
@@ -54,6 +55,7 @@ pio_core_hdrs = \
   pspio.h \
   pspio_common.h \
   pspio_error.h \
+  pspio_fhi.h \
   pspio_info.h \
   pspio_mesh.h \
   pspio_meshfunc.h \
