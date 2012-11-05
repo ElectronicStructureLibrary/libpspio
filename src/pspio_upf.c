@@ -35,7 +35,7 @@
 int pspio_upf_read(FILE *fp, pspio_pspdata_t **pspdata){
   int np, has_nlcc;
 
-  // Make sure we are at the beggining of the file
+  // Make sure we are at the beginning of the file
   rewind(fp);
 
   HANDLE_FUNC_ERROR(upf_read_info(fp, pspdata));
