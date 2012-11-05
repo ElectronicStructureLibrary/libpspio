@@ -24,7 +24,9 @@
  */
 #include <string.h>
 #include <stdio.h>
+#include <math.h>
 #include "pspio_error.h"
+#include "libxccodes.h"
 #include "pspio_pspdata.h"
 
 #if defined HAVE_CONFIG_H
@@ -34,9 +36,9 @@
 
 int pspio_fhi_read(FILE *fp, pspio_pspdata_t **pspdata){
   char line[MAX_STRLEN];
-  int i, l, np, ir;
-  double r12;
-  double *wf, *r, *v;
+  int i, l, np, ir, has_nlcc;
+  double r12, cd, cdp, cdpp;
+  double *wf, *r, *v, *rho;
   pspio_qn_t *qn = NULL;
 
   // Make sure we are at the beggining of the file
@@ -110,9 +112,37 @@ int pspio_fhi_read(FILE *fp, pspio_pspdata_t **pspdata){
     HANDLE_FUNC_ERROR(pspio_qn_free(&qn));
   }
 
+  //Non-linear core-corrections
+  has_nlcc = (fgets(line, MAX_STRLEN, fp) != NULL);
+  if (has_nlcc) {
+    HANDLE_FUNC_ERROR(pspio_xc_alloc(&(*pspdata)->xc, PSPIO_NLCC_FHI, np));
 
-  //TODO: Non-linear core-corrections
+    //Allocate memory
+    rho = (double *)malloc(np*sizeof(double));
+    ASSERT( rho != NULL, PSPIO_ENOMEM);
 
+    //Read core rho
+    for (ir=0; ir<np; ir++) {
+      if (ir != 0) {
+	ASSERT( fgets(line, MAX_STRLEN, fp) != NULL, PSPIO_EIO);
+      }
+
+      ASSERT( sscanf(line, "%lf %lf %lf %lf", &r12, &cd, &cdp, &cdpp) == 4, PSPIO_EIO);
+      rho[ir] = cd/M_PI/4.0;
+    }
+
+    //Store the non-linear core corrections in the pspdata structure
+    HANDLE_FUNC_ERROR(pspio_xc_nlcc_set(&(*pspdata)->xc, (*pspdata)->mesh, rho));
+
+    //Free memory
+    free(rho);
+
+  } else {
+    HANDLE_FUNC_ERROR(pspio_xc_alloc(&(*pspdata)->xc, PSPIO_NLCC_NONE, np));
+  }
+
+  //We do not know the xc functional:
+  HANDLE_FUNC_ERROR(pspio_xc_set(&(*pspdata)->xc, XC_NONE, XC_NONE));
 
   return PSPIO_SUCCESS;
 }
