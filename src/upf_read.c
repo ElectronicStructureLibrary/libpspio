@@ -54,11 +54,11 @@ int upf_read_info(FILE *fp, pspio_pspdata_t **pspdata){
   ASSERT((*pspdata)->info != NULL, PSPIO_ENOMEM);
 
   //Store all the lines
-  for (il=0; il<11; il++) {
+  for (il=0; il<nlines; il++) {
     ASSERT(fgets(line, MAX_STRLEN, fp) != NULL, PSPIO_EIO);
     (*pspdata)->info = realloc((*pspdata)->info, strlen((*pspdata)->info)+ strlen(line));
     ASSERT((*pspdata)->info != NULL, PSPIO_ENOMEM);
-    strcat((*pspdata)->info, line);
+    strncat((*pspdata)->info, line, strlen(line));
   }
 
   //Check end tag
