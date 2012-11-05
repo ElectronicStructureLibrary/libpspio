@@ -25,6 +25,7 @@ AC_DEFUN([ACX_FC_INTEGER_SIZE],[
   AC_REQUIRE([AC_PROG_FC])
 
   if test -z "$FC_INTEGER_SIZE"; then
+    AC_LANG_PUSH([Fortran])
     AC_MSG_CHECKING([for the size of a Fortran integer])
     AC_RUN_IFELSE([AC_LANG_PROGRAM([],[
   integer    :: i
@@ -46,6 +47,7 @@ AC_DEFUN([ACX_FC_INTEGER_SIZE],[
       [ac_fcintegersize=`cat conftest.out`],
       [AC_MSG_FAILURE(f90 program to find the size of a Fortran integer failed)],
       [ac_fcintegersize=4; echo -n "cross-compiling; assuming... "])
+    AC_LANG_POP([Fortran])
     AC_MSG_RESULT([${ac_fcintegersize} bytes])
   else
     ac_fcintegersize=$FC_INTEGER_SIZE

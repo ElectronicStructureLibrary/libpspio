@@ -32,7 +32,6 @@
 pio_core_srcs = \
   ab2libxc.c \
   pspio_error.c \
-  pspio_fortran_c.c \
   pspio_info.c \
   pspio_mesh.c \
   pspio_meshfunc.c \
@@ -75,21 +74,6 @@ pio_hidden_hdrs = \
   upf.h \
   util.h
 
-# Fortran source files and modules
-pio_fortran_srcs = pspio_fortran_f.F90
-if F90_MOD_UPPERCASE
-  pio_fortran_mods = PSPIO_F90_TYPES_M.@ax_cv_f90_modext@ \
-                     PSPIO_F90_LIB_M.@ax_cv_f90_modext@
-else
-  pio_fortran_mods = pspio_f90_types_m.@ax_cv_f90_modext@ \
-                     pspio_f90_lib_m.@ax_cv_f90_modext@
-endif
-
-# Script-generated file lists
-pio_built_srcs = $(pio_fortran_srcs)
-pio_built_hdrs = $(pio_fortran_mods)
-
-
                     # ------------------------------------ #
 
 #
@@ -104,15 +88,14 @@ lib_LTLIBRARIES = libpspio.la
 
 libpspio_la_LDFLAGS = -version-info 0:0:0
 libpspio_la_SOURCES = $(pio_core_srcs)
-if DO_BUILD_FORTRAN
-  nodist_libpspio_la_SOURCES = $(pio_built_srcs)
-endif
 
 # Headers
 include_HEADERS = $(pio_core_hdrs)
 noinst_HEADERS = $(pio_hidden_hdrs)
+
+# Fortran
 if DO_BUILD_FORTRAN
-  nodist_include_HEADERS = $(pio_built_hdrs)
+  SUBDIRS = . fortran
 endif
 
                     # ------------------------------------ #
@@ -123,7 +106,6 @@ endif
 
 noinst_PROGRAMS = \
   test_error \
-  test_fortran \
   test_mesh \
   test_meshfunc \
   test_qn \
@@ -136,10 +118,6 @@ noinst_PROGRAMS = \
 test_error_SOURCES = test_error.c
 test_error_LDADD = -lpspio -lm
 test_error_CPPFLAGS = -I$(srcdir)/../src
-
-test_fortran_SOURCES = test_fortran.F90
-test_fortran_LDADD = -lpspio -lm
-test_fortran_CPPFLAGS = -I$(srcdir)/../src
 
 test_mesh_SOURCES = test_mesh.c
 test_mesh_LDADD = -lpspio -lm
@@ -172,15 +150,3 @@ test_upf_CPPFLAGS = -I$(srcdir)/../src
 test_xc_SOURCES = test_xc.c
 test_xc_LDADD = -lpspio -lm
 test_xc_CPPFLAGS = -I$(srcdir)/../src
-
-                    # ------------------------------------ #
-
-#
-# Explicit targets
-#
-
-# Fortran modules have to be cleaned explicitely
-# Note: the 'dummy' pseudo-file is there in case the variable would be empty.
-clean-local:
-	rm -f $(pio_fortran_mods) dummy
-

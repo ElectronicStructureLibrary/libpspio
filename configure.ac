@@ -164,20 +164,30 @@ if test "${enable_fortran}" = "yes"; then
   AC_PROG_FC
 fi
 
-# Fortran compiler peculiarities
-AX_F90_MODULE_EXTENSION
-AC_SUBST(ax_cv_f90_modext)
-AX_F90_MODULE_CASE
-
-# Language mixing
+# Adjust Fortran parameters
 if test "${enable_fortran}" = "yes"; then
+
+  # Enforce strict file extensions
+  pio_fc_src_ok="unknown"
+  AC_FC_SRCEXT([F90],[pio_fc_src_ok="yes"],[pio_fc_src_ok="no"])
+  if test "${pio_fc_src_ok}" != "yes"; then
+    AC_MSG_WARN([Fortran file extension could not be changed])
+    AC_MSG_WARN([Fortran tests may fail])
+  fi
+
+  # Fortran compiler peculiarities
+  AX_F90_MODULE_EXTENSION
+  AC_SUBST(ax_cv_f90_modext)
+  AX_F90_MODULE_CASE
+
+  # Language mixing
   AC_FC_WRAPPERS
+
+  # Need to know the size of a Fortran integer
+  ACX_FC_INTEGER_SIZE
+  ACX_CC_FORTRAN_INT
+
 fi
-
-# Need to know the size of a Fortran integer
-ACX_FC_INTEGER_SIZE
-ACX_CC_FORTRAN_INT
-
 
                     # ------------------------------------ #
 
@@ -195,17 +205,9 @@ AM_CONDITIONAL([F90_MOD_UPPERCASE],
 
 # Initialize Libtool
 LT_INIT
-LT_PREREQ([2.2.2])
+LT_PREREQ([2.4.2])
 LTOBJEXT="lo"
 AC_SUBST(LTOBJEXT)
-
-# Trick to have Libtool properly handling C/Fortran mixing
-if test "$enable_fortran" = "yes"; then
-  FCLD='$(FC)'
-else
-  FCLD='$(CCLD)'
-fi
-AC_SUBST(FCLD)
 
 # ---------------------------------------------------------------------------- #
 
@@ -296,5 +298,5 @@ fi
 AC_MSG_NOTICE([LDFLAGS  = ${LDFLAGS}])
 AC_MSG_NOTICE([LIBS     = ${LIBS}])
 
-AC_OUTPUT([Makefile src/Makefile])
+AC_OUTPUT([Makefile src/Makefile src/fortran/Makefile])
 

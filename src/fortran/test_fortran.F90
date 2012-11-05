@@ -23,7 +23,8 @@ program test_fortran
 
   integer :: ierr, np
   character(len=100) :: file_in, file_out
-  type(pspio_f90_pointer_t) :: pspdata
+  type(pspio_f90_mesh_t) :: pspmesh
+  type(pspio_f90_pspdata_t) :: pspdata
   
   ierr = pspio_f90_pspdata_init(pspdata)
   if (ierr /= 0) ierr = pspio_f90_error_flush()
@@ -33,7 +34,8 @@ program test_fortran
   ierr = pspio_f90_pspdata_read(pspdata, PSPIO_UPF, file_in)
   if (ierr /= 0) ierr = pspio_f90_error_flush()
 
-  ierr = pspio_f90_mesh_get_np(pspdata, np)
+  ierr = pspio_f90_pspdata_get_mesh(pspdata, pspmesh)
+  ierr = pspio_f90_mesh_get_np(pspmesh, np)
   if (ierr /= 0) ierr = pspio_f90_error_flush()
   write(*,'("Mesh number of points: ", I6)') np
 
