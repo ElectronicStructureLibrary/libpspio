@@ -57,7 +57,8 @@ echo "done."
 
 # Remove object files, libraries and programs
 echo "Removing object files, libraries and programs..."
-find . -depth -name '.deps' -o -name '.libs' -exec rm -r {} \;
+find . -depth -name '.deps' -exec rm -rf {} \;
+find . -depth -name '.libs' -exec rm -rf {} \;
 find . -name '*.la' -o -name '*.lo' -exec rm {} \;
 find . -name '*.a' -o -name '*.o' -exec rm {} \;
 echo "done."

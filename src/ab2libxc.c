@@ -33,7 +33,7 @@
 #  include <xc.h>
 #  include <xc_funcs.h>
 #else
-#  include "xc_funcs_pspio.h"
+#  include "pspio_xc_funcs.h"
 #endif
 
 /**

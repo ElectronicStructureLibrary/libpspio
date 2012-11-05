@@ -298,5 +298,5 @@ fi
 AC_MSG_NOTICE([LDFLAGS  = ${LDFLAGS}])
 AC_MSG_NOTICE([LIBS     = ${LIBS}])
 
-AC_OUTPUT([Makefile src/Makefile src/fortran/Makefile])
+AC_OUTPUT([Makefile libxc/Makefile src/Makefile src/fortran/Makefile])
 

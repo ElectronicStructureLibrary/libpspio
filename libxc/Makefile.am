@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2011 J. Alberdi, M. Oliveira, Y. Pouillon, and M. Verstraete
+# Copyright (C) 2012 M. Oliveira, Y. Pouillon
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as published by
@@ -15,25 +15,31 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #
-# $Id$
+# $Id: Makefile.am 262 2012-11-05 13:03:41Z micael $
 #
 
 #
-# Top makefile for Libpspio
+# Makefile for basic support of LibXC within Libpspio
 #
 
-# Autotools parameters
-ACLOCAL_AMFLAGS = -I config/m4
+                    # ------------------------------------ #
 
-# Main tasks
-SUBDIRS = src libxc
+#
+# Source files
+#
 
-# Source tarball
-EXTRA_DIST = \
-  Doxyfile \
-  libxc \
-  psp_references
+# Exported C headers - keep this in alphabetical order
+pio_libxc_hdrs = \
+  pspio_xc_funcs.h
 
-dist-hook:
-	rm -rf `find $(distdir) -name .svn`
+                    # ------------------------------------ #
 
+#
+# Build targets
+#
+
+# Headers
+include_HEADERS = $(pio_libxc_hdrs)
+
+# Documentation
+EXTRA_DIST = README
