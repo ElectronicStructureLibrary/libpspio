@@ -28,6 +28,7 @@
 #include "pspio_error.h"
 #include "libxccodes.h"
 #include "pspio_pspdata.h"
+#include "util.h"
 
 #if defined HAVE_CONFIG_H
 #include "config.h"
@@ -41,7 +42,7 @@ int pspio_fhi_read(FILE *fp, pspio_pspdata_t **pspdata){
   double *wf, *r, *v, *rho;
   pspio_qn_t *qn = NULL;
 
-  // Make sure we are at the beggining of the file
+  // Make sure we are at the beginning of the file
   rewind(fp);
 
   // Read header
@@ -88,7 +89,7 @@ int pspio_fhi_read(FILE *fp, pspio_pspdata_t **pspdata){
     //Read first line of block
     for (ir=0; ir<np; ir++) {
       ASSERT( fgets(line, MAX_STRLEN, fp) != NULL, PSPIO_EIO);
-      ASSERT( sscanf(line, "%d %lf %lf %lf", &i, &r[ir], &v[ir], &wf[ir]) == 4, PSPIO_EIO);
+      ASSERT( sscanf(line, "%d %lf %lf %lf", &i, &r[ir], &wf[ir], &v[ir]) == 4, PSPIO_EIO);
       wf[ir] = wf[ir]/r[ir];
     }
 
@@ -100,8 +101,8 @@ int pspio_fhi_read(FILE *fp, pspio_pspdata_t **pspdata){
 
     //Set pseudopotential and wavefunction
     HANDLE_FUNC_ERROR(pspio_qn_set(&qn, 0, l, 0.0));
-    HANDLE_FUNC_ERROR(pspio_potential_alloc( &(*pspdata)->potentials[l], np));
-    HANDLE_FUNC_ERROR(pspio_potential_set(&(*pspdata)->potentials[l], qn, (*pspdata)->mesh, v));
+    HANDLE_FUNC_ERROR(pspio_potential_alloc(&(*pspdata)->potentials[LJ_TO_I(l,0.0)], np));
+    HANDLE_FUNC_ERROR(pspio_potential_set(&(*pspdata)->potentials[LJ_TO_I(l,0.0)], qn, (*pspdata)->mesh, v));
     HANDLE_FUNC_ERROR(pspio_state_alloc( &(*pspdata)->states[l], np));
     HANDLE_FUNC_ERROR(pspio_state_set(&(*pspdata)->states[l], 0.0, "", qn, 0.0, 0.0, (*pspdata)->mesh, wf));
 
@@ -149,12 +150,11 @@ int pspio_fhi_read(FILE *fp, pspio_pspdata_t **pspdata){
 
 
 int pspio_fhi_write(FILE *fp, const pspio_pspdata_t *pspdata){
-  int i, l;
-  pspio_qn_t *qn = NULL;
-
+  int i, l, is, ir;
+  double wf, v, r;
 
   ASSERT (pspdata != NULL, PSPIO_ERROR);
-  
+
   // Write header
   fprintf(fp, "%20.14E   %d\n", pspdata->zvalence, pspdata->l_max);
   fprintf(fp, "  0.0000    0.0000    0.0000   0.0000\n");
@@ -163,9 +163,22 @@ int pspio_fhi_write(FILE *fp, const pspio_pspdata_t *pspdata){
   // Write mesh, pseudopotentials, and wavefunctions
   for (l=0; l<pspdata->l_max+1; l++) {
     fprintf(fp, "%-4d %20.14E\n", pspdata->mesh->np, pspdata->mesh->r[1]/pspdata->mesh->r[0]);
+
+    i = LJ_TO_I(l,0.0);
+    is = pspdata->qn_to_istate[0][i];
+    
+    for (ir=0; ir<pspdata->mesh->np; ir++) {
+      r = pspdata->mesh->r[ir];
+      HANDLE_FUNC_ERROR(pspio_state_wf_eval(pspdata->states[is], r, &wf));
+      HANDLE_FUNC_ERROR(pspio_potential_eval(pspdata->potentials[i], r, &v));
+      wf = wf*r;
+
+      fprintf(fp, "%4d %20.14E %20.14E %20.14E\n", ir+1, pspdata->mesh->r[ir], wf, v);
+    }
+
   }
 
-  HANDLE_FUNC_ERROR(pspio_qn_free(&qn));
-
+  // TODO: Write non-linear core corrections
+  
   return PSPIO_SUCCESS;
 }
