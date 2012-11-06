@@ -156,7 +156,7 @@ int pspio_fhi_write(FILE *fp, const pspio_pspdata_t *pspdata){
   ASSERT (pspdata != NULL, PSPIO_ERROR);
 
   // Write header
-  fprintf(fp, "%20.14E   %d\n", pspdata->zvalence, pspdata->l_max);
+  fprintf(fp, "%20.14E   %d\n", pspdata->zvalence, pspdata->l_max+1);
   fprintf(fp, "  0.0000    0.0000    0.0000   0.0000\n");
   for (i=0; i<9; i++)   fprintf(fp, "  0.0000    .00e+00   .00e+00\n");
 
