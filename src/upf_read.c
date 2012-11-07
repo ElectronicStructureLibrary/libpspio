@@ -330,7 +330,13 @@ int upf_read_nonlocal(FILE *fp, const int np, pspio_pspdata_t **pspdata){
     HANDLE_FUNC_ERROR(pspio_projector_set( &(*pspdata)->kb_projectors[i], qn, ekb[i], (*pspdata)->mesh, projector_read));
 
     //Check end tag
-    HANDLE_FUNC_ERROR(upf_tag_check_end(fp,"PP_BETA"));
+    if (upf_tag_check_end(fp,"PP_BETA") != PSPIO_SUCCESS) {
+      // We may have a "new" version of the format with two extra lines at the end of this block
+      // so we will try to skip them. Note that one line was already read by upf_tag_check_end.
+      ASSERT( fgets(line, MAX_STRLEN, fp) != NULL, PSPIO_EIO);
+      HANDLE_FUNC_ERROR(upf_tag_check_end(fp,"PP_BETA"));
+    }
+
   }
 
   //Free memory
