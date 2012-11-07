@@ -42,7 +42,7 @@ int upf_tag_init(FILE * fp, const char * tag, const int go_back){
   
   //Prepare base string
   init_tag = (char *)malloc((strlen(tag)+2) * sizeof(char));
-  ASSERT(init_tag != NULL, PSPIO_ENOMEM);
+  CHECK_ERROR(init_tag != NULL, PSPIO_ENOMEM);
   init_tag[0] = 0;
   strcat(init_tag,"<");
   strncat(init_tag,tag,strlen(tag));
@@ -73,7 +73,7 @@ int upf_tag_check_end(FILE * fp, const char * tag){
   
   //Prepare base string
   ending_tag = (char *)malloc((strlen(tag)+3) * sizeof(char));
-  ASSERT( ending_tag != NULL, PSPIO_ENOMEM);
+  CHECK_ERROR(ending_tag != NULL, PSPIO_ENOMEM);
   ending_tag[0] = 0;
   strcat(ending_tag,"</");
   strncat(ending_tag,tag,strlen(tag));
@@ -81,7 +81,7 @@ int upf_tag_check_end(FILE * fp, const char * tag){
   for (i=0;ending_tag[i]; i++)
     ending_tag[i] = tolower(ending_tag[i]);
   
-  ASSERT(fgets(line, sizeof line, fp) != NULL, PSPIO_EIO);
+  CHECK_ERROR(fgets(line, sizeof line, fp) != NULL, PSPIO_EIO);
   //Skip white spaces
   if (line[0] == ' ')
     read_string = strtok(line," ");
@@ -110,7 +110,7 @@ int upf_tag_isdef(FILE * fp, const char * tag){
   
   //Prepare base string
   init_tag = (char *)malloc((strlen(tag)+3) * sizeof(char));
-  ASSERT( init_tag != NULL, PSPIO_ENOMEM);
+  CHECK_ERROR(init_tag != NULL, PSPIO_ENOMEM);
   init_tag[0] = 0;
   strcat(init_tag,"<");
   strncat(init_tag,tag,strlen(tag));

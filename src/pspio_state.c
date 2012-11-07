@@ -42,20 +42,20 @@ int pspio_state_alloc(pspio_state_t **state, const int np) {
   ASSERT(np > 1, PSPIO_EVALUE);
 
   *state = (pspio_state_t *)malloc(sizeof(pspio_state_t));
-  ASSERT(*state != NULL, PSPIO_ENOMEM);
+  CHECK_ERROR(*state != NULL, PSPIO_ENOMEM);
 
   (*state)->wf = NULL;
   ierr = pspio_meshfunc_alloc(&(*state)->wf, np);
   if (ierr) {
     pspio_state_free(state);
-    HANDLE_ERROR (ierr);
+    HANDLE_ERROR(ierr);
   }
 
   (*state)->qn = NULL;
   ierr = pspio_qn_alloc(&(*state)->qn);
   if (ierr) {
     pspio_state_free(state);
-    HANDLE_ERROR (ierr);
+    HANDLE_ERROR(ierr);
   }
 
   (*state)->eigenval = 0.0;
@@ -73,19 +73,18 @@ int pspio_state_set(pspio_state_t **state, const double eigenval,
   int s;
 
   ASSERT(*state != NULL, PSPIO_ERROR);
+  ASSERT((label != NULL) && ((*state)->label == NULL), PSPIO_ERROR);
 
   (*state)->eigenval = eigenval;
   (*state)->occ = occ;
   (*state)->rc = rc;
-
-  ASSERT((label != NULL) && ((*state)->label == NULL), PSPIO_ERROR);
   s = strlen(label);
   (*state)->label = (char *)malloc(s + 1);
   memcpy((*state)->label,label,s);
   (*state)->label[s] = 0;
 
-  HANDLE_FUNC_ERROR (pspio_qn_copy(&(*state)->qn, qn));
-  HANDLE_FUNC_ERROR (pspio_meshfunc_set(&(*state)->wf, mesh, wf));
+  HANDLE_FUNC_ERROR(pspio_qn_copy(&(*state)->qn, qn));
+  HANDLE_FUNC_ERROR(pspio_meshfunc_set(&(*state)->wf, mesh, wf));
 
   return PSPIO_SUCCESS;
 }
@@ -94,7 +93,8 @@ int pspio_state_set(pspio_state_t **state, const double eigenval,
 int pspio_state_copy(pspio_state_t **dst, const pspio_state_t *src) {
   int s;
 
-  ASSERT(src != NULL , PSPIO_ERROR);
+  ASSERT(src != NULL, PSPIO_ERROR);
+  ASSERT((src->label != NULL) && ((*dst)->label == NULL), PSPIO_ERROR)
 
   if ( *dst == NULL ) {
     HANDLE_FUNC_ERROR(pspio_state_alloc(dst, src->wf->mesh->np));
@@ -105,8 +105,6 @@ int pspio_state_copy(pspio_state_t **dst, const pspio_state_t *src) {
   (*dst)->eigenval = src->eigenval;
   (*dst)->occ = src->occ;
   (*dst)->rc = src->rc;
-
-  ASSERT((src->label != NULL) && ((*dst)->label == NULL), PSPIO_ERROR)
   s = strlen(src->label);
   (*dst)->label = (char *)malloc(s+1);
   memcpy((*dst)->label, src->label, s);
@@ -139,10 +137,10 @@ int pspio_states_lookup_table(const int n_states, pspio_state_t **states,
 
   // Allocate memory and preset table
   table = malloc ( (nmax+1) * sizeof(int*));
-  ASSERT(table != NULL, PSPIO_ENOMEM);
+  CHECK_ERROR(table != NULL, PSPIO_ENOMEM);
   for(i=0; i<nmax; i++) {
     table[i] = malloc(lsize*sizeof(int));
-    ASSERT(table[i] != NULL, PSPIO_ENOMEM);
+    CHECK_ERROR(table[i] != NULL, PSPIO_ENOMEM);
     memset(table[i], -1, lsize*sizeof(int));
   }
   table[nmax] = NULL;
@@ -188,6 +186,7 @@ int pspio_state_get_label(const pspio_state_t *state, char *label){
   int s;
 
   ASSERT(state != NULL, PSPIO_ERROR);
+
   s = strlen(state->label);
   memcpy(label,state->label,s);
   label[s] = 0;

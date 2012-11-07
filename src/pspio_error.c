@@ -1,5 +1,5 @@
 /*
- Copyright (C) 2011 J. Alberdi, M. Oliveira, Y. Pouillon, and M. Verstraete
+ Copyright (C) 2011-2012 J. Alberdi, M. Oliveira, Y. Pouillon, and M. Verstraete
 
  This program is free software; you can redistribute it and/or modify
  it under the terms of the GNU Lesser General Public License as published by
@@ -44,14 +44,14 @@ int pspio_error_add(const char *filename, const int line) {
 
   if ( pspio_error_chain == NULL ) {
     pspio_error_chain = (pspio_error_t *)malloc(sizeof(pspio_error_t));
-    ASSERT(pspio_error_chain != NULL, PSPIO_ENOMEM)
+    CHECK_ERROR(pspio_error_chain != NULL, PSPIO_ENOMEM)
 
     pspio_error_chain->id = error_id;
     pspio_error_chain->line = line;
     pspio_error_chain->next = NULL;
     s = strlen(filename);
     pspio_error_chain->filename = (char *)malloc(s + 1);
-    ASSERT(pspio_error_chain->filename != NULL, PSPIO_ENOMEM)
+    CHECK_ERROR(pspio_error_chain->filename != NULL, PSPIO_ENOMEM)
     memcpy(pspio_error_chain->filename,filename,s);
     pspio_error_chain->filename[s] = 0;
 
@@ -65,14 +65,14 @@ int pspio_error_add(const char *filename, const int line) {
   }
 
   last_err->next = (pspio_error_t *)malloc(sizeof(pspio_error_t));
-  ASSERT(last_err->next != NULL, PSPIO_ENOMEM)
+  CHECK_ERROR(last_err->next != NULL, PSPIO_ENOMEM)
   last_err = last_err->next;
   last_err->id = error_id;
   last_err->line = line;
   last_err->next = NULL;
   s = strlen(filename);
   last_err->filename = (char *)malloc(s + 1);
-  ASSERT(last_err->filename != NULL, PSPIO_ENOMEM)
+  CHECK_ERROR(last_err->filename != NULL, PSPIO_ENOMEM)
   memcpy(last_err->filename,filename,s);
   last_err->filename[s] = 0;
 

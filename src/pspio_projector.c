@@ -1,5 +1,5 @@
 /*
- Copyright (C) 2011 J. Alberdi, M. Oliveira, Y. Pouillon, and M. Verstraete
+ Copyright (C) 2011-2012 J. Alberdi, M. Oliveira, Y. Pouillon, and M. Verstraete
 
  This program is free software; you can redistribute it and/or modify
  it under the terms of the GNU Lesser General Public License as published by
@@ -39,20 +39,20 @@ int pspio_projector_alloc(pspio_projector_t **projector, const int np){
   ASSERT(np > 1, PSPIO_EVALUE);
 
   *projector = (pspio_projector_t *) malloc (sizeof(pspio_projector_t));
-  ASSERT(*projector != NULL, PSPIO_ENOMEM);
+  CHECK_ERROR(*projector != NULL, PSPIO_ENOMEM);
 
   (*projector)->proj = NULL;
   ierr = pspio_meshfunc_alloc(&(*projector)->proj, np);
   if (ierr) {
     pspio_projector_free(projector);
-    HANDLE_ERROR (ierr);
+    HANDLE_ERROR(ierr);
   }
 
   (*projector)->qn = NULL;
   ierr = pspio_qn_alloc(&(*projector)->qn);
   if (ierr) {
     pspio_projector_free(projector);
-    HANDLE_ERROR (ierr);
+    HANDLE_ERROR(ierr);
   }
 
   return PSPIO_SUCCESS;
@@ -62,9 +62,9 @@ int pspio_projector_alloc(pspio_projector_t **projector, const int np){
 int pspio_projector_set(pspio_projector_t **projector, const pspio_qn_t *qn, 
 			const double e, const pspio_mesh_t *mesh, const double *p){
 
-  HANDLE_FUNC_ERROR (pspio_qn_copy(&(*projector)->qn, qn));
+  HANDLE_FUNC_ERROR(pspio_qn_copy(&(*projector)->qn, qn));
   (*projector)->energy = e;
-  HANDLE_FUNC_ERROR (pspio_meshfunc_set(&(*projector)->proj, mesh, p));
+  HANDLE_FUNC_ERROR(pspio_meshfunc_set(&(*projector)->proj, mesh, p));
 
   return PSPIO_SUCCESS;
 }

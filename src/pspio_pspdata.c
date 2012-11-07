@@ -43,7 +43,7 @@ int pspio_pspdata_init(pspio_pspdata_t **pspdata) {
   
   // Memory allocation
   *pspdata = (pspio_pspdata_t *) malloc (sizeof(pspio_pspdata_t));
-  ASSERT(*pspdata != NULL, PSPIO_ENOMEM);
+  CHECK_ERROR(*pspdata != NULL, PSPIO_ENOMEM);
 
   // Nullify pointers and initialize all values to 0
   (*pspdata)->info = NULL;
@@ -88,9 +88,7 @@ int pspio_pspdata_read(pspio_pspdata_t **pspdata, const char *file_name,
 
   // open file
   fp = fopen(file_name, "r");
-  if(fp == NULL) {
-    HANDLE_ERROR(PSPIO_ENOFILE);
-  }
+  CHECK_ERROR(fp != NULL, PSPIO_ENOFILE);
 
   //read from file
   ierr = PSPIO_EFILE_FORMAT;
@@ -105,7 +103,7 @@ int pspio_pspdata_read(pspio_pspdata_t **pspdata, const char *file_name,
   if (ierr && (file_format == UPF        || file_format == UNKNOWN) ) ierr = pspio_upf_read(fp, pspdata);
 
   // close file
-  ASSERT(fclose(fp) == 0, PSPIO_EIO);
+  CHECK_ERROR(fclose(fp) == 0, PSPIO_EIO);
 
   // create states lookup table
   HANDLE_FUNC_ERROR(pspio_states_lookup_table((*pspdata)->n_states, (*pspdata)->states, &(*pspdata)->qn_to_istate));
@@ -122,9 +120,7 @@ int pspio_pspdata_write(const pspio_pspdata_t *pspdata, const char *file_name,
   
   // open file
   fp = fopen(file_name, "w");
-  if(fp == NULL) {
-    HANDLE_ERROR(PSPIO_ENOFILE);
-  }
+  CHECK_ERROR(fp != NULL, PSPIO_ENOFILE);
 
   //write to file
   switch(file_format) {
@@ -141,7 +137,7 @@ int pspio_pspdata_write(const pspio_pspdata_t *pspdata, const char *file_name,
   }
   
   // close file and check for ierr being non 0
-  ASSERT(fclose(fp) == 0, PSPIO_EIO);
+  CHECK_ERROR(fclose(fp) == 0, PSPIO_EIO);
 
   return PSPIO_SUCCESS;
 }

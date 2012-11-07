@@ -46,11 +46,11 @@ int pspio_fhi_read(FILE *fp, pspio_pspdata_t **pspdata){
   rewind(fp);
 
   // Read header
-  ASSERT( fgets(line, MAX_STRLEN, fp) != NULL, PSPIO_EIO);
-  ASSERT( sscanf(line, "%lf %d", &(*pspdata)->zvalence, &(*pspdata)->n_potentials ) == 2, PSPIO_EIO);
+  CHECK_ERROR(fgets(line, MAX_STRLEN, fp) != NULL, PSPIO_EIO);
+  CHECK_ERROR(sscanf(line, "%lf %d", &(*pspdata)->zvalence, &(*pspdata)->n_potentials ) == 2, PSPIO_EIO);
   for (i=0; i<10; i++) { 
     // We ignore the next 10 lines, as they contain no information
-    ASSERT( fgets(line, MAX_STRLEN, fp) != NULL, PSPIO_EIO);
+    CHECK_ERROR(fgets(line, MAX_STRLEN, fp) != NULL, PSPIO_EIO);
   }
   (*pspdata)->l_max = (*pspdata)->n_potentials - 1;
   (*pspdata)->n_states = (*pspdata)->n_potentials;
@@ -58,12 +58,12 @@ int pspio_fhi_read(FILE *fp, pspio_pspdata_t **pspdata){
 
   //Allocate states and potentials
   (*pspdata)->states = (pspio_state_t **)malloc( (*pspdata)->n_states*sizeof(pspio_state_t *));
-  ASSERT( (*pspdata)->states != NULL, PSPIO_ENOMEM);
+  CHECK_ERROR((*pspdata)->states != NULL, PSPIO_ENOMEM);
   for (i=0; i<(*pspdata)->n_states; i++) {
     (*pspdata)->states[i] = NULL;
   }
   (*pspdata)->potentials = (pspio_potential_t **)malloc( (*pspdata)->n_potentials*sizeof(pspio_potential_t *));
-  ASSERT( (*pspdata)->potentials != NULL, PSPIO_ENOMEM);
+  CHECK_ERROR((*pspdata)->potentials != NULL, PSPIO_ENOMEM);
   for (i=0; i<(*pspdata)->n_potentials; i++) {
     (*pspdata)->potentials[i] = NULL;
   }
@@ -71,25 +71,25 @@ int pspio_fhi_read(FILE *fp, pspio_pspdata_t **pspdata){
   
   // Read mesh, potentials and wavefunctions
   for (l=0; l < (*pspdata)->l_max+1; l++) {
-    ASSERT( fgets(line, MAX_STRLEN, fp) != NULL, PSPIO_EIO);
-    ASSERT( sscanf(line, "%d %lf", &np, &r12 ) == 2, PSPIO_EIO);
+    CHECK_ERROR(fgets(line, MAX_STRLEN, fp) != NULL, PSPIO_EIO);
+    CHECK_ERROR(sscanf(line, "%d %lf", &np, &r12 ) == 2, PSPIO_EIO);
 
     //Allocate temporary data
     HANDLE_FUNC_ERROR(pspio_qn_alloc(&qn));
 
     r = (double *)malloc(np*sizeof(double));
-    ASSERT(r != NULL, PSPIO_ENOMEM);
+    CHECK_ERROR(r != NULL, PSPIO_ENOMEM);
 
     v = (double *)malloc(np*sizeof(double));
-    ASSERT(v != NULL, PSPIO_ENOMEM);
+    CHECK_ERROR(v != NULL, PSPIO_ENOMEM);
 
     wf = (double *)malloc(np*sizeof(double));
-    ASSERT(wf != NULL, PSPIO_ENOMEM);
+    CHECK_ERROR(wf != NULL, PSPIO_ENOMEM);
 
     //Read first line of block
     for (ir=0; ir<np; ir++) {
-      ASSERT( fgets(line, MAX_STRLEN, fp) != NULL, PSPIO_EIO);
-      ASSERT( sscanf(line, "%d %lf %lf %lf", &i, &r[ir], &wf[ir], &v[ir]) == 4, PSPIO_EIO);
+      CHECK_ERROR(fgets(line, MAX_STRLEN, fp) != NULL, PSPIO_EIO);
+      CHECK_ERROR(sscanf(line, "%d %lf %lf %lf", &i, &r[ir], &wf[ir], &v[ir]) == 4, PSPIO_EIO);
       wf[ir] = wf[ir]/r[ir];
     }
 
@@ -120,15 +120,15 @@ int pspio_fhi_read(FILE *fp, pspio_pspdata_t **pspdata){
 
     //Allocate memory
     rho = (double *)malloc(np*sizeof(double));
-    ASSERT( rho != NULL, PSPIO_ENOMEM);
+    CHECK_ERROR(rho != NULL, PSPIO_ENOMEM);
 
     //Read core rho
     for (ir=0; ir<np; ir++) {
       if (ir != 0) {
-	ASSERT( fgets(line, MAX_STRLEN, fp) != NULL, PSPIO_EIO);
+	CHECK_ERROR(fgets(line, MAX_STRLEN, fp) != NULL, PSPIO_EIO);
       }
 
-      ASSERT( sscanf(line, "%lf %lf %lf %lf", &r12, &cd, &cdp, &cdpp) == 4, PSPIO_EIO);
+      CHECK_ERROR(sscanf(line, "%lf %lf %lf %lf", &r12, &cd, &cdp, &cdpp) == 4, PSPIO_EIO);
       rho[ir] = cd/M_PI/4.0;
     }
 
@@ -153,7 +153,7 @@ int pspio_fhi_write(FILE *fp, const pspio_pspdata_t *pspdata){
   int i, l, is, ir;
   double wf, v, r;
 
-  ASSERT (pspdata != NULL, PSPIO_ERROR);
+  CHECK_ERROR(pspdata != NULL, PSPIO_ERROR);
 
   // Write header
   fprintf(fp, "%20.14E   %d\n", pspdata->zvalence, pspdata->l_max+1);

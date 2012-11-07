@@ -1,5 +1,5 @@
 /*
- Copyright (C) 2011 J. Alberdi, M. Oliveira, Y. Pouillon, and M. Verstraete
+ Copyright (C) 2011-2012 J. Alberdi, M. Oliveira, Y. Pouillon, and M. Verstraete
 
  This program is free software; you can redistribute it and/or modify
  it under the terms of the GNU Lesser General Public License as published by
@@ -34,8 +34,9 @@
 int pspio_xc_alloc(pspio_xc_t **xc, const int nlcc_scheme, const int np){
   int ierr;
 
-  ASSERT (xc != NULL, PSPIO_EVALUE);
-  ASSERT (*xc == NULL, PSPIO_EVALUE);
+  ASSERT(xc != NULL, PSPIO_EVALUE);
+  ASSERT(*xc == NULL, PSPIO_EVALUE);
+
   switch (nlcc_scheme) {
   case PSPIO_NLCC_NONE:
     break;
@@ -54,16 +55,16 @@ int pspio_xc_alloc(pspio_xc_t **xc, const int nlcc_scheme, const int np){
   }
 
   *xc = (pspio_xc_t *) malloc (sizeof(pspio_xc_t));
-  ASSERT(*xc != NULL, PSPIO_ENOMEM);
+  CHECK_ERROR(*xc != NULL, PSPIO_ENOMEM);
 
   (*xc)->nlcc_scheme = nlcc_scheme;
   (*xc)->core_dens = NULL;
   if (nlcc_scheme != PSPIO_NLCC_NONE) {
-    ASSERT (np > 1, PSPIO_EVALUE);
+    CHECK_ERROR(np > 1, PSPIO_EVALUE);
     ierr = pspio_meshfunc_alloc(&(*xc)->core_dens, np);
     if (ierr) {
       pspio_xc_free(xc);
-      HANDLE_ERROR (ierr);
+      HANDLE_ERROR(ierr);
     }
   }
 
@@ -72,7 +73,7 @@ int pspio_xc_alloc(pspio_xc_t **xc, const int nlcc_scheme, const int np){
 
 
 int pspio_xc_set(pspio_xc_t **xc, const int exchange, const int correlation){
-  ASSERT (*xc != NULL, PSPIO_EVALUE);
+  ASSERT(*xc != NULL, PSPIO_EVALUE);
 
   (*xc)->exchange = exchange;
   (*xc)->correlation = correlation;
@@ -82,16 +83,16 @@ int pspio_xc_set(pspio_xc_t **xc, const int exchange, const int correlation){
 
 
 int pspio_xc_nlcc_set(pspio_xc_t **xc, const pspio_mesh_t *mesh, const double *core_dens){
-
-  HANDLE_FUNC_ERROR (pspio_meshfunc_set(&(*xc)->core_dens, mesh, core_dens));
+  HANDLE_FUNC_ERROR(pspio_meshfunc_set(&(*xc)->core_dens, mesh, core_dens));
 
   return PSPIO_SUCCESS;
 }
 
 
 int pspio_xc_free(pspio_xc_t **xc){
+
   if (*xc != NULL) {
-    HANDLE_FUNC_ERROR (pspio_meshfunc_free(&(*xc)->core_dens));
+    HANDLE_FUNC_ERROR(pspio_meshfunc_free(&(*xc)->core_dens));
     free(*xc);
     *xc = NULL;
   }
@@ -105,7 +106,7 @@ int pspio_xc_free(pspio_xc_t **xc){
  **********************************************************************/
 
 int pspio_xc_get_id(pspio_xc_t *xc, int *exchange, int *correlation){
-  ASSERT (xc != NULL, PSPIO_EVALUE);
+  ASSERT(xc != NULL, PSPIO_EVALUE);
 
   *exchange = xc->exchange;
   *correlation = xc->correlation;

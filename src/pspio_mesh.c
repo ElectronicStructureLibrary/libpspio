@@ -1,5 +1,5 @@
 /*
- Copyright (C) 2011 J. Alberdi, M. Oliveira, Y. Pouillon, and M. Verstraete
+ Copyright (C) 2011-2012 J. Alberdi, M. Oliveira, Y. Pouillon, and M. Verstraete
 
  This program is free software; you can redistribute it and/or modify
  it under the terms of the GNU Lesser General Public License as published by
@@ -42,16 +42,16 @@ int pspio_mesh_alloc(pspio_mesh_t **mesh, const int np){
 
   // Memory allocation
   *mesh = (pspio_mesh_t *) malloc (sizeof(pspio_mesh_t));
-  ASSERT(*mesh != NULL, PSPIO_ENOMEM);
+  CHECK_ERROR(*mesh != NULL, PSPIO_ENOMEM);
 
   (*mesh)->r = NULL;
   (*mesh)->rab = NULL;
 
   (*mesh)->r = (double *) malloc (np * sizeof(double));
-  ASSERT((*mesh)->r != NULL, PSPIO_ENOMEM);
+  CHECK_ERROR((*mesh)->r != NULL, PSPIO_ENOMEM);
 
   (*mesh)->rab = (double *) malloc (np * sizeof(double));
-  ASSERT((*mesh)->rab != NULL, PSPIO_ENOMEM);
+  CHECK_ERROR((*mesh)->rab != NULL, PSPIO_ENOMEM);
 
   // Presets
   (*mesh)->np = np;
@@ -80,10 +80,10 @@ int pspio_mesh_set(pspio_mesh_t **mesh, const int type, const double a,
 
 
 int pspio_mesh_copy(pspio_mesh_t **dst, const pspio_mesh_t *src){
-  ASSERT (src != NULL, PSPIO_ERROR);
+  ASSERT(src != NULL, PSPIO_ERROR);
 
   if (*dst == NULL) {
-    HANDLE_FUNC_ERROR (pspio_mesh_alloc(dst, src->np));
+    HANDLE_FUNC_ERROR(pspio_mesh_alloc(dst, src->np));
   }
 
   (*dst)->type = src->type;
@@ -116,7 +116,7 @@ int pspio_mesh_init_from_points(pspio_mesh_t **mesh, const double *r,
     (*mesh)->type = PSPIO_MESH_LINEAR;
     for (i=0; i<(*mesh)->np; i++) {
       if (rab != NULL) {
-	ASSERT (fabs(rab[i] - (*mesh)->a) < 1e-16, PSPIO_EVALUE);
+	CHECK_ERROR(fabs(rab[i] - (*mesh)->a) < 1e-16, PSPIO_EVALUE);
       } else {
 	(*mesh)->rab[i] = (*mesh)->a;
       }
@@ -131,7 +131,7 @@ int pspio_mesh_init_from_points(pspio_mesh_t **mesh, const double *r,
     (*mesh)->type = PSPIO_MESH_LOG1;
     for (i=0; i<(*mesh)->np; i++) {
       if (rab != NULL) {
-	ASSERT (fabs(rab[i] - (*mesh)->a*r[i]) < 1e-16, PSPIO_EVALUE);
+	CHECK_ERROR(fabs(rab[i] - (*mesh)->a*r[i]) < 1e-16, PSPIO_EVALUE);
       } else {
 	(*mesh)->rab[i] = (*mesh)->a*r[i];
       }
@@ -146,7 +146,7 @@ int pspio_mesh_init_from_points(pspio_mesh_t **mesh, const double *r,
     (*mesh)->type = PSPIO_MESH_LOG2;
     for (i=0; i<(*mesh)->np; i++) {
       if (rab != NULL) {
-	ASSERT (fabs(rab[i] - (*mesh)->a*r[i]) < 1e-16, PSPIO_EVALUE);
+	CHECK_ERROR(fabs(rab[i] - (*mesh)->a*r[i]) < 1e-16, PSPIO_EVALUE);
       } else {
 	(*mesh)->rab[i] = (*mesh)->a*r[i];
       }
@@ -158,6 +158,7 @@ int pspio_mesh_init_from_points(pspio_mesh_t **mesh, const double *r,
   (*mesh)->type = PSPIO_MESH_UNKNOWN;
   (*mesh)->a = 0.0;
   (*mesh)->b = 0.0;
+
   return PSPIO_SUCCESS;
 }
 

@@ -41,17 +41,17 @@ int pspio_meshfunc_alloc(pspio_meshfunc_t **func, const int np){
   ASSERT(np > 1, PSPIO_EVALUE);
 
   *func = (pspio_meshfunc_t *) malloc (sizeof(pspio_meshfunc_t));
-  ASSERT(*func != NULL, PSPIO_ENOMEM);
+  CHECK_ERROR(*func != NULL, PSPIO_ENOMEM);
 
   (*func)->f = (double *) malloc (np * sizeof(double));
-  ASSERT((*func)->f != NULL, PSPIO_ENOMEM);
+  CHECK_ERROR((*func)->f != NULL, PSPIO_ENOMEM);
   memset((*func)->f, 0, np*sizeof(double));
 
   (*func)->mesh = NULL;
   ierr = pspio_mesh_alloc(&(*func)->mesh, np);
   if (ierr) {
     pspio_meshfunc_free(func);
-    HANDLE_ERROR (ierr);
+    HANDLE_ERROR(ierr);
   }
 
   (*func)->spl = gsl_spline_alloc(gsl_interp_cspline, np);
@@ -64,7 +64,7 @@ int pspio_meshfunc_alloc(pspio_meshfunc_t **func, const int np){
 int pspio_meshfunc_set(pspio_meshfunc_t **func, const pspio_mesh_t *mesh, 
 		       const double *f){
 
-  HANDLE_FUNC_ERROR (pspio_mesh_copy(&(*func)->mesh, mesh));
+  HANDLE_FUNC_ERROR(pspio_mesh_copy(&(*func)->mesh, mesh));
   memcpy((*func)->f, f, (*func)->mesh->np * sizeof(double));
   gsl_spline_init((*func)->spl, (*func)->mesh->r, (*func)->f,
 		  (*func)->mesh->np) ;
@@ -75,13 +75,13 @@ int pspio_meshfunc_set(pspio_meshfunc_t **func, const pspio_mesh_t *mesh,
 
 int pspio_meshfunc_copy(pspio_meshfunc_t **dst, const pspio_meshfunc_t *src){
 
-  ASSERT (src != NULL, PSPIO_ERROR);
+  ASSERT(src != NULL, PSPIO_ERROR);
 
   if (*dst == NULL) {
-    HANDLE_FUNC_ERROR (pspio_meshfunc_alloc(dst, src->mesh->np))
+    HANDLE_FUNC_ERROR(pspio_meshfunc_alloc(dst, src->mesh->np))
   }
 
-  HANDLE_FUNC_ERROR (pspio_mesh_copy(&(*dst)->mesh, src->mesh));
+  HANDLE_FUNC_ERROR(pspio_mesh_copy(&(*dst)->mesh, src->mesh));
   memcpy((*dst)->f, src->f, src->mesh->np * sizeof(double));
 
   gsl_spline_init((*dst)->spl, (*dst)->mesh->r, (*dst)->f,
@@ -112,7 +112,7 @@ int pspio_meshfunc_free(pspio_meshfunc_t **func){
 
 int pspio_meshfunc_eval(const pspio_meshfunc_t *func, const double r,
       double *f){
-  ASSERT (func != NULL, PSPIO_ERROR);
+  ASSERT(func != NULL, PSPIO_ERROR);
 
   // If the value of r is smaller than the first mesh point or if it is greater or equal to
   // the last mesh point, then we use a linear extrapolation to evaluate the function at r.
@@ -136,7 +136,7 @@ int pspio_meshfunc_eval_deriv(const pspio_meshfunc_t *func, const double r,
       double *fp){
   double r1, r2, f1, f2;
 
-  ASSERT (func != NULL, PSPIO_ERROR);  
+  ASSERT(func != NULL, PSPIO_ERROR);  
 
   // If the value of r is smaller than the first mesh point or if it is greater or equal to
   // the last mesh point, then we use a linear extrapolation to evaluate the function at r.
@@ -169,7 +169,7 @@ int pspio_meshfunc_eval_deriv2(const pspio_meshfunc_t *func, const double r,
       double *fpp){
   double r1, r2, f1, f2;
 
-  ASSERT (func != NULL, PSPIO_ERROR);
+  ASSERT(func != NULL, PSPIO_ERROR);
 
   // If the value of r is smaller than the first mesh point or if it is greater or equal to
   // the last mesh point, then we use a linear extrapolation to evaluate the function at r.

@@ -1,5 +1,5 @@
 /*
- Copyright (C) 2011 J. Alberdi, M. Oliveira, Y. Pouillon, and M. Verstraete
+ Copyright (C) 2011-2012 J. Alberdi, M. Oliveira, Y. Pouillon, and M. Verstraete
 
  This program is free software; you can redistribute it and/or modify
  it under the terms of the GNU Lesser General Public License as published by
@@ -44,7 +44,7 @@ const char *symbols[] = {"H  ","He ","Li ","Be ","B  ","C  ","N  ","O  ","F  ","
 int symbol_to_z(const char *symbol, double z){
   int i;
 
-  ASSERT ( symbol != NULL, PSPIO_EVALUE);
+  ASSERT(symbol != NULL, PSPIO_EVALUE);
 
   for (i=0; i<112; i++) {
     if (strncmp(symbol, symbols[i], 2)) {
@@ -58,7 +58,7 @@ int symbol_to_z(const char *symbol, double z){
 
 
 int z_to_symbol(const double z, char *symbol){
-  ASSERT ( (z < 113.0 && z > 0.0), PSPIO_EVALUE);
+  ASSERT( (z < 113.0 && z > 0.0), PSPIO_EVALUE);
 
   strncpy(symbol, symbols[(int)z-1], 3);
 

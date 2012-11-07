@@ -69,10 +69,7 @@ int main(void) {
   DEBUG_PRINT("test_potential: creating pot1\n");
   eid = pspio_potential_alloc(&pot1, np);
   eid = pspio_error_flush();
-  DEBUG_PRINT("test_potential: creating pot2 with zero points = wrong\n");
-  eid = pspio_potential_alloc(&pot2, 0);
-  eid = pspio_error_flush();
-  DEBUG_PRINT("test_potential: creating pot2 with %d points = correct\n", np);
+  DEBUG_PRINT("test_potential: creating pot2\n", np);
   eid = pspio_potential_alloc(&pot2, np);
   eid = pspio_error_flush();
   DEBUG_PRINT("test_potential: destroying pot2\n");

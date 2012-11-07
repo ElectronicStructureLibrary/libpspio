@@ -70,10 +70,7 @@ int main(void) {
   DEBUG_PRINT("test_projector: creating proj1\n");
   eid = pspio_projector_alloc(&proj1, np);
   eid = pspio_error_flush();
-  DEBUG_PRINT("test_projector: creating proj2 with zero points = wrong\n");
-  eid = pspio_projector_alloc(&proj2, 0);
-  eid = pspio_error_flush();
-  DEBUG_PRINT("test_projector: creating proj2 with %d points = correct\n", np);
+  DEBUG_PRINT("test_projector: creating proj2\n");
   eid = pspio_projector_alloc(&proj2, np);
   eid = pspio_error_flush();
   DEBUG_PRINT("test_projector: destroying proj2\n");

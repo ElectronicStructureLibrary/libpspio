@@ -37,14 +37,14 @@ int abinit_read_info(FILE *fp, pspio_pspdata_t **pspdata){
 
   // Allocate memory
   (*pspdata)->info = (char *)malloc(1*sizeof(char));
-  ASSERT((*pspdata)->info != NULL, PSPIO_ENOMEM);
+  CHECK_ERROR((*pspdata)->info != NULL, PSPIO_ENOMEM);
 
   // Store the first 7 lines
   for (il=0; il<7; il++) {
-    ASSERT(fgets(line, MAX_STRLEN, fp) != NULL, PSPIO_EIO);
+    CHECK_ERROR(fgets(line, MAX_STRLEN, fp) != NULL, PSPIO_EIO);
     (*pspdata)->info = realloc((*pspdata)->info,
       strlen((*pspdata)->info) + strlen(line));
-    ASSERT((*pspdata)->info != NULL, PSPIO_ENOMEM);
+    CHECK_ERROR((*pspdata)->info != NULL, PSPIO_ENOMEM);
     strncat((*pspdata)->info, line, strlen(line));
   }
 
@@ -59,19 +59,19 @@ int abinit_read_header(FILE *fp, int *np, pspio_pspdata_t **pspdata){
   double zatom, zvalence, r2well, rchrg, fchrg, qchrg;
 
   // Line 1: skip title
-  ASSERT( fgets(line, MAX_STRLEN, fp) != NULL, PSPIO_EIO);
+  CHECK_ERROR( fgets(line, MAX_STRLEN, fp) != NULL, PSPIO_EIO);
 
   // Line 2: read atomic number, Z valence, psp date
-  ASSERT( fgets(line, MAX_STRLEN, fp) != NULL, PSPIO_EIO);
-  ASSERT( sscanf(line, "%f %f %s %s", 
+  CHECK_ERROR( fgets(line, MAX_STRLEN, fp) != NULL, PSPIO_EIO);
+  CHECK_ERROR( sscanf(line, "%f %f %s %s", 
     &zatom, &zval, pspdat, buffer ) == 1, PSPIO_EIO);
   (*pspdata)->z = zatom;
   (*pspdata)->zvalence = zval;
   (*pspdata)->nelvalence = zval;
 
   // Line 3: read pspcod, pspxc, lmax, lloc, mmax, r2well
-  ASSERT( fgets(line, MAX_STRLEN, fp) != NULL, PSPIO_EIO);
-  ASSERT( sscanf(line, "%d %d %d %d %d %f %s",
+  CHECK_ERROR( fgets(line, MAX_STRLEN, fp) != NULL, PSPIO_EIO);
+  CHECK_ERROR( sscanf(line, "%d %d %d %d %d %f %s",
     &pspcod, &pspxc, &lmax, &lloc, &mmax, &r2well, buffer) == 1, PSPIO_EIO);
   (*pspdata)->scheme = pspcod;
   (*pspdata)->l_max = lmax;
@@ -83,10 +83,10 @@ int abinit_read_header(FILE *fp, int *np, pspio_pspdata_t **pspdata){
   }
 
   // Line 4: read rchrg, fchrg, qchrg if NLCC
-  ASSERT( fgets(line, MAX_STRLEN, fp) != NULL, PSPIO_EIO);
+  CHECK_ERROR( fgets(line, MAX_STRLEN, fp) != NULL, PSPIO_EIO);
   have_nlcc = 0;
   if ( strcmp("4--", line[0:2]) != 0 ) {
-    ASSERT( sscanf(line, "%d %d %d %d %d %f %s",
+    CHECK_ERROR( sscanf(line, "%d %d %d %d %d %f %s",
       &rchrg, &fchrg, &qchrg, buffer) == 1, PSPIO_EIO );
     if ( abs(fchrg) >= 1.0e-14 ) {
       have_nlcc = 1;
@@ -95,7 +95,7 @@ int abinit_read_header(FILE *fp, int *np, pspio_pspdata_t **pspdata){
 
   // Skip lines 5 to 18
   for(il=5; il<=18; il++) {
-    ASSERT( fgets(line, MAX_STRLEN, fp) != NULL, PSPIO_EIO);
+    CHECK_ERROR( fgets(line, MAX_STRLEN, fp) != NULL, PSPIO_EIO);
   }
 
   // Initialize xc
@@ -124,23 +124,23 @@ int abinit_read_mesh(FILE *fp, const int np, pspio_pspdata_t **pspdata){
 
   // Allocate memory
   r = (double *)malloc(np*sizeof(double)); // Mesh
-  ASSERT(r != NULL, PSPIO_ENOMEM);
+  CHECK_ERROR(r != NULL, PSPIO_ENOMEM);
   drdi = (double *)malloc(np*sizeof(double)); // Mesh derivative
-  ASSERT(drdi != NULL, PSPIO_ENOMEM);
+  CHECK_ERROR(drdi != NULL, PSPIO_ENOMEM);
   vloc = (double *)malloc(np*sizeof(double)); // Local part
-  ASSERT(vloc != NULL, PSPIO_ENOMEM);
+  CHECK_ERROR(vloc != NULL, PSPIO_ENOMEM);
   vnl = (double *)malloc((lmax+1)*np*sizeof(double)); // Non-local part
-  ASSERT(vnl != NULL, PSPIO_ENOMEM);
+  CHECK_ERROR(vnl != NULL, PSPIO_ENOMEM);
   wrc = (double *)malloc((lmax+1)*np*sizeof(double)); // Wavefunctions
-  ASSERT(wrc != NULL, PSPIO_ENOMEM);
+  CHECK_ERROR(wrc != NULL, PSPIO_ENOMEM);
 
   //Read mesh points, non-local part, and wavefunctions
   for (jl=0; jl<=lmax; jl++) {
-    ASSERT( fgets(line, MAX_STRLEN, fp) != NULL, PSPIO_EIO);
-    ASSERT( sscanf(line, "%d %f", &mmax, &amesh) == 1, PSPIO_EIO );
+    CHECK_ERROR( fgets(line, MAX_STRLEN, fp) != NULL, PSPIO_EIO);
+    CHECK_ERROR( sscanf(line, "%d %f", &mmax, &amesh) == 1, PSPIO_EIO );
     for (il=0; il<np; il++) {
-      ASSERT( fgets(line, MAX_STRLEN, fp) != NULL, PSPIO_EIO);
-      ASSERT( sscanf(line, "%d %f %f %f",
+      CHECK_ERROR( fgets(line, MAX_STRLEN, fp) != NULL, PSPIO_EIO);
+      CHECK_ERROR( sscanf(line, "%d %f %f %f",
         &ip, &ri, &wrci, &vnli) == 1, PSPIO_EIO );
       if ( j == 0 ) {
         r[il] = ri;

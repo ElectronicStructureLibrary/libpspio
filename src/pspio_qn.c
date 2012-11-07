@@ -1,5 +1,5 @@
 /*
- Copyright (C) 2011 J. Alberdi, M. Oliveira, Y. Pouillon, and M. Verstraete
+ Copyright (C) 2011-2012 J. Alberdi, M. Oliveira, Y. Pouillon, and M. Verstraete
 
  This program is free software; you can redistribute it and/or modify
  it under the terms of the GNU Lesser General Public License as published by
@@ -39,7 +39,7 @@ int pspio_qn_alloc(pspio_qn_t **qn) {
   ASSERT( *qn == NULL, PSPIO_ERROR);
 
   *qn = (pspio_qn_t *)malloc(sizeof(pspio_qn_t));
-  ASSERT(*qn != NULL, PSPIO_ENOMEM);
+  CHECK_ERROR(*qn != NULL, PSPIO_ENOMEM);
 
   (*qn)->n = 0;
   (*qn)->l = 0;
@@ -87,8 +87,9 @@ int pspio_qn_get(const pspio_qn_t *qn, int *n, int *l, double *j) {
 
 int pspio_qn_set(pspio_qn_t **qn, const int n, const int l, const double j) {
   ASSERT((qn != NULL) && (*qn != NULL), PSPIO_ERROR);
-  ASSERT(l >= 0, PSPIO_EVALUE);
-  ASSERT( (j == 0.0) || (fabs(j - (double)l) - 0.5 < 1.0e-8), PSPIO_EVALUE);
+
+  CHECK_ERROR(l >= 0, PSPIO_EVALUE);
+  CHECK_ERROR( (j == 0.0) || (fabs(j - (double)l) - 0.5 < 1.0e-8), PSPIO_EVALUE);
 
   (*qn)->n = n;
   (*qn)->l = l;
