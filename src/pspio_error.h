@@ -142,7 +142,7 @@ const char *pspio_error_str(const int pspio_errorid);
  * @param[in] error_id: error code to set if condition is false
  */
 #define ASSERT(condition, error_id) \
-  pspio_error_set(( condition ) ? error_id : PSPIO_SUCCESS); \
+  pspio_error_set(( condition ) ?  PSPIO_SUCCESS : error_id);	\
   if ( pspio_error_get() != PSPIO_SUCCESS ) { \
     pspio_error_show(pspio_error_get(), __FILE__, __LINE__); \
     exit(1); \
