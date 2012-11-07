@@ -70,8 +70,8 @@
  * quantum numbers, returns the lookup table.
  *
  * One of these two schemes can be used for the projectors, depending if
- * there is more than a projector for each l, j pair. For now only 
- * norm-conserving pseudopotentials are supported, so the projectors will
- * be stored like for the pseudopotentials.
+ * there is more than a projector for each l, j pair. For now none is used,
+ * as the only format that includes the projector is the UPF one and there
+ * the ordering is not important. 
  *
  **/
