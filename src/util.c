@@ -66,3 +66,11 @@ int z_to_symbol(const double z, char *symbol){
 }
   
 
+double linear_extrapolation(const double x1, const double x2, const double f1, const double f2, const double x) {
+  double mm, f;
+
+  mm = (f2 - f1)/(x2 - x1);
+  f = f1 + mm*(x - x1);
+
+  return f;
+}

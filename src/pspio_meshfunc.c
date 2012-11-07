@@ -22,6 +22,7 @@
 #include <string.h>
 
 #include "pspio_meshfunc.h"
+#include "util.h"
 
 #if defined HAVE_CONFIG_H
 #include "config.h"
@@ -113,7 +114,19 @@ int pspio_meshfunc_eval(const pspio_meshfunc_t *func, const double r,
       double *f){
   ASSERT (func != NULL, PSPIO_ERROR);
 
-  *f = gsl_spline_eval(func->spl, r, func->acc);
+  // If the value of r is smaller than the first mesh point or if it is greater or equal to
+  // the last mesh point, then we use a linear extrapolation to evaluate the function at r.
+  if (r < func->mesh->r[0]) {
+    *f = linear_extrapolation(func->mesh->r[0], func->mesh->r[1], func->f[0], func->f[1], r);
+
+  } else if (r >= func->mesh->r[func->mesh->np-1]) {
+    int np = func->mesh->np;
+    *f = linear_extrapolation(func->mesh->r[np-2], func->mesh->r[np-1], func->f[np-2], func->f[np-1], r);
+
+  } else {
+    *f = gsl_spline_eval(func->spl, r, func->acc);
+
+  }
 
   return PSPIO_SUCCESS;
 }
@@ -121,9 +134,32 @@ int pspio_meshfunc_eval(const pspio_meshfunc_t *func, const double r,
 
 int pspio_meshfunc_eval_deriv(const pspio_meshfunc_t *func, const double r,
       double *fp){
+  double r1, r2, f1, f2;
+
   ASSERT (func != NULL, PSPIO_ERROR);  
 
-  *fp = gsl_spline_eval_deriv(func->spl, r, func->acc);
+  // If the value of r is smaller than the first mesh point or if it is greater or equal to
+  // the last mesh point, then we use a linear extrapolation to evaluate the function at r.
+  if (r < func->mesh->r[0]) {
+    r1 = func->mesh->r[0];
+    f1 = gsl_spline_eval_deriv(func->spl, r1, func->acc);
+    r2 = func->mesh->r[1];
+    f2 = gsl_spline_eval_deriv(func->spl, r2, func->acc);
+
+    *fp = linear_extrapolation(r1, r2, f1, f2, r);
+
+  } else if (r >= func->mesh->r[func->mesh->np-1]) {
+    r1 = func->mesh->r[func->mesh->np-1];
+    f1 = gsl_spline_eval_deriv(func->spl, r1, func->acc);
+    r2 = func->mesh->r[func->mesh->np-2];
+    f2 = gsl_spline_eval_deriv(func->spl, r2, func->acc);
+
+    *fp = linear_extrapolation(r1, r2, f1, f2, r);
+
+  } else {
+    *fp = gsl_spline_eval_deriv(func->spl, r, func->acc);
+
+  }
 
   return PSPIO_SUCCESS;
 }
@@ -131,9 +167,32 @@ int pspio_meshfunc_eval_deriv(const pspio_meshfunc_t *func, const double r,
 
 int pspio_meshfunc_eval_deriv2(const pspio_meshfunc_t *func, const double r,
       double *fpp){
-  ASSERT (func != NULL, PSPIO_ERROR);  
+  double r1, r2, f1, f2;
 
-  *fpp = gsl_spline_eval_deriv2(func->spl, r, func->acc);
+  ASSERT (func != NULL, PSPIO_ERROR);
+
+  // If the value of r is smaller than the first mesh point or if it is greater or equal to
+  // the last mesh point, then we use a linear extrapolation to evaluate the function at r.
+  if (r < func->mesh->r[0]) {
+    r1 = func->mesh->r[0];
+    f1 = gsl_spline_eval_deriv2(func->spl, r1, func->acc);
+    r2 = func->mesh->r[1];
+    f2 = gsl_spline_eval_deriv2(func->spl, r2, func->acc);
+
+    *fpp = linear_extrapolation(r1, r2, f1, f2, r);
+
+  } else if (r >= func->mesh->r[func->mesh->np-1]) {
+    r1 = func->mesh->r[func->mesh->np-1];
+    f1 = gsl_spline_eval_deriv2(func->spl, r1, func->acc);
+    r2 = func->mesh->r[func->mesh->np-2];
+    f2 = gsl_spline_eval_deriv2(func->spl, r2, func->acc);
+
+    *fpp = linear_extrapolation(r1, r2, f1, f2, r);
+
+  } else {
+    *fpp = gsl_spline_eval_deriv2(func->spl, r, func->acc);
+
+  }
 
   return PSPIO_SUCCESS;
 }
