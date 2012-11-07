@@ -142,24 +142,24 @@ const char *pspio_error_str(const int pspio_errorid);
  * @param[in] error_id: error code to set if condition is false
  */
 #define ASSERT(condition, error_id) \
-  if (!(condition)) {		    \
-    pspio_error_set(error_id); \
-    pspio_error_add(__FILE__, __LINE__); \
-    return error_id; \
-  } 
-
-
-/**
- * Error handler macro for fatal errors
- * @param[in] condition: condition to check
- * @param[in] error_id: error code to set before aborting
- */
-#define HANDLE_FATAL_ERROR(condition, error_id) \
   pspio_error_set(( condition ) ? error_id : PSPIO_SUCCESS); \
   if ( pspio_error_get() != PSPIO_SUCCESS ) { \
     pspio_error_show(pspio_error_get(), __FILE__, __LINE__); \
     exit(1); \
   }
+
+
+/**
+ * Error checker macro
+ * @param[in] condition: condition to check
+ * @param[in] error_id: error code to set before aborting
+ */
+#define CHECK_ERROR(condition, error_id) \
+  if (!(condition)) {		    \
+    pspio_error_set(error_id); \
+    pspio_error_add(__FILE__, __LINE__); \
+    return error_id; \
+  } 
 
 
 /**
@@ -184,5 +184,11 @@ const char *pspio_error_str(const int pspio_errorid);
     pspio_error_add(__FILE__, __LINE__); \
     return error_id; \
   }
+
+// FIXME: to be removed
+#define HANDLE_FATAL_ERROR(condition, error_id) \
+  printf("ERROR: macro HANDLE_FATAL_ERROR called from:\n  %s:%d\n", \
+    __FILE__, __LINE__); \
+  exit(1);
 
 #endif
