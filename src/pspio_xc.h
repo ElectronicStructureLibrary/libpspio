@@ -29,13 +29,7 @@
 #include "pspio_error.h"
 #include "pspio_mesh.h"
 #include "pspio_meshfunc.h"
-
-#ifdef HAVE_LIBXC
-#  include <xc.h>
-#  include <xc_funcs.h>
-#else
-#  include "pspio_xc_funcs.h"
-#endif
+#include "pspio_xc_funcs.h"
 
 /** 
  * values for NLCC scheme - could add possibilities for different schemes

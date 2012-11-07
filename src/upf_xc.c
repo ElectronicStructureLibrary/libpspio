@@ -24,18 +24,11 @@
 
 #include "pspio_error.h"
 #include "libxccodes.h"
+#include "pspio_xc_funcs.h"
 
 #if defined HAVE_CONFIG_H
 #include "config.h"
 #endif
-
-#ifdef HAVE_LIBXC
-#  include <xc.h>
-#  include <xc_funcs.h>
-#else
-#  include "pspio_xc_funcs.h"
-#endif
-
 
 int upf_to_libxc (const char xc_string[20], int *exchange, int *correlation){
   char exch[]  = "     ";

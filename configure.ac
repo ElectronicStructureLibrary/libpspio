@@ -75,17 +75,6 @@ AC_ARG_WITH([gsl-incs],
 AC_ARG_WITH([gsl-libs],
   AC_HELP_STRING([--with-gsl-libs],[Link flags for the GSL library]))
 
-# LibXC - Optional support
-AC_ARG_ENABLE([libxc],
-  AC_HELP_STRING([--enable-libxc],[Enable support for the LibXC library (default: disabled)]))
-AC_ARG_WITH([libxc-incs],
-  AC_HELP_STRING([--with-libxc-incs],[Includes for the LibXC library]))
-AC_ARG_WITH([libxc-libs],
-  AC_HELP_STRING([--with-libxc-libs],[Link flags for the LibXC library]))
-if test "${enable_libxc}" = ""; then
-  enable_libxc="no"
-fi
-
 # XML - Optional support
 AC_ARG_ENABLE([xml],
   AC_HELP_STRING([--enable-xml],[Enable support for XML (default: disabled)]))
@@ -231,6 +220,7 @@ fi
 # Check that all required features are there
 #
 
+# GNU Scientific Library (required)
 PIO_CHECK_GSL
 if test "${pio_gsl_ok}" = "yes"; then
   CPPFLAGS="${CPPFLAGS} ${pio_gsl_incs}"
@@ -242,29 +232,7 @@ else
   AC_ERROR([GSL support does not work])
 fi
 
-# Warning: LibXC requires -lm, but it is already set when checking for GSL.
-if test "${enable_libxc}" = "yes"; then
-  PIO_CHECK_LIBXC
-  if test "${pio_libxc_ok}" = "yes"; then
-    AC_DEFINE([HAVE_LIBXC],1,
-      [Set to 1 if you have LibXC support.])
-    CPPFLAGS="${CPPFLAGS} ${pio_libxc_incs}"
-    LIBS="${pio_libxc_libs} ${LIBS}"
-  else
-    AC_ERROR([LibXC support does not work])
-  fi
-  if test "${enable_fortran}" = "yes"; then
-    PIO_CHECK_LIBXC_FORTRAN
-    if test "${pio_libxc_fortran_ok}" = "yes"; then
-      AC_DEFINE([HAVE_LIBXC_FORTRAN],1,
-        [Set to 1 if you have LibXC Fortran support.])
-      FCFLAGS="${FCFLAGS} ${pio_libxc_incs}"
-    fi
-  fi
-else
-  pio_core_incs="${pio_core_incs} -I\$(abs_top_srcdir)/libxc"
-fi
-
+# XML (optional)
 if test "${enable_xml}" = "yes"; then
   PIO_CHECK_XML
   if test "${pio_xml_ok}" = "yes"; then
@@ -284,7 +252,6 @@ fi
 #
 
 AC_MSG_NOTICE([Fortran  : ${enable_fortran}])
-AC_MSG_NOTICE([LibXC    : ${enable_libxc}])
 AC_MSG_NOTICE([XML      : ${enable_xml}])
 AC_MSG_NOTICE([])
 AC_MSG_NOTICE([CPP      = ${CPP}])
@@ -298,5 +265,4 @@ fi
 AC_MSG_NOTICE([LDFLAGS  = ${LDFLAGS}])
 AC_MSG_NOTICE([LIBS     = ${LIBS}])
 
-AC_OUTPUT([Makefile libxc/Makefile src/Makefile src/fortran/Makefile])
-
+AC_OUTPUT([Makefile src/Makefile src/fortran/Makefile])

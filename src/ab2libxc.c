@@ -24,17 +24,12 @@
 
 #include "pspio_error.h"
 #include "libxccodes.h"
+#include "pspio_xc_funcs.h"
 
 #if defined HAVE_CONFIG_H
 #include "config.h"
 #endif
 
-#ifdef HAVE_LIBXC
-#  include <xc.h>
-#  include <xc_funcs.h>
-#else
-#  include "pspio_xc_funcs.h"
-#endif
 
 /**
 * subroutine converts abinit pspxc code to libxc codes
@@ -46,13 +41,6 @@ int ab2libxc (const int pspxc, int exchange, int correlation){
 
 // local vars
   int xccode[2];
-#ifdef HAVE_LIBXC
-  int ii;
-  int ncorr;
-  int nexch;
-  int nxocc;
-  xc_func_type func;
-#endif
 
 // inferred from abinit web site http://www.abinit.org/documentation/helpfiles/for-v6.8/input_variables/varbas.html#ixc
 
@@ -62,36 +50,10 @@ int ab2libxc (const int pspxc, int exchange, int correlation){
     xccode[1] = abs(pspxc) % 1000;
     xccode[0] = (int) ((abs(pspxc) - xccode[0]) / 1000);
 
-/// if we have libxc we can call 
-#ifdef HAVE_LIBXC
-    nexch = 0;
-    ncorr = 0;
-
-    for (ii=0; ii<2; ii++) {
-      ASSERT(xc_func_init(&func, xccode[ii], XC_UNPOLARIZED) == 0,
-        PSPIO_EVALUE)
-      switch(func.info->kind) {
-        case XC_EXCHANGE:
-          nexch++;
-          (*psp_data).exchange = xccode[ii];
-          break;
-        case XC_CORRELATION:
-          ncorr++;
-          (*psp_data).correlation = xccode[ii];
-          break;
-      }
-      xc_func_end(&func);
-    }
-
-    ASSERT(nexch <= 1, PSPIO_EVALUE);
-    ASSERT(ncorr <= 1, PSPIO_EVALUE);
-
-#else
-/// for the moment, presume exchange is first in abinit symbol
+    /// for the moment, presume exchange is first in abinit symbol
     exchange = xccode[0];
     correlation = xccode[1];
-#endif
-    
+
     /// we are done
     return PSPIO_SUCCESS;
   }
