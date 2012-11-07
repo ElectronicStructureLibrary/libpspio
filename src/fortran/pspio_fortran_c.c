@@ -347,3 +347,16 @@ CC_FORTRAN_INT FC_FUNC_(pspio_f90_error_flush, PSPIO_F90_ERROR_FLUSH)
 {
   return (CC_FORTRAN_INT) pspio_error_flush();
 }
+
+
+/**********************************************************************
+ * pspio_info                                                         *
+ **********************************************************************/
+
+CC_FORTRAN_INT FC_FUNC_(pspio_f90_version, PSPIO_F90_VERSION)
+ (int *major, int *minor, int *micro)
+{
+  return (CC_FORTRAN_INT)  pspio_version(major, minor, micro);
+}
+
+

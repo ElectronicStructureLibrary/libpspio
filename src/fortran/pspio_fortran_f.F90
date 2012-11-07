@@ -284,6 +284,13 @@ module pspio_f90_lib_m
     end function pspio_f90_error_flush
   end interface
 
+  ! pspio_info
+  interface
+    integer function pspio_f90_version(major, minor, micro)
+      integer, intent(out) :: major, minor, micro
+    end function pspio_f90_version
+  end interface
+
 contains
 
   integer function pspio_f90_xc_has_nlcc(xc, has_nlcc)
