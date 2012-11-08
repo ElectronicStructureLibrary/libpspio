@@ -90,7 +90,7 @@ int pspio_pspdata_read(pspio_pspdata_t **pspdata, const char *file_name,
   fp = fopen(file_name, "r");
   CHECK_ERROR(fp != NULL, PSPIO_ENOFILE);
 
-  //read from file
+  //read from file (NOTE: should always rewind the file before trying to read it)
   ierr = PSPIO_EFILE_FORMAT;
   if (ierr && (file_format == ABINIT_4   || file_format == UNKNOWN) ) ierr = PSPIO_ENOSUPPORT;
   if (ierr && (file_format == ABINIT_5   || file_format == UNKNOWN) ) ierr = PSPIO_ENOSUPPORT;
@@ -99,8 +99,14 @@ int pspio_pspdata_read(pspio_pspdata_t **pspdata, const char *file_name,
   if (ierr && (file_format == ABINIT_GTH || file_format == UNKNOWN) ) ierr = PSPIO_ENOSUPPORT;
   if (ierr && (file_format == ATOM       || file_format == UNKNOWN) ) ierr = PSPIO_ENOSUPPORT;
   if (ierr && (file_format == SIESTA     || file_format == UNKNOWN) ) ierr = PSPIO_ENOSUPPORT;
-  if (ierr && (file_format == FHI98PP    || file_format == UNKNOWN) ) ierr = pspio_fhi_read(fp, pspdata);
-  if (ierr && (file_format == UPF        || file_format == UNKNOWN) ) ierr = pspio_upf_read(fp, pspdata);
+  if (ierr && (file_format == FHI98PP    || file_format == UNKNOWN) ) {
+    rewind(fp);
+    ierr = pspio_fhi_read(fp, pspdata);
+  }
+  if (ierr && (file_format == UPF        || file_format == UNKNOWN) ) {
+    rewind(fp);
+    ierr = pspio_upf_read(fp, pspdata);
+  }
 
   // close file
   CHECK_ERROR(fclose(fp) == 0, PSPIO_EIO);

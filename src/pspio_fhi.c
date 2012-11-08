@@ -42,9 +42,6 @@ int pspio_fhi_read(FILE *fp, pspio_pspdata_t **pspdata){
   double *wf, *r, *v, *rho;
   pspio_qn_t *qn = NULL;
 
-  // Make sure we are at the beginning of the file
-  rewind(fp);
-
   // Read header
   CHECK_ERROR(fgets(line, MAX_STRLEN, fp) != NULL, PSPIO_EIO);
   CHECK_ERROR(sscanf(line, "%lf %d", &(*pspdata)->zvalence, &(*pspdata)->n_potentials ) == 2, PSPIO_EIO);
