@@ -148,7 +148,7 @@ int pspio_fhi_read(FILE *fp, pspio_pspdata_t **pspdata){
 
 int pspio_fhi_write(FILE *fp, const pspio_pspdata_t *pspdata){
   int i, l, is, ir, has_nlcc;
-  double wf, v, r;
+  double wf, v, r, j;
 
   ASSERT(pspdata != NULL, PSPIO_ERROR);
 
@@ -168,7 +168,10 @@ int pspio_fhi_write(FILE *fp, const pspio_pspdata_t *pspdata){
 
     i = LJ_TO_I(l,0.0);
     is = pspdata->qn_to_istate[0][i];
-    
+
+    HANDLE_FUNC_ERROR(pspio_state_get_j(pspdata->states[is], &j));
+    CHECK_ERROR(j == 0.0, PSPIO_EVALUE); // This format is not suitable for j-dependent pseudos
+
     for (ir=0; ir<pspdata->mesh->np; ir++) {
       r = pspdata->mesh->r[ir];
       HANDLE_FUNC_ERROR(pspio_state_wf_eval(pspdata->states[is], r, &wf));
