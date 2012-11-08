@@ -26,7 +26,7 @@
 #include <stdio.h>
 #include <math.h>
 #include "pspio_error.h"
-#include "libxccodes.h"
+#include "pspio_xc_funcs.h"
 #include "pspio_pspdata.h"
 #include "util.h"
 

@@ -67,13 +67,13 @@ pio_core_hdrs = \
   pspio_qn.h \
   pspio_state.h \
   pspio_upf.h \
+  pspio_xc_funcs.h \
   pspio_xc.h
 
 
 # Internal C headers - keep this in alphabetical order
 pio_hidden_hdrs = \
   abinit.h \
-  libxccodes.h \
   string_f.h \
   test_common.h \
   upf.h \
