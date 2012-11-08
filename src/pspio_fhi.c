@@ -150,7 +150,12 @@ int pspio_fhi_write(FILE *fp, const pspio_pspdata_t *pspdata){
   int i, l, is, ir, has_nlcc;
   double wf, v, r;
 
-  CHECK_ERROR(pspdata != NULL, PSPIO_ERROR);
+  ASSERT(pspdata != NULL, PSPIO_ERROR);
+
+  // If one considers that the specifications of this format is the way how FHIPP98 writes the
+  // data, then only meshes of type log1 should be allowed. For the moment, we will just
+  // check that this is the case.
+  ASSERT(pspdata->mesh->type == PSPIO_MESH_LOG1, PSPIO_ERROR);  
 
   // Write header
   fprintf(fp, "%20.14E   %d\n", pspdata->zvalence, pspdata->l_max+1);
