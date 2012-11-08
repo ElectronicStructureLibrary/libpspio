@@ -87,7 +87,7 @@ int pspio_projector_free(pspio_projector_t **projector){
  * Atomic routines                                                    *
  **********************************************************************/
 
-int pspio_projector_eval(pspio_projector_t *projector, const double r,
+int pspio_projector_eval(const pspio_projector_t *projector, const double r,
 			 double *p){
   ASSERT(projector != NULL, PSPIO_ERROR);
 
@@ -97,7 +97,7 @@ int pspio_projector_eval(pspio_projector_t *projector, const double r,
 }
 
 
-int pspio_projector_get_energy(pspio_projector_t *projector, double *e) {
+int pspio_projector_get_energy(const pspio_projector_t *projector, double *e) {
   ASSERT(projector != NULL, PSPIO_ERROR);
 
   *e = projector->energy;
@@ -106,7 +106,7 @@ int pspio_projector_get_energy(pspio_projector_t *projector, double *e) {
 }
 
 
-int pspio_projector_get_l(pspio_projector_t *projector, int *l) {
+int pspio_projector_get_l(const pspio_projector_t *projector, int *l) {
   ASSERT(projector != NULL, PSPIO_ERROR);
 
   HANDLE_FUNC_ERROR(pspio_qn_get_l(projector->qn, l));
@@ -115,7 +115,7 @@ int pspio_projector_get_l(pspio_projector_t *projector, int *l) {
 }
 
 
-int pspio_projector_get_j(pspio_projector_t *projector, double *j) {
+int pspio_projector_get_j(const pspio_projector_t *projector, double *j) {
   ASSERT(projector != NULL, PSPIO_ERROR);
 
   HANDLE_FUNC_ERROR(pspio_qn_get_j(projector->qn, j));

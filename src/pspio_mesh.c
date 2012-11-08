@@ -213,7 +213,7 @@ int pspio_mesh_free(pspio_mesh_t **mesh){
  * Atomic routines                                                    *
  **********************************************************************/
 
-int pspio_mesh_get_np(pspio_mesh_t *mesh, int *np) {
+int pspio_mesh_get_np(const pspio_mesh_t *mesh, int *np) {
   ASSERT(mesh != NULL, PSPIO_ERROR);
 
   *np = mesh->np;
@@ -221,7 +221,7 @@ int pspio_mesh_get_np(pspio_mesh_t *mesh, int *np) {
   return PSPIO_SUCCESS;
 }
 
-int pspio_mesh_get_r(pspio_mesh_t *mesh, double *r){
+int pspio_mesh_get_r(const pspio_mesh_t *mesh, double *r){
   int i;
 
   ASSERT(mesh != NULL, PSPIO_ERROR);

@@ -92,7 +92,7 @@ int pspio_state_set(pspio_state_t **state, const double eigenval,
  * table[state->qn->n][state->qn->l + (int)states->qn->j]
  * @note The table is allocated inside this function.
  */
-int pspio_states_lookup_table(const int n_states, pspio_state_t **states,
+int pspio_states_lookup_table(const int n_states, const pspio_state_t **states,
 			      int ***table);
 
 

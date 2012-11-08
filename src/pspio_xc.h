@@ -119,7 +119,7 @@ int pspio_xc_free(pspio_xc_t **xc);
  * @param[out] correlation: identifier
  * @return error code
  */
-int pspio_xc_get_id(pspio_xc_t *xc, int *exchange, int *correlation);
+int pspio_xc_get_id(const pspio_xc_t *xc, int *exchange, int *correlation);
 
 /**
  * Returns if xc has non-linear core-corrections
@@ -127,7 +127,7 @@ int pspio_xc_get_id(pspio_xc_t *xc, int *exchange, int *correlation);
  * @param[out] has_nlcc: true if xc has nlcc, false otherwise
  * @return error code
  */
-int pspio_xc_has_nlcc(pspio_xc_t *xc, int *has_nlcc);
+int pspio_xc_has_nlcc(const pspio_xc_t *xc, int *has_nlcc);
 
 /**
  * Returns the value of the core density at an arbitrary point

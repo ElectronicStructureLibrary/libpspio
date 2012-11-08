@@ -100,7 +100,7 @@ int pspio_projector_free(pspio_projector_t **projector);
  * @return error code
  * @note The projector pointer has to be fully set.
  */
-int pspio_projector_eval(pspio_projector_t *projector, const double r,
+int pspio_projector_eval(const pspio_projector_t *projector, const double r,
 			 double *p);
 
 /**
@@ -111,7 +111,7 @@ int pspio_projector_eval(pspio_projector_t *projector, const double r,
  * @return error code
  * @note The projector pointer has to be fully set.
  */
-int pspio_projector_get_energy(pspio_projector_t *projector, double *e);
+int pspio_projector_get_energy(const pspio_projector_t *projector, double *e);
 
 /**
  * Returns the angular momentum of the projector
@@ -121,7 +121,7 @@ int pspio_projector_get_energy(pspio_projector_t *projector, double *e);
  * @return error code
  * @note The projector pointer has to be fully set.
  */
-int pspio_projector_get_l(pspio_projector_t *projector, int *l);
+int pspio_projector_get_l(const pspio_projector_t *projector, int *l);
 
 /**
  * Returns the total angular momentum of the projector
@@ -131,6 +131,6 @@ int pspio_projector_get_l(pspio_projector_t *projector, int *l);
  * @return error code
  * @note The projector pointer has to be fully set.
  */
-int pspio_projector_get_j(pspio_projector_t *projector, double *j);
+int pspio_projector_get_j(const pspio_projector_t *projector, double *j);
 
 #endif

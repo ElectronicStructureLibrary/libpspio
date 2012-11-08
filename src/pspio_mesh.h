@@ -156,7 +156,7 @@ int pspio_mesh_free(pspio_mesh_t **mesh);
  * @param[out] np: the number of points
  * @return error code
  */
-int pspio_mesh_get_np(pspio_mesh_t *mesh, int *np);
+int pspio_mesh_get_np(const pspio_mesh_t *mesh, int *np);
 
 
 /**
@@ -166,6 +166,6 @@ int pspio_mesh_get_np(pspio_mesh_t *mesh, int *np);
  * @param[out] r: pointer to array of points
  * @return error code
  */
-int pspio_mesh_get_r(pspio_mesh_t *mesh, double *r);
+int pspio_mesh_get_r(const pspio_mesh_t *mesh, double *r);
 
 #endif
