@@ -23,8 +23,7 @@
 #include <string.h>
 
 #include "pspio_error.h"
-#include "libxccodes.h"
-#include "pspio_xc_funcs.h"
+#include "pspio_xc.h"
 
 #if defined HAVE_CONFIG_H
 #include "config.h"

@@ -67,8 +67,7 @@ pio_core_hdrs = \
   pspio_qn.h \
   pspio_state.h \
   pspio_upf.h \
-  pspio_xc.h \
-  pspio_xc_funcs.h
+  pspio_xc.h
 
 
 # Internal C headers - keep this in alphabetical order
