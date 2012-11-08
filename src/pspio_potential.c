@@ -1,5 +1,5 @@
 /*
- Copyright (C) 2011 J. Alberdi, M. Oliveira, Y. Pouillon, and M. Verstraete
+ Copyright (C) 2011-2012 J. Alberdi, M. Oliveira, Y. Pouillon, and M. Verstraete
 
  This program is free software; you can redistribute it and/or modify
  it under the terms of the GNU Lesser General Public License as published by
@@ -55,16 +55,6 @@ int pspio_potential_alloc(pspio_potential_t **potential, const int np){
     pspio_potential_free(potential);
     HANDLE_ERROR(ierr);
   }
-
-  return PSPIO_SUCCESS;
-}
-
-
-int pspio_potential_get(pspio_potential_t **potential, const double r,
-      double *value) {
-  ASSERT(((*potential) != NULL) && ((*potential)->v != NULL), PSPIO_ERROR);
-
-  HANDLE_FUNC_ERROR(pspio_meshfunc_eval((*potential)->v, r, value));
 
   return PSPIO_SUCCESS;
 }

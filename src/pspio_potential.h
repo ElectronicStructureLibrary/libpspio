@@ -1,5 +1,5 @@
 /*
- Copyright (C) 2011 J. Alberdi, M. Oliveira, Y. Pouillon, and M. Verstraete
+ Copyright (C) 2011-2012 J. Alberdi, M. Oliveira, Y. Pouillon, and M. Verstraete
 
  This program is free software; you can redistribute it and/or modify
  it under the terms of the GNU Lesser General Public License as published by
@@ -58,18 +58,6 @@ typedef struct{
  * @note np should be larger than 1.
  */
 int pspio_potential_alloc(pspio_potential_t **potential, const int np);
-
-
-/**
- * Gets the potential value at a given radius.
- * @param[in] potential: potential structure to probe
- * @param[in] r: radius
- * @param[out] value: value of the potential
- * @return error code
- * @note The potential pointer has to be fully set first.
- */
-int pspio_potential_get(pspio_potential_t **potential, const double r,
-      double *value);
 
 
 /**
