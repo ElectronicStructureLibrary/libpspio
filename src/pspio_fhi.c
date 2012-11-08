@@ -150,14 +150,14 @@ int pspio_fhi_read(FILE *fp, pspio_pspdata_t **pspdata){
 
 
 int pspio_fhi_write(FILE *fp, const pspio_pspdata_t *pspdata){
-  int i, l, is, ir;
+  int i, l, is, ir, has_nlcc;
   double wf, v, r;
 
   CHECK_ERROR(pspdata != NULL, PSPIO_ERROR);
 
   // Write header
   fprintf(fp, "%20.14E   %d\n", pspdata->zvalence, pspdata->l_max+1);
-  fprintf(fp, "  0.0000    0.0000    0.0000   0.0000\n");
+  fprintf(fp, " 0.0000    0.0000    0.0000   0.0000\n");
   for (i=0; i<9; i++)   fprintf(fp, "  0.0000    .00e+00   .00e+00\n");
 
   // Write mesh, pseudopotentials, and wavefunctions
@@ -178,7 +178,24 @@ int pspio_fhi_write(FILE *fp, const pspio_pspdata_t *pspdata){
 
   }
 
-  // TODO: Write non-linear core corrections
-  
+  // Write non-linear core corrections
+  HANDLE_FUNC_ERROR(pspio_xc_has_nlcc(pspdata->xc, &has_nlcc));
+  if (has_nlcc) {
+    pspio_meshfunc_t *core_dens = NULL;
+    double cd, cdp, cdpp;
+
+    HANDLE_FUNC_ERROR(pspio_xc_nlcc_get(pspdata->xc, &core_dens));
+
+    for (ir=0; ir<pspdata->mesh->np; ir++) {
+      r = pspdata->mesh->r[ir];
+      HANDLE_FUNC_ERROR(pspio_meshfunc_eval(core_dens, r, &cd));
+      HANDLE_FUNC_ERROR(pspio_meshfunc_eval_deriv(core_dens, r, &cdp));
+      HANDLE_FUNC_ERROR(pspio_meshfunc_eval_deriv2(core_dens, r, &cdpp));
+      cd *= M_PI*4.0; cdp *= M_PI*4.0; cdpp *= M_PI*4.0;
+
+      fprintf(fp, " %18.12E %18.12E %18.12E %18.12E\n", r, cd, cdp, cdpp);
+    }
+  }
+
   return PSPIO_SUCCESS;
 }
