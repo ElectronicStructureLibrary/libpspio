@@ -99,10 +99,9 @@ int pspio_mesh_copy(pspio_mesh_t **dst, const pspio_mesh_t *src){
 int pspio_mesh_init_from_points(pspio_mesh_t **mesh, const double *r, 
 				const double *rab) {
   int i;
+  double tol = 1e-15;
 
   ASSERT(*mesh != NULL, PSPIO_ERROR);
-  //ASSERT(sizeof(r) / sizeof(double) == (*mesh)->np, PSPIO_ERROR);
-  //ASSERT(sizeof(rab) / sizeof(double) == (*mesh)->np, PSPIO_ERROR);
 
   memcpy((*mesh)->r, r, (*mesh)->np * sizeof(double));
   if (rab != NULL) {
@@ -112,11 +111,11 @@ int pspio_mesh_init_from_points(pspio_mesh_t **mesh, const double *r,
   // Try linear mesh
   (*mesh)->a = r[1] - r[2];
   (*mesh)->b = r[0];
-  if (fabs(r[(*mesh)->np] - (*mesh)->np * (*mesh)->a + (*mesh)->b) < 1e-16) {
+  if (fabs(r[2] - (3.0*(*mesh)->a + (*mesh)->b)) < tol) {
     (*mesh)->type = PSPIO_MESH_LINEAR;
     for (i=0; i<(*mesh)->np; i++) {
       if (rab != NULL) {
-	CHECK_ERROR(fabs(rab[i] - (*mesh)->a) < 1e-16, PSPIO_EVALUE);
+	CHECK_ERROR(fabs(rab[i] - (*mesh)->a) < tol, PSPIO_EVALUE);
       } else {
 	(*mesh)->rab[i] = (*mesh)->a;
       }
@@ -127,11 +126,11 @@ int pspio_mesh_init_from_points(pspio_mesh_t **mesh, const double *r,
   // Try log1 mesh
   (*mesh)->a = log(r[1]/r[0]);
   (*mesh)->b = r[0]/exp((*mesh)->a);
-  if (fabs(r[(*mesh)->np] - (*mesh)->b*exp((*mesh)->a*(*mesh)->np)) < 1e-16 ) {
+  if (fabs(r[2] - ((*mesh)->b*exp((*mesh)->a*3.0))) < tol ) {
     (*mesh)->type = PSPIO_MESH_LOG1;
     for (i=0; i<(*mesh)->np; i++) {
       if (rab != NULL) {
-	CHECK_ERROR(fabs(rab[i] - (*mesh)->a*r[i]) < 1e-16, PSPIO_EVALUE);
+	CHECK_ERROR(fabs(rab[i] - (*mesh)->a*r[i]) < tol, PSPIO_EVALUE);
       } else {
 	(*mesh)->rab[i] = (*mesh)->a*r[i];
       }
@@ -142,11 +141,11 @@ int pspio_mesh_init_from_points(pspio_mesh_t **mesh, const double *r,
   // Try log2 mesh
   (*mesh)->a = log(r[1]/r[0] - 1.0);
   (*mesh)->b = r[0]/(exp((*mesh)->a) - 1.0);
-  if (fabs(r[(*mesh)->np] - (*mesh)->b*(exp((*mesh)->a*(*mesh)->np) - 1.0)) < 1e-16 ) {
+  if (fabs(r[2] - (*mesh)->b*(exp((*mesh)->a*3.0 - 1.0))) < tol ) {
     (*mesh)->type = PSPIO_MESH_LOG2;
     for (i=0; i<(*mesh)->np; i++) {
       if (rab != NULL) {
-	CHECK_ERROR(fabs(rab[i] - (*mesh)->a*r[i]) < 1e-16, PSPIO_EVALUE);
+	CHECK_ERROR(fabs(rab[i] - (*mesh)->a*r[i]) < tol, PSPIO_EVALUE);
       } else {
 	(*mesh)->rab[i] = (*mesh)->a*r[i];
       }
