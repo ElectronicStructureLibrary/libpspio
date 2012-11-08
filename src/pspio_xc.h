@@ -88,13 +88,15 @@ int pspio_xc_set(pspio_xc_t **xc, const int exchange, const int correlation);
  * Sets the xc data related to NLCC.
  * @param[in,out] xc: xc structure to set
  * @param[in] mesh: pointer to radial mesh
- * @param[in] core_dens: values of the core density on the mesh
+ * @param[in] cd: values of the core density on the mesh
+ * @param[in] cdp: values of the core density first derivative on the mesh (optional)
+ * @param[in] cdpp: values of the core density second derivative on the mesh (optional)
  * @return error code
  * @note The xc pointer has to be allocated first with the pspio_xc_alloc
  *       method.
  */
 int pspio_xc_nlcc_set(pspio_xc_t **xc, const pspio_mesh_t *mesh,
-		      const double *core_dens);
+		      const double *cd, const double *cdp, const double *cdpp);
 
 
 /**

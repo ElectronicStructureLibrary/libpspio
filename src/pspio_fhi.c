@@ -38,8 +38,8 @@
 int pspio_fhi_read(FILE *fp, pspio_pspdata_t **pspdata){
   char line[MAX_STRLEN];
   int i, l, np, ir, has_nlcc;
-  double r12, cd, cdp, cdpp;
-  double *wf, *r, *v, *rho;
+  double r12;
+  double *wf, *r, *v;
   pspio_qn_t *qn = NULL;
 
   // Read header
@@ -113,27 +113,38 @@ int pspio_fhi_read(FILE *fp, pspio_pspdata_t **pspdata){
   //Non-linear core-corrections
   has_nlcc = (fgets(line, MAX_STRLEN, fp) != NULL);
   if (has_nlcc) {
+    double *cd, *cdp, *cdpp;
+    double cdi, cdpi, cdppi;
+
     HANDLE_FUNC_ERROR(pspio_xc_alloc(&(*pspdata)->xc, PSPIO_NLCC_FHI, np));
 
     //Allocate memory
-    rho = (double *)malloc(np*sizeof(double));
-    CHECK_ERROR(rho != NULL, PSPIO_ENOMEM);
+    cd = (double *)malloc(np*sizeof(double));
+    CHECK_ERROR(cd != NULL, PSPIO_ENOMEM);
 
-    //Read core rho
+    cdp = (double *)malloc(np*sizeof(double));
+    CHECK_ERROR(cdp != NULL, PSPIO_ENOMEM);
+
+    cdpp = (double *)malloc(np*sizeof(double));
+    CHECK_ERROR(cdpp != NULL, PSPIO_ENOMEM);
+
+    //Read core density
     for (ir=0; ir<np; ir++) {
       if (ir != 0) {
 	CHECK_ERROR(fgets(line, MAX_STRLEN, fp) != NULL, PSPIO_EIO);
       }
 
-      CHECK_ERROR(sscanf(line, "%lf %lf %lf %lf", &r12, &cd, &cdp, &cdpp) == 4, PSPIO_EIO);
-      rho[ir] = cd/M_PI/4.0;
+      CHECK_ERROR(sscanf(line, "%lf %lf %lf %lf", &r12, &cd[ir], &cdp[ir], &cdpp[ir]) == 4, PSPIO_EIO);
+      cd[ir] /= (M_PI*4.0); cdp[ir] /= (M_PI*4.0); cdpp[ir] /= (M_PI*4.0);
     }
 
     //Store the non-linear core corrections in the pspdata structure
-    HANDLE_FUNC_ERROR(pspio_xc_nlcc_set(&(*pspdata)->xc, (*pspdata)->mesh, rho));
+    HANDLE_FUNC_ERROR(pspio_xc_nlcc_set(&(*pspdata)->xc, (*pspdata)->mesh, cd, cdp, cdpp));
 
     //Free memory
-    free(rho);
+    free(cd); 
+    free(cdp); 
+    free(cdpp);
 
   } else {
     HANDLE_FUNC_ERROR(pspio_xc_alloc(&(*pspdata)->xc, PSPIO_NLCC_NONE, np));

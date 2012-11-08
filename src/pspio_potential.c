@@ -65,7 +65,7 @@ int pspio_potential_set(pspio_potential_t **potential, const pspio_qn_t *qn, con
   ASSERT ((*potential) != NULL, PSPIO_ERROR);
 
   HANDLE_FUNC_ERROR(pspio_qn_copy(&(*potential)->qn, qn));
-  HANDLE_FUNC_ERROR(pspio_meshfunc_set(&(*potential)->v, mesh, v));
+  HANDLE_FUNC_ERROR(pspio_meshfunc_set(&(*potential)->v, mesh, v, NULL, NULL));
 
   return PSPIO_SUCCESS;
 }

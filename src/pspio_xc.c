@@ -82,8 +82,8 @@ int pspio_xc_set(pspio_xc_t **xc, const int exchange, const int correlation){
 }
 
 
-int pspio_xc_nlcc_set(pspio_xc_t **xc, const pspio_mesh_t *mesh, const double *core_dens){
-  HANDLE_FUNC_ERROR(pspio_meshfunc_set(&(*xc)->core_dens, mesh, core_dens));
+int pspio_xc_nlcc_set(pspio_xc_t **xc, const pspio_mesh_t *mesh, const double *cd, const double *cdp, const double *cdpp){
+  HANDLE_FUNC_ERROR(pspio_meshfunc_set(&(*xc)->core_dens, mesh, cd, cdp, cdpp));
 
   return PSPIO_SUCCESS;
 }

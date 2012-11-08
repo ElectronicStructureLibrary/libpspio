@@ -34,7 +34,8 @@
 int main(void) {
   const double r[] = {0.0, 0.05, 0.10, 0.20, 0.40, 0.65, 0.85, 1.00};
   const double rab[] = {0.05, 0.05, 0.20, 0.20, 0.20, 0.20, 0.05, 0.05};
-  const double f[] = {1.0, 2.0, 4.0, 8.0, 16.0, 32.0, 64.0, 128.0};
+  const double f[] = {0.0, 1.0, 4.0, 16.0, 64.0, 169.0, 289.0, 400.0};
+  const double fp[] = {0.0, 20.0, 40.0, 80.0, 160.0, 260.0, 340.0, 400.0};
   const double g[] = {0.0, 1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0};
   const double a = 1.0;
   const double b = 2.0;
@@ -43,7 +44,7 @@ int main(void) {
   int eid = PSPIO_SUCCESS;
   double feval;
   pspio_mesh_t *m1 = NULL, *m2 = NULL;
-  pspio_meshfunc_t *f1 = NULL, *f2 = NULL;
+  pspio_meshfunc_t *f1 = NULL, *f2 = NULL, *f3 = NULL;
 
   /* Display basic information */
   DEBUG_PRINT("%s - test_meshfunc\nReport bugs to %s\n\n", PACKAGE_STRING,
@@ -72,26 +73,29 @@ int main(void) {
   DEBUG_PRINT("test_meshfunc: creating f2\n");
   eid = pspio_meshfunc_alloc(&f2, np);
   eid = pspio_error_flush();
-  DEBUG_PRINT("test_meshfunc: destroying f2\n");
-  eid = pspio_meshfunc_free(&f2);
+  DEBUG_PRINT("test_meshfunc: creating f3\n");
+  eid = pspio_meshfunc_alloc(&f3, np);
+  eid = pspio_error_flush();
+  DEBUG_PRINT("test_meshfunc: destroying f3\n");
+  eid = pspio_meshfunc_free(&f3);
   eid = pspio_error_flush();
   DEBUG_PRINT("\n");
 
   /* Check setting of mesh functions */
   DEBUG_PRINT("test_meshfunc: setting f1\n");
-  eid = pspio_meshfunc_set(&f1, m1, f);
+  eid = pspio_meshfunc_set(&f1, m1, f, NULL, NULL);
+  eid = pspio_error_flush();
+  DEBUG_PRINT("test_meshfunc: setting f2 with explicit derivative\n");
+  eid = pspio_meshfunc_set(&f1, m1, f, fp, NULL);
   eid = pspio_error_flush();
   DEBUG_PRINT("\n");
 
   /* Check copy of mesh functions */
-  DEBUG_PRINT("test_meshfunc: copying f1 to a NULL f2\n");
+  DEBUG_PRINT("test_meshfunc: copying f1 to a NULL f3\n");
   eid = pspio_meshfunc_copy(&f2, f1);
   eid = pspio_error_flush();
-  DEBUG_PRINT("test_meshfunc: copying f1 to a non-empty f2\n");
+  DEBUG_PRINT("test_meshfunc: copying f1 to a non-empty f3\n");
   eid = pspio_meshfunc_copy(&f2, f1);
-  eid = pspio_error_flush();
-  DEBUG_PRINT("test_meshfunc: setting f2\n");
-  eid = pspio_meshfunc_set(&f2, m2, g);
   eid = pspio_error_flush();
   DEBUG_PRINT("\n");
 
@@ -100,12 +104,24 @@ int main(void) {
   eid = pspio_meshfunc_eval(f1, r[6], &feval);
   eid = pspio_error_flush();
   DEBUG_PRINT("test_meshfunc: result=%f\n", feval);
+  DEBUG_PRINT("test_meshfunc: evaluating f2 at r=%f\n", r[6]);
+  eid = pspio_meshfunc_eval(f2, r[6], &feval);
+  eid = pspio_error_flush();
+  DEBUG_PRINT("test_meshfunc: result=%f\n", feval);
   DEBUG_PRINT("test_meshfunc: evaluating first derivative of f1 at r=%f\n", r[6]);
   eid = pspio_meshfunc_eval_deriv(f1, r[6], &feval);
   eid = pspio_error_flush();
   DEBUG_PRINT("test_meshfunc: result=%f\n", feval);
+  DEBUG_PRINT("test_meshfunc: evaluating first derivative of f2 at r=%f\n", r[6]);
+  eid = pspio_meshfunc_eval_deriv(f2, r[6], &feval);
+  eid = pspio_error_flush();
+  DEBUG_PRINT("test_meshfunc: result=%f\n", feval);
   DEBUG_PRINT("test_meshfunc: evaluating second derivative of f1 at r=%f\n", r[6]);
   eid = pspio_meshfunc_eval_deriv2(f1, r[6], &feval);
+  eid = pspio_error_flush();
+  DEBUG_PRINT("test_meshfunc: result=%f\n", feval);
+  DEBUG_PRINT("test_meshfunc: evaluating second derivative of f2 at r=%f\n", r[6]);
+  eid = pspio_meshfunc_eval_deriv2(f2, r[6], &feval);
   eid = pspio_error_flush();
   DEBUG_PRINT("test_meshfunc: result=%f\n", feval);
   DEBUG_PRINT("\n");

@@ -84,7 +84,7 @@ int pspio_state_set(pspio_state_t **state, const double eigenval,
   (*state)->label[s] = 0;
 
   HANDLE_FUNC_ERROR(pspio_qn_copy(&(*state)->qn, qn));
-  HANDLE_FUNC_ERROR(pspio_meshfunc_set(&(*state)->wf, mesh, wf));
+  HANDLE_FUNC_ERROR(pspio_meshfunc_set(&(*state)->wf, mesh, wf, NULL, NULL));
 
   return PSPIO_SUCCESS;
 }

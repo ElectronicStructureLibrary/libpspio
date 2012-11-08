@@ -226,7 +226,7 @@ int upf_read_nlcc(FILE *fp, const int np, pspio_pspdata_t **pspdata){
   }
 
   //Store the non-linear core corrections in the pspdata structure
-  HANDLE_FUNC_ERROR(pspio_xc_nlcc_set(&(*pspdata)->xc, (*pspdata)->mesh, rho));
+  HANDLE_FUNC_ERROR(pspio_xc_nlcc_set(&(*pspdata)->xc, (*pspdata)->mesh, rho, NULL, NULL));
 
   //Free memory
   free(rho);
@@ -507,7 +507,7 @@ int upf_read_rhoatom(FILE *fp, const int np, pspio_pspdata_t **pspdata){
 
   //Store the density in the pspdata structure
   HANDLE_FUNC_ERROR(pspio_meshfunc_alloc(&(*pspdata)->rho_valence, np));
-  HANDLE_FUNC_ERROR(pspio_meshfunc_set(&(*pspdata)->rho_valence, (*pspdata)->mesh, rho_read));
+  HANDLE_FUNC_ERROR(pspio_meshfunc_set(&(*pspdata)->rho_valence, (*pspdata)->mesh, rho_read, NULL, NULL));
 
   //Free memory
   free(rho_read);

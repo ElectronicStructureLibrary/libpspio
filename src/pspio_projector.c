@@ -64,7 +64,7 @@ int pspio_projector_set(pspio_projector_t **projector, const pspio_qn_t *qn,
 
   HANDLE_FUNC_ERROR(pspio_qn_copy(&(*projector)->qn, qn));
   (*projector)->energy = e;
-  HANDLE_FUNC_ERROR(pspio_meshfunc_set(&(*projector)->proj, mesh, p));
+  HANDLE_FUNC_ERROR(pspio_meshfunc_set(&(*projector)->proj, mesh, p, NULL, NULL));
 
   return PSPIO_SUCCESS;
 }

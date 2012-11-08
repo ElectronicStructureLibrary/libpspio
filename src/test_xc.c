@@ -70,7 +70,7 @@ int main(void) {
   eid = pspio_xc_set(&xc1, XC_LDA_X, XC_LDA_C_PW);
   eid = pspio_error_flush();
   DEBUG_PRINT("test_xc: setting NLCC of xc1\n");
-  eid = pspio_xc_nlcc_set(&xc1, mesh, cd);
+  eid = pspio_xc_nlcc_set(&xc1, mesh, cd, NULL, NULL);
   eid = pspio_error_flush();
   DEBUG_PRINT("\n");
 

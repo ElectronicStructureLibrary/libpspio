@@ -1,5 +1,5 @@
 /*
- Copyright (C) 2011 J. Alberdi, M. Oliveira, Y. Pouillon, and M. Verstraete
+ Copyright (C) 2011-2012 J. Alberdi, M. Oliveira, Y. Pouillon, and M. Verstraete
 
  This program is free software; you can redistribute it and/or modify
  it under the terms of the GNU Lesser General Public License as published by
@@ -43,10 +43,6 @@ int pspio_meshfunc_alloc(pspio_meshfunc_t **func, const int np){
   *func = (pspio_meshfunc_t *) malloc (sizeof(pspio_meshfunc_t));
   CHECK_ERROR(*func != NULL, PSPIO_ENOMEM);
 
-  (*func)->f = (double *) malloc (np * sizeof(double));
-  CHECK_ERROR((*func)->f != NULL, PSPIO_ENOMEM);
-  memset((*func)->f, 0, np*sizeof(double));
-
   (*func)->mesh = NULL;
   ierr = pspio_mesh_alloc(&(*func)->mesh, np);
   if (ierr) {
@@ -54,20 +50,56 @@ int pspio_meshfunc_alloc(pspio_meshfunc_t **func, const int np){
     HANDLE_ERROR(ierr);
   }
 
-  (*func)->spl = gsl_spline_alloc(gsl_interp_cspline, np);
-  (*func)->acc = gsl_interp_accel_alloc();
-  
+  (*func)->f = (double *) malloc (np * sizeof(double));
+  CHECK_ERROR((*func)->f != NULL, PSPIO_ENOMEM);
+  memset((*func)->f, 0, np*sizeof(double));
+  (*func)->f_spl = gsl_spline_alloc(gsl_interp_cspline, np);
+  (*func)->f_acc = gsl_interp_accel_alloc();
+
+  (*func)->fp = (double *) malloc (np * sizeof(double));
+  CHECK_ERROR((*func)->fp != NULL, PSPIO_ENOMEM);
+  memset((*func)->fp, 0, np*sizeof(double));
+  (*func)->fp_spl = gsl_spline_alloc(gsl_interp_cspline, np);
+  (*func)->fp_acc = gsl_interp_accel_alloc();
+
+  (*func)->fpp = (double *) malloc (np * sizeof(double));
+  CHECK_ERROR((*func)->fpp != NULL, PSPIO_ENOMEM);
+  memset((*func)->fpp, 0, np*sizeof(double));
+  (*func)->fpp_spl = gsl_spline_alloc(gsl_interp_cspline, np);
+  (*func)->fpp_acc = gsl_interp_accel_alloc();
+
   return PSPIO_SUCCESS;
 }
 
 
 int pspio_meshfunc_set(pspio_meshfunc_t **func, const pspio_mesh_t *mesh, 
-		       const double *f){
+		       const double *f, const double *fp, const double *fpp){
+  int i;
 
+  // Copy mesh
   HANDLE_FUNC_ERROR(pspio_mesh_copy(&(*func)->mesh, mesh));
-  memcpy((*func)->f, f, (*func)->mesh->np * sizeof(double));
-  gsl_spline_init((*func)->spl, (*func)->mesh->r, (*func)->f,
-		  (*func)->mesh->np) ;
+
+  // Function
+  memcpy((*func)->f, f, mesh->np * sizeof(double));
+  gsl_spline_init((*func)->f_spl, mesh->r, (*func)->f, mesh->np);
+
+  // First derivative
+  if (fp != NULL) {
+    memcpy((*func)->fp, fp, mesh->np * sizeof(double));
+  } else {
+    for (i=0; i<mesh->np; i++) 
+      (*func)->fp[i] = gsl_spline_eval_deriv((*func)->f_spl, mesh->r[i], (*func)->f_acc);
+  }
+  gsl_spline_init((*func)->fp_spl, mesh->r, (*func)->fp, (*func)->mesh->np);
+
+  // Second derivative
+  if (fpp != NULL) {
+    memcpy((*func)->fpp, fpp, mesh->np * sizeof(double));
+  } else {
+    for (i=0; i<mesh->np; i++) 
+      (*func)->fpp[i] = gsl_spline_eval_deriv((*func)->fp_spl, mesh->r[i], (*func)->fp_acc);    
+  }
+  gsl_spline_init((*func)->fpp_spl, mesh->r, (*func)->fpp, mesh->np);
 
   return PSPIO_SUCCESS;
 }
@@ -83,8 +115,15 @@ int pspio_meshfunc_copy(pspio_meshfunc_t **dst, const pspio_meshfunc_t *src){
 
   HANDLE_FUNC_ERROR(pspio_mesh_copy(&(*dst)->mesh, src->mesh));
   memcpy((*dst)->f, src->f, src->mesh->np * sizeof(double));
+  gsl_spline_init((*dst)->f_spl, (*dst)->mesh->r, (*dst)->f,
+		  (*dst)->mesh->np) ;
 
-  gsl_spline_init((*dst)->spl, (*dst)->mesh->r, (*dst)->f,
+  memcpy((*dst)->fp, src->fp, src->mesh->np * sizeof(double));
+  gsl_spline_init((*dst)->fp_spl, (*dst)->mesh->r, (*dst)->fp,
+		  (*dst)->mesh->np) ;
+
+  memcpy((*dst)->fpp, src->fpp, src->mesh->np * sizeof(double));
+  gsl_spline_init((*dst)->fpp_spl, (*dst)->mesh->r, (*dst)->fpp,
 		  (*dst)->mesh->np) ;
 
   return PSPIO_SUCCESS;
@@ -94,10 +133,20 @@ int pspio_meshfunc_copy(pspio_meshfunc_t **dst, const pspio_meshfunc_t *src){
 int pspio_meshfunc_free(pspio_meshfunc_t **func){
 
   if (*func != NULL) {
-    if ((*func)->f != NULL) free((*func)->f);
     HANDLE_FUNC_ERROR(pspio_mesh_free(&(*func)->mesh));
-    gsl_spline_free((*func)->spl);
-    gsl_interp_accel_free((*func)->acc);
+
+    if ((*func)->f != NULL) free((*func)->f);
+    gsl_spline_free((*func)->f_spl);
+    gsl_interp_accel_free((*func)->f_acc);
+
+    if ((*func)->fp != NULL) free((*func)->fp);
+    gsl_spline_free((*func)->fp_spl);
+    gsl_interp_accel_free((*func)->fp_acc);
+
+    if ((*func)->fpp != NULL) free((*func)->fpp);
+    gsl_spline_free((*func)->fpp_spl);
+    gsl_interp_accel_free((*func)->fpp_acc);
+
     free(*func);
     *func = NULL;
   }
@@ -124,7 +173,7 @@ int pspio_meshfunc_eval(const pspio_meshfunc_t *func, const double r,
     *f = linear_extrapolation(func->mesh->r[np-2], func->mesh->r[np-1], func->f[np-2], func->f[np-1], r);
 
   } else {
-    *f = gsl_spline_eval(func->spl, r, func->acc);
+    *f = gsl_spline_eval(func->f_spl, r, func->f_acc);
 
   }
 
@@ -134,30 +183,19 @@ int pspio_meshfunc_eval(const pspio_meshfunc_t *func, const double r,
 
 int pspio_meshfunc_eval_deriv(const pspio_meshfunc_t *func, const double r,
       double *fp){
-  double r1, r2, f1, f2;
-
   ASSERT(func != NULL, PSPIO_ERROR);  
 
   // If the value of r is smaller than the first mesh point or if it is greater or equal to
   // the last mesh point, then we use a linear extrapolation to evaluate the function at r.
   if (r < func->mesh->r[0]) {
-    r1 = func->mesh->r[0];
-    f1 = gsl_spline_eval_deriv(func->spl, r1, func->acc);
-    r2 = func->mesh->r[1];
-    f2 = gsl_spline_eval_deriv(func->spl, r2, func->acc);
-
-    *fp = linear_extrapolation(r1, r2, f1, f2, r);
+    *fp = linear_extrapolation(func->mesh->r[0], func->mesh->r[1], func->fp[0], func->fp[1], r);
 
   } else if (r >= func->mesh->r[func->mesh->np-1]) {
-    r1 = func->mesh->r[func->mesh->np-1];
-    f1 = gsl_spline_eval_deriv(func->spl, r1, func->acc);
-    r2 = func->mesh->r[func->mesh->np-2];
-    f2 = gsl_spline_eval_deriv(func->spl, r2, func->acc);
-
-    *fp = linear_extrapolation(r1, r2, f1, f2, r);
+    int np = func->mesh->np;
+    *fp = linear_extrapolation(func->mesh->r[np-2], func->mesh->r[np-1], func->fp[np-2], func->fp[np-1], r);
 
   } else {
-    *fp = gsl_spline_eval_deriv(func->spl, r, func->acc);
+    *fp = gsl_spline_eval(func->fp_spl, r, func->fp_acc);
 
   }
 
@@ -167,30 +205,19 @@ int pspio_meshfunc_eval_deriv(const pspio_meshfunc_t *func, const double r,
 
 int pspio_meshfunc_eval_deriv2(const pspio_meshfunc_t *func, const double r,
       double *fpp){
-  double r1, r2, f1, f2;
-
   ASSERT(func != NULL, PSPIO_ERROR);
 
   // If the value of r is smaller than the first mesh point or if it is greater or equal to
   // the last mesh point, then we use a linear extrapolation to evaluate the function at r.
   if (r < func->mesh->r[0]) {
-    r1 = func->mesh->r[0];
-    f1 = gsl_spline_eval_deriv2(func->spl, r1, func->acc);
-    r2 = func->mesh->r[1];
-    f2 = gsl_spline_eval_deriv2(func->spl, r2, func->acc);
-
-    *fpp = linear_extrapolation(r1, r2, f1, f2, r);
+    *fpp = linear_extrapolation(func->mesh->r[0], func->mesh->r[1], func->fpp[0], func->fpp[1], r);
 
   } else if (r >= func->mesh->r[func->mesh->np-1]) {
-    r1 = func->mesh->r[func->mesh->np-1];
-    f1 = gsl_spline_eval_deriv2(func->spl, r1, func->acc);
-    r2 = func->mesh->r[func->mesh->np-2];
-    f2 = gsl_spline_eval_deriv2(func->spl, r2, func->acc);
-
-    *fpp = linear_extrapolation(r1, r2, f1, f2, r);
+    int np = func->mesh->np;
+    *fpp = linear_extrapolation(func->mesh->r[np-2], func->mesh->r[np-1], func->fpp[np-2], func->fpp[np-1], r);
 
   } else {
-    *fpp = gsl_spline_eval_deriv2(func->spl, r, func->acc);
+    *fpp = gsl_spline_eval(func->fpp_spl, r, func->fpp_acc);
 
   }
 

@@ -1,5 +1,5 @@
 /*
- Copyright (C) 2011 J. Alberdi, M. Oliveira, Y. Pouillon, and M. Verstraete
+ Copyright (C) 2011-2012 J. Alberdi, M. Oliveira, Y. Pouillon, and M. Verstraete
 
  This program is free software; you can redistribute it and/or modify
  it under the terms of the GNU Lesser General Public License as published by
@@ -41,9 +41,21 @@
 */
 typedef struct{
   pspio_mesh_t *mesh;    /**< Pointer to mesh */
-  double *f;             /**< values of the function on the mesh */
-  gsl_spline *spl;       /**< gsl spline structure */
-  gsl_interp_accel *acc; /**< accelerator for interpolation lookups */
+
+  // Function
+  double *f;               /**< values on the mesh */
+  gsl_spline *f_spl;       /**< gsl spline structure */
+  gsl_interp_accel *f_acc; /**< accelerator for interpolation lookups */
+
+  // Function first derivative
+  double *fp;               /**< values on the mesh */
+  gsl_spline *fp_spl;       /**< gsl spline structure */
+  gsl_interp_accel *fp_acc; /**< accelerator for interpolation lookups */
+
+  // Function second derivative
+  double *fpp;               /**< values on the mesh */
+  gsl_spline *fpp_spl;       /**< gsl spline structure */
+  gsl_interp_accel *fpp_acc; /**< accelerator for interpolation lookups */
 } pspio_meshfunc_t;
 
 
@@ -67,12 +79,14 @@ int pspio_meshfunc_alloc(pspio_meshfunc_t **func, const int np);
  * @param[in,out] func: function structure to set.
  * @param[in] mesh: mesh structure.
  * @param[in] f: values of the function on the mesh.
+ * @param[in] fp: values of the functions first derivative on the mesh (optional)
+ * @param[in] fpp: values of the functions second derivative on the mesh (optional)
  * @return error code
  * @note The func pointer has to be allocated first with the 
  *       pspio_meshfunc_alloc method.
  */
 int pspio_meshfunc_set(pspio_meshfunc_t **func, const pspio_mesh_t *mesh, 
-		       const double *f);
+		       const double *f, const double *fp, const double *fpp);
 
 
 /**
