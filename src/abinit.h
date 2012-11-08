@@ -15,7 +15,7 @@
  along with this program; if not, write to the Free Software
  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  
- $Id: abinit.h 254 2012-08-22 17:57:06Z micael $
+ $Id$
  */
 
 /**
@@ -37,7 +37,7 @@
 
 
 /**********************************************************************
- * abinit_read routines                                                  *
+ * abinit_format6 routines                                            *
  **********************************************************************/
 
 /**
@@ -105,108 +105,26 @@ int abinit_read_pswfc(FILE *fp, const int np, pspio_pspdata_t **pspdata);
 int abinit_read_rhoatom(FILE *fp, const int np, pspio_pspdata_t **pspdata);
 
 
-
-/**********************************************************************
- * abinit_write routines                                                 *
- **********************************************************************/
-
-/**
- * Write the ABINIT info
- * @param[in] fp a stream of the input file
- * @param[inout] pspdata the data structure
- * @return error code
- */
-int abinit_write_info(FILE *fp, const pspio_pspdata_t *pspdata);
-
-/**
- * Write the ABINIT header
- * @param[in] fp a stream of the input file
- * @param[inout] pspdata the data structure
- * @return error code
- */
-int abinit_write_header(FILE *fp, const pspio_pspdata_t *pspdata);
-
-/**
- * Write the mesh
- * @param[in] fp a stream of the input file
- * @param[inout] pspdata the data structure
- * @return error code
- */
-int abinit_write_mesh(FILE *fp, const pspio_pspdata_t *pspdata);
-
-/**
- * Write the non-linear core-corrections
- * @param[in] fp a stream of the input file
- * @param[inout] pspdata the data structure
- * @return error code
- */
-int abinit_write_nlcc(FILE *fp, const pspio_pspdata_t *pspdata);
-
-/**
- * Write the non-local projectors
- * @param[in] fp a stream of the input file
- * @param[inout] pspdata the data structure
- * @return error code
- */
-int abinit_write_nonlocal(FILE *fp, const pspio_pspdata_t *pspdata);
-
-/**
- * Write the local part of the pseudos
- * @param[in] fp a stream of the input file
- * @param[inout] pspdata the data structure
- * @return error code
- */
-int abinit_write_local(FILE *fp, const pspio_pspdata_t *pspdata);
-
-/**
- * Write the pseudo-wavefunctions
- * @param[in] fp a stream of the input file
- * @param[inout] pspdata the data structure
- * @return error code
- */
-int abinit_write_pswfc(FILE *fp, const pspio_pspdata_t *pspdata);
-
-/**
- * Write the valence electronic charge
- * @param[in] fp a stream of the input file
- * @param[inout] pspdata the data structure
- * @return error code
- */
-int abinit_write_rhoatom(FILE *fp, const pspio_pspdata_t *pspdata);
-
-/**
- * Write the valence electronic charge
- * @param[in] fp a stream of the input file
- * @param[inout] pspdata the data structure
- * @return error code
- * @note This should only be called when the pseudopotentials
- *       where obtained from a fully relativistic calculation
- */
-int abinit_write_addinfo(FILE *fp, const pspio_pspdata_t *pspdata);
-
-
 /**********************************************************************
  * abinit_xc routines                                                    *
  **********************************************************************/
 
 /**
- * Converts pwcf xc string to libxc codes
- * @param[in]  xc_string: pwscf string
- * @param[out] exchange: libxc code for exchange
- * @param[out] correlation: libxc code for correlation
- * @return error code
- */
+* Converts Abinit pspxc code to libxc codes
+*@param[in]  pspxc: abinit xc code
+*@param[out] exchange: libxc code for exchange
+*@param[out] correlation: libxc code for correlation
+* @return error code
+*/
 int abinit_to_libxc(const char *xc_string, int *exchange, int *correlation);
 
-
 /**
- * Converts libxc codes to pwcf xc names
+ * Converts libxc codes to Abinit codes
  * @param[in] exchange: libxc code for exchange
  * @param[in] correlation: libxc code for correlation
- * @param[out] longname: pwscf xc long name
- * @param[out] shortname: pwscf xc short name
+ * @param[out] pspxc: Abinit code
  * @return error code
  */
-int abinit_from_libxc(const int exchange, const int correlation, char *longname, char *shortname);
+int abinit_from_libxc(const int exchange, const int correlation, int *pspxc);
 
 #endif

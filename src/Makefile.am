@@ -30,7 +30,8 @@
 
 # C source - keep this in alphabetical order
 pio_core_srcs = \
-  ab2libxc.c \
+  abinit_xc.c \
+  pspio_abinit.c \
   pspio_error.c \
   pspio_fhi.c \
   pspio_info.c \
@@ -53,6 +54,7 @@ pio_core_srcs = \
 # Exported C headers - keep this in alphabetical order
 pio_core_hdrs = \
   pspio.h \
+  pspio_abinit.h \
   pspio_common.h \
   pspio_error.h \
   pspio_fhi.h \
@@ -71,6 +73,7 @@ pio_core_hdrs = \
 
 # Internal C headers - keep this in alphabetical order
 pio_hidden_hdrs = \
+  abinit.h \
   libxccodes.h \
   string_f.h \
   test_common.h \

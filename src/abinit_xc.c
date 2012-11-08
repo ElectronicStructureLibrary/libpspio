@@ -1,5 +1,5 @@
 /*
- Copyright (C) 2011 J. Alberdi, M. Oliveira, Y. Pouillon, and M. Verstraete
+ Copyright (C) 2011-2012 J. Alberdi, M. Oliveira, Y. Pouillon, and M. Verstraete
 
  This program is free software; you can redistribute it and/or modify
  it under the terms of the GNU Lesser General Public License as published by
@@ -31,13 +31,7 @@
 #endif
 
 
-/**
-* subroutine converts abinit pspxc code to libxc codes
-*@param[in]  pspxc: abinit xc code
-*@param[out] exchange: libxc code for exchange
-*@param[out] correlation: libxc code for correlation
-*/
-int ab2libxc (const int pspxc, int exchange, int correlation){
+int abinit_to_libxc(const int pspxc, int exchange, int correlation){
 
 // local vars
   int xccode[2];

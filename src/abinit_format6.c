@@ -15,7 +15,7 @@
  along with this program; if not, write to the Free Software
  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
- $Id: abinit_read.c 263 2012-11-05 14:53:03Z micael $
+ $Id$
 */
 
 /** 
