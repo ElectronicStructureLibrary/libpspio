@@ -130,3 +130,12 @@ int pspio_xc_nlcc_eval(const pspio_xc_t *xc, const double r, double *core_dens) 
 
   return PSPIO_SUCCESS;
 }
+
+int pspio_xc_nlcc_get(const pspio_xc_t *xc, pspio_meshfunc_t **cd_func) {
+  ASSERT(xc != NULL, PSPIO_ERROR);
+  ASSERT(xc->nlcc_scheme != PSPIO_NLCC_NONE, PSPIO_ERROR);
+
+  (*cd_func) = xc->core_dens;
+
+  return PSPIO_SUCCESS;
+}

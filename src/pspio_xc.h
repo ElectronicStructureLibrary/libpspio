@@ -140,4 +140,14 @@ int pspio_xc_has_nlcc(pspio_xc_t *xc, int *has_nlcc);
 int pspio_xc_nlcc_eval(const pspio_xc_t *xc, const double r, double *core_dens);
 
 
+/**
+ * Returns the core density function
+ * @param[in] xc: xc structure
+ * @param[out] *cd_func: core density function defined on the mesh
+ * @return error code
+ * @note The xc pointer has to be fully set.
+ */
+int pspio_xc_nlcc_get(const pspio_xc_t *xc, pspio_meshfunc_t **cd_func);
+
+
 #endif
