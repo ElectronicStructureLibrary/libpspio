@@ -129,20 +129,20 @@ int abinit_to_libxc(const int pspxc, int *exchange, int *correlation){
       *correlation = XC_GGA_XC_HCTH_407;
       break;
 
-      // the following are not in libxc?
+    // the following are not in libxc?
     case 3:
     case 20:
     case 21:
     case 22:
 
-      // the following are real errors
+    // the following are real errors
     case 10:
     case 18:
     case 19:
     case 25:
     case 28:
 
-      // unknown abinit pspxc
+    // unknown abinit pspxc
     default:
       return PSPIO_EVALUE;
     }
@@ -155,7 +155,7 @@ int abinit_to_libxc(const int pspxc, int *exchange, int *correlation){
 
 int libxc_to_abinit(const int exchange, const int correlation, int *pspxc){
 
-  *pspxc = exchange*1000 + correlation;
+  *pspxc = exchange * 1000 + correlation;
 
   return PSPIO_SUCCESS;
 }

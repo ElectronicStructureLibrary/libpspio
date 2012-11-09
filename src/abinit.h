@@ -37,76 +37,44 @@
 
 
 /**********************************************************************
- * abinit_format6 routines                                            *
+ * Global routines                                                    *
  **********************************************************************/
 
 /**
- * Read the ABINIT info section
- * @param[in] fp a stream of the input file
- * @param[inout] pspdata the data structure
- * @return error code
- */
-int abinit_read_info(FILE *fp, pspio_pspdata_t **pspdata);
-
-/**
  * Read the ABINIT header
- * @param[in] fp a stream of the input file
- * @param[inout] pspdata the data structure
+ * @param[in] fp: a stream of the input file
+ * @param[out] format: the file format
+ * @param[out] np: the number of radial mesh points
+ * @param[out] have_nlcc: whether there are non-linear core-corrections
  * @return error code
  */
-int abinit_read_header(FILE *fp, int *np, pspio_pspdata_t **pspdata);
-
-/**
- * Read the mesh
- * @param[in] fp a stream of the input file
- * @param[inout] pspdata the data structure
- * @return error code
- */
-int abinit_read_mesh(FILE *fp, const int np, pspio_pspdata_t **pspdata);
-
-/**
- * Read the non-linear core-corrections
- * @param[in] fp a stream of the input file
- * @param[inout] pspdata the data structure
- * @return error code
- */
-int abinit_read_nlcc(FILE *fp, const int np, pspio_pspdata_t **pspdata);
-
-/**
- * Read the non-local projectors
- * @param[in] fp a stream of the input file
- * @param[inout] pspdata the data structure
- * @return error code
- */
-int abinit_read_nonlocal(FILE *fp, const int np, pspio_pspdata_t **pspdata);
-
-/**
- * Read the local part of the pseudos
- * @param[in] fp a stream of the input file
- * @param[inout] pspdata the data structure
- * @return error code
- */
-int abinit_read_local(FILE *fp, const int np, pspio_pspdata_t **pspdata);
-
-/**
- * Read the pseudo-wavefunctions
- * @param[in] fp a stream of the input file
- * @param[inout] pspdata the data structure
- * @return error code
- */
-int abinit_read_pswfc(FILE *fp, const int np, pspio_pspdata_t **pspdata);
-
-/**
- * Read the valence electronic charge
- * @param[in] fp a stream of the input file
- * @param[inout] pspdata the data structure
- * @return error code
- */
-int abinit_read_rhoatom(FILE *fp, const int np, pspio_pspdata_t **pspdata);
+int abinit_read_header(FILE *fp, int *format, int *np, int *have_nlcc);
 
 
 /**********************************************************************
- * abinit_xc routines                                                    *
+ * Format 6 routines                                                  *
+ **********************************************************************/
+
+/**
+ * Read an ABINIT format 6 file
+ * @param[in] fp: a stream of the input file
+ * @param[inout] pspdata: a pseudopotential data structure
+ * @return error code
+ */
+int abinit6_read(FILE *fp, pspio_pspdata_t **pspdata);
+
+
+/**
+ * Write an ABINIT format 6 file
+ * @param[in] fp: a stream of the input file
+ * @param[in] pspdata: a pseudopotential data structure
+ * @return error code
+ */
+int abinit6_write(FILE *fp, const pspio_pspdata_t *pspdata);
+
+
+/**********************************************************************
+ * ABINIT XC routines                                                 *
  **********************************************************************/
 
 /**
@@ -125,6 +93,6 @@ int abinit_to_libxc(const char *xc_string, int *exchange, int *correlation);
  * @param[out] pspxc: Abinit code
  * @return error code
  */
-int abinit_from_libxc(const int exchange, const int correlation, int *pspxc);
+int libxc_to_abinit(const int exchange, const int correlation, int *pspxc);
 
 #endif
