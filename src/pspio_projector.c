@@ -87,11 +87,11 @@ int pspio_projector_free(pspio_projector_t **projector){
  * Atomic routines                                                    *
  **********************************************************************/
 
-int pspio_projector_eval(const pspio_projector_t *projector, const double r,
-			 double *p){
+int pspio_projector_eval(const pspio_projector_t *projector, const int np, 
+			 const double *r, double *p){
   ASSERT(projector != NULL, PSPIO_ERROR);
 
-  HANDLE_FUNC_ERROR(pspio_meshfunc_eval(projector->proj, r, p));
+  HANDLE_FUNC_ERROR(pspio_meshfunc_eval(projector->proj, np, r, p));
 
   return PSPIO_SUCCESS;
 }

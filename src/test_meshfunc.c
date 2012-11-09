@@ -101,27 +101,27 @@ int main(void) {
 
   /* Check evaluation of mesh functions */
   DEBUG_PRINT("test_meshfunc: evaluating f1 at r=%f\n", r[6]);
-  eid = pspio_meshfunc_eval(f1, r[6], &feval);
+  eid = pspio_meshfunc_eval(f1, 1, &r[6], &feval);
   eid = pspio_error_flush();
   DEBUG_PRINT("test_meshfunc: result=%f\n", feval);
   DEBUG_PRINT("test_meshfunc: evaluating f2 at r=%f\n", r[6]);
-  eid = pspio_meshfunc_eval(f2, r[6], &feval);
+  eid = pspio_meshfunc_eval(f2, 1, &r[6], &feval);
   eid = pspio_error_flush();
   DEBUG_PRINT("test_meshfunc: result=%f\n", feval);
   DEBUG_PRINT("test_meshfunc: evaluating first derivative of f1 at r=%f\n", r[6]);
-  eid = pspio_meshfunc_eval_deriv(f1, r[6], &feval);
+  eid = pspio_meshfunc_eval_deriv(f1, 1, &r[6], &feval);
   eid = pspio_error_flush();
   DEBUG_PRINT("test_meshfunc: result=%f\n", feval);
   DEBUG_PRINT("test_meshfunc: evaluating first derivative of f2 at r=%f\n", r[6]);
-  eid = pspio_meshfunc_eval_deriv(f2, r[6], &feval);
+  eid = pspio_meshfunc_eval_deriv(f2, 1, &r[6], &feval);
   eid = pspio_error_flush();
   DEBUG_PRINT("test_meshfunc: result=%f\n", feval);
   DEBUG_PRINT("test_meshfunc: evaluating second derivative of f1 at r=%f\n", r[6]);
-  eid = pspio_meshfunc_eval_deriv2(f1, r[6], &feval);
+  eid = pspio_meshfunc_eval_deriv2(f1, 1, &r[6], &feval);
   eid = pspio_error_flush();
   DEBUG_PRINT("test_meshfunc: result=%f\n", feval);
   DEBUG_PRINT("test_meshfunc: evaluating second derivative of f2 at r=%f\n", r[6]);
-  eid = pspio_meshfunc_eval_deriv2(f2, r[6], &feval);
+  eid = pspio_meshfunc_eval_deriv2(f2, 1, &r[6], &feval);
   eid = pspio_error_flush();
   DEBUG_PRINT("test_meshfunc: result=%f\n", feval);
   DEBUG_PRINT("\n");

@@ -132,14 +132,16 @@ int pspio_xc_get_id(const pspio_xc_t *xc, int *exchange, int *correlation);
 int pspio_xc_has_nlcc(const pspio_xc_t *xc, int *has_nlcc);
 
 /**
- * Returns the value of the core density at an arbitrary point
+ * Returns the value of the core density at an array of arbitrary points
  * @param[in] xc: xc structure
- * @param[in] r: position were we want to evaluate the core density
- * @param[out] *core_dens: value of the core density at r
+ * @param[in] np: number of points
+ * @param[in] *r: positions were we want to evaluate the core density
+ * @param[out] *core_dens: values of the core density at r
  * @return error code
  * @note The xc pointer has to be fully set.
  */
-int pspio_xc_nlcc_eval(const pspio_xc_t *xc, const double r, double *core_dens);
+int pspio_xc_nlcc_eval(const pspio_xc_t *xc, const int np, 
+		       const double *r, double *core_dens);
 
 
 /**

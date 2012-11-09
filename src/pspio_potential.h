@@ -90,16 +90,17 @@ int pspio_potential_free(pspio_potential_t **potential);
  **********************************************************************/
 
 /**
- * Returns the value of the potential at an arbitrary point
+ * Returns the value of the potential at an array of arbitrary points
  * 
  * @param[in] potential: potential structure
- * @param[in] r: position were we want to evaluate the function
+ * @param[in] np: number of points
+ * @param[in] *r: positions were we want to evaluate the function
  * @param[out] *v: value of the potential at r
  * @return error code
  * @note The potential pointer has to be fully set.
  */
-int pspio_potential_eval(const pspio_potential_t *potential, const double r,
-      double *v);
+int pspio_potential_eval(const pspio_potential_t *potential, const int np, 
+			 const double *r, double *v);
 
 
 #endif

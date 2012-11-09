@@ -122,11 +122,13 @@ int pspio_xc_has_nlcc(const pspio_xc_t *xc, int *has_nlcc) {
   return PSPIO_SUCCESS;
 }
 
-int pspio_xc_nlcc_eval(const pspio_xc_t *xc, const double r, double *core_dens) {
+int pspio_xc_nlcc_eval(const pspio_xc_t *xc, const int np, const double *r, double *core_dens) {
   ASSERT(xc != NULL, PSPIO_ERROR);
+  ASSERT(r != NULL, PSPIO_ERROR);
+  ASSERT(core_dens != NULL, PSPIO_ERROR);
   ASSERT(xc->nlcc_scheme != PSPIO_NLCC_NONE, PSPIO_ERROR);
 
-  HANDLE_FUNC_ERROR(pspio_meshfunc_eval(xc->core_dens, r, core_dens));
+  HANDLE_FUNC_ERROR(pspio_meshfunc_eval(xc->core_dens, np, r, core_dens));
 
   return PSPIO_SUCCESS;
 }

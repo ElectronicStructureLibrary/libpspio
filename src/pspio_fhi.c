@@ -114,7 +114,6 @@ int pspio_fhi_read(FILE *fp, pspio_pspdata_t **pspdata){
   has_nlcc = (fgets(line, MAX_STRLEN, fp) != NULL);
   if (has_nlcc) {
     double *cd, *cdp, *cdpp;
-    double cdi, cdpi, cdppi;
 
     HANDLE_FUNC_ERROR(pspio_xc_alloc(&(*pspdata)->xc, PSPIO_NLCC_FHI, np));
 
@@ -185,8 +184,8 @@ int pspio_fhi_write(FILE *fp, const pspio_pspdata_t *pspdata){
 
     for (ir=0; ir<pspdata->mesh->np; ir++) {
       r = pspdata->mesh->r[ir];
-      HANDLE_FUNC_ERROR(pspio_state_wf_eval(pspdata->states[is], r, &wf));
-      HANDLE_FUNC_ERROR(pspio_potential_eval(pspdata->potentials[i], r, &v));
+      HANDLE_FUNC_ERROR(pspio_state_wf_eval(pspdata->states[is], 1, &r, &wf));
+      HANDLE_FUNC_ERROR(pspio_potential_eval(pspdata->potentials[i], 1, &r, &v));
       wf = wf*r;
 
       fprintf(fp, "%4d %20.14E %20.14E %20.14E\n", ir+1, pspdata->mesh->r[ir], wf, v);
@@ -204,9 +203,9 @@ int pspio_fhi_write(FILE *fp, const pspio_pspdata_t *pspdata){
 
     for (ir=0; ir<pspdata->mesh->np; ir++) {
       r = pspdata->mesh->r[ir];
-      HANDLE_FUNC_ERROR(pspio_meshfunc_eval(core_dens, r, &cd));
-      HANDLE_FUNC_ERROR(pspio_meshfunc_eval_deriv(core_dens, r, &cdp));
-      HANDLE_FUNC_ERROR(pspio_meshfunc_eval_deriv2(core_dens, r, &cdpp));
+      HANDLE_FUNC_ERROR(pspio_meshfunc_eval(core_dens, 1, &r, &cd));
+      HANDLE_FUNC_ERROR(pspio_meshfunc_eval_deriv(core_dens, 1, &r, &cdp));
+      HANDLE_FUNC_ERROR(pspio_meshfunc_eval_deriv2(core_dens, 1, &r, &cdpp));
       cd *= M_PI*4.0; cdp *= M_PI*4.0; cdpp *= M_PI*4.0;
 
       fprintf(fp, " %18.12E %18.12E %18.12E %18.12E\n", r, cd, cdp, cdpp);

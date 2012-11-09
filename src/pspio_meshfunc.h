@@ -119,38 +119,41 @@ int pspio_meshfunc_free(pspio_meshfunc_t **func);
  **********************************************************************/
 
 /**
- * Returns the value of the function at an arbitrary point
+ * Returns the value of the function at arbitrary points
  * 
  * @param[in] func: function structure
- * @param[in] r: position were we want to evaluate the function
- * @param[out] *f: value of the function at r
+ * @param[in] np: number of points
+ * @param[in] *r:  array of points were we want to evaluate the function
+ * @param[out] *f: values of the function
  * @return error code
  */
-int pspio_meshfunc_eval(const pspio_meshfunc_t *func, const double r,
+int pspio_meshfunc_eval(const pspio_meshfunc_t *func, const int np, const double *r,
       double *f);
 
 
 /**
- * Returns the value of the derivative of a function at an arbitrary point
+ * Returns the value of the derivative of a function at arbitrary points
  * 
  * @param[in] func: function structure
- * @param[in] r: position were we want to evaluate the function
- * @param[out] *fp: value of the derivative at r
+ * @param[in] np: number of points
+ * @param[in] *r: array of points were we want to evaluate the function
+ * @param[out] *fp: values of the derivative
  * @return error code
  */
-int pspio_meshfunc_eval_deriv(const pspio_meshfunc_t *func, const double r,
+int pspio_meshfunc_eval_deriv(const pspio_meshfunc_t *func, const int np, const double *r,
       double *fp);
 
 
 /**
- * Returns the value of the second derivative of a function at an arbitrary point
+ * Returns the value of the second derivative of a function at arbitrary points
  * 
  * @param[in] func: function structure
- * @param[in] r: position were we want to evaluate the function
- * @param[out] *fpp: value of the second derivative at r
+ * @param[in] np: number of points
+ * @param[in] *r: array of points were we want to evaluate the function
+ * @param[out] *fpp: values of the second derivative
  * @return error code
  */
-int pspio_meshfunc_eval_deriv2(const pspio_meshfunc_t *func, const double r,
+int pspio_meshfunc_eval_deriv2(const pspio_meshfunc_t *func, const int np, const double *r,
       double *fpp);
 
 #endif

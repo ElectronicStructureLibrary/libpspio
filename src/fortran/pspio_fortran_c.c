@@ -24,6 +24,7 @@
  */
 
 #include "pspio_pspdata.h"
+#include "pspio_info.h"
 
 #if defined HAVE_CONFIG_H
 #include "config.h"
@@ -233,11 +234,19 @@ CC_FORTRAN_INT FC_FUNC_(pspio_f90_mesh_get_r, PSPIO_F90_MESH_GET_R)
  * pspio_state                                                        *
  **********************************************************************/
 
-CC_FORTRAN_INT FC_FUNC_(pspio_f90_state_wf_eval, PSPIO_F90_STATE_WF_EVAL)
- (void ** state, double *r, double *wf)
+CC_FORTRAN_INT FC_FUNC_(pspio_f90_state_wf_eval_s, PSPIO_F90_STATE_WF_EVAL_S)
+     (void ** state, double *r, double *wf)
 {
 
-  return (CC_FORTRAN_INT) pspio_state_wf_eval(((pspio_state_t *)(*state)), *r, wf);
+  return (CC_FORTRAN_INT) pspio_state_wf_eval(((pspio_state_t *)(*state)), 1, r, wf);
+
+}
+
+CC_FORTRAN_INT FC_FUNC_(pspio_f90_state_wf_eval_v, PSPIO_F90_STATE_WF_EVAL_V)
+     (void ** state, int *np, double *r, double *wf)
+{
+
+  return (CC_FORTRAN_INT) pspio_state_wf_eval(((pspio_state_t *)(*state)), *np, r, wf);
 
 }
 
@@ -271,11 +280,19 @@ CC_FORTRAN_INT FC_FUNC_(pspio_f90_state_get_occ, PSPIO_F90_STATE_GET_OCC)
  * pspio_potential                                                    *
  **********************************************************************/
 
-CC_FORTRAN_INT FC_FUNC_(pspio_f90_potential_eval, PSPIO_F90_POTENTIAL_EVAL)
- (void ** potential, double *r, double *v)
+CC_FORTRAN_INT FC_FUNC_(pspio_f90_potential_eval_s, PSPIO_F90_POTENTIAL_EVAL_S)
+     (void ** potential, double *r, double *v)
 {
 
-  return (CC_FORTRAN_INT) pspio_potential_eval(((pspio_potential_t *)(*potential)), *r, v);
+  return (CC_FORTRAN_INT) pspio_potential_eval(((pspio_potential_t *)(*potential)), 1, r, v);
+
+}
+
+CC_FORTRAN_INT FC_FUNC_(pspio_f90_potential_eval_v, PSPIO_F90_POTENTIAL_EVAL_V)
+     (void ** potential, int *np, double *r, double *v)
+{
+
+  return (CC_FORTRAN_INT) pspio_potential_eval(((pspio_potential_t *)(*potential)), *np, r, v);
 
 }
 
@@ -284,11 +301,19 @@ CC_FORTRAN_INT FC_FUNC_(pspio_f90_potential_eval, PSPIO_F90_POTENTIAL_EVAL)
  * pspio_projector                                                    *
  **********************************************************************/
 
-CC_FORTRAN_INT FC_FUNC_(pspio_f90_projector_eval, PSPIO_F90_PROJECTOR_EVAL)
- (void ** projector, double *r, double *p)
+CC_FORTRAN_INT FC_FUNC_(pspio_f90_projector_eval_s, PSPIO_F90_PROJECTOR_EVAL_S)
+     (void ** projector, double *r, double *p)
 {
 
-  return (CC_FORTRAN_INT) pspio_projector_eval(((pspio_projector_t *)(*projector)), *r, p);
+  return (CC_FORTRAN_INT) pspio_projector_eval(((pspio_projector_t *)(*projector)), 1, r, p);
+
+}
+
+CC_FORTRAN_INT FC_FUNC_(pspio_f90_projector_eval_v, PSPIO_F90_PROJECTOR_EVAL_V)
+     (void ** projector, int *np, double *r, double *p)
+{
+
+  return (CC_FORTRAN_INT) pspio_projector_eval(((pspio_projector_t *)(*projector)), *np, r, p);
 
 }
 
@@ -329,11 +354,19 @@ CC_FORTRAN_INT FC_FUNC_(pspio_f90_xc_has_nlcc_int, PSPIO_F90_XC_HAS_NLCC_INT)
 
 }
 
-CC_FORTRAN_INT FC_FUNC_(pspio_f90_xc_nlcc_eval, PSPIO_F90_XC_NLCC_EVAL)
- (void ** xc, double *r, double *core_dens)
+CC_FORTRAN_INT FC_FUNC_(pspio_f90_xc_nlcc_eval_s, PSPIO_F90_XC_NLCC_EVAL_S)
+     (void ** xc, double *r, double *core_dens)
 {
 
-  return (CC_FORTRAN_INT) pspio_xc_nlcc_eval(((pspio_xc_t *)(*xc)), *r, core_dens);
+  return (CC_FORTRAN_INT) pspio_xc_nlcc_eval(((pspio_xc_t *)(*xc)), 1, r, core_dens);
+
+}
+
+CC_FORTRAN_INT FC_FUNC_(pspio_f90_xc_nlcc_eval_v, PSPIO_F90_XC_NLCC_EVAL_V)
+     (void ** xc, int *np, double *r, double *core_dens)
+{
+
+  return (CC_FORTRAN_INT) pspio_xc_nlcc_eval(((pspio_xc_t *)(*xc)), *np, r, core_dens);
 
 }
 

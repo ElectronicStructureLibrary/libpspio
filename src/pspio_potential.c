@@ -87,11 +87,13 @@ int pspio_potential_free(pspio_potential_t **potential){
  * Atomic routines                                                    *
  **********************************************************************/
 
-int pspio_potential_eval(const pspio_potential_t *potential, const double r,
-			 double *v) {
+int pspio_potential_eval(const pspio_potential_t *potential, const int np, 
+			 const double *r, double *v) {
   ASSERT(potential != NULL, PSPIO_ERROR);
+  ASSERT(r != NULL, PSPIO_ERROR);
+  ASSERT(v != NULL, PSPIO_ERROR);
 
-  HANDLE_FUNC_ERROR(pspio_meshfunc_eval(potential->v, r, v));
+  HANDLE_FUNC_ERROR(pspio_meshfunc_eval(potential->v, np, r, v));
 
   return PSPIO_SUCCESS;
 }

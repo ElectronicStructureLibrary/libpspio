@@ -174,10 +174,12 @@ int pspio_state_free(pspio_state_t **state) {
  * Atomic routines                                                    *
  **********************************************************************/
 
-int pspio_state_wf_eval(const pspio_state_t *state, const double r, double *wf){
+int pspio_state_wf_eval(const pspio_state_t *state, const int np, const double *r, double *wf){
   ASSERT(state != NULL, PSPIO_ERROR);
+  ASSERT(r != NULL, PSPIO_ERROR);
+  ASSERT(wf != NULL, PSPIO_ERROR);
   
-  HANDLE_FUNC_ERROR(pspio_meshfunc_eval(state->wf, r, wf));
+  HANDLE_FUNC_ERROR(pspio_meshfunc_eval(state->wf, np, r, wf));
 
   return PSPIO_SUCCESS;
 }

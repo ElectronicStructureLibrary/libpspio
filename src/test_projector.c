@@ -86,7 +86,7 @@ int main(void) {
 
   /* Check evaluation of the projector */
   DEBUG_PRINT("test_projector: evaluating proj1 at r=%f\n", r[6]);
-  eid = pspio_projector_eval(proj1, r[6], &pr);
+  eid = pspio_projector_eval(proj1, 1, &r[6], &pr);
   eid = pspio_error_flush();
   DEBUG_PRINT("test_projector: result=%f\n", pr);
   DEBUG_PRINT("test_projector: evaluating energy of proj1 (should be 2.0)\n");

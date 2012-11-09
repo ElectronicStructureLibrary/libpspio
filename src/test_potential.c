@@ -85,7 +85,7 @@ int main(void) {
 
   /* Check evaluation of the potential */
   DEBUG_PRINT("test_potential: evaluating  pot1 at r=%f\n", r[6]);
-  eid = pspio_potential_eval(pot1, r[6], &vr);
+  eid = pspio_potential_eval(pot1, 1, &r[6], &vr);
   eid = pspio_error_flush();
   DEBUG_PRINT("test_potential: result=%f\n", vr);
   DEBUG_PRINT("\n");
