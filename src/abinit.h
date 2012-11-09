@@ -37,21 +37,6 @@
 
 
 /**********************************************************************
- * Global routines                                                    *
- **********************************************************************/
-
-/**
- * Read the ABINIT header
- * @param[in] fp: a stream of the input file
- * @param[out] format: the file format
- * @param[out] np: the number of radial mesh points
- * @param[out] have_nlcc: whether there are non-linear core-corrections
- * @return error code
- */
-int abinit_read_header(FILE *fp, int *format, int *np, int *have_nlcc);
-
-
-/**********************************************************************
  * Format 6 routines                                                  *
  **********************************************************************/
 
