@@ -28,10 +28,9 @@
 #include "config.h"
 #endif
 
-
 /* The following is a VERY bad trick. Whoever finds something better
  * is welcome to speak. */
-static int pspio_error_tmp_id = 0;
+static int pspio_error_tmp_id = PSPIO_SUCCESS;
 static pspio_error_t *pspio_error_chain = NULL;
 
 
@@ -52,7 +51,7 @@ int pspio_error_add(const char *filename, const int line) {
     s = strlen(filename);
     pspio_error_chain->filename = (char *)malloc(s + 1);
     CHECK_ERROR(pspio_error_chain->filename != NULL, PSPIO_ENOMEM)
-    memcpy(pspio_error_chain->filename,filename,s);
+    memcpy(pspio_error_chain->filename, filename, s);
     pspio_error_chain->filename[s] = 0;
 
     pspio_error_tmp_id = PSPIO_SUCCESS;
@@ -73,7 +72,7 @@ int pspio_error_add(const char *filename, const int line) {
   s = strlen(filename);
   last_err->filename = (char *)malloc(s + 1);
   CHECK_ERROR(last_err->filename != NULL, PSPIO_ENOMEM)
-  memcpy(last_err->filename,filename,s);
+  memcpy(last_err->filename, filename, s);
   last_err->filename[s] = 0;
 
   pspio_error_tmp_id = PSPIO_SUCCESS;
@@ -81,16 +80,52 @@ int pspio_error_add(const char *filename, const int line) {
 }
 
 
-int pspio_error_flush(void) {
+int pspio_error_fetchall(char **err_str) {
+  char buf[8];
+  char *tmp_str;
+  int err_len;
   pspio_error_t *cursor = pspio_error_chain;
 
+  if ( cursor != NULL ) {
+    *err_str  = (char *)malloc(20*sizeof(char));
+    ASSERT(*err_str != NULL, PSPIO_ENOMEM);
+    sprintf(*err_str, "%s", "libpspio: ERROR:\n");
+  }
+
   while ( cursor != NULL ) {
-    printf("libpspio: error: %s\n          at %s:%d\n",
+    err_len  = 16;
+    err_len += strlen(pspio_error_str(cursor->id));
+    err_len += strlen(cursor->filename);
+    sprintf(buf, "%d", cursor->line);
+    err_len += strlen(buf);
+
+    tmp_str  = (char *)malloc((err_len+1)*sizeof(char));
+    ASSERT(tmp_str != NULL, PSPIO_ENOMEM);
+    sprintf(tmp_str, "  * %s\n      at %s:%d\n",
       pspio_error_str(cursor->id), cursor->filename, cursor->line);
+    *err_str  = realloc(*err_str, strlen(*err_str)+err_len);
+    strcat(*err_str, tmp_str);
+    free(tmp_str);
+
     cursor = cursor->next;
   }
 
   return pspio_error_free();
+}
+
+
+int pspio_error_flush(void) {
+  char *err_str = NULL;
+  int eid;
+
+  eid = pspio_error_fetchall(&err_str);
+  printf("%s", err_str);
+
+  if ( eid != PSPIO_SUCCESS ) {
+    printf("libpspio: FATAL: pspio_error_free() failed.\n");
+  }
+
+  return eid;
 }
 
 
@@ -104,6 +139,7 @@ int pspio_error_free(void) {
     free(first_err);
   }
 
+  pspio_error_tmp_id = PSPIO_SUCCESS;
   return PSPIO_SUCCESS;
 }
 
@@ -145,9 +181,9 @@ void pspio_error_set(const int error_id) {
 
 void pspio_error_show(const int error_id, const char *filename,
        const int line) {
-  printf("libpspio: ERROR: %s\n",pspio_error_str(error_id));
+  printf("libpspio: ERROR: %s\n", pspio_error_str(error_id));
   if ( filename != NULL ) {
-    printf("  at %s:%d\n",filename,line);
+    printf("  at %s:%d\n", filename, line);
   }
 }
 

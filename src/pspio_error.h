@@ -61,7 +61,7 @@ typedef struct pspio_error_type pspio_error_t;
  **********************************************************************/
 
 /**
- * Add an error to the chain
+ * Add an error to the chain.
  * @param[in] filename: source filename (use NULL if none).
  * @param[in] line: line number in the source file (ignored if filename
  *            is NULL).
@@ -71,35 +71,43 @@ int pspio_error_add(const char *filename, const int line);
 
 
 /**
- * Flush the error chain
+ * Fetch and clear the error chain.
+ * @param[out] err_str: string pointer describing the chain of errors.
+ * @return error code
+ */
+int pspio_error_fetchall(char **err_str);
+
+
+/**
+ * Flush and clear the error chain.
  * @return error code
  */
 int pspio_error_flush(void);
 
 
 /**
- * Clear the error chain
+ * Clear the error chain.
  * @return error code
  */
 int pspio_error_free(void);
 
 
 /**
- * Get the current error status
+ * Get the current error status.
  * @return error code
  */
 int pspio_error_get(void);
 
 
 /**
- * Get the length of the error chain
+ * Get the length of the error chain.
  * @return length of the error chain
  */
 int pspio_error_len(void);
 
 
 /**
- * Pop the first available error
+ * Pop the first available error.
  * @return error structure pointer
  */
 pspio_error_t *pspio_error_pop(void);
@@ -184,11 +192,5 @@ const char *pspio_error_str(const int pspio_errorid);
     pspio_error_add(__FILE__, __LINE__); \
     return error_id; \
   }
-
-// FIXME: to be removed
-#define HANDLE_FATAL_ERROR(condition, error_id) \
-  printf("ERROR: macro HANDLE_FATAL_ERROR called from:\n  %s:%d\n", \
-    __FILE__, __LINE__); \
-  exit(1);
 
 #endif

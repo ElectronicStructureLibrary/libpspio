@@ -30,7 +30,7 @@
 #include "test_common.h"
 
 
-int test_assert(const int i){
+int test_assert(const int i) {
   ASSERT(i == 0, PSPIO_EVALUE);
   return PSPIO_SUCCESS;
 }
@@ -48,13 +48,13 @@ int main(void) {
   DEBUG_PRINT("test_error: checking empty error chain\n");
   DEBUG_PRINT("test_error: at the beginning, status = %d, length = %d\n",
     eid, pspio_error_len());
-  CHECK_STAT_LEN(eid, PSPIO_SUCCESS, pspio_error_len(), 0)
+  CHECK_STAT_LEN(eid, PSPIO_SUCCESS, pspio_error_len(), 0);
   DEBUG_PRINT("test_error: BEGIN FLUSH\n");
   eid = pspio_error_flush();
   DEBUG_PRINT("test_error: END FLUSH\n");
   DEBUG_PRINT("test_error: after pspio_error_flush, status = %d, length = %d\n",
     eid, pspio_error_len());
-  CHECK_STAT_LEN(eid, PSPIO_SUCCESS, pspio_error_len(), 0)
+  CHECK_STAT_LEN(eid, PSPIO_SUCCESS, pspio_error_len(), 0);
   DEBUG_PRINT("\n");
 
   /* Check single error */
@@ -63,13 +63,13 @@ int main(void) {
   eid = pspio_error_add("test_1_1.c", 1234);
   DEBUG_PRINT("test_error: after pspio_error_add, status = %d, length = %d\n",
     eid, pspio_error_len());
-  CHECK_STAT_LEN(eid, PSPIO_SUCCESS, pspio_error_len(), 1)
+  CHECK_STAT_LEN(eid, PSPIO_SUCCESS, pspio_error_len(), 1);
   DEBUG_PRINT("test_error: BEGIN FLUSH\n");
   pspio_error_flush();
   DEBUG_PRINT("test_error: END FLUSH\n");
   DEBUG_PRINT("test_error: after pspio_error_flush, status = %d, length = %d\n",
     eid, pspio_error_len());
-  CHECK_STAT_LEN(eid, PSPIO_SUCCESS, pspio_error_len(), 0)
+  CHECK_STAT_LEN(eid, PSPIO_SUCCESS, pspio_error_len(), 0);
   DEBUG_PRINT("\n");
 
   /* Check double error */
@@ -78,18 +78,18 @@ int main(void) {
   pspio_error_add("test_2_1.c", 201);
   DEBUG_PRINT("test_error: after pspio_error_add, status = %d, length = %d\n",
     eid, pspio_error_len());
-  CHECK_STAT_LEN(eid, PSPIO_SUCCESS, pspio_error_len(), 1)
+  CHECK_STAT_LEN(eid, PSPIO_SUCCESS, pspio_error_len(), 1);
   pspio_error_set(PSPIO_ENOSUPPORT);
   pspio_error_add("test_2_2.c", 202);
   DEBUG_PRINT("test_error: after pspio_error_add, status = %d, length = %d\n",
     eid, pspio_error_len());
-  CHECK_STAT_LEN(eid, PSPIO_SUCCESS, pspio_error_len(), 2)
+  CHECK_STAT_LEN(eid, PSPIO_SUCCESS, pspio_error_len(), 2);
   DEBUG_PRINT("test_error: BEGIN FLUSH\n");
   pspio_error_flush();
   DEBUG_PRINT("test_error: END FLUSH\n");
   DEBUG_PRINT("test_error: after pspio_error_flush, status = %d, length = %d\n",
     eid, pspio_error_len());
-  CHECK_STAT_LEN(eid, PSPIO_SUCCESS, pspio_error_len(), 0)
+  CHECK_STAT_LEN(eid, PSPIO_SUCCESS, pspio_error_len(), 0);
   DEBUG_PRINT("\n");
 
   /* Check triple error */
@@ -98,41 +98,49 @@ int main(void) {
   pspio_error_add("test_3_1.c", 311);
   DEBUG_PRINT("test_error: after pspio_error_add, status = %d, length = %d\n",
     eid, pspio_error_len());
-  CHECK_STAT_LEN(eid, PSPIO_SUCCESS, pspio_error_len(), 1)
+  CHECK_STAT_LEN(eid, PSPIO_SUCCESS, pspio_error_len(), 1);
   pspio_error_set(PSPIO_ENOFILE);
   pspio_error_add("test_3_2.c", 322);
   DEBUG_PRINT("test_error: after pspio_error_add, status = %d, length = %d\n",
     eid, pspio_error_len());
-  CHECK_STAT_LEN(eid, PSPIO_SUCCESS, pspio_error_len(), 2)
+  CHECK_STAT_LEN(eid, PSPIO_SUCCESS, pspio_error_len(), 2);
   pspio_error_set(PSPIO_ERROR);
   pspio_error_add("test_3_3.c", 333);
   DEBUG_PRINT("test_error: after pspio_error_add, status = %d, length = %d\n",
     eid, pspio_error_len());
-  CHECK_STAT_LEN(eid, PSPIO_SUCCESS, pspio_error_len(), 3)
+  CHECK_STAT_LEN(eid, PSPIO_SUCCESS, pspio_error_len(), 3);
   DEBUG_PRINT("test_error: BEGIN FLUSH\n");
   pspio_error_flush();
   DEBUG_PRINT("test_error: END FLUSH\n");
   DEBUG_PRINT("test_error: after pspio_error_flush, status = %d, length = %d\n",
     eid, pspio_error_len());
-  CHECK_STAT_LEN(eid, PSPIO_SUCCESS, pspio_error_len(), 0)
+  CHECK_STAT_LEN(eid, PSPIO_SUCCESS, pspio_error_len(), 0);
   DEBUG_PRINT("\n");
 
   /* Check ASSERT macro */
-  DEBUG_PRINT("test_error: checking ASSERT macro (1==0)\n");
-  eid = test_assert(1);
-  eid = pspio_error_flush();
   DEBUG_PRINT("test_error: checking ASSERT macro (0==0)\n");
   eid = test_assert(0);
+  DEBUG_PRINT("test_error: BEGIN FLUSH\n");
   eid = pspio_error_flush();
+  DEBUG_PRINT("test_error: END FLUSH\n");
+  CHECK_STAT_LEN(eid, PSPIO_SUCCESS, pspio_error_len(), 0);
+  DEBUG_PRINT("test_error: after ASSERT, status = %d, length = %d\n",
+    eid, pspio_error_len());
   DEBUG_PRINT("\n");
 
   /* Destroy error-handling structures */
   DEBUG_PRINT("test_error: destroying error-handling structures\n");
   eid = pspio_error_free();
-  CHECK_STAT_LEN(eid, PSPIO_SUCCESS, pspio_error_len(), 0)
+  CHECK_STAT_LEN(eid, PSPIO_SUCCESS, pspio_error_len(), 0);
   DEBUG_PRINT("\n");
 
-  DEBUG_PRINT("=== END test_error ===\n")
+  DEBUG_PRINT("=== END test_error ===\n");
+
+  DEBUG_PRINT("\n");
+  DEBUG_PRINT("test_error: will now check fatal error\n");
+  DEBUG_PRINT("test_error: checking ASSERT macro (1==0)\n");
+  eid = test_assert(1);
+  eid = pspio_error_flush();
 
   return 0;
 }
