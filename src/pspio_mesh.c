@@ -162,12 +162,12 @@ int pspio_mesh_init_from_points(pspio_mesh_t **mesh, const double *r,
 }
 
 
-int pspio_mesh_init_from_parameters(pspio_mesh_t **mesh, const int type, 
+void pspio_mesh_init_from_parameters(pspio_mesh_t **mesh, const int type, 
 				    const double a, const double b) {
   int i;
 
   ASSERT(*mesh != NULL, PSPIO_ERROR);
-  ASSERT(type != PSPIO_MESH_UNKNOWN, PSPIO_EVALUE);
+  ASSERT(type == PSPIO_MESH_LINEAR || type == PSPIO_MESH_LOG1 || type == PSPIO_MESH_LOG2, PSPIO_EVALUE);
 
   (*mesh)->type = type;
   (*mesh)->a = a;
@@ -187,16 +187,13 @@ int pspio_mesh_init_from_parameters(pspio_mesh_t **mesh, const int type,
       (*mesh)->r[i] = b*exp(a*(i+1) - 1.0);
       (*mesh)->rab[i] = a*(*mesh)->r[i];
       break;
-    default:
-      return PSPIO_EVALUE;
     }
   }
 
-  return PSPIO_SUCCESS;
 }
 
 
-int pspio_mesh_free(pspio_mesh_t **mesh){
+void pspio_mesh_free(pspio_mesh_t **mesh){
 
   if (*mesh != NULL) {
     if ((*mesh)->r != NULL) free ((*mesh)->r);
@@ -204,8 +201,6 @@ int pspio_mesh_free(pspio_mesh_t **mesh){
     free (*mesh);
     *mesh = NULL;
   }
-
-  return PSPIO_SUCCESS;
 }
 
 
@@ -213,20 +208,16 @@ int pspio_mesh_free(pspio_mesh_t **mesh){
  * Atomic routines                                                    *
  **********************************************************************/
 
-int pspio_mesh_get_np(const pspio_mesh_t *mesh, int *np) {
+void pspio_mesh_get_np(const pspio_mesh_t *mesh, int *np) {
   ASSERT(mesh != NULL, PSPIO_ERROR);
 
   *np = mesh->np;
-
-  return PSPIO_SUCCESS;
 }
 
-int pspio_mesh_get_r(const pspio_mesh_t *mesh, double *r){
+void pspio_mesh_get_r(const pspio_mesh_t *mesh, double *r){
   int i;
 
   ASSERT(mesh != NULL, PSPIO_ERROR);
 
   for (i=0; i<mesh->np; i++) r[i] = mesh->r[i];
-
-  return PSPIO_SUCCESS;
 }

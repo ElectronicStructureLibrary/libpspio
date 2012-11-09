@@ -88,7 +88,7 @@ int upf_read_header(FILE *fp, int *np, pspio_pspdata_t **pspdata){
   (*pspdata)->symbol = (char *)malloc(2*sizeof(char));
   CHECK_ERROR((*pspdata)->symbol != NULL, PSPIO_ENOMEM);
   strcpy((*pspdata)->symbol, strtok(line," "));
-  HANDLE_FUNC_ERROR(symbol_to_z((*pspdata)->symbol, (*pspdata)->z) );
+  symbol_to_z((*pspdata)->symbol, (*pspdata)->z);
 
   //Read the kind of pseudo-potentials US|NC|PAW
   CHECK_ERROR(fgets(line, MAX_STRLEN, fp) != NULL, PSPIO_EIO);
@@ -144,7 +144,7 @@ int upf_read_header(FILE *fp, int *np, pspio_pspdata_t **pspdata){
   } else {
     HANDLE_FUNC_ERROR(pspio_xc_alloc(&(*pspdata)->xc, PSPIO_NLCC_NONE, *np));
   }
-  HANDLE_FUNC_ERROR(pspio_xc_set(&(*pspdata)->xc, exchange, correlation));
+  pspio_xc_set(&(*pspdata)->xc, exchange, correlation);
 
   //Check end tag
   HANDLE_FUNC_ERROR(upf_tag_check_end(fp, "PP_HEADER"));
@@ -343,7 +343,7 @@ int upf_read_nonlocal(FILE *fp, const int np, pspio_pspdata_t **pspdata){
   free(projector_read);
   free(ekb);
   free(proj_j);
-  HANDLE_FUNC_ERROR(pspio_qn_free(&(qn)));
+  pspio_qn_free(&qn);
 
   return PSPIO_SUCCESS;
 }
@@ -370,7 +370,7 @@ int upf_read_local(FILE *fp, const int np, pspio_pspdata_t **pspdata){
   for (i=0; i<(*pspdata)->l_max+1; i++) {
     n = 0;
     for (j=0; j<(*pspdata)->n_kbproj; j++) {
-      HANDLE_FUNC_ERROR(pspio_projector_get_l((*pspdata)->kb_projectors[j], &l));
+      pspio_projector_get_l((*pspdata)->kb_projectors[j], &l);
       if (l == i) n++;
     }
     if (n == 0) (*pspdata)->l_local = i;
@@ -394,7 +394,7 @@ int upf_read_local(FILE *fp, const int np, pspio_pspdata_t **pspdata){
 
   //Free memory
   free(vlocal);
-  HANDLE_FUNC_ERROR(pspio_qn_free(&(qn)));
+  pspio_qn_free(&qn);
 
   //Check end tag
   HANDLE_FUNC_ERROR(upf_tag_check_end(fp,"PP_LOCAL"));
@@ -472,7 +472,7 @@ int upf_read_pswfc(FILE *fp, const int np, pspio_pspdata_t **pspdata){
   //Free memory
   free(wf);
   free(j);
-  HANDLE_FUNC_ERROR (pspio_qn_free(&(qn)));
+  pspio_qn_free(&qn);
 
   //Check end tag
   HANDLE_FUNC_ERROR(upf_tag_check_end(fp,"PP_PSWFC"));

@@ -79,9 +79,8 @@ int pspio_xc_alloc(pspio_xc_t **xc, const int nlcc_scheme, const int np);
  * @param[in,out] xc: xc structure to set
  * @param[in] exchange: exchange functional id, taken from libxc conventions
  * @param[in] correlation: correlation functional id, taken from libxc conventions
- * @return error code
  */
-int pspio_xc_set(pspio_xc_t **xc, const int exchange, const int correlation);
+void pspio_xc_set(pspio_xc_t **xc, const int exchange, const int correlation);
 
 
 /**
@@ -103,11 +102,10 @@ int pspio_xc_nlcc_set(pspio_xc_t **xc, const pspio_mesh_t *mesh,
  * Frees all memory associated with xc structure
  * 
  * @param[in,out] xc: xc structure
- * @return error code
  * @note This function can be safelly called even if some or all of the xc 
  *       compoments have not been allocated.
  */
-int pspio_xc_free(pspio_xc_t **xc);
+void pspio_xc_free(pspio_xc_t **xc);
 
 
 /**********************************************************************
@@ -119,17 +117,15 @@ int pspio_xc_free(pspio_xc_t **xc);
  * @param[in] xc: xc structure
  * @param[out] exchange: identifier
  * @param[out] correlation: identifier
- * @return error code
  */
-int pspio_xc_get_id(const pspio_xc_t *xc, int *exchange, int *correlation);
+void pspio_xc_get_id(const pspio_xc_t *xc, int *exchange, int *correlation);
 
 /**
  * Returns if xc has non-linear core-corrections
  * @param[in] xc: xc structure
  * @param[out] has_nlcc: true if xc has nlcc, false otherwise
- * @return error code
  */
-int pspio_xc_has_nlcc(const pspio_xc_t *xc, int *has_nlcc);
+void pspio_xc_has_nlcc(const pspio_xc_t *xc, int *has_nlcc);
 
 /**
  * Returns the value of the core density at an array of arbitrary points
@@ -137,10 +133,9 @@ int pspio_xc_has_nlcc(const pspio_xc_t *xc, int *has_nlcc);
  * @param[in] np: number of points
  * @param[in] *r: positions were we want to evaluate the core density
  * @param[out] *core_dens: values of the core density at r
- * @return error code
  * @note The xc pointer has to be fully set.
  */
-int pspio_xc_nlcc_eval(const pspio_xc_t *xc, const int np, 
+void pspio_xc_nlcc_eval(const pspio_xc_t *xc, const int np, 
 		       const double *r, double *core_dens);
 
 
@@ -148,10 +143,9 @@ int pspio_xc_nlcc_eval(const pspio_xc_t *xc, const int np,
  * Returns the core density function
  * @param[in] xc: xc structure
  * @param[out] *cd_func: core density function defined on the mesh
- * @return error code
  * @note The xc pointer has to be fully set.
  */
-int pspio_xc_nlcc_get(const pspio_xc_t *xc, pspio_meshfunc_t **cd_func);
+void pspio_xc_nlcc_get(const pspio_xc_t *xc, pspio_meshfunc_t **cd_func);
 
 
 #endif

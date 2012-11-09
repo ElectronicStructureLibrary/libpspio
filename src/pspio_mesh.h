@@ -125,11 +125,10 @@ int pspio_mesh_init_from_points(pspio_mesh_t **mesh, const double *r,
  * @param[in] type: type of mesh. Can be LOG1, LOG2, or LINEAR.
  * @param[in] a: parameter a. The meaning depends on the type of mesh.
  * @param[in] b: parameter b. The meaning depends on the type of mesh.
- * @return error code
  * @note The mesh pointer has to be allocated first with the pspio_mesh_alloc
  *       method.
  */
-int pspio_mesh_init_from_parameters(pspio_mesh_t **mesh, const int type, 
+void pspio_mesh_init_from_parameters(pspio_mesh_t **mesh, const int type, 
 				    const double a, const double b);
 
 
@@ -137,11 +136,10 @@ int pspio_mesh_init_from_parameters(pspio_mesh_t **mesh, const int type,
  * Frees all memory associated with mesh structure
  * 
  * @param[in,out] mesh: mesh structure
- * @return error code
  * @note This function can be safelly called even if some or all of the mesh 
  *       compoments have not been allocated.
  */
-int pspio_mesh_free(pspio_mesh_t **mesh);
+void pspio_mesh_free(pspio_mesh_t **mesh);
 
 
 
@@ -154,9 +152,8 @@ int pspio_mesh_free(pspio_mesh_t **mesh);
  * 
  * @param[in] mesh: mesh structure
  * @param[out] np: the number of points
- * @return error code
  */
-int pspio_mesh_get_np(const pspio_mesh_t *mesh, int *np);
+void pspio_mesh_get_np(const pspio_mesh_t *mesh, int *np);
 
 
 /**
@@ -164,8 +161,7 @@ int pspio_mesh_get_np(const pspio_mesh_t *mesh, int *np);
  * 
  * @param[in] mesh: mesh structure
  * @param[out] r: pointer to array of points
- * @return error code
  */
-int pspio_mesh_get_r(const pspio_mesh_t *mesh, double *r);
+void pspio_mesh_get_r(const pspio_mesh_t *mesh, double *r);
 
 #endif

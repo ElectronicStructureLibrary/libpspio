@@ -49,8 +49,7 @@ int main(void) {
   eid = pspio_qn_alloc(&qn2);
   eid = pspio_error_flush();
   DEBUG_PRINT("test_qn: destroying qn2\n");
-  eid = pspio_qn_free(&qn2);
-  eid = pspio_error_flush();
+  pspio_qn_free(&qn2);
   DEBUG_PRINT("\n");
 
   /* Check setting of quantum numbers */
@@ -96,22 +95,20 @@ int main(void) {
   /* Check quantum numbers labels */
   DEBUG_PRINT("test_qn: printing quantum number label\n");
   eid = pspio_qn_set(&qn1, 1, 0, 0.0);
-  eid = pspio_qn_label(qn1, label);
+  pspio_qn_label(qn1, label);
   eid = pspio_error_flush();
   DEBUG_PRINT("test_qn:  label 1 = '%s' (should be '1s')\n", label);
   eid = pspio_qn_set(&qn1, 2, 1, 1.5);
-  eid = pspio_qn_label(qn1, label);
+  pspio_qn_label(qn1, label);
   eid = pspio_error_flush();
   DEBUG_PRINT("test_qn:  label 2 = '%s' (should be '2p1.5')\n", label);
   DEBUG_PRINT("\n");
 
   /* Destroy quantum numbers */
   DEBUG_PRINT("test_qn: destroying qn1\n");
-  eid = pspio_qn_free(&qn1);
-  eid = pspio_error_flush();
+  pspio_qn_free(&qn1);
   DEBUG_PRINT("test_qn: destroying qn2\n");
-  eid = pspio_qn_free(&qn2);
-  eid = pspio_error_flush();
+  pspio_qn_free(&qn2);
   DEBUG_PRINT("\n");
 
   DEBUG_PRINT("=== END test_qn ===\n");

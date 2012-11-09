@@ -32,13 +32,11 @@
 #include "config.h"
 #endif
 
-int upf_write_info(FILE *fp, const pspio_pspdata_t *pspdata){
+void upf_write_info(FILE *fp, const pspio_pspdata_t *pspdata){
 
   fprintf(fp, "<PP_INFO>\n");
   fprintf(fp, "%s", pspdata->info);
   fprintf(fp, "</PP_INFO>\n");
-
-  return PSPIO_SUCCESS;
 }
 
 int upf_write_header(FILE *fp, const pspio_pspdata_t *pspdata){
@@ -62,7 +60,7 @@ int upf_write_header(FILE *fp, const pspio_pspdata_t *pspdata){
   fprintf(fp, "   NC                  Norm - Conserving pseudopotential\n");
   
   //Write the if there are nonlinear core corrections
-  HANDLE_FUNC_ERROR(pspio_xc_has_nlcc(pspdata->xc, &has_nlcc));
+  pspio_xc_has_nlcc(pspdata->xc, &has_nlcc);
   if (has_nlcc) {
     fprintf(fp, "    T                  Nonlinear Core Correction\n");
   } else {
@@ -70,7 +68,7 @@ int upf_write_header(FILE *fp, const pspio_pspdata_t *pspdata){
   }
 
   //Write exchange-correlation functional
-  HANDLE_FUNC_ERROR(pspio_xc_get_id(pspdata->xc, &exchange, &correlation));
+  pspio_xc_get_id(pspdata->xc, &exchange, &correlation);
   HANDLE_FUNC_ERROR(upf_from_libxc(exchange, correlation, longname, shortname));
   fprintf(fp, " %20s  %4s Exchange-Correlation functional\n", longname, shortname);
 
@@ -95,9 +93,9 @@ int upf_write_header(FILE *fp, const pspio_pspdata_t *pspdata){
   //Write wavefunctions info
   fprintf(fp, " Wavefunctions         nl  l   occ\n");
   for (is=0; is<pspdata->n_states; is++) {
-    HANDLE_FUNC_ERROR(pspio_state_get_label(pspdata->states[is], &label[0]));
-    HANDLE_FUNC_ERROR(pspio_state_get_l(pspdata->states[is], &l));
-    HANDLE_FUNC_ERROR(pspio_state_get_occ(pspdata->states[is], &occ));    
+    pspio_state_get_label(pspdata->states[is], &label[0]);
+    pspio_state_get_l(pspdata->states[is], &l);
+    pspio_state_get_occ(pspdata->states[is], &occ);
     fprintf(fp, "                       %2s%3d%6.2f\n", label, l, occ);    
   }
 
@@ -108,7 +106,7 @@ int upf_write_header(FILE *fp, const pspio_pspdata_t *pspdata){
 }
 
 
-int upf_write_mesh(FILE *fp, const pspio_pspdata_t *pspdata){
+void upf_write_mesh(FILE *fp, const pspio_pspdata_t *pspdata){
   int i;
 
   //Write init tag
@@ -132,12 +130,10 @@ int upf_write_mesh(FILE *fp, const pspio_pspdata_t *pspdata){
 
   //Write end tag
   fprintf(fp, "</PP_MESH>\n");
-
-  return PSPIO_SUCCESS;
 }
 
 
-int upf_write_nlcc(FILE *fp, const pspio_pspdata_t *pspdata){
+void upf_write_nlcc(FILE *fp, const pspio_pspdata_t *pspdata){
   int i;
   double rho;
 
@@ -146,19 +142,17 @@ int upf_write_nlcc(FILE *fp, const pspio_pspdata_t *pspdata){
 
   //Print density
   for (i=0; i<pspdata->mesh->np; i++) {
-    HANDLE_FUNC_ERROR(pspio_xc_nlcc_eval(pspdata->xc, 1, &(pspdata->mesh->r[i]), &rho));
+    pspio_xc_nlcc_eval(pspdata->xc, 1, &(pspdata->mesh->r[i]), &rho);
     if (i != 0 && i % 4 == 0) fprintf(fp, "\n");
     fprintf(fp, " %18.11E", rho);
   }
 
   //Write end tag
   fprintf(fp, "\n</PP_NLCC>\n");
-
-  return PSPIO_SUCCESS;
 }
 
 
-int upf_write_nonlocal(FILE *fp, const pspio_pspdata_t *pspdata){
+void upf_write_nonlocal(FILE *fp, const pspio_pspdata_t *pspdata){
   int ikb, l, i;
   double proj, ekb;
 
@@ -167,12 +161,12 @@ int upf_write_nonlocal(FILE *fp, const pspio_pspdata_t *pspdata){
 
   //Write projectors
   for (ikb=0; ikb<pspdata->n_kbproj; ikb++) {
-    HANDLE_FUNC_ERROR(pspio_projector_get_l(pspdata->kb_projectors[ikb], &l));
+    pspio_projector_get_l(pspdata->kb_projectors[ikb], &l);
     fprintf(fp, "  <PP_BETA>\n");
     fprintf(fp, "%5d%5d             Beta    L\n", ikb+1, l);
     fprintf(fp, "%6d\n", pspdata->mesh->np);
     for (i=0; i<pspdata->mesh->np; i++) {
-      HANDLE_FUNC_ERROR(pspio_projector_eval(pspdata->kb_projectors[ikb], 1, &(pspdata->mesh->r[i]), &proj));
+      pspio_projector_eval(pspdata->kb_projectors[ikb], 1, &(pspdata->mesh->r[i]), &proj);
       if (i != 0 && i % 4 == 0) fprintf(fp, "\n");
       proj *= 2.0*pspdata->mesh->r[i];
       fprintf(fp, " %18.11E", proj);
@@ -184,7 +178,7 @@ int upf_write_nonlocal(FILE *fp, const pspio_pspdata_t *pspdata){
   fprintf(fp, "  <PP_DIJ>\n");
   fprintf(fp, "%5d                  Number of nonzero Dij\n", pspdata->n_kbproj);
   for (ikb=0; ikb<pspdata->n_kbproj; ikb++) {
-    HANDLE_FUNC_ERROR(pspio_projector_get_energy(pspdata->kb_projectors[ikb], &ekb));
+    pspio_projector_get_energy(pspdata->kb_projectors[ikb], &ekb);
     ekb /= 2.0;
     fprintf(fp, "%5d%5d%19.11E\n", ikb+1, ikb+1, ekb);
   }
@@ -192,12 +186,10 @@ int upf_write_nonlocal(FILE *fp, const pspio_pspdata_t *pspdata){
 
   //Write end tag
   fprintf(fp, "</PP_NONLOCAL>\n");
-
-  return PSPIO_SUCCESS;
 }
 
 
-int upf_write_local(FILE *fp, const pspio_pspdata_t *pspdata){
+void upf_write_local(FILE *fp, const pspio_pspdata_t *pspdata){
   int i;
   double vlocal;
 
@@ -207,19 +199,17 @@ int upf_write_local(FILE *fp, const pspio_pspdata_t *pspdata){
   //Print vlocal
   for (i=0; i<pspdata->mesh->np; i++) {
     if (i != 0 && i % 4 == 0) fprintf(fp, "\n");
-    HANDLE_FUNC_ERROR(pspio_potential_eval(pspdata->vlocal, 1, &(pspdata->mesh->r[i]), &vlocal));
+    pspio_potential_eval(pspdata->vlocal, 1, &(pspdata->mesh->r[i]), &vlocal);
     vlocal *= 2.0;
     fprintf(fp, " %18.11E", vlocal);
   }
 
   //Write end tag
   fprintf(fp, "\n</PP_LOCAL>\n");
-
-  return PSPIO_SUCCESS;
 }
 
 
-int upf_write_pswfc(FILE *fp, const pspio_pspdata_t *pspdata){
+void upf_write_pswfc(FILE *fp, const pspio_pspdata_t *pspdata){
   int is, i, l;
   double occ, wf;
   char label[5];
@@ -229,13 +219,13 @@ int upf_write_pswfc(FILE *fp, const pspio_pspdata_t *pspdata){
 
   //Write wavefunctions
   for (is=0; is<pspdata->n_states; is++) {
-    HANDLE_FUNC_ERROR(pspio_state_get_label(pspdata->states[is], &label[0]));
-    HANDLE_FUNC_ERROR(pspio_state_get_l(pspdata->states[is], &l));
-    HANDLE_FUNC_ERROR(pspio_state_get_occ(pspdata->states[is], &occ));
+    pspio_state_get_label(pspdata->states[is], &label[0]);
+    pspio_state_get_l(pspdata->states[is], &l);
+    pspio_state_get_occ(pspdata->states[is], &occ);
     fprintf(fp, "%s %4d %5.2f          Wavefunction\n", label, l, occ);
     for (i=0; i<pspdata->mesh->np; i++) {
       if (i != 0 && i % 4 == 0) fprintf(fp, "\n");
-      HANDLE_FUNC_ERROR(pspio_state_wf_eval(pspdata->states[is], 1, &(pspdata->mesh->r[i]), &wf));
+      pspio_state_wf_eval(pspdata->states[is], 1, &(pspdata->mesh->r[i]), &wf);
       wf *= pspdata->mesh->r[i];
       fprintf(fp, " %18.11E", wf);
     }
@@ -244,12 +234,10 @@ int upf_write_pswfc(FILE *fp, const pspio_pspdata_t *pspdata){
 
   //Write end tag
   fprintf(fp, "</PP_PSWFC>\n");
-
-  return PSPIO_SUCCESS;
 }
 
 
-int upf_write_rhoatom(FILE *fp, const pspio_pspdata_t *pspdata){
+void upf_write_rhoatom(FILE *fp, const pspio_pspdata_t *pspdata){
   int i;
   double rho;
 
@@ -259,19 +247,17 @@ int upf_write_rhoatom(FILE *fp, const pspio_pspdata_t *pspdata){
   //Print valence density
   for (i=0; i<pspdata->mesh->np; i++) {
     if (i != 0 && i % 4 == 0) fprintf(fp, "\n");
-    HANDLE_FUNC_ERROR(pspio_meshfunc_eval(pspdata->rho_valence, 1, &(pspdata->mesh->r[i]), &rho));
+    pspio_meshfunc_eval(pspdata->rho_valence, 1, &(pspdata->mesh->r[i]), &rho);
     rho *= 4.0*M_PI*pspdata->mesh->r[i]*pspdata->mesh->r[i];
     fprintf(fp, " %18.11E", rho);
   }
 
   //Write end tag
   fprintf(fp, "\n</PP_RHOATOM>\n");
-
-  return PSPIO_SUCCESS;
 }
 
 
-int upf_write_addinfo(FILE *fp, const pspio_pspdata_t *pspdata){
+void upf_write_addinfo(FILE *fp, const pspio_pspdata_t *pspdata){
   int is, n, l;
   double occ, j;
   char label[5];
@@ -281,18 +267,18 @@ int upf_write_addinfo(FILE *fp, const pspio_pspdata_t *pspdata){
 
   //Write wavefunctions data
   for (is=0; is<pspdata->n_states; is++) {
-    HANDLE_FUNC_ERROR(pspio_state_get_label(pspdata->states[is], &label[0]));
-    HANDLE_FUNC_ERROR(pspio_state_get_n(pspdata->states[is], &n));
-    HANDLE_FUNC_ERROR(pspio_state_get_l(pspdata->states[is], &l));
-    HANDLE_FUNC_ERROR(pspio_state_get_j(pspdata->states[is], &j));
-    HANDLE_FUNC_ERROR(pspio_state_get_occ(pspdata->states[is], &occ));
+    pspio_state_get_label(pspdata->states[is], &label[0]);
+    pspio_state_get_n(pspdata->states[is], &n);
+    pspio_state_get_l(pspdata->states[is], &l);
+    pspio_state_get_j(pspdata->states[is], &j);
+    pspio_state_get_occ(pspdata->states[is], &occ);
     fprintf(fp, "%2s  %1d  %1d  %4.2f  %4.2f\n", label, n, l, j, occ);
   }
 
   //Write projectors data
   for (is=0; is<pspdata->n_kbproj; is++) {
-    HANDLE_FUNC_ERROR(pspio_projector_get_l(pspdata->kb_projectors[is], &l));
-    HANDLE_FUNC_ERROR(pspio_projector_get_j(pspdata->kb_projectors[is], &j));
+    pspio_projector_get_l(pspdata->kb_projectors[is], &l);
+    pspio_projector_get_j(pspdata->kb_projectors[is], &j);
     fprintf(fp, "  %2d  %4.2f\n", l, j);
   }
 
@@ -301,6 +287,4 @@ int upf_write_addinfo(FILE *fp, const pspio_pspdata_t *pspdata){
 
   //Write end tag
   fprintf(fp, "</PP_ADDINFO>\n");
-
-  return PSPIO_SUCCESS;
 }

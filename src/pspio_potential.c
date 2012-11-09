@@ -71,15 +71,14 @@ int pspio_potential_set(pspio_potential_t **potential, const pspio_qn_t *qn, con
 }
 
 
-int pspio_potential_free(pspio_potential_t **potential){
+void pspio_potential_free(pspio_potential_t **potential){
 
   if (*potential != NULL) {
-    HANDLE_FUNC_ERROR( pspio_meshfunc_free(&(*potential)->v));
-    HANDLE_FUNC_ERROR( pspio_qn_free(&(*potential)->qn));
+    pspio_meshfunc_free(&(*potential)->v);
+    pspio_qn_free(&(*potential)->qn);
     free(*potential);
     *potential = NULL;
   }
-  return PSPIO_SUCCESS;
 }
 
 
@@ -87,13 +86,11 @@ int pspio_potential_free(pspio_potential_t **potential){
  * Atomic routines                                                    *
  **********************************************************************/
 
-int pspio_potential_eval(const pspio_potential_t *potential, const int np, 
+void pspio_potential_eval(const pspio_potential_t *potential, const int np, 
 			 const double *r, double *v) {
   ASSERT(potential != NULL, PSPIO_ERROR);
   ASSERT(r != NULL, PSPIO_ERROR);
   ASSERT(v != NULL, PSPIO_ERROR);
 
-  HANDLE_FUNC_ERROR(pspio_meshfunc_eval(potential->v, np, r, v));
-
-  return PSPIO_SUCCESS;
+  pspio_meshfunc_eval(potential->v, np, r, v);
 }

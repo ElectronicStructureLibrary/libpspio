@@ -54,8 +54,7 @@ int main(void) {
   eid = pspio_mesh_alloc(&m2, np);
   eid = pspio_error_flush();
   DEBUG_PRINT("test_mesh: destroying m2\n");
-  eid = pspio_mesh_free(&m2);
-  eid = pspio_error_flush();
+  pspio_mesh_free(&m2);
   DEBUG_PRINT("\n");
 
   /* Check setting of meshes */
@@ -63,8 +62,7 @@ int main(void) {
   eid = pspio_mesh_set(&m1, PSPIO_MESH_LOG1, a, b, r, rab);
   eid = pspio_error_flush();
   DEBUG_PRINT("test_mesh: initializing m1 from parameters\n");
-  eid = pspio_mesh_init_from_parameters(&m1, PSPIO_MESH_LOG1, a, b);
-  eid = pspio_error_flush();
+  pspio_mesh_init_from_parameters(&m1, PSPIO_MESH_LOG1, a, b);
   DEBUG_PRINT("test_mesh: initializing m1 from points\n");
   eid = pspio_mesh_init_from_points(&m1, r, rab);
   eid = pspio_error_flush();
@@ -85,12 +83,10 @@ int main(void) {
   /* Destroy meshes */
   DEBUG_PRINT("test_mesh: destroying m1\n");
   PTR_STAT_SHOW(m1);
-  eid = pspio_mesh_free(&m1);
-  eid = pspio_error_flush();
+  pspio_mesh_free(&m1);
   DEBUG_PRINT("test_mesh: destroying m2\n");
   PTR_STAT_SHOW(m2);
-  eid = pspio_mesh_free(&m2);
-  eid = pspio_error_flush();
+  pspio_mesh_free(&m2);
   DEBUG_PRINT("\n");
 
   DEBUG_PRINT("=== END test_mesh ===\n");

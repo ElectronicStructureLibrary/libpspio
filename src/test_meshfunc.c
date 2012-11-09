@@ -1,5 +1,5 @@
 /*
- Copyright (C) 2011 J. Alberdi, M. Oliveira, Y. Pouillon, and M. Verstraete
+ Copyright (C) 2011-2012 J. Alberdi, M. Oliveira, Y. Pouillon, and M. Verstraete
 
  This program is free software; you can redistribute it and/or modify
  it under the terms of the GNU Lesser General Public License as published by
@@ -77,8 +77,7 @@ int main(void) {
   eid = pspio_meshfunc_alloc(&f3, np);
   eid = pspio_error_flush();
   DEBUG_PRINT("test_meshfunc: destroying f3\n");
-  eid = pspio_meshfunc_free(&f3);
-  eid = pspio_error_flush();
+  pspio_meshfunc_free(&f3);
   DEBUG_PRINT("\n");
 
   /* Check setting of mesh functions */
@@ -101,40 +100,32 @@ int main(void) {
 
   /* Check evaluation of mesh functions */
   DEBUG_PRINT("test_meshfunc: evaluating f1 at r=%f\n", r[6]);
-  eid = pspio_meshfunc_eval(f1, 1, &r[6], &feval);
-  eid = pspio_error_flush();
+  pspio_meshfunc_eval(f1, 1, &r[6], &feval);
   DEBUG_PRINT("test_meshfunc: result=%f\n", feval);
   DEBUG_PRINT("test_meshfunc: evaluating f2 at r=%f\n", r[6]);
-  eid = pspio_meshfunc_eval(f2, 1, &r[6], &feval);
-  eid = pspio_error_flush();
+  pspio_meshfunc_eval(f2, 1, &r[6], &feval);
   DEBUG_PRINT("test_meshfunc: result=%f\n", feval);
   DEBUG_PRINT("test_meshfunc: evaluating first derivative of f1 at r=%f\n", r[6]);
-  eid = pspio_meshfunc_eval_deriv(f1, 1, &r[6], &feval);
-  eid = pspio_error_flush();
+  pspio_meshfunc_eval_deriv(f1, 1, &r[6], &feval);
   DEBUG_PRINT("test_meshfunc: result=%f\n", feval);
   DEBUG_PRINT("test_meshfunc: evaluating first derivative of f2 at r=%f\n", r[6]);
-  eid = pspio_meshfunc_eval_deriv(f2, 1, &r[6], &feval);
-  eid = pspio_error_flush();
+  pspio_meshfunc_eval_deriv(f2, 1, &r[6], &feval);
   DEBUG_PRINT("test_meshfunc: result=%f\n", feval);
   DEBUG_PRINT("test_meshfunc: evaluating second derivative of f1 at r=%f\n", r[6]);
-  eid = pspio_meshfunc_eval_deriv2(f1, 1, &r[6], &feval);
-  eid = pspio_error_flush();
+  pspio_meshfunc_eval_deriv2(f1, 1, &r[6], &feval);
   DEBUG_PRINT("test_meshfunc: result=%f\n", feval);
   DEBUG_PRINT("test_meshfunc: evaluating second derivative of f2 at r=%f\n", r[6]);
-  eid = pspio_meshfunc_eval_deriv2(f2, 1, &r[6], &feval);
-  eid = pspio_error_flush();
+  pspio_meshfunc_eval_deriv2(f2, 1, &r[6], &feval);
   DEBUG_PRINT("test_meshfunc: result=%f\n", feval);
   DEBUG_PRINT("\n");
 
   /* Destroy mesh functions */
   DEBUG_PRINT("test_meshfunc: destroying f1\n");
   PTR_STAT_SHOW(f1);
-  eid = pspio_meshfunc_free(&f1);
-  eid = pspio_error_flush();
+  pspio_meshfunc_free(&f1);
   DEBUG_PRINT("test_meshfunc: destroying f2\n");
   PTR_STAT_SHOW(f2);
-  eid = pspio_meshfunc_free(&f2);
-  eid = pspio_error_flush();
+  pspio_meshfunc_free(&f2);
   DEBUG_PRINT("\n");
 
   DEBUG_PRINT("=== END test_meshfunc ===\n");

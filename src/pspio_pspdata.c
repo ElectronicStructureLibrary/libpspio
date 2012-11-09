@@ -149,7 +149,7 @@ int pspio_pspdata_write(const pspio_pspdata_t *pspdata, const char *file_name,
 }
 
 
-int pspio_pspdata_free(pspio_pspdata_t **pspdata){
+void pspio_pspdata_free(pspio_pspdata_t **pspdata){
   int i;
 
   if (*pspdata != NULL) {
@@ -165,7 +165,7 @@ int pspio_pspdata_free(pspio_pspdata_t **pspdata){
     (*pspdata)->total_energy = 0.0;
 
     // Mesh
-    HANDLE_FUNC_ERROR(pspio_mesh_free(&(*pspdata)->mesh));
+    pspio_mesh_free(&(*pspdata)->mesh);
 
     // States
     if ((*pspdata)->qn_to_istate != NULL) {
@@ -176,7 +176,7 @@ int pspio_pspdata_free(pspio_pspdata_t **pspdata){
     (*pspdata)->n_states = 0;
     if ((*pspdata)->states != NULL) {
       for (i=0; i<(*pspdata)->n_states; i++) {
-	HANDLE_FUNC_ERROR(pspio_state_free(&(*pspdata)->states[i]));
+	pspio_state_free(&(*pspdata)->states[i]);
       }
       free((*pspdata)->states);
     }
@@ -186,7 +186,7 @@ int pspio_pspdata_free(pspio_pspdata_t **pspdata){
     (*pspdata)->n_potentials = 0;
     if ((*pspdata)->potentials != NULL) {
       for (i=0; i<(*pspdata)->n_potentials; i++) {
-	HANDLE_FUNC_ERROR(pspio_potential_free(&(*pspdata)->potentials[i]));
+	pspio_potential_free(&(*pspdata)->potentials[i]);
       }
       free((*pspdata)->potentials);
     }
@@ -194,29 +194,27 @@ int pspio_pspdata_free(pspio_pspdata_t **pspdata){
     // KB projectors
     if ((*pspdata)->kb_projectors != NULL) {
       for (i=0; i<(*pspdata)->n_kbproj; i++) {
-	HANDLE_FUNC_ERROR(pspio_projector_free(&(*pspdata)->kb_projectors[i]));
+	pspio_projector_free(&(*pspdata)->kb_projectors[i]);
       }
       free((*pspdata)->kb_projectors);
     }
     (*pspdata)->l_local = 0;
     (*pspdata)->kb_l_max = 0;
     if ((*pspdata)->vlocal != NULL) {
-      HANDLE_FUNC_ERROR(pspio_potential_free(&(*pspdata)->vlocal));
+      pspio_potential_free(&(*pspdata)->vlocal);
     }
 
     // XC
     if ((*pspdata)->xc != NULL) {
-      HANDLE_FUNC_ERROR(pspio_xc_free(&(*pspdata)->xc));
+      pspio_xc_free(&(*pspdata)->xc);
     }
 
     // Valence density
     if ((*pspdata)->rho_valence != NULL) {
-      HANDLE_FUNC_ERROR(pspio_meshfunc_free(&(*pspdata)->rho_valence));
+      pspio_meshfunc_free(&(*pspdata)->rho_valence);
     }
 
   }
-
-  return PSPIO_SUCCESS;
 }
 
 

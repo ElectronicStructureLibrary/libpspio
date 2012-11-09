@@ -93,227 +93,227 @@ module pspio_f90_lib_m
       character(len=*),          intent(in) :: filename
     end function pspio_f90_pspdata_write
 
-    integer function pspio_f90_pspdata_free(pspdata)
+    subroutine pspio_f90_pspdata_free(pspdata)
       use pspio_f90_types_m
       type(pspio_f90_pspdata_t), intent(inout) :: pspdata
-    end function pspio_f90_pspdata_free
+    end subroutine pspio_f90_pspdata_free
 
-    integer function pspio_f90_pspdata_get_symbol(pspdata, symbol)
+    subroutine pspio_f90_pspdata_get_symbol(pspdata, symbol)
       use pspio_f90_types_m
       type(pspio_f90_pspdata_t), intent(in)  :: pspdata
       character(len=*),          intent(out) :: symbol
-    end function pspio_f90_pspdata_get_symbol
+    end subroutine pspio_f90_pspdata_get_symbol
 
-    integer function pspio_f90_pspdata_get_z(pspdata, z)
+    subroutine pspio_f90_pspdata_get_z(pspdata, z)
       use pspio_f90_types_m
       type(pspio_f90_pspdata_t), intent(in)  :: pspdata
       real(pspio_f90_kind),      intent(out) :: z
-    end function pspio_f90_pspdata_get_z
+    end subroutine pspio_f90_pspdata_get_z
 
-    integer function pspio_f90_pspdata_get_zvalence(pspdata, zvalence)
+    subroutine pspio_f90_pspdata_get_zvalence(pspdata, zvalence)
       use pspio_f90_types_m
       type(pspio_f90_pspdata_t), intent(in)  :: pspdata
       real(pspio_f90_kind),      intent(out) :: zvalence
-    end function pspio_f90_pspdata_get_zvalence
+    end subroutine pspio_f90_pspdata_get_zvalence
 
-    integer function pspio_f90_pspdata_get_l_max(pspdata, l_max)
+    subroutine pspio_f90_pspdata_get_l_max(pspdata, l_max)
       use pspio_f90_types_m
       type(pspio_f90_pspdata_t), intent(in)  :: pspdata
       integer,                   intent(out) :: l_max
-    end function pspio_f90_pspdata_get_l_max
+    end subroutine pspio_f90_pspdata_get_l_max
 
-    integer function pspio_f90_pspdata_get_wave_eq(pspdata, wave_eq)
+    subroutine pspio_f90_pspdata_get_wave_eq(pspdata, wave_eq)
       use pspio_f90_types_m
       type(pspio_f90_pspdata_t), intent(in)  :: pspdata
       integer,                   intent(out) :: wave_eq
-    end function pspio_f90_pspdata_get_wave_eq
+    end subroutine pspio_f90_pspdata_get_wave_eq
 
-    integer function pspio_f90_pspdata_get_mesh(pspdata, mesh)
+    subroutine pspio_f90_pspdata_get_mesh(pspdata, mesh)
       use pspio_f90_types_m
       type(pspio_f90_pspdata_t), intent(in)  :: pspdata
       type(pspio_f90_mesh_t),    intent(out) :: mesh
-    end function pspio_f90_pspdata_get_mesh
+    end subroutine pspio_f90_pspdata_get_mesh
 
-    integer function pspio_f90_pspdata_get_n_states(pspdata, n_states)
+    subroutine pspio_f90_pspdata_get_n_states(pspdata, n_states)
       use pspio_f90_types_m
       type(pspio_f90_pspdata_t), intent(in)  :: pspdata
       integer,                   intent(out) :: n_states
-    end function pspio_f90_pspdata_get_n_states
+    end subroutine pspio_f90_pspdata_get_n_states
 
-    integer function pspio_f90_pspdata_get_state(pspdata, i, state)
+    subroutine pspio_f90_pspdata_get_state(pspdata, i, state)
       use pspio_f90_types_m
       type(pspio_f90_pspdata_t), intent(in)  :: pspdata
       integer,                   intent(in)  :: i
       type(pspio_f90_state_t),   intent(out) :: state
-    end function pspio_f90_pspdata_get_state
+    end subroutine pspio_f90_pspdata_get_state
 
-    integer function pspio_f90_pspdata_get_n_kbproj(pspdata, n_kbproj)
+    subroutine pspio_f90_pspdata_get_n_kbproj(pspdata, n_kbproj)
       use pspio_f90_types_m
       type(pspio_f90_pspdata_t), intent(in)  :: pspdata
       integer,                   intent(out) :: n_kbproj
-    end function pspio_f90_pspdata_get_n_kbproj
+    end subroutine pspio_f90_pspdata_get_n_kbproj
 
-    integer function pspio_f90_pspdata_get_kb_projector(pspdata, i, projector)
+    subroutine pspio_f90_pspdata_get_kb_projector(pspdata, i, projector)
       use pspio_f90_types_m
       type(pspio_f90_pspdata_t),   intent(in)  :: pspdata
       integer,                     intent(in)  :: i
       type(pspio_f90_projector_t), intent(out) :: projector
-    end function pspio_f90_pspdata_get_kb_projector
+    end subroutine pspio_f90_pspdata_get_kb_projector
 
-    integer function pspio_f90_pspdata_get_l_local(pspdata, l_local)
+    subroutine pspio_f90_pspdata_get_l_local(pspdata, l_local)
       use pspio_f90_types_m
       type(pspio_f90_pspdata_t), intent(in)  :: pspdata
       integer,                   intent(out) :: l_local
-    end function pspio_f90_pspdata_get_l_local
+    end subroutine pspio_f90_pspdata_get_l_local
 
-    integer function pspio_f90_pspdata_get_kb_l_max(pspdata, kb_l_max)
+    subroutine pspio_f90_pspdata_get_kb_l_max(pspdata, kb_l_max)
       use pspio_f90_types_m
       type(pspio_f90_pspdata_t), intent(in)  :: pspdata
       integer,                   intent(out) :: kb_l_max
-    end function pspio_f90_pspdata_get_kb_l_max
+    end subroutine pspio_f90_pspdata_get_kb_l_max
 
-    integer function pspio_f90_pspdata_get_vlocal(pspdata, vlocal)
+    subroutine pspio_f90_pspdata_get_vlocal(pspdata, vlocal)
       use pspio_f90_types_m
       type(pspio_f90_pspdata_t),   intent(in)  :: pspdata
       type(pspio_f90_potential_t), intent(out) :: vlocal
-    end function pspio_f90_pspdata_get_vlocal
+    end subroutine pspio_f90_pspdata_get_vlocal
 
-    integer function pspio_f90_pspdata_get_xc(pspdata, xc)
+    subroutine pspio_f90_pspdata_get_xc(pspdata, xc)
       use pspio_f90_types_m
       type(pspio_f90_pspdata_t), intent(in)  :: pspdata
       type(pspio_f90_xc_t),      intent(out) :: xc
-    end function pspio_f90_pspdata_get_xc
+    end subroutine pspio_f90_pspdata_get_xc
   end interface
 
   ! pspio_mesh
   interface
-    integer function pspio_f90_mesh_get_np(mesh, np)
+    subroutine pspio_f90_mesh_get_np(mesh, np)
       use pspio_f90_types_m
       type(pspio_f90_mesh_t), intent(in)  :: mesh
       integer,                intent(out) :: np
-    end function pspio_f90_mesh_get_np
+    end subroutine pspio_f90_mesh_get_np
 
-    integer function pspio_f90_mesh_get_r(mesh, r)
+    subroutine pspio_f90_mesh_get_r(mesh, r)
       use pspio_f90_types_m
       type(pspio_f90_mesh_t), intent(in)    :: mesh
       real(pspio_f90_kind),   intent(inout) :: r
-    end function pspio_f90_mesh_get_r
+    end subroutine pspio_f90_mesh_get_r
   end interface
 
   ! pspio_state
   interface pspio_f90_state_wf_eval
-    integer function pspio_f90_state_wf_eval_s(state, r, wf)
+    subroutine pspio_f90_state_wf_eval_s(state, r, wf)
       use pspio_f90_types_m
       type(pspio_f90_state_t), intent(in)  :: state
       real(pspio_f90_kind),    intent(in)  :: r
       real(pspio_f90_kind),    intent(out) :: wf
-    end function pspio_f90_state_wf_eval_s
+    end subroutine pspio_f90_state_wf_eval_s
 
-    integer function pspio_f90_state_wf_eval_v(state, np, r, wf)
+    subroutine pspio_f90_state_wf_eval_v(state, np, r, wf)
       use pspio_f90_types_m
       type(pspio_f90_state_t), intent(in)  :: state
       integer,                 intent(in)  :: np
       real(pspio_f90_kind),    intent(in)  :: r(np)
       real(pspio_f90_kind),    intent(out) :: wf(np)
-    end function pspio_f90_state_wf_eval_v
+    end subroutine pspio_f90_state_wf_eval_v
   end interface
 
   interface
-    integer function pspio_f90_state_get_qn(state, n, l, j)
+    subroutine pspio_f90_state_get_qn(state, n, l, j)
       use pspio_f90_types_m
       type(pspio_f90_state_t), intent(in)  :: state
       integer,                 intent(out) :: n
       integer,                 intent(out) :: l
       real(pspio_f90_kind),    intent(out) :: j
-    end function pspio_f90_state_get_qn
+    end subroutine pspio_f90_state_get_qn
 
-    integer function pspio_f90_state_get_occ(state, occ)
+    subroutine pspio_f90_state_get_occ(state, occ)
       use pspio_f90_types_m
       type(pspio_f90_state_t), intent(in)  :: state
       real(pspio_f90_kind),    intent(out) :: occ
-    end function pspio_f90_state_get_occ
+    end subroutine pspio_f90_state_get_occ
   end interface
 
   ! pspio_potential
   interface pspio_f90_potential_eval
-    integer function pspio_f90_potential_eval_s(potential, r, v)
+    subroutine pspio_f90_potential_eval_s(potential, r, v)
       use pspio_f90_types_m
       type(pspio_f90_potential_t), intent(in)  :: potential
       real(pspio_f90_kind),        intent(in)  :: r
       real(pspio_f90_kind),        intent(out) :: v
-    end function pspio_f90_potential_eval_s
+    end subroutine pspio_f90_potential_eval_s
 
-    integer function pspio_f90_potential_eval_v(potential, np, r, v)
+    subroutine pspio_f90_potential_eval_v(potential, np, r, v)
       use pspio_f90_types_m
       type(pspio_f90_potential_t), intent(in)  :: potential
       integer,                     intent(in)  :: np
       real(pspio_f90_kind),        intent(in)  :: r(np)
       real(pspio_f90_kind),        intent(out) :: v(np)
-    end function pspio_f90_potential_eval_v
-  end interface
+    end subroutine pspio_f90_potential_eval_v
+  end interface pspio_f90_potential_eval
 
   ! pspio_projector
   interface pspio_f90_projector_eval
-    integer function pspio_f90_projector_eval_s(projector, r, p)
+    subroutine pspio_f90_projector_eval_s(projector, r, p)
       use pspio_f90_types_m
       type(pspio_f90_projector_t), intent(in)  :: projector
       real(pspio_f90_kind),        intent(in)  :: r
       real(pspio_f90_kind),        intent(out) :: p
-    end function pspio_f90_projector_eval_s
+    end subroutine pspio_f90_projector_eval_s
 
-    integer function pspio_f90_projector_eval_v(projector, np, r, p)
+    subroutine pspio_f90_projector_eval_v(projector, np, r, p)
       use pspio_f90_types_m
       type(pspio_f90_projector_t), intent(in)  :: projector
       integer,                     intent(in)  :: np
       real(pspio_f90_kind),        intent(in)  :: r(np)
       real(pspio_f90_kind),        intent(out) :: p(np)
-    end function pspio_f90_projector_eval_v
+    end subroutine pspio_f90_projector_eval_v
   end interface
 
   interface
-    integer function pspio_f90_projector_get_energy(projector, e)
+    subroutine pspio_f90_projector_get_energy(projector, e)
       use pspio_f90_types_m
       type(pspio_f90_projector_t), intent(in)  :: projector
       real(pspio_f90_kind),        intent(out) :: e
-    end function pspio_f90_projector_get_energy
+    end subroutine pspio_f90_projector_get_energy
 
-    integer function pspio_f90_projector_get_l(projector, l)
+    subroutine pspio_f90_projector_get_l(projector, l)
       use pspio_f90_types_m
       type(pspio_f90_projector_t), intent(in)  :: projector
       integer,                     intent(out) :: l
-    end function pspio_f90_projector_get_l
+    end subroutine pspio_f90_projector_get_l
 
-    integer function pspio_f90_projector_get_j(projector, j)
+    subroutine pspio_f90_projector_get_j(projector, j)
       use pspio_f90_types_m
       type(pspio_f90_projector_t), intent(in)  :: projector
       real(pspio_f90_kind),        intent(out) :: j
-    end function pspio_f90_projector_get_j
+    end subroutine pspio_f90_projector_get_j
   end interface
 
   ! pspio_xc
   interface
-    integer function pspio_f90_xc_has_nlcc_int(xc, has_nlcc)
+    subroutine pspio_f90_xc_has_nlcc_int(xc, has_nlcc)
       use pspio_f90_types_m
       type(pspio_f90_xc_t), intent(in)  :: xc
       integer,              intent(out) :: has_nlcc
-    end function pspio_f90_xc_has_nlcc_int
+    end subroutine pspio_f90_xc_has_nlcc_int
   end interface
 
   interface pspio_f90_xc_nlcc_eval
-    integer function pspio_f90_xc_nlcc_eval_s(xc, r, core_dens)
+    subroutine pspio_f90_xc_nlcc_eval_s(xc, r, core_dens)
       use pspio_f90_types_m
       type(pspio_f90_xc_t), intent(in)  :: xc
       real(pspio_f90_kind), intent(in)  :: r
       real(pspio_f90_kind), intent(out) :: core_dens
-    end function pspio_f90_xc_nlcc_eval_s
+    end subroutine pspio_f90_xc_nlcc_eval_s
 
-    integer function pspio_f90_xc_nlcc_eval_v(xc, np, r, core_dens)
+    subroutine pspio_f90_xc_nlcc_eval_v(xc, np, r, core_dens)
       use pspio_f90_types_m
       type(pspio_f90_xc_t), intent(in)  :: xc
       integer,              intent(in)  :: np
       real(pspio_f90_kind), intent(in)  :: r(np)
       real(pspio_f90_kind), intent(out) :: core_dens(np)
-    end function pspio_f90_xc_nlcc_eval_v
+    end subroutine pspio_f90_xc_nlcc_eval_v
   end interface
 
   ! pspio_error
@@ -331,17 +331,17 @@ module pspio_f90_lib_m
 
 contains
 
-  integer function pspio_f90_xc_has_nlcc(xc, has_nlcc)
+  subroutine pspio_f90_xc_has_nlcc(xc, has_nlcc)
     use pspio_f90_types_m
     type(pspio_f90_xc_t), intent(in)  :: xc
     logical,              intent(out) :: has_nlcc
     
     integer :: i
 
-    pspio_f90_xc_has_nlcc = pspio_f90_xc_has_nlcc_int(xc, i)
+    call pspio_f90_xc_has_nlcc_int(xc, i)
     has_nlcc = i /= 0
 
-  end function pspio_f90_xc_has_nlcc
+  end subroutine pspio_f90_xc_has_nlcc
 
 
 end module pspio_f90_lib_m

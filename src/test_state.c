@@ -52,8 +52,7 @@ int main(void) {
   eid = pspio_mesh_alloc(&mesh, np);
   eid = pspio_error_flush();
   DEBUG_PRINT("test_state: setting mesh\n");
-  eid = pspio_mesh_init_from_parameters(&mesh, PSPIO_MESH_LINEAR, 0.1, 0.05);
-  eid = pspio_error_flush();
+  pspio_mesh_init_from_parameters(&mesh, PSPIO_MESH_LINEAR, 0.1, 0.05);
   DEBUG_PRINT("\n");
 
   /* Check creation and setting of quantum numbers */
@@ -83,8 +82,7 @@ int main(void) {
   eid = pspio_state_alloc(&s2, np);
   eid = pspio_error_flush();
   DEBUG_PRINT("test_state: destroying s2\n");
-  eid = pspio_state_free(&s2);
-  eid = pspio_error_flush();
+  pspio_state_free(&s2);
   DEBUG_PRINT("\n");
 
   /* Check setting of states */
@@ -130,12 +128,10 @@ int main(void) {
 
   /* Destroy states */
   DEBUG_PRINT("test_state: destroying s1\n");
-  eid = pspio_state_free(&s1);
-  eid = pspio_error_flush();
+  pspio_state_free(&s1);
   for (i=0; i<3; i++) {
     DEBUG_PRINT("test_state: destroying st[%d]\n", i);
-    eid = pspio_state_free(&st[i]);
-    eid = pspio_error_flush();
+    pspio_state_free(&st[i]);
   }
   DEBUG_PRINT("\n");
 

@@ -64,24 +64,21 @@ int pspio_qn_copy(pspio_qn_t **dst, const pspio_qn_t *src) {
 }
 
 
-int pspio_qn_free(pspio_qn_t **qn) {
+void pspio_qn_free(pspio_qn_t **qn) {
+
   if ( qn != NULL ) {
     free(*qn);
     *qn = NULL;
   }
-
-  return PSPIO_SUCCESS;
 }
 
 
-int pspio_qn_get(const pspio_qn_t *qn, int *n, int *l, double *j) {
+void pspio_qn_get(const pspio_qn_t *qn, int *n, int *l, double *j) {
   ASSERT(qn != NULL, PSPIO_EVALUE);
 
   *n = qn->n;
   *l = qn->l;
   *j = qn->j;
-
-  return PSPIO_SUCCESS;
 }
 
 
@@ -103,28 +100,22 @@ int pspio_qn_set(pspio_qn_t **qn, const int n, const int l, const double j) {
  * Atomic routines                                                    *
  **********************************************************************/
 
-int pspio_qn_get_n(const pspio_qn_t *qn, int *n) {
+void pspio_qn_get_n(const pspio_qn_t *qn, int *n) {
   ASSERT(qn != NULL, PSPIO_ERROR);
 
   *n = qn->n;
-
-  return PSPIO_SUCCESS;
 }
 
-int pspio_qn_get_l(const pspio_qn_t *qn, int *l) {
+void pspio_qn_get_l(const pspio_qn_t *qn, int *l) {
   ASSERT(qn != NULL, PSPIO_ERROR);
 
   *l = qn->l;
-
-  return PSPIO_SUCCESS;
 }
 
-int pspio_qn_get_j(const pspio_qn_t *qn, double *j) {
+void pspio_qn_get_j(const pspio_qn_t *qn, double *j) {
   ASSERT(qn != NULL, PSPIO_ERROR);
 
   *j = qn->j;
-
-  return PSPIO_SUCCESS;
 }
 
 
@@ -145,7 +136,7 @@ int pspio_qn_cmp(const pspio_qn_t *qn1, const pspio_qn_t *qn2) {
   }
 }
 
-int pspio_qn_label(const pspio_qn_t *qn, char *s) {
+void pspio_qn_label(const pspio_qn_t *qn, char *s) {
   char llabel[4] = "spdf";
 
   ASSERT(qn != NULL, PSPIO_ERROR);
@@ -156,5 +147,4 @@ int pspio_qn_label(const pspio_qn_t *qn, char *s) {
     sprintf(s, "%1d%1c%3.1f", qn->n, llabel[qn->l], qn->j);
   }
 
-  return PSPIO_SUCCESS;
 }

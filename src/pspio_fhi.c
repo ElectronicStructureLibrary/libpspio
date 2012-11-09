@@ -107,7 +107,7 @@ int pspio_fhi_read(FILE *fp, pspio_pspdata_t **pspdata){
     free(r);
     free(v);
     free(wf);
-    HANDLE_FUNC_ERROR(pspio_qn_free(&qn));
+    pspio_qn_free(&qn);
   }
 
   //Non-linear core-corrections
@@ -150,7 +150,7 @@ int pspio_fhi_read(FILE *fp, pspio_pspdata_t **pspdata){
   }
 
   //We do not know the xc functional:
-  HANDLE_FUNC_ERROR(pspio_xc_set(&(*pspdata)->xc, XC_NONE, XC_NONE));
+  pspio_xc_set(&(*pspdata)->xc, XC_NONE, XC_NONE);
 
   return PSPIO_SUCCESS;
 }
@@ -179,13 +179,13 @@ int pspio_fhi_write(FILE *fp, const pspio_pspdata_t *pspdata){
     i = LJ_TO_I(l,0.0);
     is = pspdata->qn_to_istate[0][i];
 
-    HANDLE_FUNC_ERROR(pspio_state_get_j(pspdata->states[is], &j));
+    pspio_state_get_j(pspdata->states[is], &j);
     CHECK_ERROR(j == 0.0, PSPIO_EVALUE); // This format is not suitable for j-dependent pseudos
 
     for (ir=0; ir<pspdata->mesh->np; ir++) {
       r = pspdata->mesh->r[ir];
-      HANDLE_FUNC_ERROR(pspio_state_wf_eval(pspdata->states[is], 1, &r, &wf));
-      HANDLE_FUNC_ERROR(pspio_potential_eval(pspdata->potentials[i], 1, &r, &v));
+      pspio_state_wf_eval(pspdata->states[is], 1, &r, &wf);
+      pspio_potential_eval(pspdata->potentials[i], 1, &r, &v);
       wf = wf*r;
 
       fprintf(fp, "%4d %20.14E %20.14E %20.14E\n", ir+1, pspdata->mesh->r[ir], wf, v);
@@ -194,18 +194,18 @@ int pspio_fhi_write(FILE *fp, const pspio_pspdata_t *pspdata){
   }
 
   // Write non-linear core corrections
-  HANDLE_FUNC_ERROR(pspio_xc_has_nlcc(pspdata->xc, &has_nlcc));
+  pspio_xc_has_nlcc(pspdata->xc, &has_nlcc);
   if (has_nlcc) {
     pspio_meshfunc_t *core_dens = NULL;
     double cd, cdp, cdpp;
 
-    HANDLE_FUNC_ERROR(pspio_xc_nlcc_get(pspdata->xc, &core_dens));
+    pspio_xc_nlcc_get(pspdata->xc, &core_dens);
 
     for (ir=0; ir<pspdata->mesh->np; ir++) {
       r = pspdata->mesh->r[ir];
-      HANDLE_FUNC_ERROR(pspio_meshfunc_eval(core_dens, 1, &r, &cd));
-      HANDLE_FUNC_ERROR(pspio_meshfunc_eval_deriv(core_dens, 1, &r, &cdp));
-      HANDLE_FUNC_ERROR(pspio_meshfunc_eval_deriv2(core_dens, 1, &r, &cdpp));
+      pspio_meshfunc_eval(core_dens, 1, &r, &cd);
+      pspio_meshfunc_eval_deriv(core_dens, 1, &r, &cdp);
+      pspio_meshfunc_eval_deriv2(core_dens, 1, &r, &cdpp);
       cd *= M_PI*4.0; cdp *= M_PI*4.0; cdpp *= M_PI*4.0;
 
       fprintf(fp, " %18.12E %18.12E %18.12E %18.12E\n", r, cd, cdp, cdpp);

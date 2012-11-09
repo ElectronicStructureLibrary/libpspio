@@ -107,11 +107,10 @@ int pspio_meshfunc_copy(pspio_meshfunc_t **dst, const pspio_meshfunc_t *src);
  * Frees all memory associated with function structure
  * 
  * @param[in,out] func: function structure
- * @return error code
  * @note This function can be safelly called even if some or all of the func 
  *       compoments have not been allocated.
  */
-int pspio_meshfunc_free(pspio_meshfunc_t **func);
+void pspio_meshfunc_free(pspio_meshfunc_t **func);
 
 
 /**********************************************************************
@@ -125,9 +124,8 @@ int pspio_meshfunc_free(pspio_meshfunc_t **func);
  * @param[in] np: number of points
  * @param[in] *r:  array of points were we want to evaluate the function
  * @param[out] *f: values of the function
- * @return error code
  */
-int pspio_meshfunc_eval(const pspio_meshfunc_t *func, const int np, const double *r,
+void pspio_meshfunc_eval(const pspio_meshfunc_t *func, const int np, const double *r,
       double *f);
 
 
@@ -138,10 +136,9 @@ int pspio_meshfunc_eval(const pspio_meshfunc_t *func, const int np, const double
  * @param[in] np: number of points
  * @param[in] *r: array of points were we want to evaluate the function
  * @param[out] *fp: values of the derivative
- * @return error code
  */
-int pspio_meshfunc_eval_deriv(const pspio_meshfunc_t *func, const int np, const double *r,
-      double *fp);
+void pspio_meshfunc_eval_deriv(const pspio_meshfunc_t *func, const int np, 
+			       const double *r, double *fp);
 
 
 /**
@@ -151,9 +148,8 @@ int pspio_meshfunc_eval_deriv(const pspio_meshfunc_t *func, const int np, const 
  * @param[in] np: number of points
  * @param[in] *r: array of points were we want to evaluate the function
  * @param[out] *fpp: values of the second derivative
- * @return error code
  */
-int pspio_meshfunc_eval_deriv2(const pspio_meshfunc_t *func, const int np, const double *r,
-      double *fpp);
+void pspio_meshfunc_eval_deriv2(const pspio_meshfunc_t *func, const int np, 
+				const double *r, double *fpp);
 
 #endif

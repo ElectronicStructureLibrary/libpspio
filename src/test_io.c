@@ -65,8 +65,7 @@ int main(int argc, char *argv[]) {
   
   /* Destroy pspdata structures */
   DEBUG_PRINT("test_io: destroying pspdata structure\n");
-  eid = pspio_pspdata_free(&pspdata);
-  eid = pspio_error_flush();
+  pspio_pspdata_free(&pspdata);
   DEBUG_PRINT("\n");
 
   DEBUG_PRINT("=== END test_io ===\n")

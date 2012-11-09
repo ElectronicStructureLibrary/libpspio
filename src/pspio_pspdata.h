@@ -158,8 +158,7 @@ int pspio_pspdata_write(const pspio_pspdata_t *pspdata, const char *file_name,
 /**
  * Frees all memory associated with pspdata structure
  * @param[in,out] pspdata: pointer to pspdata structure to be
- * @return error code.
  */
-int pspio_pspdata_free(pspio_pspdata_t **pspdata);
+void pspio_pspdata_free(pspio_pspdata_t **pspdata);
 
 #endif

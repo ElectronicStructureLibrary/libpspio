@@ -156,17 +156,15 @@ int pspio_states_lookup_table(const int n_states, const pspio_state_t **states,
 }
 
 
-int pspio_state_free(pspio_state_t **state) {
+void pspio_state_free(pspio_state_t **state) {
 
   if ( *state != NULL ) {
-    HANDLE_FUNC_ERROR(pspio_meshfunc_free(&(*state)->wf));
-    HANDLE_FUNC_ERROR(pspio_qn_free(&(*state)->qn));
+    pspio_meshfunc_free(&(*state)->wf);
+    pspio_qn_free(&(*state)->qn);
     if ((*state)->label != NULL) free((*state)->label);
     free(*state);
     *state = NULL;
   }
-
-  return PSPIO_SUCCESS;
 }
 
 
@@ -174,17 +172,15 @@ int pspio_state_free(pspio_state_t **state) {
  * Atomic routines                                                    *
  **********************************************************************/
 
-int pspio_state_wf_eval(const pspio_state_t *state, const int np, const double *r, double *wf){
+void pspio_state_wf_eval(const pspio_state_t *state, const int np, const double *r, double *wf){
   ASSERT(state != NULL, PSPIO_ERROR);
   ASSERT(r != NULL, PSPIO_ERROR);
   ASSERT(wf != NULL, PSPIO_ERROR);
   
-  HANDLE_FUNC_ERROR(pspio_meshfunc_eval(state->wf, np, r, wf));
-
-  return PSPIO_SUCCESS;
+  pspio_meshfunc_eval(state->wf, np, r, wf);
 }
 
-int pspio_state_get_label(const pspio_state_t *state, char *label){
+void pspio_state_get_label(const pspio_state_t *state, char *label){
   int s;
 
   ASSERT(state != NULL, PSPIO_ERROR);
@@ -192,38 +188,28 @@ int pspio_state_get_label(const pspio_state_t *state, char *label){
   s = strlen(state->label);
   memcpy(label,state->label,s);
   label[s] = 0;
-
-  return PSPIO_SUCCESS;
 }
 
-int pspio_state_get_n(const pspio_state_t *state, int *n){
+void pspio_state_get_n(const pspio_state_t *state, int *n){
   ASSERT(state != NULL, PSPIO_ERROR);
   
-  HANDLE_FUNC_ERROR(pspio_qn_get_n(state->qn, n));
-
-  return PSPIO_SUCCESS;
+  pspio_qn_get_n(state->qn, n);
 }
 
-int pspio_state_get_l(const pspio_state_t *state, int *l){
+void pspio_state_get_l(const pspio_state_t *state, int *l){
   ASSERT(state != NULL, PSPIO_ERROR);
   
-  HANDLE_FUNC_ERROR(pspio_qn_get_l(state->qn, l));
-
-  return PSPIO_SUCCESS;
+  pspio_qn_get_l(state->qn, l);
 }
 
-int pspio_state_get_j(const pspio_state_t *state, double *j){
+void pspio_state_get_j(const pspio_state_t *state, double *j){
   ASSERT(state != NULL, PSPIO_ERROR);
   
-  HANDLE_FUNC_ERROR(pspio_qn_get_j(state->qn, j));
-
-  return PSPIO_SUCCESS;
+  pspio_qn_get_j(state->qn, j);
 }
 
-int pspio_state_get_occ(const pspio_state_t *state, double *occ){
+void pspio_state_get_occ(const pspio_state_t *state, double *occ){
   ASSERT(state != NULL, PSPIO_ERROR);
   
   *occ = state->occ;
-
-  return PSPIO_SUCCESS;
 }

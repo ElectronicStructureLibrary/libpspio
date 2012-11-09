@@ -61,14 +61,12 @@ int main(void) {
   eid = pspio_xc_alloc(&xc2, PSPIO_NLCC_NONE, 0);
   eid = pspio_error_flush();
   DEBUG_PRINT("test_xc: destroying xc2\n");
-  eid = pspio_xc_free(&xc2);
-  eid = pspio_error_flush();
+  pspio_xc_free(&xc2);
   DEBUG_PRINT("\n");
 
   /* Check setting of the xc */
   DEBUG_PRINT("test_xc: setting xc1 with PW92 LDA\n");
-  eid = pspio_xc_set(&xc1, XC_LDA_X, XC_LDA_C_PW);
-  eid = pspio_error_flush();
+  pspio_xc_set(&xc1, XC_LDA_X, XC_LDA_C_PW);
   DEBUG_PRINT("test_xc: setting NLCC of xc1\n");
   eid = pspio_xc_nlcc_set(&xc1, mesh, cd, NULL, NULL);
   eid = pspio_error_flush();
@@ -76,8 +74,7 @@ int main(void) {
 
   /* Destroy xc */
   DEBUG_PRINT("test_xc: destroying xc1\n");
-  eid = pspio_xc_free(&xc1);
-  eid = pspio_error_flush();
+  pspio_xc_free(&xc1);
   DEBUG_PRINT("\n");
 
   DEBUG_PRINT("=== END test_xc ===\n");

@@ -74,8 +74,7 @@ int main(void) {
   eid = pspio_projector_alloc(&proj2, np);
   eid = pspio_error_flush();
   DEBUG_PRINT("test_projector: destroying proj2\n");
-  eid = pspio_projector_free(&proj2);
-  eid = pspio_error_flush();
+  pspio_projector_free(&proj2);
   DEBUG_PRINT("\n");
 
   /* Check setting of the projectors */
@@ -86,27 +85,22 @@ int main(void) {
 
   /* Check evaluation of the projector */
   DEBUG_PRINT("test_projector: evaluating proj1 at r=%f\n", r[6]);
-  eid = pspio_projector_eval(proj1, 1, &r[6], &pr);
-  eid = pspio_error_flush();
+  pspio_projector_eval(proj1, 1, &r[6], &pr);
   DEBUG_PRINT("test_projector: result=%f\n", pr);
   DEBUG_PRINT("test_projector: evaluating energy of proj1 (should be 2.0)\n");
-  eid = pspio_projector_get_energy(proj1, &e);
-  eid = pspio_error_flush();
+  pspio_projector_get_energy(proj1, &e);
   DEBUG_PRINT("test_projector: result=%f\n", e);
   DEBUG_PRINT("test_projector: evaluating angular momentum of proj1 (should be 2)\n");
-  eid = pspio_projector_get_l(proj1, &l);
-  eid = pspio_error_flush();
+  pspio_projector_get_l(proj1, &l);
   DEBUG_PRINT("test_projector: result=%d\n", l);
   DEBUG_PRINT("test_projector: evaluating angular momentum of proj1 (should be 0.0)\n");
-  eid = pspio_projector_get_j(proj1, &j);
-  eid = pspio_error_flush();
+  pspio_projector_get_j(proj1, &j);
   DEBUG_PRINT("test_projector: result=%3.1f\n", j);
   DEBUG_PRINT("\n");
 
   /* Destroy projector */
   DEBUG_PRINT("test_projector: destroying proj1\n");
-  eid = pspio_projector_free(&proj1);
-  eid = pspio_error_flush();
+  pspio_projector_free(&proj1);
   DEBUG_PRINT("\n");
 
   DEBUG_PRINT("=== END test_projector ===\n");

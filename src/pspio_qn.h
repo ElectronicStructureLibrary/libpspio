@@ -76,11 +76,10 @@ int pspio_qn_copy(pspio_qn_t **dst, const pspio_qn_t *src);
 /**
  * Frees the memory occupied by a quantum number structure.
  * @param[in,out] qn: quantum number structure pointer to destroy
- * @return error code
  * @note This function can be safely called even if some or all of the qn
  *       components have not been allocated.
  */
-int pspio_qn_free(pspio_qn_t **qn);
+void pspio_qn_free(pspio_qn_t **qn);
 
 
 /**
@@ -89,10 +88,9 @@ int pspio_qn_free(pspio_qn_t **qn);
  * @param[out] n: quantum number
  * @param[out] l: angular momentum
  * @param[out] j: total angular momentum
- * @return error code
  * @note The qn pointer has to be fully set before probing it.
  */
-int pspio_qn_get(const pspio_qn_t *qn, int *n, int *l, double *j);
+void pspio_qn_get(const pspio_qn_t *qn, int *n, int *l, double *j);
 
 
 /**
@@ -116,25 +114,22 @@ int pspio_qn_set(pspio_qn_t **qn, const int n, const int l, const double j);
  * Returns the main quantum number
  * @param[in] qn: set of quantum numbers
  * @param[out] n: main quantum number
- * @return error code
  */
-int pspio_qn_get_n(const pspio_qn_t *qn, int *n);
+void pspio_qn_get_n(const pspio_qn_t *qn, int *n);
 
 /**
  * Returns the angular momentum quantum number
  * @param[in] qn: set of quantum numbers
  * @param[out] l: angular momentum quantum number
- * @return error code
  */
-int pspio_qn_get_l(const pspio_qn_t *qn, int *l);
+void pspio_qn_get_l(const pspio_qn_t *qn, int *l);
 
 /**
  * Returns the total angular momentum quantum number
  * @param[in] qn: set of quantum numbers
  * @param[out] j: total angular momentum quantum number
- * @return error code
  */
-int pspio_qn_get_j(const pspio_qn_t *qn, double *j);
+void pspio_qn_get_j(const pspio_qn_t *qn, double *j);
 
 
 /**********************************************************************
@@ -158,8 +153,7 @@ int pspio_qn_cmp(const pspio_qn_t *qn1, const pspio_qn_t *qn2);
  * Returns a label that identifies the set of quantum numbers
  * @param[in] qn: set of quantum numbers
  * @param[out] label: 
- * @return error code
  */
-int pspio_qn_label(const pspio_qn_t *qn, char *s);
+void pspio_qn_label(const pspio_qn_t *qn, char *s);
 
 #endif

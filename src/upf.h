@@ -117,9 +117,8 @@ int upf_read_rhoatom(FILE *fp, const int np, pspio_pspdata_t **pspdata);
  * Write the UPF info
  * @param[in] fp a stream of the input file
  * @param[inout] pspdata the data structure
- * @return error code
  */
-int upf_write_info(FILE *fp, const pspio_pspdata_t *pspdata);
+void upf_write_info(FILE *fp, const pspio_pspdata_t *pspdata);
 
 /**
  * Write the UPF header
@@ -133,59 +132,52 @@ int upf_write_header(FILE *fp, const pspio_pspdata_t *pspdata);
  * Write the mesh
  * @param[in] fp a stream of the input file
  * @param[inout] pspdata the data structure
- * @return error code
  */
-int upf_write_mesh(FILE *fp, const pspio_pspdata_t *pspdata);
+void upf_write_mesh(FILE *fp, const pspio_pspdata_t *pspdata);
 
 /**
  * Write the non-linear core-corrections
  * @param[in] fp a stream of the input file
  * @param[inout] pspdata the data structure
- * @return error code
  */
-int upf_write_nlcc(FILE *fp, const pspio_pspdata_t *pspdata);
+void upf_write_nlcc(FILE *fp, const pspio_pspdata_t *pspdata);
 
 /**
  * Write the non-local projectors
  * @param[in] fp a stream of the input file
  * @param[inout] pspdata the data structure
- * @return error code
  */
-int upf_write_nonlocal(FILE *fp, const pspio_pspdata_t *pspdata);
+void upf_write_nonlocal(FILE *fp, const pspio_pspdata_t *pspdata);
 
 /**
  * Write the local part of the pseudos
  * @param[in] fp a stream of the input file
  * @param[inout] pspdata the data structure
- * @return error code
  */
-int upf_write_local(FILE *fp, const pspio_pspdata_t *pspdata);
+void upf_write_local(FILE *fp, const pspio_pspdata_t *pspdata);
 
 /**
  * Write the pseudo-wavefunctions
  * @param[in] fp a stream of the input file
  * @param[inout] pspdata the data structure
- * @return error code
  */
-int upf_write_pswfc(FILE *fp, const pspio_pspdata_t *pspdata);
+void upf_write_pswfc(FILE *fp, const pspio_pspdata_t *pspdata);
 
 /**
  * Write the valence electronic charge
  * @param[in] fp a stream of the input file
  * @param[inout] pspdata the data structure
- * @return error code
  */
-int upf_write_rhoatom(FILE *fp, const pspio_pspdata_t *pspdata);
+void upf_write_rhoatom(FILE *fp, const pspio_pspdata_t *pspdata);
 
 /**
  * Write the valence electronic charge
  * @param[in] fp a stream of the input file
  * @param[inout] pspdata the data structure
- * @return error code
  * @note This should only be called when the pseudopotentials
  *       where obtained from a fully relativistic calculation
  */
-int upf_write_addinfo(FILE *fp, const pspio_pspdata_t *pspdata);
+void upf_write_addinfo(FILE *fp, const pspio_pspdata_t *pspdata);
 
 
 /**********************************************************************

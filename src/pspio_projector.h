@@ -80,11 +80,10 @@ int pspio_projector_set(pspio_projector_t **projector, const pspio_qn_t *qn,
  * Frees all memory associated with a projector structure
  * 
  * @param[in,out] projector: projector structure
- * @return error code
  * @note This function can be safelly called even if some or all of the
  *       projector components have not been allocated.
  */
-int pspio_projector_free(pspio_projector_t **projector);
+void pspio_projector_free(pspio_projector_t **projector);
 
 
 /**********************************************************************
@@ -98,10 +97,9 @@ int pspio_projector_free(pspio_projector_t **projector);
  * @param[in] np: number of points
  * @param[in] *r: positions were we want to evaluate the projector
  * @param[out] *p: values of the projector at r
- * @return error code
  * @note The projector pointer has to be fully set.
  */
-int pspio_projector_eval(const pspio_projector_t *projector, const int np, 
+void pspio_projector_eval(const pspio_projector_t *projector, const int np, 
 			 const double *r, double *p);
 
 /**
@@ -109,29 +107,26 @@ int pspio_projector_eval(const pspio_projector_t *projector, const int np,
  * 
  * @param[in] projector: projector structure
  * @param[out] *e: value of the projector energy
- * @return error code
  * @note The projector pointer has to be fully set.
  */
-int pspio_projector_get_energy(const pspio_projector_t *projector, double *e);
+void pspio_projector_get_energy(const pspio_projector_t *projector, double *e);
 
 /**
  * Returns the angular momentum of the projector
  * 
  * @param[in] projector: projector structure
  * @param[out] *l: value of the projector angular momentum
- * @return error code
  * @note The projector pointer has to be fully set.
  */
-int pspio_projector_get_l(const pspio_projector_t *projector, int *l);
+void pspio_projector_get_l(const pspio_projector_t *projector, int *l);
 
 /**
  * Returns the total angular momentum of the projector
  * 
  * @param[in] projector: projector structure
  * @param[out] *j: value of the projector total angular momentum
- * @return error code
  * @note The projector pointer has to be fully set.
  */
-int pspio_projector_get_j(const pspio_projector_t *projector, double *j);
+void pspio_projector_get_j(const pspio_projector_t *projector, double *j);
 
 #endif

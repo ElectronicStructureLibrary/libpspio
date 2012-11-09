@@ -34,9 +34,9 @@ program test_fortran
   ierr = pspio_f90_pspdata_read(pspdata, PSPIO_UPF, file_in)
   if (ierr /= 0) ierr = pspio_f90_error_flush()
 
-  ierr = pspio_f90_pspdata_get_mesh(pspdata, pspmesh)
-  ierr = pspio_f90_mesh_get_np(pspmesh, np)
+  call pspio_f90_pspdata_get_mesh(pspdata, pspmesh)
   if (ierr /= 0) ierr = pspio_f90_error_flush()
+  call pspio_f90_mesh_get_np(pspmesh, np)
   write(*,'("Mesh number of points: ", I6)') np
 
   write(*,'("UPF filename to write:")')
@@ -44,7 +44,6 @@ program test_fortran
   ierr = pspio_f90_pspdata_write(pspdata, PSPIO_UPF, file_out)
   if (ierr /= 0) ierr = pspio_f90_error_flush()
 
-  ierr = pspio_f90_pspdata_free(pspdata)
-  if (ierr /= 0) ierr = pspio_f90_error_flush()
+  call pspio_f90_pspdata_free(pspdata)
 
 end program test_fortran

@@ -73,8 +73,7 @@ int main(void) {
   eid = pspio_potential_alloc(&pot2, np);
   eid = pspio_error_flush();
   DEBUG_PRINT("test_potential: destroying pot2\n");
-  eid = pspio_potential_free(&pot2);
-  eid = pspio_error_flush();
+  pspio_potential_free(&pot2);
   DEBUG_PRINT("\n");
 
   /* Check setting of the potentials */
@@ -85,15 +84,13 @@ int main(void) {
 
   /* Check evaluation of the potential */
   DEBUG_PRINT("test_potential: evaluating  pot1 at r=%f\n", r[6]);
-  eid = pspio_potential_eval(pot1, 1, &r[6], &vr);
-  eid = pspio_error_flush();
+  pspio_potential_eval(pot1, 1, &r[6], &vr);
   DEBUG_PRINT("test_potential: result=%f\n", vr);
   DEBUG_PRINT("\n");
 
   /* Destroy potential */
   DEBUG_PRINT("test_potential: destroying pot1\n");
-  eid = pspio_potential_free(&pot1);
-  eid = pspio_error_flush();
+  pspio_potential_free(&pot1);
   DEBUG_PRINT("\n");
 
   DEBUG_PRINT("=== END test_potential ===\n");

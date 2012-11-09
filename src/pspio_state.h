@@ -99,11 +99,10 @@ int pspio_states_lookup_table(const int n_states, const pspio_state_t **states,
 /**
  * Deallocates a state structure pointer.
  * @param[in,out] state: state structure pointer to destroy
- * @return error code
  * @note This function can be safelly called even if some or all of the state 
  *       compoments have not been allocated.
  */
-int pspio_state_free(pspio_state_t **state);
+void pspio_state_free(pspio_state_t **state);
 
 
 /**********************************************************************
@@ -116,49 +115,43 @@ int pspio_state_free(pspio_state_t **state);
  * @param[in] np: number of points
  * @param[in] *r: positions were we want to evaluate the wavefunction
  * @param[out] *wf: values of the wavefunction at r
- * @return error code
  */
-int pspio_state_wf_eval(const pspio_state_t *state, const int np, const double *r, double *wf);
+void pspio_state_wf_eval(const pspio_state_t *state, const int np, const double *r, double *wf);
 
 /**
  * Returns the state label
  * @param[in] state: state structure
  * @param[out] label
- * @return error code
  */
-int pspio_state_get_label(const pspio_state_t *state, char *label);
+void pspio_state_get_label(const pspio_state_t *state, char *label);
 
 /**
  * Returns the main quantum number
  * @param[in] state: state structure
  * @param[out] n: the main  quantum number
- * @return error code
  */
-int pspio_state_get_n(const pspio_state_t *state, int *n);
+void pspio_state_get_n(const pspio_state_t *state, int *n);
 
 /**
  * Returns the angular momentum quantum number
  * @param[in] state: state structure
  * @param[out] l: the angular momentum quantum number
- * @return error code
  */
-int pspio_state_get_l(const pspio_state_t *state, int *l);
+void pspio_state_get_l(const pspio_state_t *state, int *l);
 
 /**
  * Returns the total angular momentum quantum number
  * @param[in] state: state structure
  * @param[out] j: the total angular momentum quantum number
- * @return error code
  */
-int pspio_state_get_j(const pspio_state_t *state, double *j);
+void pspio_state_get_j(const pspio_state_t *state, double *j);
 
 /**
  * Returns the state occupancies
  * @param[in] state: state structure
  * @param[out] occ: the occupancies
- * @return error code
  */
-int pspio_state_get_occ(const pspio_state_t *state, double *occ);
+void pspio_state_get_occ(const pspio_state_t *state, double *occ);
 
 
 #endif

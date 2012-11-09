@@ -78,11 +78,10 @@ int pspio_potential_set(pspio_potential_t **potential, const pspio_qn_t *qn,
  * Frees all memory associated with potential structure
  * 
  * @param[in,out] potential: potential structure
- * @return error code
  * @note This function can be safelly called even if some or all of the 
  *       potential components have not been allocated.
  */
-int pspio_potential_free(pspio_potential_t **potential);
+void pspio_potential_free(pspio_potential_t **potential);
 
 
 /**********************************************************************
@@ -96,10 +95,9 @@ int pspio_potential_free(pspio_potential_t **potential);
  * @param[in] np: number of points
  * @param[in] *r: positions were we want to evaluate the function
  * @param[out] *v: value of the potential at r
- * @return error code
  * @note The potential pointer has to be fully set.
  */
-int pspio_potential_eval(const pspio_potential_t *potential, const int np, 
+void pspio_potential_eval(const pspio_potential_t *potential, const int np, 
 			 const double *r, double *v);
 
 
