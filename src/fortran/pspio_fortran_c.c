@@ -1,5 +1,5 @@
 /*
- Copyright (C) 2012 M. Oliveira
+ Copyright (C) 2012 M. Oliveira, Y. Pouillon
 
  This program is free software; you can redistribute it and/or modify
  it under the terms of the GNU Lesser General Public License as published by
@@ -352,10 +352,58 @@ void FC_FUNC_(pspio_f90_xc_nlcc_eval_v, PSPIO_F90_XC_NLCC_EVAL_V)
  * pspio_error                                                        *
  **********************************************************************/
 
+CC_FORTRAN_INT FC_FUNC_(pspio_f90_error_add, PSPIO_F90_ERROR_ADD)
+  (char *filename, int *lineno)
+{
+  return (CC_FORTRAN_INT) pspio_error_add(filename, lineno);
+}
+
+
+CC_FORTRAN_INT FC_FUNC_(pspio_f90_error_fetchall, PSPIO_F90_ERROR_FETCHALL)
+  (STR_F_TYPE err_msg STR_ARG1)
+{
+  char *tmp_msg;
+  int eid;
+
+  eid = pspio_error_fetchall(tmp_msg);
+  TO_F_STR1( tmp_msg, err_msg );
+  free(tmp_msg);
+  return (CC_FORTRAN_INT) eid;
+}
+
+
 CC_FORTRAN_INT FC_FUNC_(pspio_f90_error_flush, PSPIO_F90_ERROR_FLUSH)
   (void)
 {
   return (CC_FORTRAN_INT) pspio_error_flush();
+}
+
+
+CC_FORTRAN_INT FC_FUNC_(pspio_f90_error_free, PSPIO_F90_ERROR_FREE)
+  (void)
+{
+  return (CC_FORTRAN_INT) pspio_error_free();
+}
+
+
+CC_FORTRAN_INT FC_FUNC_(pspio_f90_error_get, PSPIO_F90_ERROR_GET)
+  (void)
+{
+  return (CC_FORTRAN_INT) pspio_error_get();
+}
+
+
+CC_FORTRAN_INT FC_FUNC_(pspio_f90_error_len, PSPIO_F90_ERROR_LEN)
+  (void)
+{
+  return (CC_FORTRAN_INT) pspio_error_len();
+}
+
+
+void FC_FUNC_(pspio_f90_error_set, PSPIO_F90_ERROR_SET)
+  (int *eid)
+{
+  pspio_error_set(*eid);
 }
 
 
@@ -368,5 +416,3 @@ CC_FORTRAN_INT FC_FUNC_(pspio_f90_version, PSPIO_F90_VERSION)
 {
   return (CC_FORTRAN_INT)  pspio_version(major, minor, micro);
 }
-
-

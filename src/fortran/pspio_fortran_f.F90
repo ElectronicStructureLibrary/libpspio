@@ -57,7 +57,9 @@ end module pspio_f90_types_m
 
 
 module pspio_f90_lib_m
+
   use pspio_f90_types_m
+
   implicit none
 
   integer, parameter ::       &
@@ -69,8 +71,18 @@ module pspio_f90_lib_m
        PSPIO_UNKNOWN = -1,  &
        PSPIO_UPF     = 9
 
-  integer, parameter ::     &
-       PSPIO_SUCCESS = 0
+  integer, parameter ::        &
+       PSPIO_SUCCESS      = 0, &
+       PSPIO_ERROR        = -1, &
+       PSPIO_ENOFILE      =  1, &
+       PSPIO_EIO          =  2, &
+       PSPIO_EVALUE       =  3, &
+       PSPIO_EFILE_FORMAT =  4, &
+       PSPIO_ETYPE        =  5, &
+       PSPIO_EGSL         =  6, &
+       PSPIO_ENOMEM       =  7, &
+       PSPIO_ENOSUPPORT   =  8
+
 
   ! pspio_pspdata
   interface
@@ -318,8 +330,30 @@ module pspio_f90_lib_m
 
   ! pspio_error
   interface
+    integer function pspio_f90_error_add(filename, lineno)
+      character(len=*), intent(in) :: filename
+      integer, intent(in) :: lineno
+    end function pspio_f90_error_add
+
+    integer function pspio_f90_error_fetchall(err_msg)
+      character(len=:), pointer, intent(out) :: err_msg
+    end function pspio_f90_error_fetchall
+
     integer function pspio_f90_error_flush()
     end function pspio_f90_error_flush
+
+    integer function pspio_f90_error_free()
+    end function pspio_f90_error_free
+
+    integer function pspio_f90_error_len()
+    end function pspio_f90_error_len
+
+    integer function pspio_f90_error_get()
+    end function pspio_f90_error_get
+
+    subroutine pspio_f90_error_set(eid)
+      integer, intent(in) :: eid
+    end subroutine pspio_f90_error_set
   end interface
 
   ! pspio_info

@@ -69,11 +69,16 @@ nodist_include_HEADERS = $(pio_fortran_mods)
 #
 
 noinst_PROGRAMS = \
-  test_fortran
+  test_fortran \
+  test_fortran_error
 
 test_fortran_SOURCES = test_fortran.F90
 test_fortran_LDADD = -lpspio_fortran -L$(builddir)/../.libs -lpspio -lm
 test_fortran_CPPFLAGS = -I$(srcdir)/..
+
+test_fortran_error_SOURCES = test_fortran_error.F90
+test_fortran_error_LDADD = -lpspio_fortran -L$(builddir)/../.libs -lpspio -lm
+test_fortran_error_CPPFLAGS = -I$(srcdir)/..
 
                     # ------------------------------------ #
 
@@ -85,4 +90,3 @@ test_fortran_CPPFLAGS = -I$(srcdir)/..
 # Note: the 'dummy' pseudo-file is there in case the variable would be empty.
 clean-local:
 	rm -f $(pio_fortran_mods) dummy
-
