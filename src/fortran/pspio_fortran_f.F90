@@ -330,9 +330,9 @@ module pspio_f90_lib_m
 
   ! pspio_error
   interface
-    integer function pspio_f90_error_add(filename, lineno)
-      character(len=*), intent(in) :: filename
+    integer function pspio_f90_error_add(lineno, filename)
       integer, intent(in) :: lineno
+      character(len=*), intent(in) :: filename
     end function pspio_f90_error_add
 
     integer function pspio_f90_error_fetchall(err_msg)

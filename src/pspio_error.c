@@ -103,7 +103,8 @@ int pspio_error_fetchall(char **err_str) {
     ASSERT(tmp_str != NULL, PSPIO_ENOMEM);
     sprintf(tmp_str, "  * %s\n      at %s:%d\n",
       pspio_error_str(cursor->id), cursor->filename, cursor->line);
-    *err_str  = realloc(*err_str, strlen(*err_str)+err_len);
+    fflush(stdout);
+    *err_str  = realloc(*err_str, strlen(*err_str)+err_len+1);
     strcat(*err_str, tmp_str);
     free(tmp_str);
 

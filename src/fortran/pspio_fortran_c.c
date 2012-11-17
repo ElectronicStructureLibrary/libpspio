@@ -23,14 +23,15 @@
  * @brief Fortran wrappers
  */
 
+#include <stdlib.h>
+#include <string.h>
+
+#include "string_f.h"
 #include "pspio_pspdata.h"
 #include "pspio_info.h"
 
-#if defined HAVE_CONFIG_H
 #include "config.h"
-#endif
 
-#include "string_f.h"
 
 /**********************************************************************
  * pspio_pspdata                                                      *
@@ -353,9 +354,16 @@ void FC_FUNC_(pspio_f90_xc_nlcc_eval_v, PSPIO_F90_XC_NLCC_EVAL_V)
  **********************************************************************/
 
 CC_FORTRAN_INT FC_FUNC_(pspio_f90_error_add, PSPIO_F90_ERROR_ADD)
-  (char *filename, int *lineno)
+  (int *lineno, STR_F_TYPE filename STR_ARG1)
 {
-  return (CC_FORTRAN_INT) pspio_error_add(filename, lineno);
+  char *tmp_name;
+  int eid;
+
+  TO_C_STR1(filename, tmp_name);
+  eid = pspio_error_add(tmp_name, *lineno);
+  free(tmp_name);
+
+  return (CC_FORTRAN_INT) eid; 
 }
 
 
@@ -365,9 +373,10 @@ CC_FORTRAN_INT FC_FUNC_(pspio_f90_error_fetchall, PSPIO_F90_ERROR_FETCHALL)
   char *tmp_msg;
   int eid;
 
-  eid = pspio_error_fetchall(tmp_msg);
+  eid = pspio_error_fetchall(&tmp_msg);
   TO_F_STR1( tmp_msg, err_msg );
   free(tmp_msg);
+
   return (CC_FORTRAN_INT) eid;
 }
 
