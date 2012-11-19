@@ -26,11 +26,11 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "string_f.h"
 #include "pspio_pspdata.h"
 #include "pspio_info.h"
 
 #include "config.h"
+#include "string_f.h"
 
 
 /**********************************************************************
@@ -354,7 +354,7 @@ void FC_FUNC_(pspio_f90_xc_nlcc_eval_v, PSPIO_F90_XC_NLCC_EVAL_V)
  **********************************************************************/
 
 CC_FORTRAN_INT FC_FUNC_(pspio_f90_error_add, PSPIO_F90_ERROR_ADD)
-  (int *lineno, STR_F_TYPE filename STR_ARG1)
+  (STR_F_TYPE filename, int *lineno STR_ARG1)
 {
   char *tmp_name;
   int eid;
@@ -374,7 +374,7 @@ CC_FORTRAN_INT FC_FUNC_(pspio_f90_error_fetchall, PSPIO_F90_ERROR_FETCHALL)
   int eid;
 
   eid = pspio_error_fetchall(&tmp_msg);
-  TO_F_STR1( tmp_msg, err_msg );
+  TO_F_STR1(tmp_msg, err_msg);
   free(tmp_msg);
 
   return (CC_FORTRAN_INT) eid;
