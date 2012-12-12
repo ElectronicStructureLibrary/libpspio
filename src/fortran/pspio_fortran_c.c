@@ -324,6 +324,21 @@ void FC_FUNC_(pspio_f90_projector_get_j, PSPIO_F90_PROJECTOR_GET_J)
  * pspio_xc                                                           *
  **********************************************************************/
 
+void FC_FUNC_(pspio_f90_xc_get_correlation, PSPIO_F90_XC_GET_CORRELATION)
+     (void **xc, int *correlation)
+{
+
+  *correlation = ((pspio_xc_t *)(xc))->correlation;
+
+}
+void FC_FUNC_(pspio_f90_xc_get_exchange, PSPIO_F90_XC_GET_EXCHANGE)
+     (void **xc, int *exchange)
+{
+
+  *exchange = ((pspio_xc_t *)(xc))->exchange;
+
+}
+
 void FC_FUNC_(pspio_f90_xc_has_nlcc_int, PSPIO_F90_XC_HAS_NLCC_INT)
      (void ** xc, int *has_nlcc)
 {

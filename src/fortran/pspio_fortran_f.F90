@@ -335,6 +335,24 @@ module pspio_f90_lib_m
 
   ! pspio_xc
   interface
+    subroutine pspio_f90_xc_get_correlation(xc, correlation)
+      use pspio_f90_types_m
+      implicit none
+      type(pspio_f90_xc_t), intent(in)  :: xc
+      integer,              intent(out) :: correlation
+    end subroutine pspio_f90_xc_get_correlation
+  end interface
+
+  interface
+    subroutine pspio_f90_xc_get_exchange(xc, exchange)
+      use pspio_f90_types_m
+      implicit none
+      type(pspio_f90_xc_t), intent(in)  :: xc
+      integer,              intent(out) :: exchange
+    end subroutine pspio_f90_xc_get_exchange
+  end interface
+
+  interface
     subroutine pspio_f90_xc_has_nlcc_int(xc, has_nlcc)
       use pspio_f90_types_m
       implicit none
