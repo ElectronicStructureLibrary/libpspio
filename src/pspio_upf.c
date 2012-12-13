@@ -35,6 +35,7 @@
 int pspio_upf_read(FILE *fp, pspio_pspdata_t **pspdata){
   int np, has_nlcc;
 
+  printf("DEBUG!\n");
   HANDLE_FUNC_ERROR(upf_read_info(fp, pspdata));
 
   //At the moment the wave equation type is not defined in the header,

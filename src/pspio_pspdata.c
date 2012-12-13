@@ -100,10 +100,14 @@ int pspio_pspdata_read(pspio_pspdata_t **pspdata, const char *file_name,
   if (ierr && (file_format == ATOM       || file_format == UNKNOWN) ) ierr = PSPIO_ENOSUPPORT;
   if (ierr && (file_format == SIESTA     || file_format == UNKNOWN) ) ierr = PSPIO_ENOSUPPORT;
   if (ierr && (file_format == FHI98PP    || file_format == UNKNOWN) ) {
+    printf("DEBUG pspdata 2\n");
+    CHECK_ERROR(fp != NULL, PSPIO_ENOFILE);
     rewind(fp);
     ierr = pspio_fhi_read(fp, pspdata);
   }
   if (ierr && (file_format == UPF        || file_format == UNKNOWN) ) {
+    printf("DEBUG pspdata 2\n");
+    CHECK_ERROR(fp != NULL, PSPIO_ENOFILE);
     rewind(fp);
     ierr = pspio_upf_read(fp, pspdata);
   }
@@ -112,9 +116,15 @@ int pspio_pspdata_read(pspio_pspdata_t **pspdata, const char *file_name,
   CHECK_ERROR(fclose(fp) == 0, PSPIO_EIO);
 
   // create states lookup table
-  HANDLE_FUNC_ERROR(pspio_states_lookup_table((*pspdata)->n_states, (*pspdata)->states, &(*pspdata)->qn_to_istate));
+  if ( ierr == PSPIO_SUCCESS ) {
+    printf("DEBUG: n_states = %d\n", (*pspdata)->n_states);
+    HANDLE_FUNC_ERROR(pspio_states_lookup_table((*pspdata)->n_states, (*pspdata)->states, &(*pspdata)->qn_to_istate));
+  }
 
-  return ierr;
+  // make sure ierr is not silently ignored
+  HANDLE_ERROR(ierr);
+
+  return PSPIO_SUCCESS;
 }
 
 
@@ -130,8 +140,6 @@ int pspio_pspdata_write(const pspio_pspdata_t *pspdata, const char *file_name,
 
   //write to file
   switch(file_format) {
-  case UNKNOWN:
-    break;
   case FHI98PP:
     HANDLE_FUNC_ERROR(pspio_fhi_write(fp, pspdata));
     break;
@@ -139,6 +147,7 @@ int pspio_pspdata_write(const pspio_pspdata_t *pspdata, const char *file_name,
     HANDLE_FUNC_ERROR(pspio_upf_write(fp, pspdata));
     break;
   default:
+    fclose(fp);
     return PSPIO_EFILE_FORMAT;
   }
   
