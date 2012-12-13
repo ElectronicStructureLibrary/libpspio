@@ -72,7 +72,7 @@ int upf_read_header(FILE *fp, int *np, pspio_pspdata_t **pspdata){
   int version_number, i;
   char *kind_ps;
   char nlcc_flag;
-  char xc_string[24];
+  char xc_string[23];
   int exchange, correlation;
   double wfc_cutoff, rho_cutoff;
 
@@ -106,9 +106,8 @@ int upf_read_header(FILE *fp, int *np, pspio_pspdata_t **pspdata){
 
   //Exchange-correlation functional
   CHECK_ERROR(fgets(line, MAX_STRLEN, fp) != NULL, PSPIO_EIO);
-  strncpy(xc_string, line, 23); //the xc string should always the first 21 chars of the line
-  xc_string[23] = 0;
-  printf("|%s|\n", xc_string);
+  strncpy(xc_string, line, 22); //the xc string should always the first 21 chars of the line
+  xc_string[22] = 0;
   HANDLE_FUNC_ERROR(upf_to_libxc(xc_string, &exchange, &correlation));
 
   // read the Z valence
