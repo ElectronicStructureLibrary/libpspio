@@ -54,12 +54,18 @@ int main(int argc, char *argv[]) {
   /* check parsing of file */
   DEBUG_PRINT("test_io: parsing file %s\n", argv[1]);
   eid = pspio_pspdata_read(&pspdata, argv[1], format);
+  if ( eid == PSPIO_SUCCESS ) {
+    DEBUG_PRINT("test_io: file parsing successful\n");
+  }
   eid = pspio_error_flush();
   DEBUG_PRINT("\n");
 
   /* check writing of file */
   DEBUG_PRINT("test_io: writing file %s\n", argv[2]);
   eid = pspio_pspdata_write(pspdata, argv[2], format);
+  if ( eid == PSPIO_SUCCESS ) {
+    DEBUG_PRINT("test_io: file parsing successful\n");
+  }
   eid = pspio_error_flush();
   DEBUG_PRINT("\n");
   
