@@ -106,7 +106,7 @@ int upf_to_libxc (const char xc_string[20], int *exchange, int *correlation){
 }
 
 
-int upf_from_libxc (const int exchange, const int correlation, char longname[20], char shortname[5]){
+int upf_from_libxc (const int exchange, const int correlation, char longname[21], char shortname[5]){
   char exch[5], corr[5], gradx[5], gradc[5];
 
   //Exchange:
