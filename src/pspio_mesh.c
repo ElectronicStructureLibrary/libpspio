@@ -99,7 +99,7 @@ int pspio_mesh_copy(pspio_mesh_t **dst, const pspio_mesh_t *src){
 int pspio_mesh_init_from_points(pspio_mesh_t **mesh, const double *r, 
 				const double *rab) {
   int i;
-  double tol = 1e-15;
+  double tol = 5.0e-10;
 
   ASSERT(*mesh != NULL, PSPIO_ERROR);
 
