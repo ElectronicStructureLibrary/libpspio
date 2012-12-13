@@ -35,10 +35,12 @@
 #define PSPIO_EIO    2
 #define PSPIO_EVALUE 3
 #define PSPIO_EFILE_FORMAT 4
-#define PSPIO_ETYPE 5
-#define PSPIO_EGSL  6
-#define PSPIO_ENOMEM 7
-#define PSPIO_ENOSUPPORT 8
+#define PSPIO_EFILE_CORRUPT 5
+#define PSPIO_ETYPE 6
+#define PSPIO_EGSL  7
+#define PSPIO_ENOMEM 8
+#define PSPIO_ENOSUPPORT 9
+
 
 /**********************************************************************
  * Data structures                                                    *

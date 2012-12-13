@@ -196,18 +196,22 @@ const char *pspio_error_str(const int pspio_errorid) {
       return "success" ;
     case PSPIO_ERROR:
       return "error" ;
-    case PSPIO_ENOFILE:
-      return "file does not exist" ;
-    case PSPIO_EIO:
-      return "error in I/O" ;
-    case PSPIO_EVALUE:
-      return "value error: bad value found";
+    case PSPIO_EFILE_CORRUPT:
+      return "file corrupted";
+    case PSPIO_EFILE_FORMAT:
+      return "unknown file format";
     case PSPIO_EGSL:
       return "error in GSL";
+    case PSPIO_EIO:
+      return "error in I/O" ;
+    case PSPIO_ENOFILE:
+      return "file does not exist" ;
     case PSPIO_ENOMEM:
       return "malloc failed";
     case PSPIO_ENOSUPPORT:
       return "Unsupported option in the pseudo-potential file";
+    case PSPIO_EVALUE:
+      return "value error: bad value found";
     default:
       return "unknown error code" ;
     }
