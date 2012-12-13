@@ -37,7 +37,7 @@
  * pspio_pspdata                                                      *
  **********************************************************************/
 
-CC_FORTRAN_INT FC_FUNC_(pspio_f90_pspdata_init, PSPIO_F90_PSPDATA_READ)
+CC_FORTRAN_INT FC_FUNC_(pspio_f90_pspdata_init, PSPIO_F90_PSPDATA_INIT)
      (void **pspdata)
 {
   pspio_pspdata_t *pspdata_p = NULL;
