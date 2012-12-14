@@ -122,37 +122,46 @@ noinst_PROGRAMS = \
   test_xc
 
 test_error_SOURCES = test_error.c
-test_error_LDADD = -lpspio -lm
+test_error_LDADD = -lpspio
 test_error_CPPFLAGS = -I$(srcdir)/../src
+test_error_DEPENDENCIES = libpspio.la
 
 test_io_SOURCES = test_io.c
-test_io_LDADD = -lpspio -lm
+test_io_LDADD = -lpspio
 test_io_CPPFLAGS = -I$(srcdir)/../src
+test_io_DEPENDENCIES = libpspio.la
 
 test_mesh_SOURCES = test_mesh.c
-test_mesh_LDADD = -lpspio -lm
+test_mesh_LDADD = -lpspio
 test_mesh_CPPFLAGS = -I$(srcdir)/../src
+test_mesh_DEPENDENCIES = libpspio.la
 
 test_meshfunc_SOURCES = test_meshfunc.c
-test_meshfunc_LDADD = -lpspio -lm
+test_meshfunc_LDADD = -lpspio
 test_meshfunc_CPPFLAGS = -I$(srcdir)/../src
+test_meshfunc_DEPENDENCIES = libpspio.la
 
 test_potential_SOURCES = test_potential.c
-test_potential_LDADD = -lpspio -lm
+test_potential_LDADD = -lpspio
 test_potential_CPPFLAGS = -I$(srcdir)/../src
+test_potential_DEPENDENCIES = libpspio.la
 
 test_projector_SOURCES = test_projector.c
-test_projector_LDADD = -lpspio -lm
+test_projector_LDADD = -lpspio
 test_projector_CPPFLAGS = -I$(srcdir)/../src
+test_projector_DEPENDENCIES = libpspio.la
 
 test_qn_SOURCES = test_qn.c
-test_qn_LDADD = -lpspio -lm
+test_qn_LDADD = -lpspio
 test_qn_CPPFLAGS = -I$(srcdir)/../src
+test_qn_DEPENDENCIES = libpspio.la
 
 test_state_SOURCES = test_state.c
-test_state_LDADD = -lpspio -lm
+test_state_LDADD = -lpspio
 test_state_CPPFLAGS = -I$(srcdir)/../src
+test_state_DEPENDENCIES = libpspio.la
 
 test_xc_SOURCES = test_xc.c
-test_xc_LDADD = -lpspio -lm
+test_xc_LDADD = -lpspio
 test_xc_CPPFLAGS = -I$(srcdir)/../src
+test_xc_DEPENDENCIES = libpspio.la
