@@ -41,7 +41,7 @@ int upf_tag_init(FILE * fp, const char * tag, const int go_back){
   if (go_back) rewind(fp);
   
   //Prepare base string
-  init_tag = (char *)malloc((strlen(tag)+2) * sizeof(char));
+  init_tag = (char *)malloc((strlen(tag)+3) * sizeof(char));
   CHECK_ERROR(init_tag != NULL, PSPIO_ENOMEM);
   init_tag[0] = 0;
   strcat(init_tag,"<");
@@ -60,8 +60,13 @@ int upf_tag_init(FILE * fp, const char * tag, const int go_back){
     for (i=0;read_string[i]; i++)
       read_string[i] = tolower(read_string[i]);
     
-    if (strncmp(read_string,init_tag,strlen(init_tag))==0) return PSPIO_SUCCESS;
+    if (strncmp(read_string,init_tag,strlen(init_tag))==0) {
+      free(init_tag);
+      return PSPIO_SUCCESS;
+    }
   }
+
+  free(init_tag);
   return PSPIO_EFILE_FORMAT;
 }
 
@@ -69,10 +74,10 @@ int upf_tag_check_end(FILE * fp, const char * tag){
   char line[MAX_STRLEN];
   char * ending_tag = NULL;
   char * read_string = NULL;
-  int i;
+  int i, status;
   
   //Prepare base string
-  ending_tag = (char *)malloc((strlen(tag)+3) * sizeof(char));
+  ending_tag = (char *)malloc((strlen(tag)+4) * sizeof(char));
   CHECK_ERROR(ending_tag != NULL, PSPIO_ENOMEM);
   ending_tag[0] = 0;
   strcat(ending_tag,"</");
@@ -88,15 +93,18 @@ int upf_tag_check_end(FILE * fp, const char * tag){
   else 
     read_string = line;
   //Lowercase line
-  for (i=0;line[i]; i++)
+  for (i=0;read_string[i]; i++)
     read_string[i] = tolower(read_string[i]);
 
   //Compare with the ending tag
   if (strncmp(read_string,ending_tag,strlen(ending_tag)) == 0) 
-    return PSPIO_SUCCESS;
+    status = PSPIO_SUCCESS;
   else {
-    return PSPIO_EFILE_FORMAT;
+    status = PSPIO_EFILE_FORMAT;
   }
+  free(ending_tag);
+
+  return status;
 }
 
 int upf_tag_isdef(FILE * fp, const char * tag){
@@ -128,8 +136,13 @@ int upf_tag_isdef(FILE * fp, const char * tag){
     for (i=0;line[i]; i++)
       line[i] = tolower(line[i]);
 
-    if (strncmp(read_string,init_tag,strlen(init_tag))==0) return 1;
+    if (strncmp(read_string,init_tag,strlen(init_tag))==0) {
+      free(init_tag);
+      return 1;
+    }
   }
+
+  free(init_tag);
   //End of the buffer reached; so return false
   return 0;
 }

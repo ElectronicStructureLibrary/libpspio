@@ -178,14 +178,15 @@ void pspio_pspdata_free(pspio_pspdata_t **pspdata){
       for (i=0; (*pspdata)->qn_to_istate[i]!=NULL; i++) {
 	free((*pspdata)->qn_to_istate[i]);
       }
+      free((*pspdata)->qn_to_istate);
     }
-    (*pspdata)->n_states = 0;
     if ((*pspdata)->states != NULL) {
       for (i=0; i<(*pspdata)->n_states; i++) {
 	pspio_state_free(&(*pspdata)->states[i]);
       }
       free((*pspdata)->states);
     }
+    (*pspdata)->n_states = 0;
 
     // Potentials
     (*pspdata)->scheme = 0;
@@ -220,6 +221,7 @@ void pspio_pspdata_free(pspio_pspdata_t **pspdata){
       pspio_meshfunc_free(&(*pspdata)->rho_valence);
     }
 
+    free(*pspdata);
   }
 }
 

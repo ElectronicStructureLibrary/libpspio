@@ -52,11 +52,12 @@ int upf_read_info(FILE *fp, pspio_pspdata_t **pspdata){
   //Allocate memory
   (*pspdata)->info = (char *)malloc(1*sizeof(char));
   CHECK_ERROR((*pspdata)->info != NULL, PSPIO_ENOMEM);
+  (*pspdata)->info[0] = 0;
 
   //Store all the lines
   for (il=0; il<nlines; il++) {
     CHECK_ERROR(fgets(line, MAX_STRLEN, fp) != NULL, PSPIO_EIO);
-    (*pspdata)->info = realloc((*pspdata)->info, strlen((*pspdata)->info)+ strlen(line));
+    (*pspdata)->info = realloc((*pspdata)->info, strlen((*pspdata)->info)+strlen(line)+1);
     CHECK_ERROR((*pspdata)->info != NULL, PSPIO_ENOMEM);
     strncat((*pspdata)->info, line, strlen(line));
   }
@@ -70,7 +71,6 @@ int upf_read_info(FILE *fp, pspio_pspdata_t **pspdata){
 int upf_read_header(FILE *fp, int *np, pspio_pspdata_t **pspdata){
   char line[MAX_STRLEN];
   int version_number, i;
-  char *kind_ps;
   char nlcc_flag;
   char xc_string[23];
   int exchange, correlation;
@@ -85,17 +85,14 @@ int upf_read_header(FILE *fp, int *np, pspio_pspdata_t **pspdata){
  
   //Read the atomic symbol
   CHECK_ERROR(fgets(line, MAX_STRLEN, fp) != NULL, PSPIO_EIO);
-  (*pspdata)->symbol = (char *)malloc(2*sizeof(char));
+  (*pspdata)->symbol = (char *)malloc(3*sizeof(char));
   CHECK_ERROR((*pspdata)->symbol != NULL, PSPIO_ENOMEM);
   strcpy((*pspdata)->symbol, strtok(line," "));
   symbol_to_z((*pspdata)->symbol, (*pspdata)->z);
 
   //Read the kind of pseudo-potentials US|NC|PAW
   CHECK_ERROR(fgets(line, MAX_STRLEN, fp) != NULL, PSPIO_EIO);
-  kind_ps = (char *)malloc(3*sizeof(char));
-  CHECK_ERROR(kind_ps != NULL, PSPIO_ENOMEM);
-  kind_ps = strtok(line," ");
-  if (strncmp(kind_ps,"NC",2)) {
+  if (strncmp(strtok(line," "),"NC",2)) {
     //At the moment LIBPSP_IO can only read norm-conserving pseudo-potentials
     HANDLE_ERROR(PSPIO_ENOSUPPORT);
   }
