@@ -14,47 +14,7 @@
 !! along with this program; if not, write to the Free Software
 !! Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 !!
-!! $Id$
-
-
-module pspio_f90_types_m
-  implicit none
-
-  integer, public, parameter :: pspio_f90_kind = selected_real_kind(14)
-  integer, public, parameter :: PSPIO_ERROR_MAXLEN = 1024
-
-  ! All the following types are just pointers to the actual data structures
-  type pspio_f90_pspdata_t
-    private
-    integer, pointer :: buffer
-  end type pspio_f90_pspdata_t
-
-  type pspio_f90_mesh_t
-    private
-    integer, pointer :: buffer
-  end type pspio_f90_mesh_t
-
-  type pspio_f90_state_t
-    private
-    integer, pointer :: buffer
-  end type pspio_f90_state_t
-
-  type pspio_f90_projector_t
-    private
-    integer, pointer :: buffer
-  end type pspio_f90_projector_t
-
-  type pspio_f90_potential_t
-    private
-    integer, pointer :: buffer
-  end type pspio_f90_potential_t
-
-  type pspio_f90_xc_t
-    private
-    integer, pointer :: buffer
-  end type pspio_f90_xc_t
-
-end module pspio_f90_types_m
+!! $Id: pspio_fortran_f.F90 306 2012-12-12 18:42:10Z pouillon $
 
 
 module pspio_f90_lib_m
@@ -63,26 +23,28 @@ module pspio_f90_lib_m
 
   implicit none
 
-  integer, parameter ::    &
+  integer, public, parameter :: &
 &   PSPIO_SCHRODINGER = 1, &
 &   PSPIO_SCALAR_REL  = 2, &
 &   PSPIO_DIRAC       = 3
 
-  integer, parameter ::  &
+  integer, public, parameter :: &
 &   PSPIO_UNKNOWN = -1,  &
 &   PSPIO_UPF     = 9
 
-  integer, parameter ::      &
-&   PSPIO_SUCCESS      =  0, &
-&   PSPIO_ERROR        = -1, &
-&   PSPIO_ENOFILE      =  1, &
-&   PSPIO_EIO          =  2, &
-&   PSPIO_EVALUE       =  3, &
-&   PSPIO_EFILE_FORMAT =  4, &
-&   PSPIO_ETYPE        =  5, &
-&   PSPIO_EGSL         =  6, &
-&   PSPIO_ENOMEM       =  7, &
-&   PSPIO_ENOSUPPORT   =  8
+  ! Important: keep synchronized with pspio_error.h
+  integer, public, parameter :: &
+&   PSPIO_SUCCESS       =  0, &
+&   PSPIO_ERROR         = -1, &
+&   PSPIO_EFILE_FORMAT  =  1, &
+&   PSPIO_EFILE_CORRUPT =  2, &
+&   PSPIO_EGSL          =  3, &
+&   PSPIO_EIO           =  4, &
+&   PSPIO_ENOFILE       =  5, &
+&   PSPIO_ENOMEM        =  6, &
+&   PSPIO_ENOSUPPORT    =  7, &
+&   PSPIO_ETYPE         =  8, &
+&   PSPIO_EVALUE        =  9
 
 
   ! pspio_pspdata

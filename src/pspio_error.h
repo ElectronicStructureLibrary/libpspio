@@ -29,17 +29,19 @@
 #include <stdlib.h>
 
 
+/* Note: In order to facilitate the maintenance of the Fortran version,
+         please keep alphabetical order for error types. */
 #define PSPIO_SUCCESS  0 
 #define PSPIO_ERROR   -1
-#define PSPIO_ENOFILE   1
-#define PSPIO_EIO    2
-#define PSPIO_EVALUE 3
-#define PSPIO_EFILE_FORMAT 4
-#define PSPIO_EFILE_CORRUPT 5
-#define PSPIO_ETYPE 6
-#define PSPIO_EGSL  7
-#define PSPIO_ENOMEM 8
-#define PSPIO_ENOSUPPORT 9
+#define PSPIO_EFILE_CORRUPT 1
+#define PSPIO_EFILE_FORMAT 2
+#define PSPIO_EGSL 3
+#define PSPIO_EIO 4
+#define PSPIO_ENOFILE 5
+#define PSPIO_ENOMEM 6
+#define PSPIO_ENOSUPPORT 7
+#define PSPIO_ETYPE 8
+#define PSPIO_EVALUE 9
 
 
 /**********************************************************************

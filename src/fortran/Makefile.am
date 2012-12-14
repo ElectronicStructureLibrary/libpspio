@@ -32,7 +32,12 @@
 pio_fortran_c_srcs = pspio_fortran_c.c
 
 # Fortran source - keep this in alphabetical order
-pio_fortran_f_srcs = pspio_fortran_f.F90
+pio_fortran_f_srcs = \
+  pspio_f90_lib.F90 \
+  pspio_f90_types.F90
+
+# Fortran objects
+pio_fortran_f_objs := $(pio_fortran_f_srcs:F90=$(LTOBJEXT))
 
 # Fortran modules
 if F90_MOD_UPPERCASE
@@ -75,12 +80,20 @@ noinst_PROGRAMS = \
 test_fortran_SOURCES = test_fortran.F90
 test_fortran_LDADD = -lpspio_fortran -L$(builddir)/../.libs -lpspio
 test_fortran_CPPFLAGS = -I$(srcdir)/..
-test_fortran_DEPENDENCIES = ../libpspio.la libpspio_fortran.la
+test_fortran_DEPENDENCIES = ../libpspio.la libpspio_fortran.la $(pio_fortran_f_objs)
 
 test_fortran_error_SOURCES = test_fortran_error.F90
 test_fortran_error_LDADD = -lpspio_fortran -L$(builddir)/../.libs -lpspio
 test_fortran_error_CPPFLAGS = -I$(srcdir)/..
-test_fortran_error_DEPENDENCIES = ../libpspio.la libpspio_fortran.la
+test_fortran_error_DEPENDENCIES = ../libpspio.la libpspio_fortran.la $(pio_fortran_f_objs)
+
+                    # ------------------------------------ #
+
+#
+# Explicit dependencies
+#
+
+pspio_f90_lib.$(LTOBJEXT): pspio_f90_types.$(LTOBJEXT)
 
                     # ------------------------------------ #
 
@@ -89,6 +102,5 @@ test_fortran_error_DEPENDENCIES = ../libpspio.la libpspio_fortran.la
 #
 
 # Fortran modules have to be cleaned explicitely
-# Note: the 'dummy' pseudo-file is there in case the variable would be empty.
 clean-local:
-	rm -f $(pio_fortran_mods) dummy
+	rm -f $(pio_fortran_mods)
