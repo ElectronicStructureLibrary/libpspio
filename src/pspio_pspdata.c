@@ -189,14 +189,14 @@ void pspio_pspdata_free(pspio_pspdata_t **pspdata){
     (*pspdata)->n_states = 0;
 
     // Potentials
-    (*pspdata)->scheme = 0;
-    (*pspdata)->n_potentials = 0;
     if ((*pspdata)->potentials != NULL) {
       for (i=0; i<(*pspdata)->n_potentials; i++) {
 	pspio_potential_free(&(*pspdata)->potentials[i]);
       }
       free((*pspdata)->potentials);
     }
+    (*pspdata)->n_potentials = 0;
+    (*pspdata)->scheme = 0;
 
     // KB projectors
     if ((*pspdata)->kb_projectors != NULL) {
