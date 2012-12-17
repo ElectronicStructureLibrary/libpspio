@@ -70,7 +70,7 @@ int upf_write_header(FILE *fp, const pspio_pspdata_t *pspdata){
   //Write exchange-correlation functional
   pspio_xc_get_id(pspdata->xc, &exchange, &correlation);
   HANDLE_FUNC_ERROR(upf_from_libxc(exchange, correlation, longname, shortname));
-  fprintf(fp, " %20s  Exchange-Correlation functional\n", longname);
+  fprintf(fp, " %20s  %4s Exchange-Correlation functional\n", longname, shortname);
 
   //Write the Z valence
   fprintf(fp, "%17.11f      Z valence\n", pspdata->zvalence);
