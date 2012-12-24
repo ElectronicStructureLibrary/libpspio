@@ -20,7 +20,7 @@
 
 /** 
  * @file pspio_upf.c
- * @brief implementation to read and write in UPF files 
+ * @brief implementation to read and write in PSPIO_FMT_UPF files 
  */
 #include <string.h>
 #include <ctype.h>
@@ -38,9 +38,9 @@ int pspio_upf_read(FILE *fp, pspio_pspdata_t **pspdata){
   HANDLE_FUNC_ERROR(upf_read_info(fp, pspdata));
 
   //At the moment the wave equation type is not defined in the header,
-  //so we set it to 0 if the ADDINFO tag is not present, and to DIRAC if it is
+  //so we set it to 0 if the ADDINFO tag is not present, and to PSPIO_EQN_DIRAC if it is
   if (upf_tag_isdef(fp,"PP_ADDINFO")){
-    (*pspdata)->wave_eq = DIRAC;
+    (*pspdata)->wave_eq = PSPIO_EQN_DIRAC;
   } else {
     (*pspdata)->wave_eq = 0;
   }
@@ -75,7 +75,7 @@ int pspio_upf_write(FILE *fp, const pspio_pspdata_t *pspdata){
   upf_write_nonlocal(fp, pspdata);
   upf_write_pswfc(fp, pspdata);
   upf_write_rhoatom(fp, pspdata);
-  if (pspdata->wave_eq == DIRAC) {
+  if (pspdata->wave_eq == PSPIO_EQN_DIRAC) {
     upf_write_addinfo(fp, pspdata);
   }
 

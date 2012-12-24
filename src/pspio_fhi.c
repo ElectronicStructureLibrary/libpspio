@@ -36,30 +36,30 @@
 
 
 int pspio_fhi_read(FILE *fp, pspio_pspdata_t **pspdata){
-  char line[MAX_STRLEN];
+  char line[PSPIO_STRLEN_LINE];
   int i, l, np, ir, has_nlcc;
   double r12;
   double *wf, *r, *v;
   pspio_qn_t *qn = NULL;
 
   // Read header
-  CHECK_ERROR(fgets(line, MAX_STRLEN, fp) != NULL, PSPIO_EIO);
+  CHECK_ERROR(fgets(line, PSPIO_STRLEN_LINE, fp) != NULL, PSPIO_EIO);
   CHECK_ERROR(sscanf(line, "%lf %d", &(*pspdata)->zvalence, &(*pspdata)->n_potentials ) == 2, PSPIO_EIO);
   for (i=0; i<10; i++) { 
     // We ignore the next 10 lines, as they contain no information
-    CHECK_ERROR(fgets(line, MAX_STRLEN, fp) != NULL, PSPIO_EIO);
+    CHECK_ERROR(fgets(line, PSPIO_STRLEN_LINE, fp) != NULL, PSPIO_EIO);
   }
   (*pspdata)->l_max = (*pspdata)->n_potentials - 1;
   (*pspdata)->n_states = (*pspdata)->n_potentials;
 
 
   //Allocate states and potentials
-  (*pspdata)->states = (pspio_state_t **)malloc( (*pspdata)->n_states*sizeof(pspio_state_t *));
+  (*pspdata)->states = (pspio_state_t **) malloc ( (*pspdata)->n_states*sizeof(pspio_state_t *));
   CHECK_ERROR((*pspdata)->states != NULL, PSPIO_ENOMEM);
   for (i=0; i<(*pspdata)->n_states; i++) {
     (*pspdata)->states[i] = NULL;
   }
-  (*pspdata)->potentials = (pspio_potential_t **)malloc( (*pspdata)->n_potentials*sizeof(pspio_potential_t *));
+  (*pspdata)->potentials = (pspio_potential_t **) malloc ( (*pspdata)->n_potentials*sizeof(pspio_potential_t *));
   CHECK_ERROR((*pspdata)->potentials != NULL, PSPIO_ENOMEM);
   for (i=0; i<(*pspdata)->n_potentials; i++) {
     (*pspdata)->potentials[i] = NULL;
@@ -68,24 +68,24 @@ int pspio_fhi_read(FILE *fp, pspio_pspdata_t **pspdata){
   
   // Read mesh, potentials and wavefunctions
   for (l=0; l < (*pspdata)->l_max+1; l++) {
-    CHECK_ERROR(fgets(line, MAX_STRLEN, fp) != NULL, PSPIO_EIO);
+    CHECK_ERROR(fgets(line, PSPIO_STRLEN_LINE, fp) != NULL, PSPIO_EIO);
     CHECK_ERROR(sscanf(line, "%d %lf", &np, &r12 ) == 2, PSPIO_EIO);
 
     //Allocate temporary data
     HANDLE_FUNC_ERROR(pspio_qn_alloc(&qn));
 
-    r = (double *)malloc(np*sizeof(double));
+    r = (double *) malloc (np*sizeof(double));
     CHECK_ERROR(r != NULL, PSPIO_ENOMEM);
 
-    v = (double *)malloc(np*sizeof(double));
+    v = (double *) malloc (np*sizeof(double));
     CHECK_ERROR(v != NULL, PSPIO_ENOMEM);
 
-    wf = (double *)malloc(np*sizeof(double));
+    wf = (double *) malloc (np*sizeof(double));
     CHECK_ERROR(wf != NULL, PSPIO_ENOMEM);
 
     //Read first line of block
     for (ir=0; ir<np; ir++) {
-      CHECK_ERROR(fgets(line, MAX_STRLEN, fp) != NULL, PSPIO_EIO);
+      CHECK_ERROR(fgets(line, PSPIO_STRLEN_LINE, fp) != NULL, PSPIO_EIO);
       CHECK_ERROR(sscanf(line, "%d %lf %lf %lf", &i, &r[ir], &wf[ir], &v[ir]) == 4, PSPIO_EIO);
       wf[ir] = wf[ir]/r[ir];
     }
@@ -111,26 +111,26 @@ int pspio_fhi_read(FILE *fp, pspio_pspdata_t **pspdata){
   }
 
   //Non-linear core-corrections
-  has_nlcc = (fgets(line, MAX_STRLEN, fp) != NULL);
+  has_nlcc = (fgets(line, PSPIO_STRLEN_LINE, fp) != NULL);
   if (has_nlcc) {
     double *cd, *cdp, *cdpp;
 
     HANDLE_FUNC_ERROR(pspio_xc_alloc(&(*pspdata)->xc, PSPIO_NLCC_FHI, np));
 
     //Allocate memory
-    cd = (double *)malloc(np*sizeof(double));
+    cd = (double *) malloc (np*sizeof(double));
     CHECK_ERROR(cd != NULL, PSPIO_ENOMEM);
 
-    cdp = (double *)malloc(np*sizeof(double));
+    cdp = (double *) malloc (np*sizeof(double));
     CHECK_ERROR(cdp != NULL, PSPIO_ENOMEM);
 
-    cdpp = (double *)malloc(np*sizeof(double));
+    cdpp = (double *) malloc (np*sizeof(double));
     CHECK_ERROR(cdpp != NULL, PSPIO_ENOMEM);
 
     //Read core density
     for (ir=0; ir<np; ir++) {
       if (ir != 0) {
-	CHECK_ERROR(fgets(line, MAX_STRLEN, fp) != NULL, PSPIO_EIO);
+	CHECK_ERROR(fgets(line, PSPIO_STRLEN_LINE, fp) != NULL, PSPIO_EIO);
       }
 
       CHECK_ERROR(sscanf(line, "%lf %lf %lf %lf", &r12, &cd[ir], &cdp[ir], &cdpp[ir]) == 4, PSPIO_EIO);
@@ -162,7 +162,7 @@ int pspio_fhi_write(FILE *fp, const pspio_pspdata_t *pspdata){
 
   ASSERT(pspdata != NULL, PSPIO_ERROR);
 
-  // If one considers that the specifications of this format is the way how FHIPP98 writes the
+  // If one considers that the specifications of this format is the way how FHI98PP writes the
   // data, then only meshes of type log1 should be allowed. For the moment, we will just
   // check that this is the case.
   ASSERT(pspdata->mesh->type == PSPIO_MESH_LOG1, PSPIO_ERROR);  

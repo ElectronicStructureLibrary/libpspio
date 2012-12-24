@@ -36,18 +36,8 @@
  **********************************************************************/
 
 /**
- * Read the ABINIT header
- * @param[in] fp: a stream of the input file
- * @param[out] format: the file format
- * @param[out] np: the number of radial mesh points
- * @param[out] have_nlcc: whether there are non-linear core-corrections
- * @return error code
- */
-int pspio_abinit_read_header(FILE *fp, int *format, int *np, int *have_nlcc);
-
-
-/**
- * Read the data contained in a Abinit format file and store it in the psp_data structure
+ * Read the data contained in a Abinit-formatted file and store it in the
+ * psp_data structure
  * @param[in] fp a stream of the input file
  * @param[in,out] pspdata the data structure
  * @param[in] format: the Abinit format number

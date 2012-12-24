@@ -26,18 +26,8 @@
 #ifndef PSPIO_MESH_H
 #define PSPIO_MESH_H
 
+#include "pspio_common.h"
 #include "pspio_error.h"
-
-
-/**********************************************************************
- * Defines                                                            *
- **********************************************************************/
-
-#define PSPIO_MESH_NONE    0 /**< mesh not set yet */
-#define PSPIO_MESH_LOG1    1 /**< r_i = b*exp(a*i) */
-#define PSPIO_MESH_LOG2    2 /**< r_i = b*(exp(a*i) - 1) */
-#define PSPIO_MESH_LINEAR  3 /**< r_i = a*i + b */
-#define PSPIO_MESH_UNKNOWN 4 /**< unkown type of mesh */
 
 
 /**********************************************************************

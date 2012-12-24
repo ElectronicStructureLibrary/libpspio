@@ -26,7 +26,96 @@
  * @brief include file with low-level stuff 
  */
 
-#define MAX_STRLEN 256
-#define STRLEN_TITLE 80
+/* IMPORTANT: this file must contain defines only, in order to be readable from               Fortran. */
+
+/* Strings */
+#define PSPIO_STRLEN_ERROR 1024
+#define PSPIO_STRLEN_LINE 256
+#define PSPIO_STRLEN_TITLE 80
+
+/**
+ * Error codes
+ *
+ * Note: except for SUCCESS and ERROR, please keep alphabetical order.
+ */
+#define PSPIO_SUCCESS  0 
+#define PSPIO_ERROR   -1
+#define PSPIO_EFILE_CORRUPT 1
+#define PSPIO_EFILE_FORMAT 2
+#define PSPIO_EGSL 3
+#define PSPIO_EIO 4
+#define PSPIO_ENOFILE 5
+#define PSPIO_ENOMEM 6
+#define PSPIO_ENOSUPPORT 7
+#define PSPIO_ETYPE 8
+#define PSPIO_EVALUE 9
+
+
+/**
+ * File formats
+ */
+#define PSPIO_FMT_UNKNOWN -1
+#define PSPIO_FMT_ABINIT_4 1
+#define PSPIO_FMT_ABINIT_5 2
+#define PSPIO_FMT_ABINIT_6 3
+#define PSPIO_FMT_ABINIT_GTH 4
+#define PSPIO_FMT_ABINIT_HGH 5
+#define PSPIO_FMT_ATOM 6
+#define PSPIO_FMT_FHI98PP 7
+#define PSPIO_FMT_SIESTA 8
+#define PSPIO_FMT_UPF 9
+#define PSPIO_FMT_OCTOPUS_HGH 10
+
+
+/**
+ * Wave-equations 
+ */
+#define PSPIO_EQN_DIRAC 1
+#define PSPIO_EQN_SCALAR_REL 2
+#define PSPIO_EQN_SCHRODINGER 3
+
+
+/**
+ * Pseudopotential generation schemes
+ */
+#define PSPIO_SCM_BHS 1
+#define PSPIO_SCM_GTH 2
+#define PSPIO_SCM_HAMANN 3
+#define PSPIO_SCM_HGH 4
+#define PSPIO_SCM_HSC 5
+#define PSPIO_SCM_KERKER 6
+#define PSPIO_SCM_MRPP 7
+#define PSPIO_SCM_RRKJ 8
+#define PSPIO_SCM_TM 9
+#define PSPIO_SCM_TM2 10
+
+/**
+ * Mesh types
+ */
+#define PSPIO_MESH_UNKNOWN -1 /**< unkown type of mesh */
+#define PSPIO_MESH_NONE    0 /**< mesh not set yet */
+#define PSPIO_MESH_LOG1    1 /**< r_i = b*exp(a*i) */
+#define PSPIO_MESH_LOG2    2 /**< r_i = b*(exp(a*i) - 1) */
+#define PSPIO_MESH_LINEAR  3 /**< r_i = a*i + b */
+
+
+/**
+ * Quantum numbers
+ */
+#define PSPIO_QN_DIFF    -1
+#define PSPIO_QN_EQUAL   -2
+#define PSPIO_QN_MTEQUAL -3
+
+
+/** 
+ * values for NLCC scheme - could add possibilities for different schemes
+ */
+#define PSPIO_NLCC_UNKNOWN -1
+#define PSPIO_NLCC_NONE 0
+#define PSPIO_NLCC_FHI 1 // M. Fuchs and M. Scheffler. Ab initio pseudopotentials for electronic structure calculations of poly-atomic systems using density-functional theory. Comp. Phys. Comm. 119:67-98, 1999.
+#define PSPIO_NLCC_LOUIE 2 // S. G. Louie, S. Froyen, and M. L. Cohen. Nonlinear ionic pseudopotentials in spin-density-functional calculations. Phys. Rev. B, 26:1738-1742, 1982. 
+#define PSPIO_NLCC_TETER1 3 // 7 May 1992 by M. Teter abinit version for pspcod 4
+#define PSPIO_NLCC_TETER2 4 // 5 Nov 1992 by M. Teter abinit version for pspcod 1
+
 
 #endif

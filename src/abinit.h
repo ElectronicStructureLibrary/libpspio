@@ -37,7 +37,7 @@
 
 
 /**********************************************************************
- * Format 6 routines                                                  *
+ * Abinit Format 6 routines                                                  *
  **********************************************************************/
 
 /**
@@ -46,7 +46,7 @@
  * @param[inout] pspdata: a pseudopotential data structure
  * @return error code
  */
-int abinit6_read(FILE *fp, pspio_pspdata_t **pspdata);
+int abinit_format6_read(FILE *fp, pspio_pspdata_t **pspdata);
 
 
 /**
@@ -55,7 +55,7 @@ int abinit6_read(FILE *fp, pspio_pspdata_t **pspdata);
  * @param[in] pspdata: a pseudopotential data structure
  * @return error code
  */
-int abinit6_write(FILE *fp, const pspio_pspdata_t *pspdata);
+int abinit_format6_write(FILE *fp, const pspio_pspdata_t *pspdata);
 
 
 /**********************************************************************
@@ -79,5 +79,34 @@ int abinit_to_libxc(const char *xc_string, int *exchange, int *correlation);
  * @return error code
  */
 int libxc_to_abinit(const int exchange, const int correlation, int *pspxc);
+
+
+/**********************************************************************
+ * ABINIT utility routines                                                 *
+ **********************************************************************/
+
+/**
+ * Read the ABINIT header
+ * @param[in] fp: a stream of the input file
+ * @param[out] format: the file format
+ * @param[out] np: the number of radial mesh points
+ * @param[out] have_nlcc: whether there are non-linear core corrections
+ * @param[out] pspdata: pseudopotential data structure
+ * @return error code
+ */
+int abinit_read_header(FILE *fp, int *format, int *np, int *have_nlcc,
+  pspio_pspdata_t **pspdata);
+
+
+/**
+ * Write the ABINIT header
+ * @param[in] fp: a stream of the input file
+ * @param[in] format: the file format
+ * @param[in] pspdata: pseudopotential data structure
+ * @return error code
+ */
+int abinit_write_header(FILE *fp, const int format,
+  const pspio_pspdata_t *pspdata);
+
 
 #endif

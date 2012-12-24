@@ -232,6 +232,6 @@ int upf_to_libxc(const char *xc_string, int *exchange, int *correlation);
  * @param[out] shortname: pwscf xc short name
  * @return error code
  */
-int upf_from_libxc(const int exchange, const int correlation, char *longname, char *shortname);
+int libxc_to_upf(const int exchange, const int correlation, char *longname, char *shortname);
 
 #endif

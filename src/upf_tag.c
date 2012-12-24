@@ -33,7 +33,7 @@
 
 
 int upf_tag_init(FILE * fp, const char * tag, const int go_back){
-  char line[MAX_STRLEN];
+  char line[PSPIO_STRLEN_LINE];
   char * init_tag = NULL;
   char * read_string = NULL;
   int i;
@@ -41,9 +41,9 @@ int upf_tag_init(FILE * fp, const char * tag, const int go_back){
   if (go_back) rewind(fp);
   
   //Prepare base string
-  init_tag = (char *)malloc((strlen(tag)+3) * sizeof(char));
+  init_tag = (char *) malloc ((strlen(tag)+3) * sizeof(char));
   CHECK_ERROR(init_tag != NULL, PSPIO_ENOMEM);
-  init_tag[0] = 0;
+  init_tag[0] = '\0';
   strcat(init_tag,"<");
   strncat(init_tag,tag,strlen(tag));
   strcat(init_tag,">");
@@ -71,15 +71,15 @@ int upf_tag_init(FILE * fp, const char * tag, const int go_back){
 }
 
 int upf_tag_check_end(FILE * fp, const char * tag){
-  char line[MAX_STRLEN];
+  char line[PSPIO_STRLEN_LINE];
   char * ending_tag = NULL;
   char * read_string = NULL;
   int i, status;
   
   //Prepare base string
-  ending_tag = (char *)malloc((strlen(tag)+4) * sizeof(char));
+  ending_tag = (char *) malloc ((strlen(tag)+4) * sizeof(char));
   CHECK_ERROR(ending_tag != NULL, PSPIO_ENOMEM);
-  ending_tag[0] = 0;
+  ending_tag[0] = '\0';
   strcat(ending_tag,"</");
   strncat(ending_tag,tag,strlen(tag));
   strcat(ending_tag,">");
@@ -108,7 +108,7 @@ int upf_tag_check_end(FILE * fp, const char * tag){
 }
 
 int upf_tag_isdef(FILE * fp, const char * tag){
-  char line[MAX_STRLEN];
+  char line[PSPIO_STRLEN_LINE];
   char * init_tag = NULL; 
   char * read_string = NULL;
   int i;
@@ -117,9 +117,9 @@ int upf_tag_isdef(FILE * fp, const char * tag){
   rewind(fp);
   
   //Prepare base string
-  init_tag = (char *)malloc((strlen(tag)+3) * sizeof(char));
+  init_tag = (char *) malloc ((strlen(tag)+3) * sizeof(char));
   CHECK_ERROR(init_tag != NULL, PSPIO_ENOMEM);
-  init_tag[0] = 0;
+  init_tag[0] = '\0';
   strcat(init_tag,"<");
   strncat(init_tag,tag,strlen(tag));
   strcat(init_tag,">");

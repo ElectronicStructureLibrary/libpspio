@@ -65,10 +65,10 @@ int pspio_info_string(char *info) {
   const char *package_string = PACKAGE_STRING;
 
   int s = strlen(package_string);
-  info = (char *)malloc(s + 1);
+  info = (char *) malloc (s + 1);
   ASSERT(info != NULL, PSPIO_ENOMEM)
   strncpy(info, package_string, s);
-  info[s] = 0;
+  info[s] = '\0';
 
   return PSPIO_SUCCESS;
 }

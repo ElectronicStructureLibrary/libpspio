@@ -16,6 +16,8 @@
 !!
 !! $Id$
 
+#include "pspio_common.h"
+
 program test_fortran
   use pspio_f90_types_m
   use pspio_f90_lib_m
@@ -31,7 +33,7 @@ program test_fortran
 
   write(*,'("UPF filename to read:")')
   read(*,'(A)') file_in
-  ierr = pspio_f90_pspdata_read(pspdata, PSPIO_UPF, file_in)
+  ierr = pspio_f90_pspdata_read(pspdata, PSPIO_FMT_UPF, file_in)
   if (ierr /= 0) ierr = pspio_f90_error_flush()
 
   call pspio_f90_pspdata_get_mesh(pspdata, pspmesh)
@@ -41,7 +43,7 @@ program test_fortran
 
   write(*,'("UPF filename to write:")')
   read(*,'(A)') file_out
-  ierr = pspio_f90_pspdata_write(pspdata, PSPIO_UPF, file_out)
+  ierr = pspio_f90_pspdata_write(pspdata, PSPIO_FMT_UPF, file_out)
   if (ierr /= 0) ierr = pspio_f90_error_flush()
 
   call pspio_f90_pspdata_free(pspdata)

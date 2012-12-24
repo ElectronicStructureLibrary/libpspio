@@ -42,17 +42,17 @@ int pspio_error_add(const char *filename, const int line) {
   error_id = pspio_error_tmp_id;
 
   if ( pspio_error_chain == NULL ) {
-    pspio_error_chain = (pspio_error_t *)malloc(sizeof(pspio_error_t));
+    pspio_error_chain = (pspio_error_t *) malloc (sizeof(pspio_error_t));
     CHECK_ERROR(pspio_error_chain != NULL, PSPIO_ENOMEM)
 
     pspio_error_chain->id = error_id;
     pspio_error_chain->line = line;
     pspio_error_chain->next = NULL;
     s = strlen(filename);
-    pspio_error_chain->filename = (char *)malloc(s + 1);
+    pspio_error_chain->filename = (char *) malloc (s + 1);
     CHECK_ERROR(pspio_error_chain->filename != NULL, PSPIO_ENOMEM)
     memcpy(pspio_error_chain->filename, filename, s);
-    pspio_error_chain->filename[s] = 0;
+    pspio_error_chain->filename[s] = '\0';
 
     pspio_error_tmp_id = PSPIO_SUCCESS;
     return PSPIO_SUCCESS;
@@ -63,17 +63,17 @@ int pspio_error_add(const char *filename, const int line) {
     last_err = last_err->next;
   }
 
-  last_err->next = (pspio_error_t *)malloc(sizeof(pspio_error_t));
+  last_err->next = (pspio_error_t *) malloc (sizeof(pspio_error_t));
   CHECK_ERROR(last_err->next != NULL, PSPIO_ENOMEM)
   last_err = last_err->next;
   last_err->id = error_id;
   last_err->line = line;
   last_err->next = NULL;
   s = strlen(filename);
-  last_err->filename = (char *)malloc(s + 1);
+  last_err->filename = (char *) malloc (s + 1);
   CHECK_ERROR(last_err->filename != NULL, PSPIO_ENOMEM)
   memcpy(last_err->filename, filename, s);
-  last_err->filename[s] = 0;
+  last_err->filename[s] = '\0';
 
   pspio_error_tmp_id = PSPIO_SUCCESS;
   return PSPIO_SUCCESS;
@@ -87,7 +87,7 @@ int pspio_error_fetchall(char **err_str) {
   pspio_error_t *cursor = pspio_error_chain;
 
   if ( cursor != NULL ) {
-    *err_str  = (char *)malloc(20*sizeof(char));
+    *err_str  = (char *) malloc (20*sizeof(char));
     ASSERT(*err_str != NULL, PSPIO_ENOMEM);
     sprintf(*err_str, "%s", "libpspio: ERROR:\n");
   }
@@ -99,7 +99,7 @@ int pspio_error_fetchall(char **err_str) {
     sprintf(buf, "%d", cursor->line);
     err_len += strlen(buf);
 
-    tmp_str  = (char *)malloc((err_len+1)*sizeof(char));
+    tmp_str  = (char *) malloc ((err_len+1)*sizeof(char));
     ASSERT(tmp_str != NULL, PSPIO_ENOMEM);
     sprintf(tmp_str, "  * %s\n      at %s:%d\n",
       pspio_error_str(cursor->id), cursor->filename, cursor->line);
@@ -193,25 +193,25 @@ const char *pspio_error_str(const int pspio_errorid) {
   switch (pspio_errorid)
     {
     case PSPIO_SUCCESS:
-      return "success" ;
+      return "success (PSPIO_SUCCESS)" ;
     case PSPIO_ERROR:
-      return "error" ;
+      return "error (PSPIO_ERROR)" ;
     case PSPIO_EFILE_CORRUPT:
-      return "file corrupted";
+      return "file corrupted (PSPIO_EFILE_CORRUPT)";
     case PSPIO_EFILE_FORMAT:
-      return "unknown file format";
+      return "unknown file format (PSPIO_EFILE_FORMAT)";
     case PSPIO_EGSL:
-      return "error in GSL";
+      return "error in GSL (PSPIO_EGSL)";
     case PSPIO_EIO:
-      return "error in I/O" ;
+      return "input/output error (PSPIO_EIO)" ;
     case PSPIO_ENOFILE:
-      return "file does not exist" ;
+      return "file does not exist (PSPIO_ENOFILE)" ;
     case PSPIO_ENOMEM:
-      return "malloc failed";
+      return "malloc failed (PSPIO_ENOMEM)";
     case PSPIO_ENOSUPPORT:
-      return "Unsupported option in the pseudo-potential file";
+      return "Unsupported option in the pseudo-potential file (PSPIO_ENOSUPPORT)";
     case PSPIO_EVALUE:
-      return "value error: bad value found";
+      return "value error: bad value found (PSPIO_EVALUE)";
     default:
       return "unknown error code" ;
     }

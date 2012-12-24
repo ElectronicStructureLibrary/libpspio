@@ -16,36 +16,13 @@
 !!
 !! $Id: pspio_fortran_f.F90 306 2012-12-12 18:42:10Z pouillon $
 
+#include "pspio_common.h"
 
 module pspio_f90_lib_m
 
   use pspio_f90_types_m
 
   implicit none
-
-  integer, public, parameter :: &
-&   PSPIO_SCHRODINGER = 1, &
-&   PSPIO_SCALAR_REL  = 2, &
-&   PSPIO_DIRAC       = 3
-
-  integer, public, parameter :: &
-&   PSPIO_UNKNOWN = -1,  &
-&   PSPIO_UPF     = 9
-
-  ! Important: keep synchronized with pspio_error.h
-  integer, public, parameter :: &
-&   PSPIO_SUCCESS       =  0, &
-&   PSPIO_ERROR         = -1, &
-&   PSPIO_EFILE_FORMAT  =  1, &
-&   PSPIO_EFILE_CORRUPT =  2, &
-&   PSPIO_EGSL          =  3, &
-&   PSPIO_EIO           =  4, &
-&   PSPIO_ENOFILE       =  5, &
-&   PSPIO_ENOMEM        =  6, &
-&   PSPIO_ENOSUPPORT    =  7, &
-&   PSPIO_ETYPE         =  8, &
-&   PSPIO_EVALUE        =  9
-
 
   ! pspio_pspdata
   interface
@@ -351,9 +328,8 @@ module pspio_f90_lib_m
     end function pspio_f90_error_add
 
     integer function pspio_f90_error_fetchall(err_msg)
-      use pspio_f90_types_m, only: PSPIO_ERROR_MAXLEN
       implicit none
-      character(len=PSPIO_ERROR_MAXLEN), intent(out) :: err_msg
+      character(len=PSPIO_STRLEN_ERROR), intent(out) :: err_msg
     end function pspio_f90_error_fetchall
 
     integer function pspio_f90_error_flush()

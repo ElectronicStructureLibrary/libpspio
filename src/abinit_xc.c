@@ -30,12 +30,15 @@
 #endif
 
 
+/**
+ * Note: deduced from the abinit web site
+ *       http://www.abinit.org/documentation/helpfiles/for-v6.8/input_variables/varbas.html#ixc
+ */
 int abinit_to_libxc(const int pspxc, int *exchange, int *correlation){
-  // inferred from abinit web site http://www.abinit.org/documentation/helpfiles/for-v6.8/input_variables/varbas.html#ixc
+    int xccode[2];
 
   // negative values are combined from 2 libxc codes
   if (pspxc < 0){
-    int xccode[2];
 
     xccode[1] = abs(pspxc) % 1000;
     xccode[0] = (int) ((abs(pspxc) - xccode[0]) / 1000);
@@ -155,7 +158,7 @@ int abinit_to_libxc(const int pspxc, int *exchange, int *correlation){
 
 int libxc_to_abinit(const int exchange, const int correlation, int *pspxc){
 
-  *pspxc = exchange * 1000 + correlation;
+  *pspxc = -(exchange * 1000 + correlation);
 
   return PSPIO_SUCCESS;
 }

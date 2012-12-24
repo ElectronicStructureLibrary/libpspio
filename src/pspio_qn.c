@@ -38,7 +38,7 @@
 int pspio_qn_alloc(pspio_qn_t **qn) {
   ASSERT( *qn == NULL, PSPIO_ERROR);
 
-  *qn = (pspio_qn_t *)malloc(sizeof(pspio_qn_t));
+  *qn = (pspio_qn_t *) malloc (sizeof(pspio_qn_t));
   CHECK_ERROR(*qn != NULL, PSPIO_ENOMEM);
 
   (*qn)->n = 0;

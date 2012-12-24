@@ -20,7 +20,7 @@
 
 /** 
  * @file abinit_format6.c
- * @brief routines to read UPF files 
+ * @brief routines to read PSPIO_FMT_UPF files 
  */
 #include <string.h>
 #include <ctype.h>
@@ -31,11 +31,20 @@
 #include "config.h"
 #endif
 
-int abinit6_read(FILE *fp, pspio_pspdata_t **pspdata) {
+int abinit_format6_read(FILE *fp, pspio_pspdata_t **pspdata) {
+  int format, np, have_nlcc;
+
+  HANDLE_FUNC_ERROR(abinit_read_header(fp, &format, &np, &have_nlcc, pspdata));
+  CHECK_ERROR(format == 6, PSPIO_EFILE_FORMAT);
+  HANDLE_FUNC_ERROR(pspio_fhi_read(fp, pspdata));
+
   return PSPIO_SUCCESS;
 }
 
 
-int abinit6_write(FILE *fp, const pspio_pspdata_t *pspdata) {
+int abinit_format6_write(FILE *fp, const pspio_pspdata_t *pspdata) {
+  HANDLE_FUNC_ERROR(abinit_write_header(fp, PSPIO_FMT_ABINIT_6, pspdata));
+  HANDLE_FUNC_ERROR(pspio_fhi_write(fp, pspdata));
+
   return PSPIO_SUCCESS;
 }

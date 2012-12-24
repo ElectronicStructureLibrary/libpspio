@@ -92,19 +92,19 @@ int pspio_pspdata_read(pspio_pspdata_t **pspdata, const char *file_name,
 
   //read from file (NOTE: should always rewind the file before trying to read it)
   ierr = PSPIO_EFILE_FORMAT;
-  if (ierr && (file_format == ABINIT_4   || file_format == UNKNOWN) ) ierr = PSPIO_ENOSUPPORT;
-  if (ierr && (file_format == ABINIT_5   || file_format == UNKNOWN) ) ierr = PSPIO_ENOSUPPORT;
-  if (ierr && (file_format == ABINIT_6   || file_format == UNKNOWN) ) ierr = PSPIO_ENOSUPPORT;
-  if (ierr && (file_format == ABINIT_HGH || file_format == UNKNOWN) ) ierr = PSPIO_ENOSUPPORT;
-  if (ierr && (file_format == ABINIT_GTH || file_format == UNKNOWN) ) ierr = PSPIO_ENOSUPPORT;
-  if (ierr && (file_format == ATOM       || file_format == UNKNOWN) ) ierr = PSPIO_ENOSUPPORT;
-  if (ierr && (file_format == SIESTA     || file_format == UNKNOWN) ) ierr = PSPIO_ENOSUPPORT;
-  if (ierr && (file_format == FHI98PP    || file_format == UNKNOWN) ) {
+  if (ierr && (file_format == PSPIO_FMT_ABINIT_4   || file_format == PSPIO_FMT_UNKNOWN) ) ierr = PSPIO_ENOSUPPORT;
+  if (ierr && (file_format == PSPIO_FMT_ABINIT_5   || file_format == PSPIO_FMT_UNKNOWN) ) ierr = PSPIO_ENOSUPPORT;
+  if (ierr && (file_format == PSPIO_FMT_ABINIT_6   || file_format == PSPIO_FMT_UNKNOWN) ) ierr = PSPIO_ENOSUPPORT;
+  if (ierr && (file_format == PSPIO_FMT_ABINIT_HGH || file_format == PSPIO_FMT_UNKNOWN) ) ierr = PSPIO_ENOSUPPORT;
+  if (ierr && (file_format == PSPIO_FMT_ABINIT_GTH || file_format == PSPIO_FMT_UNKNOWN) ) ierr = PSPIO_ENOSUPPORT;
+  if (ierr && (file_format == PSPIO_FMT_ATOM       || file_format == PSPIO_FMT_UNKNOWN) ) ierr = PSPIO_ENOSUPPORT;
+  if (ierr && (file_format == PSPIO_FMT_SIESTA     || file_format == PSPIO_FMT_UNKNOWN) ) ierr = PSPIO_ENOSUPPORT;
+  if (ierr && (file_format == PSPIO_FMT_FHI98PP    || file_format == PSPIO_FMT_UNKNOWN) ) {
     CHECK_ERROR(fp != NULL, PSPIO_ENOFILE);
     rewind(fp);
     ierr = pspio_fhi_read(fp, pspdata);
   }
-  if (ierr && (file_format == UPF        || file_format == UNKNOWN) ) {
+  if (ierr && (file_format == PSPIO_FMT_UPF        || file_format == PSPIO_FMT_UNKNOWN) ) {
     CHECK_ERROR(fp != NULL, PSPIO_ENOFILE);
     rewind(fp);
     ierr = pspio_upf_read(fp, pspdata);
@@ -137,10 +137,10 @@ int pspio_pspdata_write(const pspio_pspdata_t *pspdata, const char *file_name,
 
   //write to file
   switch(file_format) {
-  case FHI98PP:
+  case PSPIO_FMT_FHI98PP:
     HANDLE_FUNC_ERROR(pspio_fhi_write(fp, pspdata));
     break;
-  case UPF:
+  case PSPIO_FMT_UPF:
     HANDLE_FUNC_ERROR(pspio_upf_write(fp, pspdata));
     break;
   default:

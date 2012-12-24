@@ -35,47 +35,6 @@
 
 
 /**********************************************************************
- * Defines                                                            *
- **********************************************************************/
-
-/**
- * File formats
- */
-#define UNKNOWN -1
-#define ABINIT_4 1
-#define ABINIT_5 2
-#define ABINIT_6 3
-#define ABINIT_HGH 4
-#define ABINIT_GTH 5
-#define ATOM 6
-#define FHI98PP 7
-#define SIESTA 8
-#define UPF 9
-#define OCTOPUS_HGH 10
-
-/**
- * Wave-equations 
- */
-#define SCHRODINGER 1
-#define SCALAR_REL 2
-#define DIRAC 3
-
-/**
- * Pseudopotential generation schemes
- */
-#define BHS 1
-#define HSC 2
-#define HAMANN 3
-#define KERKER 4
-#define TM 5
-#define TM2 6
-#define MRPP 7
-#define HGH 8
-#define GTH 9
-#define RRKJ 10
-
-
-/**********************************************************************
  * Data structures                                                    *
  **********************************************************************/
 

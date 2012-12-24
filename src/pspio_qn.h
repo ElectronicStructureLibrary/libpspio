@@ -29,10 +29,6 @@
 #include "pspio_common.h"
 #include "pspio_error.h"
 
-#define PSPIO_QN_EQUAL   -1
-#define PSPIO_QN_MTEQUAL -2
-#define PSPIO_QN_DIFF    -3
-
 
 /**********************************************************************
  * Data structures                                                    *

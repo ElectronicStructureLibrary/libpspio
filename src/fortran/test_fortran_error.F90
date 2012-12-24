@@ -19,16 +19,17 @@
 !! @file test_fortran_error.F90
 !! @brief checks pspio_f90_error.F90 and pspio_f90_error.h
 
+#include "pspio_common.h"
+
 program test_fortran_error
 
-  use pspio_f90_types_m, only: PSPIO_ERROR_MAXLEN
   use pspio_f90_lib_m
 
   implicit none
 
   character, parameter :: ch10 = char(10)
 
-  character(len=PSPIO_ERROR_MAXLEN) :: err_msg
+  character(len=PSPIO_STRLEN_ERROR) :: err_msg
   character(len=64) :: filename
   integer :: eid
 

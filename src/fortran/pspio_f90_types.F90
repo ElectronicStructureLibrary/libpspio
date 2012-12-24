@@ -20,7 +20,6 @@
 module pspio_f90_types_m
   implicit none
 
-  integer, public, parameter :: PSPIO_ERROR_MAXLEN = 1024
   integer, public, parameter :: pspio_f90_kind = selected_real_kind(14)
 
   ! All the following types are just pointers to the actual data structures

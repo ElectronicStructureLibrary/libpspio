@@ -26,20 +26,11 @@
 #ifndef PSPIO_XC_H
 #define PSPIO_XC_H
 
+#include "pspio_common.h"
 #include "pspio_error.h"
 #include "pspio_mesh.h"
 #include "pspio_meshfunc.h"
 #include "pspio_xc_funcs.h"
-
-/** 
- * values for NLCC scheme - could add possibilities for different schemes
- */
-#define PSPIO_NLCC_NONE -1
-#define PSPIO_NLCC_UNKNOWN 0
-#define PSPIO_NLCC_LOUIE 1 // S. G. Louie, S. Froyen, and M. L. Cohen. Nonlinear ionic pseudopotentials in spin-density-functional calculations. Phys. Rev. B, 26:1738-1742, 1982. 
-#define PSPIO_NLCC_FHI 2 // M. Fuchs and M. Scheffler. Ab initio pseudopotentials for electronic structure calculations of poly-atomic systems using density-functional theory. Comp. Phys. Comm. 119:67-98, 1999.
-#define PSPIO_NLCC_TETER1 3 // 7 May 1992 by M. Teter abinit version for pspcod 4
-#define PSPIO_NLCC_TETER2 4 // 5 Nov 1992 by M. Teter abinit version for pspcod 1
 
 
 /**********************************************************************
