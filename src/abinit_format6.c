@@ -22,8 +22,12 @@
  * @file abinit_format6.c
  * @brief routines to read PSPIO_FMT_UPF files 
  */
+#include <stdio.h>
+
 #include <string.h>
 #include <ctype.h>
+#include "pspio_common.h"
+#include "pspio_fhi.h"
 #include "abinit.h"
 #include "util.h"
 
@@ -34,9 +38,13 @@
 int abinit_format6_read(FILE *fp, pspio_pspdata_t **pspdata) {
   int format, np, have_nlcc;
 
+  printf("A6_DEBUG: reading header begin\n");
   HANDLE_FUNC_ERROR(abinit_read_header(fp, &format, &np, &have_nlcc, pspdata));
-  CHECK_ERROR(format == 6, PSPIO_EFILE_FORMAT);
+  printf("A6_DEBUG: reading header end (format = %d)\n", format);
+  CHECK_ERROR(format == PSPIO_FMT_ABINIT_6, PSPIO_EFILE_FORMAT);
+  printf("A6_DEBUG: reading format 6\n");
   HANDLE_FUNC_ERROR(pspio_fhi_read(fp, pspdata));
+  printf("A6_DEBUG: n_states = %d\n", (*pspdata)->n_states);
 
   return PSPIO_SUCCESS;
 }

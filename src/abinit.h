@@ -69,7 +69,7 @@ int abinit_format6_write(FILE *fp, const pspio_pspdata_t *pspdata);
 *@param[out] correlation: libxc code for correlation
 * @return error code
 */
-int abinit_to_libxc(const char *xc_string, int *exchange, int *correlation);
+int abinit_to_libxc(const int pspxc, int *exchange, int *correlation);
 
 /**
  * Converts libxc codes to Abinit codes

@@ -24,8 +24,9 @@
 #include "pspio_error.h"
 #include "pspio_meshfunc.h"
 #include "pspio_pspdata.h"
-#include "pspio_upf.h"
+#include "pspio_abinit.h"
 #include "pspio_fhi.h"
+#include "pspio_upf.h"
 #include "util.h"
 
 #if defined HAVE_CONFIG_H
@@ -94,7 +95,11 @@ int pspio_pspdata_read(pspio_pspdata_t **pspdata, const char *file_name,
   ierr = PSPIO_EFILE_FORMAT;
   if (ierr && (file_format == PSPIO_FMT_ABINIT_4   || file_format == PSPIO_FMT_UNKNOWN) ) ierr = PSPIO_ENOSUPPORT;
   if (ierr && (file_format == PSPIO_FMT_ABINIT_5   || file_format == PSPIO_FMT_UNKNOWN) ) ierr = PSPIO_ENOSUPPORT;
-  if (ierr && (file_format == PSPIO_FMT_ABINIT_6   || file_format == PSPIO_FMT_UNKNOWN) ) ierr = PSPIO_ENOSUPPORT;
+  if (ierr && (file_format == PSPIO_FMT_ABINIT_6   || file_format == PSPIO_FMT_UNKNOWN) ) {
+    CHECK_ERROR(fp != NULL, PSPIO_ENOFILE);
+    rewind(fp);
+    ierr = pspio_abinit_read(fp, pspdata, file_format);
+  }
   if (ierr && (file_format == PSPIO_FMT_ABINIT_HGH || file_format == PSPIO_FMT_UNKNOWN) ) ierr = PSPIO_ENOSUPPORT;
   if (ierr && (file_format == PSPIO_FMT_ABINIT_GTH || file_format == PSPIO_FMT_UNKNOWN) ) ierr = PSPIO_ENOSUPPORT;
   if (ierr && (file_format == PSPIO_FMT_ATOM       || file_format == PSPIO_FMT_UNKNOWN) ) ierr = PSPIO_ENOSUPPORT;
@@ -115,6 +120,7 @@ int pspio_pspdata_read(pspio_pspdata_t **pspdata, const char *file_name,
 
   // create states lookup table
   if ( ierr == PSPIO_SUCCESS ) {
+    printf("DEBUG: n_states = %d\n", (*pspdata)->n_states);
     HANDLE_FUNC_ERROR(pspio_states_lookup_table((*pspdata)->n_states, (*pspdata)->states, &(*pspdata)->qn_to_istate));
   }
 
