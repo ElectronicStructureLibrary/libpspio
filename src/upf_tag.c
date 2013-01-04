@@ -67,7 +67,7 @@ int upf_tag_init(FILE * fp, const char * tag, const int go_back){
   }
 
   free(init_tag);
-  return PSPIO_EFILE_FORMAT;
+  return PSPIO_EFILE_CORRUPT;
 }
 
 int upf_tag_check_end(FILE * fp, const char * tag){
@@ -100,7 +100,7 @@ int upf_tag_check_end(FILE * fp, const char * tag){
   if (strncmp(read_string,ending_tag,strlen(ending_tag)) == 0) 
     status = PSPIO_SUCCESS;
   else {
-    status = PSPIO_EFILE_FORMAT;
+    status = PSPIO_EFILE_CORRUPT;
   }
   free(ending_tag);
 
