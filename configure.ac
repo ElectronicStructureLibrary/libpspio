@@ -137,6 +137,9 @@ AC_PROG_CPP
 # C compiler peculiarities
 AM_PROG_CC_C_O
 
+# Required headers
+AC_CHECK_HEADERS([time.h])
+
                     # ------------------------------------ #
 
 # Look for the Fortran compiler
