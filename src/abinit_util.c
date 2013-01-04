@@ -25,6 +25,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <ctype.h>
+#include <time.h>
 #include "pspio_abinit.h"
 #include "pspio_error.h"
 #include "abinit.h"
@@ -72,6 +73,7 @@ int abinit_read_header(FILE *fp, int *format, int *np, int *have_nlcc,
 
   // Line 4: read rchrg, fchrg, qchrg if NLCC
   // Note: tolerance copied from Abinit
+  // FIXME: store rchrg, fchrg, qchrg
   CHECK_ERROR( fgets(line, PSPIO_STRLEN_LINE, fp) != NULL, PSPIO_EIO);
   line4 = strndup(line, 3);
   if ( strcmp("4--", line4) != 0 ) {
@@ -148,8 +150,11 @@ int abinit_read_header(FILE *fp, int *format, int *np, int *have_nlcc,
 
 
 int abinit_write_header(FILE *fp, const int format, const pspio_pspdata_t *pspdata) {
+  char pspdate[7];
   int pspxc, have_nlcc;
   double rchrg, fchrg, qchrg;
+  time_t int_now;
+  struct tm *now;
 
   ASSERT(pspdata != NULL, PSPIO_ERROR);
 
@@ -163,8 +168,13 @@ int abinit_write_header(FILE *fp, const int format, const pspio_pspdata_t *pspda
   fprintf(fp, "%s\n", pspdata->info);
 
   // Line 2: write atomic number, Z valence, psp date
-  fprintf(fp, "%8.3lf %8.3lf   000000   zatom, zion, pspdat\n",
-    pspdata->z, pspdata->zvalence);
+  int_now = time(NULL);
+  now = localtime(&int_now);
+  sprintf(pspdate, "%2.2d%2.2d%2.2d", 
+    (*now).tm_year % 100, (*now).tm_mon + 1, (*now).tm_mday);
+  pspdate[6] = '\0';
+  fprintf(fp, "%8.3lf %8.3lf   %6s   zatom, zion, pspdat\n",
+    pspdata->z, pspdata->zvalence, pspdate);
 
   // Line 3: write pspcod, pspxc, lmax, lloc, mmax, r2well
   // Line 4: write rchrg, fchrg, qchrg if NLCC
