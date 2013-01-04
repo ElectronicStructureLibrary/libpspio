@@ -1,5 +1,5 @@
 /*
- Copyright (C) 2012 Y. Pouillon
+ Copyright (C) 2012-2013 Y. Pouillon
 
  This program is free software; you can redistribute it and/or modify
  it under the terms of the GNU Lesser General Public License as published by
@@ -20,7 +20,7 @@
 
 /** 
  * @file abinit_util.c
- * @brief Utility routines to extract information from Abinit files
+ * @brief Utility routines to read/write Abinit files
  */
 #include <stdio.h>
 #include <string.h>
@@ -37,8 +37,7 @@
 
 int abinit_read_header(FILE *fp, int *format, int *np, int *have_nlcc,
   pspio_pspdata_t **pspdata) {
-  char line[PSPIO_STRLEN_LINE], buffer[PSPIO_STRLEN_LINE];
-  char pspdat[6];
+  char line[PSPIO_STRLEN_LINE];
   char *line4;
   int pspcod, pspxc, lmax, lloc, mmax;
   int exchange, correlation, s;
@@ -56,23 +55,28 @@ int abinit_read_header(FILE *fp, int *format, int *np, int *have_nlcc,
   strncpy((*pspdata)->info, line, s);
   (*pspdata)->info[s] = '\0';
 
-  // Line 2: read atomic number, Z valence, psp date
+  // Line 2: read atomic number, Z valence
+  // Note: ignoring psp date
   CHECK_ERROR( fgets(line, PSPIO_STRLEN_LINE, fp) != NULL, PSPIO_EIO);
-  CHECK_ERROR( sscanf(line, "%lf %lf %s %s", 
-    &zatom, &zval, pspdat, buffer ) == 4, PSPIO_EIO);
+  CHECK_ERROR( sscanf(line, "%lf %lf", &zatom, &zval) == 2, PSPIO_EFILE_CORRUPT);
+  (*pspdata)->z = zatom;
+  (*pspdata)->zvalence = zval;
 
   // Line 3: read pspcod, pspxc, lmax, lloc, mmax, r2well
   CHECK_ERROR( fgets(line, PSPIO_STRLEN_LINE, fp) != NULL, PSPIO_EIO);
-  CHECK_ERROR( sscanf(line, "%d %d %d %d %d %lf %s",
-    &pspcod, &pspxc, &lmax, &lloc, &mmax, &r2well, buffer) == 7, PSPIO_EIO);
+  CHECK_ERROR( sscanf(line, "%d %d %d %d %d %lf",
+    &pspcod, &pspxc, &lmax, &lloc, &mmax, &r2well) == 6, PSPIO_EFILE_CORRUPT);
   *np = mmax;
+  (*pspdata)->l_max = lmax;
+  (*pspdata)->l_local = lloc;
 
   // Line 4: read rchrg, fchrg, qchrg if NLCC
+  // Note: tolerance copied from Abinit
   CHECK_ERROR( fgets(line, PSPIO_STRLEN_LINE, fp) != NULL, PSPIO_EIO);
   line4 = strndup(line, 3);
   if ( strcmp("4--", line4) != 0 ) {
-    CHECK_ERROR( sscanf(line, "%lf %lf %lf %s",
-      &rchrg, &fchrg, &qchrg, buffer) == 4, PSPIO_EIO );
+    CHECK_ERROR( sscanf(line, "%lf %lf %lf",
+      &rchrg, &fchrg, &qchrg) == 3, PSPIO_EFILE_CORRUPT );
     if ( abs(fchrg) >= 1.0e-14 ) {
       *have_nlcc = 1;
     }
@@ -83,15 +87,18 @@ int abinit_read_header(FILE *fp, int *format, int *np, int *have_nlcc,
   CHECK_ERROR( fgets(line, PSPIO_STRLEN_LINE, fp) != NULL, PSPIO_EIO);
   CHECK_ERROR( fgets(line, PSPIO_STRLEN_LINE, fp) != NULL, PSPIO_EIO);
 
-  // FIXME: assuming pspxc = exchange * 1000 + correlation
+  // FIXME: assuming pspxc = -(exchange * 1000 + correlation)
   if ( pspxc < 0 ) {
     exchange = -pspxc / 1000;
     correlation = -pspxc % 1000;
   } else {
     HANDLE_FUNC_ERROR(abinit_to_libxc(pspxc, &exchange, &correlation));
   }
-  // FIXME: NLCC ignored
-  HANDLE_FUNC_ERROR(pspio_xc_alloc(&(*pspdata)->xc, PSPIO_NLCC_UNKNOWN, *np));
+  if ( have_nlcc ) {
+    HANDLE_FUNC_ERROR(pspio_xc_alloc(&(*pspdata)->xc, PSPIO_NLCC_FHI, *np));
+  } else {
+    HANDLE_FUNC_ERROR(pspio_xc_alloc(&(*pspdata)->xc, PSPIO_NLCC_NONE, *np));
+  }
   (*pspdata)->xc->exchange = exchange;
   (*pspdata)->xc->correlation = correlation;
 
@@ -139,14 +146,15 @@ int abinit_read_header(FILE *fp, int *format, int *np, int *have_nlcc,
   return PSPIO_SUCCESS;
 }
 
+
 int abinit_write_header(FILE *fp, const int format, const pspio_pspdata_t *pspdata) {
-  int pspxc, has_nlcc;
+  int pspxc, have_nlcc;
   double rchrg, fchrg, qchrg;
 
   ASSERT(pspdata != NULL, PSPIO_ERROR);
 
   // Init auxiliary data
-  pspio_xc_has_nlcc(pspdata->xc, &has_nlcc);
+  pspio_xc_has_nlcc(pspdata->xc, &have_nlcc);
   HANDLE_FUNC_ERROR(libxc_to_abinit(pspdata->xc->exchange, \
     pspdata->xc->correlation, &pspxc));
 
@@ -155,7 +163,7 @@ int abinit_write_header(FILE *fp, const int format, const pspio_pspdata_t *pspda
   fprintf(fp, "%s\n", pspdata->info);
 
   // Line 2: write atomic number, Z valence, psp date
-  fprintf(fp, "%8.3lf %8.3lf 000000   zatom, zion, pspdat\n",
+  fprintf(fp, "%8.3lf %8.3lf   000000   zatom, zion, pspdat\n",
     pspdata->z, pspdata->zvalence);
 
   // Line 3: write pspcod, pspxc, lmax, lloc, mmax, r2well
@@ -165,12 +173,12 @@ int abinit_write_header(FILE *fp, const int format, const pspio_pspdata_t *pspda
     case 4:
     case 5:
     case 6:
-      fprintf(fp, "%d   %d   %d %d %d   %8.3lf   pspcod, pspxc, lmax, lloc, mmax, r2well\n",
+      fprintf(fp, "   %d   %d   %d   %d   %d   %8.3lf   pspcod, pspxc, lmax, lloc, mmax, r2well\n",
         format, pspxc, pspdata->l_max, pspdata->l_local,
         pspdata->mesh->np, 0.0);
 
       // FIXME: write something relevant
-      if ( has_nlcc ) {
+      if ( have_nlcc ) {
         rchrg = 0.0;
         fchrg = 0.0;
         qchrg = 0.0;

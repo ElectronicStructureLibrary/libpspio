@@ -368,17 +368,14 @@ void FC_FUNC_(pspio_f90_xc_nlcc_eval_v, PSPIO_F90_XC_NLCC_EVAL_V)
  * pspio_error                                                        *
  **********************************************************************/
 
-CC_FORTRAN_INT FC_FUNC_(pspio_f90_error_add, PSPIO_F90_ERROR_ADD)
+void FC_FUNC_(pspio_f90_error_add, PSPIO_F90_ERROR_ADD)
   (STR_F_TYPE filename, int *lineno STR_ARG1)
 {
   char *tmp_name;
-  int eid;
 
   TO_C_STR1(filename, tmp_name);
-  eid = pspio_error_add(tmp_name, *lineno);
+  pspio_error_add(tmp_name, *lineno);
   free(tmp_name);
-
-  return (CC_FORTRAN_INT) eid; 
 }
 
 

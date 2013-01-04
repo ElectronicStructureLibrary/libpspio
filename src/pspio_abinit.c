@@ -38,7 +38,7 @@
 int pspio_abinit_read(FILE *fp, pspio_pspdata_t **pspdata, const int format){
   int eid;
 
-  switch(format) {
+  switch (format) {
     case PSPIO_FMT_ABINIT_1:
     case PSPIO_FMT_ABINIT_2:
     case PSPIO_FMT_ABINIT_3:
@@ -51,44 +51,46 @@ int pspio_abinit_read(FILE *fp, pspio_pspdata_t **pspdata, const int format){
     case PSPIO_FMT_ABINIT_17:
       eid = PSPIO_ENOSUPPORT;
       break;
-
     case PSPIO_FMT_ABINIT_5:
     case PSPIO_FMT_ABINIT_6:
       eid = abinit_format6_read(fp, pspdata);
       break;
+
     default:
       eid = PSPIO_EVALUE;
   }
 
-  return eid;
+  HANDLE_ERROR(eid);
+  return PSPIO_SUCCESS;
 }
 
 int pspio_abinit_write(FILE *fp, const pspio_pspdata_t *pspdata, const int format){
-  int eid;
+  int eid = PSPIO_ERROR;
 
   ASSERT (pspdata != NULL, PSPIO_ERROR);
 
-  switch(format) {
-    case 1:
-    case 2:
-    case 3:
-    case 4:
-    case 7:
-    case 8:
-    case 9:
-    case 10:
-    case 11:
-    case 17:
+  switch (format) {
+    case PSPIO_FMT_ABINIT_1:
+    case PSPIO_FMT_ABINIT_2:
+    case PSPIO_FMT_ABINIT_3:
+    case PSPIO_FMT_ABINIT_4:
+    case PSPIO_FMT_ABINIT_7:
+    case PSPIO_FMT_ABINIT_8:
+    case PSPIO_FMT_ABINIT_9:
+    case PSPIO_FMT_ABINIT_10:
+    case PSPIO_FMT_ABINIT_11:
+    case PSPIO_FMT_ABINIT_17:
       eid = PSPIO_ENOSUPPORT;
       break;
-
-    case 5:
-    case 6:
+    case PSPIO_FMT_ABINIT_5:
+    case PSPIO_FMT_ABINIT_6:
       eid = abinit_format6_write(fp, pspdata);
       break;
+
     default:
       eid = PSPIO_EVALUE;
   }
 
-  return eid;
+  HANDLE_ERROR(eid);
+  return PSPIO_SUCCESS;
 }

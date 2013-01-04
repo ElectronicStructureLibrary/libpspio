@@ -38,13 +38,9 @@
 int abinit_format6_read(FILE *fp, pspio_pspdata_t **pspdata) {
   int format, np, have_nlcc;
 
-  printf("A6_DEBUG: reading header begin\n");
   HANDLE_FUNC_ERROR(abinit_read_header(fp, &format, &np, &have_nlcc, pspdata));
-  printf("A6_DEBUG: reading header end (format = %d)\n", format);
   CHECK_ERROR(format == PSPIO_FMT_ABINIT_6, PSPIO_EFILE_FORMAT);
-  printf("A6_DEBUG: reading format 6\n");
-  HANDLE_FUNC_ERROR(pspio_fhi_read(fp, pspdata));
-  printf("A6_DEBUG: n_states = %d\n", (*pspdata)->n_states);
+  HANDLE_FUNC_ERROR(abinit_fhi_read(fp, pspdata));
 
   return PSPIO_SUCCESS;
 }
@@ -52,7 +48,7 @@ int abinit_format6_read(FILE *fp, pspio_pspdata_t **pspdata) {
 
 int abinit_format6_write(FILE *fp, const pspio_pspdata_t *pspdata) {
   HANDLE_FUNC_ERROR(abinit_write_header(fp, PSPIO_FMT_ABINIT_6, pspdata));
-  HANDLE_FUNC_ERROR(pspio_fhi_write(fp, pspdata));
+  HANDLE_FUNC_ERROR(abinit_fhi_write(fp, pspdata));
 
   return PSPIO_SUCCESS;
 }

@@ -321,11 +321,11 @@ module pspio_f90_lib_m
 
   ! pspio_error
   interface
-    integer function pspio_f90_error_add(filename, lineno)
+    subroutine pspio_f90_error_add(filename, lineno)
       implicit none
       integer, intent(in) :: lineno
       character(len=*), intent(in) :: filename
-    end function pspio_f90_error_add
+    end subroutine pspio_f90_error_add
 
     integer function pspio_f90_error_fetchall(err_msg)
       implicit none

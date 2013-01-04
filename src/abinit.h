@@ -37,7 +37,29 @@
 
 
 /**********************************************************************
- * Abinit Format 6 routines                                                  *
+ * Abinit FHI generic routines                                        *
+ **********************************************************************/
+
+/**
+ * Read an ABINIT format 6 file
+ * @param[in] fp: a stream of the input file
+ * @param[inout] pspdata: a pseudopotential data structure
+ * @return error code
+ */
+int abinit_fhi_read(FILE *fp, pspio_pspdata_t **pspdata);
+
+
+/**
+ * Write an ABINIT format 6 file
+ * @param[in] fp: a stream of the input file
+ * @param[in] pspdata: a pseudopotential data structure
+ * @return error code
+ */
+int abinit_fhi_write(FILE *fp, const pspio_pspdata_t *pspdata);
+
+
+/**********************************************************************
+ * Abinit Format 6 routines                                           *
  **********************************************************************/
 
 /**

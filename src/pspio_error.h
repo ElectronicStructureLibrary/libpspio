@@ -55,9 +55,8 @@ typedef struct pspio_error_type pspio_error_t;
  * @param[in] filename: source filename (use NULL if none).
  * @param[in] line: line number in the source file (ignored if filename
  *            is NULL).
- * @return error code
  */
-int pspio_error_add(const char *filename, const int line);
+void pspio_error_add(const char *filename, const int line);
 
 
 /**
@@ -181,6 +180,16 @@ const char *pspio_error_str(const int pspio_errorid);
     pspio_error_set(error_id); \
     pspio_error_add(__FILE__, __LINE__); \
     return error_id; \
+  }
+
+
+/**
+ * Basic error handler without return call
+ */
+#define TRIGGER_ERROR(condition, error_id) \
+  if ( !(condition) ) { \
+    pspio_error_set(error_id); \
+    pspio_error_add(__FILE__, __LINE__); \
   }
 
 #endif

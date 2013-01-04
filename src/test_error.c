@@ -60,7 +60,7 @@ int main(void) {
   /* Check single error */
   DEBUG_PRINT("test_error: checking single error (EVALUE)\n");
   pspio_error_set(PSPIO_EVALUE);
-  eid = pspio_error_add("test_1_1.c", 1234);
+  pspio_error_add("test_1_1.c", 1234);
   DEBUG_PRINT("test_error: after pspio_error_add, status = %d, length = %d\n",
     eid, pspio_error_len());
   CHECK_STAT_LEN(eid, PSPIO_SUCCESS, pspio_error_len(), 1);

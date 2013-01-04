@@ -53,8 +53,12 @@
 
 /**
  * File formats
+ *
+ * Note: keep the number of formats up-to-date
  */
+#define PSPIO_FMT_NFORMATS 20
 #define PSPIO_FMT_UNKNOWN -1
+#define PSPIO_FMT_NONE 0
 #define PSPIO_FMT_ABINIT_1 1
 #define PSPIO_FMT_ABINIT_2 2
 #define PSPIO_FMT_ABINIT_3 3

@@ -81,51 +81,51 @@ int pspio_pspdata_init(pspio_pspdata_t **pspdata) {
 
 int pspio_pspdata_read(pspio_pspdata_t **pspdata, const char *file_name,
       const int file_format){
-  int ierr;
+  int eid, fmt;
   FILE * fp;
 
   ASSERT(pspdata != NULL, PSPIO_EVALUE);
   ASSERT(*pspdata != NULL, PSPIO_EVALUE);
 
-  // open file
+  // Open file
   fp = fopen(file_name, "r");
   CHECK_ERROR(fp != NULL, PSPIO_ENOFILE);
 
-  //read from file (NOTE: should always rewind the file before trying to read it)
-  ierr = PSPIO_EFILE_FORMAT;
-  if (ierr && (file_format == PSPIO_FMT_ABINIT_4   || file_format == PSPIO_FMT_UNKNOWN) ) ierr = PSPIO_ENOSUPPORT;
-  if (ierr && (file_format == PSPIO_FMT_ABINIT_5   || file_format == PSPIO_FMT_UNKNOWN) ) ierr = PSPIO_ENOSUPPORT;
-  if (ierr && (file_format == PSPIO_FMT_ABINIT_6   || file_format == PSPIO_FMT_UNKNOWN) ) {
+  // Read from file
+  eid = PSPIO_ERROR;
+  for (fmt=0; fmt<PSPIO_FMT_NFORMATS; fmt++) {
+    if ( (file_format != PSPIO_FMT_UNKNOWN) && (fmt != file_format) ) continue;
+
+    // Always rewind the file to allow for multiple reads
     CHECK_ERROR(fp != NULL, PSPIO_ENOFILE);
     rewind(fp);
-    ierr = pspio_abinit_read(fp, pspdata, file_format);
-  }
-  if (ierr && (file_format == PSPIO_FMT_ABINIT_HGH || file_format == PSPIO_FMT_UNKNOWN) ) ierr = PSPIO_ENOSUPPORT;
-  if (ierr && (file_format == PSPIO_FMT_ABINIT_GTH || file_format == PSPIO_FMT_UNKNOWN) ) ierr = PSPIO_ENOSUPPORT;
-  if (ierr && (file_format == PSPIO_FMT_ATOM       || file_format == PSPIO_FMT_UNKNOWN) ) ierr = PSPIO_ENOSUPPORT;
-  if (ierr && (file_format == PSPIO_FMT_SIESTA     || file_format == PSPIO_FMT_UNKNOWN) ) ierr = PSPIO_ENOSUPPORT;
-  if (ierr && (file_format == PSPIO_FMT_FHI98PP    || file_format == PSPIO_FMT_UNKNOWN) ) {
-    CHECK_ERROR(fp != NULL, PSPIO_ENOFILE);
-    rewind(fp);
-    ierr = pspio_fhi_read(fp, pspdata);
-  }
-  if (ierr && (file_format == PSPIO_FMT_UPF        || file_format == PSPIO_FMT_UNKNOWN) ) {
-    CHECK_ERROR(fp != NULL, PSPIO_ENOFILE);
-    rewind(fp);
-    ierr = pspio_upf_read(fp, pspdata);
+
+    switch (fmt) {
+      case PSPIO_FMT_ABINIT_6:
+        eid = pspio_abinit_read(fp, pspdata, file_format);
+        break;
+      case PSPIO_FMT_FHI98PP:
+        eid = pspio_fhi_read(fp, pspdata);
+        break;
+      case PSPIO_FMT_UPF:
+        eid = pspio_upf_read(fp, pspdata);
+        break;
+
+      default:
+        eid = PSPIO_ENOSUPPORT;
+    }
+
+    if ( (eid == PSPIO_SUCCESS) || (file_format != PSPIO_FMT_UNKNOWN) ) break;
   }
 
-  // close file
-  CHECK_ERROR(fclose(fp) == 0, PSPIO_EIO);
+  // Close file
+  TRIGGER_ERROR(fclose(fp) == 0, PSPIO_EIO);
 
-  // create states lookup table
-  if ( ierr == PSPIO_SUCCESS ) {
-    printf("DEBUG: n_states = %d\n", (*pspdata)->n_states);
-    HANDLE_FUNC_ERROR(pspio_states_lookup_table((*pspdata)->n_states, (*pspdata)->states, &(*pspdata)->qn_to_istate));
-  }
+  // Make sure eid is not silently ignored
+  HANDLE_ERROR(eid);
 
-  // make sure ierr is not silently ignored
-  HANDLE_ERROR(ierr);
+  // Create states lookup table
+  HANDLE_FUNC_ERROR(pspio_states_lookup_table((*pspdata)->n_states, (*pspdata)->states, &(*pspdata)->qn_to_istate));
 
   return PSPIO_SUCCESS;
 }
@@ -134,28 +134,35 @@ int pspio_pspdata_read(pspio_pspdata_t **pspdata, const char *file_name,
 int pspio_pspdata_write(const pspio_pspdata_t *pspdata, const char *file_name,
       const int file_format){
   FILE * fp;
+  int eid;
 
   ASSERT(pspdata != NULL, PSPIO_EVALUE);
   
-  // open file
+  // Open file
   fp = fopen(file_name, "w");
   CHECK_ERROR(fp != NULL, PSPIO_ENOFILE);
 
-  //write to file
+  // Write to file in the selected format
   switch(file_format) {
-  case PSPIO_FMT_FHI98PP:
-    HANDLE_FUNC_ERROR(pspio_fhi_write(fp, pspdata));
-    break;
-  case PSPIO_FMT_UPF:
-    HANDLE_FUNC_ERROR(pspio_upf_write(fp, pspdata));
-    break;
-  default:
-    fclose(fp);
-    return PSPIO_EFILE_FORMAT;
+    case PSPIO_FMT_ABINIT_5:
+    case PSPIO_FMT_ABINIT_6:
+      eid = pspio_abinit_write(fp, pspdata, file_format);
+      break;
+    case PSPIO_FMT_FHI98PP:
+      eid = pspio_fhi_write(fp, pspdata);
+      break;
+    case PSPIO_FMT_UPF:
+      eid = pspio_upf_write(fp, pspdata);
+      break;
+    default:
+      eid = PSPIO_EFILE_FORMAT;
   }
   
-  // close file and check for ierr being non 0
-  CHECK_ERROR(fclose(fp) == 0, PSPIO_EIO);
+  // Close file and check for eid being non 0
+  TRIGGER_ERROR(fclose(fp) == 0, PSPIO_EIO);
+
+  // Make sure eid is not silently ignored
+  HANDLE_ERROR(eid);
 
   return PSPIO_SUCCESS;
 }
