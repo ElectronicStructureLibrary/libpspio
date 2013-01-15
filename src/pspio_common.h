@@ -56,28 +56,27 @@
  *
  * Note: keep the number of formats up-to-date
  */
-#define PSPIO_FMT_NFORMATS 20
+#define PSPIO_FMT_NFORMATS 19
 #define PSPIO_FMT_UNKNOWN -1
 #define PSPIO_FMT_NONE 0
-#define PSPIO_FMT_ABINIT_1 1
-#define PSPIO_FMT_ABINIT_2 2
-#define PSPIO_FMT_ABINIT_3 3
-#define PSPIO_FMT_ABINIT_4 4
-#define PSPIO_FMT_ABINIT_5 5
-#define PSPIO_FMT_ABINIT_6 6
-#define PSPIO_FMT_ABINIT_7 7
-#define PSPIO_FMT_ABINIT_8 8
-#define PSPIO_FMT_ABINIT_9 9
-#define PSPIO_FMT_ABINIT_10 10
-#define PSPIO_FMT_ABINIT_11 11
-#define PSPIO_FMT_ABINIT_17 12
-#define PSPIO_FMT_ABINIT_GTH 13
-#define PSPIO_FMT_ABINIT_HGH 14
-#define PSPIO_FMT_ATOM 15
-#define PSPIO_FMT_FHI98PP 16
-#define PSPIO_FMT_OCTOPUS_HGH 17
-#define PSPIO_FMT_SIESTA 18
-#define PSPIO_FMT_UPF 19
+#define PSPIO_FMT_ABINIT_1     1 /* Teter */
+#define PSPIO_FMT_ABINIT_2     2 /* GTH */
+#define PSPIO_FMT_ABINIT_3     3 /* HGH */
+#define PSPIO_FMT_ABINIT_4     4 /* Teter */
+#define PSPIO_FMT_ABINIT_5     5 /* Phoney */
+#define PSPIO_FMT_ABINIT_6     6 /* FHI */
+#define PSPIO_FMT_ABINIT_7     7 /* PAW */
+#define PSPIO_FMT_ABINIT_8     8 /* Hamann */
+#define PSPIO_FMT_ABINIT_9     9 /* XML */
+#define PSPIO_FMT_ABINIT_10   10 /* HGH, with full h/k matrix */
+#define PSPIO_FMT_ABINIT_11   11 /* UPF */
+#define PSPIO_FMT_ABINIT_17   12 /* PAW XML */
+#define PSPIO_FMT_ATOM        13
+#define PSPIO_FMT_FHI98PP     14
+#define PSPIO_FMT_OCTOPUS_HGH 15
+#define PSPIO_FMT_SIESTA      16
+#define PSPIO_FMT_UPF         17
+#define PSPIO_FMT_XML         18 /* FSatom-pp */
 
 
 /**
