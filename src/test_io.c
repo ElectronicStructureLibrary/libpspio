@@ -53,7 +53,7 @@ int main(int argc, char *argv[]) {
 
   /* check parsing of file */
   DEBUG_PRINT("test_io: parsing file %s\n", argv[1]);
-  eid = pspio_pspdata_read(&pspdata, argv[1], format);
+  eid = pspio_pspdata_read(&pspdata, argv[1], &format);
   if ( eid == PSPIO_SUCCESS ) {
     DEBUG_PRINT("test_io: file parsing successful\n");
   }

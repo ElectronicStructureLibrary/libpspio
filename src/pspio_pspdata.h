@@ -102,13 +102,15 @@ int pspio_pspdata_init(pspio_pspdata_t **pspdata);
  *       formats are tried until the correct one is found.
  */
 int pspio_pspdata_read(pspio_pspdata_t **pspdata, const char *file_name, 
-		       const int file_format);
+		       int *file_format);
 
 /**
- * Writes the pspdata to a given file.
+ * Writes the pspdata to a given file. If the specified file format is equal
+ * to PSPIO_FMT_UNKNOWN, the routine will set it to the actual format value
+ * before returning.
  * @param[in] pspdata: pointer to pspdata structure
  * @param[out] file_name: file write to.
- * @param[in] file_format: the format of file_name.
+ * @param[in,out] file_format: the format of file_name.
  * @return error code.
  */
 int pspio_pspdata_write(const pspio_pspdata_t *pspdata, const char *file_name, 

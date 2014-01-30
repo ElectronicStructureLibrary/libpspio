@@ -23,7 +23,7 @@ program test_fortran
   use pspio_f90_lib_m
   implicit none
 
-  integer :: ierr, np
+  integer :: pio_fmt, ierr, np
   character(len=100) :: file_in, file_out
   type(pspio_f90_mesh_t) :: pspmesh
   type(pspio_f90_pspdata_t) :: pspdata
@@ -33,7 +33,8 @@ program test_fortran
 
   write(*,'("UPF filename to read:")')
   read(*,'(A)') file_in
-  ierr = pspio_f90_pspdata_read(pspdata, PSPIO_FMT_UPF, file_in)
+  pio_fmt = PSPIO_FMT_UPF
+  ierr = pspio_f90_pspdata_read(pspdata, pio_fmt, file_in)
   if (ierr /= 0) ierr = pspio_f90_error_flush()
 
   call pspio_f90_pspdata_get_mesh(pspdata, pspmesh)
@@ -43,7 +44,7 @@ program test_fortran
 
   write(*,'("UPF filename to write:")')
   read(*,'(A)') file_out
-  ierr = pspio_f90_pspdata_write(pspdata, PSPIO_FMT_UPF, file_out)
+  ierr = pspio_f90_pspdata_write(pspdata, pio_fmt, file_out)
   if (ierr /= 0) ierr = pspio_f90_error_flush()
 
   call pspio_f90_pspdata_free(pspdata)
