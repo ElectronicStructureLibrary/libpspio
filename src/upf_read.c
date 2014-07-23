@@ -237,7 +237,7 @@ int upf_read_nlcc(FILE *fp, const int np, pspio_pspdata_t **pspdata){
 
 int upf_read_nonlocal(FILE *fp, const int np, pspio_pspdata_t **pspdata){
   char line[PSPIO_STRLEN_LINE];
-  int i, j, l, proj_np, n_dij, ii, jj, nargs;
+  int i, j, k, l, proj_np, n_dij, ii, jj, nargs;
   double tmp[4];
   double *proj_j;
   double energy;
@@ -312,15 +312,12 @@ int upf_read_nonlocal(FILE *fp, const int np, pspio_pspdata_t **pspdata){
     CHECK_ERROR(sscanf(line,"%d",&proj_np) == 1, PSPIO_EFILE_CORRUPT);
 
     //Read the projector function
-    for (j=0; j<proj_np;){
+    for (j=0; j<proj_np; j+=4){
       CHECK_ERROR(fgets(line, PSPIO_STRLEN_LINE, fp) != NULL, PSPIO_EIO);
       nargs = sscanf(line,"%lf %lf %lf %lf",&tmp[0],&tmp[1],&tmp[2],&tmp[3]);
       CHECK_ERROR(nargs < 5 && nargs > 0, PSPIO_EFILE_CORRUPT);
 
-      for (l=0; l<nargs; l++){
-        projector_read[l+j] = tmp[l];
-        j++;
-      }
+      for (k=0; k<nargs; k++) projector_read[k+j] = tmp[k];
     }
     //Fill with zeros, if any left
     for (j=proj_np; j<np; j++) projector_read[j] = 0.0;
