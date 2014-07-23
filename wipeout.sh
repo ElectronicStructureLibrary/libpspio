@@ -44,7 +44,7 @@ echo "done."
 echo "Removing autotools files..."
 rm -f core config.log config.status stamp-h1 config.h config.h.in*
 rm -rf aclocal.m4 autom4te.cache configure confstat*
-(cd config/gnu && rm -f config.guess config.sub depcomp install-sh ltmain.sh missing)
+(cd config/gnu && rm -f compile config.guess config.sub depcomp install-sh ltmain.sh missing)
 (cd config/m4 && rm -f libtool.m4 ltoptions.m4 ltsugar.m4 ltversion.m4 lt~obsolete.m4)
 echo "done."
 
@@ -67,7 +67,7 @@ find . -name '*.o' -exec rm {} \;
 echo "done."
 
 # Remove test programs
-(while read f; do rm $f; done) <<EOF
+(while read f; do rm -f $f; done) <<EOF
 ./src/fortran/test_fortran
 ./src/fortran/test_fortran_error
 ./src/test_error
