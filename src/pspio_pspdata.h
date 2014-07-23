@@ -1,5 +1,6 @@
 /*
  Copyright (C) 2011 J. Alberdi, M. Oliveira, Y. Pouillon, and M. Verstraete
+ Copyright (C) 2014 M. Oliveira
 
  This program is free software; you can redistribute it and/or modify
  it under the terms of the GNU Lesser General Public License as published by
@@ -95,14 +96,14 @@ int pspio_pspdata_init(pspio_pspdata_t **pspdata);
 /**
  * Fill pspdata with the data read from a given file.
  * @param[in,out] pspdata: pointer to pspdata structure to be filled
+ * @param[in] file_format: the format of the file.
  * @param[in] file_name: file to be parsed.
- * @param[in] file_format: the format of file_name.
  * @return error code.
  * @note The file format might be UNKNOWN. In that case all the other
  *       formats are tried until the correct one is found.
  */
-int pspio_pspdata_read(pspio_pspdata_t **pspdata, const char *file_name, 
-		       int *file_format);
+int pspio_pspdata_read(pspio_pspdata_t **pspdata, int *file_format, 
+      const char *file_name);
 
 /**
  * Writes the pspdata to a given file. If the specified file format is equal
@@ -113,8 +114,8 @@ int pspio_pspdata_read(pspio_pspdata_t **pspdata, const char *file_name,
  * @param[in,out] file_format: the format of file_name.
  * @return error code.
  */
-int pspio_pspdata_write(const pspio_pspdata_t *pspdata, const char *file_name, 
-		       const int file_format);
+int pspio_pspdata_write(const pspio_pspdata_t *pspdata, const int file_format,
+      const char *file_name);
 
 /**
  * Frees all memory associated with pspdata structure

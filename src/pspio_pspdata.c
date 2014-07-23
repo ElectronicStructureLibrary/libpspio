@@ -1,5 +1,6 @@
 /*
  Copyright (C) 2011-2012 J. Alberdi, M. Oliveira, Y. Pouillon, and M. Verstraete
+ Copyright (C) 2014 M. Oliveira
 
  This program is free software; you can redistribute it and/or modify
  it under the terms of the GNU Lesser General Public License as published by
@@ -79,8 +80,8 @@ int pspio_pspdata_init(pspio_pspdata_t **pspdata) {
   return PSPIO_SUCCESS;
 }
 
-int pspio_pspdata_read(pspio_pspdata_t **pspdata, const char *file_name,
-      int *file_format){
+int pspio_pspdata_read(pspio_pspdata_t **pspdata, int *file_format, 
+      const char *file_name){
   int eid, fmt, psp_fmt;
   FILE * fp;
 
@@ -142,8 +143,8 @@ int pspio_pspdata_read(pspio_pspdata_t **pspdata, const char *file_name,
 }
 
 
-int pspio_pspdata_write(const pspio_pspdata_t *pspdata, const char *file_name,
-      const int file_format){
+int pspio_pspdata_write(const pspio_pspdata_t *pspdata, const int file_format, 
+      const char *file_name){
   FILE * fp;
   int eid;
 

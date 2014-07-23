@@ -1,4 +1,5 @@
 !! Copyright (C) 2012 M. Oliveira
+!! Copyright (C) 2014 M. Oliveira
 !!
 !! This program is free software; you can redistribute it and/or modify
 !! it under the terms of the GNU Lesser General Public License as published by
@@ -36,7 +37,7 @@ module pspio_f90_lib_m
       use pspio_f90_types_m
       implicit none
       type(pspio_f90_pspdata_t), intent(inout) :: pspdata
-      integer,                   intent(in)    :: format
+      integer,                   intent(inout) :: format
       character(len=*),          intent(in)    :: filename
     end function pspio_f90_pspdata_read
 

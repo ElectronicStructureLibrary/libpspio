@@ -1,5 +1,6 @@
 /*
  Copyright (C) 2012 M. Oliveira, Y. Pouillon
+ Copyright (C) 2014 M. Oliveira
 
  This program is free software; you can redistribute it and/or modify
  it under the terms of the GNU Lesser General Public License as published by
@@ -56,7 +57,7 @@ CC_FORTRAN_INT FC_FUNC_(pspio_f90_pspdata_read, PSPIO_F90_PSPDATA_READ)
   int ierr;
 
   TO_C_STR1(filename, filename_c);
-  ierr = (CC_FORTRAN_INT) pspio_pspdata_read( (pspio_pspdata_t **)(pspdata), filename_c, (int) (*format));
+  ierr = (CC_FORTRAN_INT) pspio_pspdata_read( (pspio_pspdata_t **)(pspdata), (int *) format, filename_c);
   free(filename_c);
 
   return ierr;
@@ -69,7 +70,7 @@ CC_FORTRAN_INT FC_FUNC_(pspio_f90_pspdata_write, PSPIO_F90_PSPDATA_WRITE)
   int ierr;
 
   TO_C_STR1(filename, filename_c);
-  ierr = (CC_FORTRAN_INT) pspio_pspdata_write( (pspio_pspdata_t *)(*pspdata), filename_c, (int) (*format));
+  ierr = (CC_FORTRAN_INT) pspio_pspdata_write( (pspio_pspdata_t *)(*pspdata), (int) (*format), filename_c);
   free(filename_c);
 
   return ierr;
