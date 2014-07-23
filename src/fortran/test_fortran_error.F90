@@ -14,7 +14,6 @@
 ! along with this program; if not, write to the Free Software
 ! Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 !
-! $Id: test_fortran_error.F90 298 2012-11-09 08:40:03Z pouillon $
 
 !! @file test_fortran_error.F90
 !! @brief checks pspio_f90_error.F90 and pspio_f90_error.h

@@ -15,7 +15,6 @@
  along with this program; if not, write to the Free Software
  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
- $Id: ab2libxc.c 237 2011-09-06 13:41:55Z micael $
 */
 
 
