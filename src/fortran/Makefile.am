@@ -36,7 +36,7 @@ pio_fortran_f_srcs = \
   pspio_f90_types.F90
 
 # Fortran objects
-pio_fortran_f_objs := $(pio_fortran_f_srcs:F90=$(LTOBJEXT))
+pio_fortran_f_objs = $(pio_fortran_f_srcs:F90=$(LTOBJEXT))
 
 # Fortran modules
 if F90_MOD_UPPERCASE
@@ -92,7 +92,7 @@ test_fortran_error_DEPENDENCIES = ../libpspio.la libpspio_fortran.la $(pio_fortr
 # Explicit dependencies
 #
 
-pspio_f90_lib.$(LTOBJEXT): pspio_f90_types.F90
+pspio_f90_lib.$(LTOBJEXT): pspio_f90_types.$(LTOBJEXT)
 
                     # ------------------------------------ #
 

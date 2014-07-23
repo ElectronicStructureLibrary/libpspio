@@ -21,7 +21,7 @@ module pspio_f90_types_m
 
   implicit none
 
-  integer, public, parameter :: pspio_f90_kind = selected_real_kind(14)
+  integer, parameter, public :: pspio_f90_kind = selected_real_kind(14)
 
   ! DO NOT EDIT THE FOLLOWING SECTION - ALL CHANGES WILL BE OVERWRITTEN!
   ! Add new definitions into pspio_common.h instead
