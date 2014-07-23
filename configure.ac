@@ -35,7 +35,7 @@
 
 # Initialize Autoconf
 AC_PREREQ(2.62)
-AC_INIT([Libpspio],[0.1],
+AC_INIT([Libpspio],[dev],
   [https://www.tddft.org/trac/libpspio/],[libpspio])
 AC_REVISION([Autotools support for Libpspio])
 AC_CONFIG_AUX_DIR([config/gnu])
