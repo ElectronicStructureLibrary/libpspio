@@ -16,8 +16,6 @@
 !! Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 !!
 
-#include "pspio_common.h"
-
 module pspio_f90_lib_m
 
   use pspio_f90_types_m
@@ -335,6 +333,7 @@ module pspio_f90_lib_m
     end subroutine pspio_f90_error_add
 
     integer function pspio_f90_error_fetchall(err_msg)
+      use pspio_f90_types_m, only:PSPIO_STRLEN_ERROR
       implicit none
       character(len=PSPIO_STRLEN_ERROR), intent(out) :: err_msg
     end function pspio_f90_error_fetchall

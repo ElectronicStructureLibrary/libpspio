@@ -36,7 +36,7 @@ pio_fortran_f_srcs = \
   pspio_f90_types.F90
 
 # Fortran objects
-pio_fortran_f_objs := $(pio_fortran_f_srcs:F90=$(LTOBJEXT))
+pio_fortran_f_objs = $(pio_fortran_f_srcs:F90=$(LTOBJEXT))
 
 # Fortran modules
 if F90_MOD_UPPERCASE
@@ -54,14 +54,13 @@ endif
 #
 
 # Essential build parameters
-INCLUDES = @pio_core_incs@ -I$(srcdir)/..
+AM_CPPFLAGS = @pio_core_incs@ -I$(srcdir)/..
 
 # Libraries
 lib_LTLIBRARIES = libpspio_fortran.la
 
 libpspio_fortran_la_LDFLAGS = -version-info 0:0:0
-libpspio_fortran_la_SOURCES = $(pio_fortran_c_srcs)
-nodist_libpspio_fortran_la_SOURCES = $(pio_fortran_f_srcs)
+libpspio_fortran_la_SOURCES = $(pio_fortran_c_srcs) $(pio_fortran_f_srcs)
 
 # Headers
 nodist_include_HEADERS = $(pio_fortran_mods)
@@ -72,7 +71,7 @@ nodist_include_HEADERS = $(pio_fortran_mods)
 # Test programs
 #
 
-noinst_PROGRAMS = \
+check_PROGRAMS = \
   test_fortran \
   test_fortran_error
 
@@ -92,7 +91,8 @@ test_fortran_error_DEPENDENCIES = ../libpspio.la libpspio_fortran.la $(pio_fortr
 # Explicit dependencies
 #
 
-pspio_f90_lib.$(LTOBJEXT): pspio_f90_types.$(LTOBJEXT)
+pspio_f90_lib.$(LTOBJEXT) pspio_f90_lib.$(OBJEXT): \
+  pspio_f90_types.$(LTOBJEXT) pspio_f90_types.$(OBJEXT)
 
                     # ------------------------------------ #
 

@@ -15,7 +15,6 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #
-# $Id$
 #
 
 #
@@ -89,7 +88,7 @@ pio_hidden_hdrs = \
 #
 
 # Essential build parameters
-INCLUDES = @pio_core_incs@
+AM_CPPFLAGS = @pio_core_incs@
 
 # Libraries
 lib_LTLIBRARIES = libpspio.la
@@ -112,7 +111,7 @@ endif
 # Test programs
 #
 
-noinst_PROGRAMS = \
+check_PROGRAMS = \
   test_error \
   test_io \
   test_mesh \

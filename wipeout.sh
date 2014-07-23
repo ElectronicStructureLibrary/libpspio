@@ -16,7 +16,6 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #
-# $Id$
 #
 
 #
@@ -34,6 +33,9 @@ if test ! -s "./configure.ac" -o ! -d "psp_references"; then
   exit 1
 fi
 
+# Make sure the whole directory tree is writable
+chmod -R u+w .
+
 # Remove temporary directories and files
 echo "Removing temporary directories and files..."
 rm -rf tmp*
@@ -44,7 +46,7 @@ echo "done."
 echo "Removing autotools files..."
 rm -f core config.log config.status stamp-h1 config.h config.h.in*
 rm -rf aclocal.m4 autom4te.cache configure confstat*
-(cd config/gnu && rm -f config.guess config.sub depcomp install-sh ltmain.sh missing)
+(cd config/gnu && rm -f compile config.guess config.sub depcomp install-sh ltmain.sh missing)
 (cd config/m4 && rm -f libtool.m4 ltoptions.m4 ltsugar.m4 ltversion.m4 lt~obsolete.m4)
 echo "done."
 
@@ -60,6 +62,23 @@ echo "done."
 echo "Removing object files, libraries and programs..."
 find . -depth -name '.deps' -exec rm -rf {} \;
 find . -depth -name '.libs' -exec rm -rf {} \;
-find . -name '*.la' -o -name '*.lo' -exec rm {} \;
-find . -name '*.a' -o -name '*.o' -exec rm {} \;
+find . -name '*.la' -exec rm {} \;
+find . -name '*.lo' -exec rm {} \;
+find . -name '*.a' -exec rm {} \;
+find . -name '*.o' -exec rm {} \;
 echo "done."
+
+# Remove test programs
+(while read f; do rm -f $f; done) <<EOF
+./src/fortran/test_fortran
+./src/fortran/test_fortran_error
+./src/test_error
+./src/test_io
+./src/test_mesh
+./src/test_meshfunc
+./src/test_potential
+./src/test_projector
+./src/test_qn
+./src/test_state
+./src/test_xc
+EOF

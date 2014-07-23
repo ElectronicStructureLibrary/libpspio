@@ -36,9 +36,11 @@ cd tmp-standard
 ../configure
 make dist
 make
+make clean && make -j4
+make check
 mkdir install-standard
 make install DESTDIR="${PWD}/install-standard"
-ls -lR install-standard
+ls -lR install-standard >install-standard.log
 cd ..
 
 # Check Fortran build
@@ -47,10 +49,18 @@ cd tmp-fortran
 ../configure --enable-fortran
 make dist
 make
+make clean && make -j4
+make check
 mkdir install-fortran
 make install DESTDIR="${PWD}/install-fortran"
-ls -lR install-fortran
+ls -lR install-fortran >install-fortran.log
 cd ..
+
+# Make distcheck
+mkdir tmp-distcheck
+cd tmp-distcheck
+../configure
+make distcheck
 
 # Clean-up the mess
 rm -rf tmp-standard tmp-fortran

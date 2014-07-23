@@ -15,7 +15,6 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #
-# $Id$
 #
 
 #
@@ -24,6 +23,7 @@
 
 # Autotools parameters
 ACLOCAL_AMFLAGS = -I config/m4
+AM_DISTCHECK_CONFIGURE_FLAGS = --enable-fortran
 
 # Main tasks
 SUBDIRS = src
