@@ -50,7 +50,7 @@ CC_FORTRAN_INT FC_FUNC_(pspio_f90_pspdata_init, PSPIO_F90_PSPDATA_INIT)
 }
 
 CC_FORTRAN_INT FC_FUNC_(pspio_f90_pspdata_read, PSPIO_F90_PSPDATA_READ)
-     (void **pspdata, CC_FORTRAN_INT *format, STR_F_TYPE filename STR_ARG1)
+     (void **pspdata, const CC_FORTRAN_INT *format, STR_F_TYPE filename STR_ARG1)
 {
   char *filename_c;
   int ierr;
