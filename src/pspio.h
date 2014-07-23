@@ -28,22 +28,4 @@
 #include "pspio_error.h"
 #include "pspio_pspdata.h"
 
-
-/**********************************************************************
- * Global routines                                                    *
- **********************************************************************/
-
-/**
- * Initialize the library.
- * @return error code
- */
-int psp_init();
-
-
-/**
- * Free all memory.
- * @return error code
- */
-int psp_end();
-
 #endif
