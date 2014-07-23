@@ -221,3 +221,11 @@ void pspio_mesh_get_r(const pspio_mesh_t *mesh, double *r){
 
   for (i=0; i<mesh->np; i++) r[i] = mesh->r[i];
 }
+
+void pspio_mesh_get_rab(const pspio_mesh_t *mesh, double *rab){
+  int i;
+
+  ASSERT(mesh != NULL, PSPIO_ERROR);
+
+  for (i=0; i<mesh->np; i++) rab[i] = mesh->rab[i];
+}

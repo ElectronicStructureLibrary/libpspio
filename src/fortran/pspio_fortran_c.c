@@ -217,6 +217,14 @@ void FC_FUNC_(pspio_f90_mesh_get_r, PSPIO_F90_MESH_GET_R)
 
 }
 
+void FC_FUNC_(pspio_f90_mesh_get_rab, PSPIO_F90_MESH_GET_RAB)
+     (void ** mesh, double *rab)
+{
+
+  pspio_mesh_get_rab( ((pspio_mesh_t *)(*mesh)), rab);
+
+}
+
 
 /**********************************************************************
  * pspio_state                                                        *

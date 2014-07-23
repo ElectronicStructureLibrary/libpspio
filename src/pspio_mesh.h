@@ -154,4 +154,12 @@ void pspio_mesh_get_np(const pspio_mesh_t *mesh, int *np);
  */
 void pspio_mesh_get_r(const pspio_mesh_t *mesh, double *r);
 
+/**
+ * Returns the di/dr of the mesh
+ * 
+ * @param[in] mesh: mesh structure
+ * @param[out] rab: pointer to array of di/dr points
+ */
+void pspio_mesh_get_rab(const pspio_mesh_t *mesh, double *rab);
+
 #endif
