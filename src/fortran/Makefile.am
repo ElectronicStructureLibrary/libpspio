@@ -94,6 +94,10 @@ test_fortran_error_DEPENDENCIES = ../libpspio.la libpspio_fortran.la $(pio_fortr
 pspio_f90_lib.$(LTOBJEXT) pspio_f90_lib.$(OBJEXT): \
   pspio_f90_types.$(LTOBJEXT) pspio_f90_types.$(OBJEXT)
 
+pspio_f90_lib_m.mod: pspio_f90_lib.$(LTOBJEXT)
+
+pspio_f90_types_m.mod: pspio_f90_types.$(LTOBJEXT)
+
                     # ------------------------------------ #
 
 #
