@@ -36,7 +36,7 @@ int test_assert(const int i) {
 
 
 int main(void) {
-  int eid = pspio_error_get();
+  int eid = pspio_error_get_last();
 
   /* Display basic information */
   DEBUG_PRINT("%s - test_error\nReport bugs to %s\n\n", PACKAGE_STRING,
@@ -58,8 +58,7 @@ int main(void) {
 
   /* Check single error */
   DEBUG_PRINT("test_error: checking single error (EVALUE)\n");
-  pspio_error_set(PSPIO_EVALUE);
-  pspio_error_add("test_1_1.c", 1234);
+  pspio_error_add(PSPIO_EVALUE, "test_1_1.c", 1234);
   DEBUG_PRINT("test_error: after pspio_error_add, status = %d, length = %d\n",
     eid, pspio_error_len());
   CHECK_STAT_LEN(eid, PSPIO_SUCCESS, pspio_error_len(), 1);
@@ -73,13 +72,11 @@ int main(void) {
 
   /* Check double error */
   DEBUG_PRINT("test_error: checking double error (EGSL, ENOSUPPORT)\n");
-  pspio_error_set(PSPIO_EGSL);
-  pspio_error_add("test_2_1.c", 201);
+  pspio_error_add(PSPIO_EGSL, "test_2_1.c", 201);
   DEBUG_PRINT("test_error: after pspio_error_add, status = %d, length = %d\n",
     eid, pspio_error_len());
   CHECK_STAT_LEN(eid, PSPIO_SUCCESS, pspio_error_len(), 1);
-  pspio_error_set(PSPIO_ENOSUPPORT);
-  pspio_error_add("test_2_2.c", 202);
+  pspio_error_add(PSPIO_ENOSUPPORT, "test_2_2.c", 202);
   DEBUG_PRINT("test_error: after pspio_error_add, status = %d, length = %d\n",
     eid, pspio_error_len());
   CHECK_STAT_LEN(eid, PSPIO_SUCCESS, pspio_error_len(), 2);
@@ -93,18 +90,15 @@ int main(void) {
 
   /* Check triple error */
   DEBUG_PRINT("test_error: checking triple error (EVALUE, ENOFILE, ERROR)\n");
-  pspio_error_set(PSPIO_EVALUE);
-  pspio_error_add("test_3_1.c", 311);
+  pspio_error_add(PSPIO_EVALUE, "test_3_1.c", 311);
   DEBUG_PRINT("test_error: after pspio_error_add, status = %d, length = %d\n",
     eid, pspio_error_len());
   CHECK_STAT_LEN(eid, PSPIO_SUCCESS, pspio_error_len(), 1);
-  pspio_error_set(PSPIO_ENOFILE);
-  pspio_error_add("test_3_2.c", 322);
+  pspio_error_add(PSPIO_ENOFILE, "test_3_2.c", 322);
   DEBUG_PRINT("test_error: after pspio_error_add, status = %d, length = %d\n",
     eid, pspio_error_len());
   CHECK_STAT_LEN(eid, PSPIO_SUCCESS, pspio_error_len(), 2);
-  pspio_error_set(PSPIO_ERROR);
-  pspio_error_add("test_3_3.c", 333);
+  pspio_error_add(PSPIO_ERROR, "test_3_3.c", 333);
   DEBUG_PRINT("test_error: after pspio_error_add, status = %d, length = %d\n",
     eid, pspio_error_len());
   CHECK_STAT_LEN(eid, PSPIO_SUCCESS, pspio_error_len(), 3);

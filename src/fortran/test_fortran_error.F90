@@ -31,7 +31,7 @@ program test_fortran_error
   character(len=64) :: filename
   integer :: eid
 
-  eid = pspio_f90_error_get()
+  eid = pspio_f90_error_get_last()
 
   ! Display basic information
   write(*,'(a,a,a,a,a)') "PACKAGE_STRING - test_fortran_error", ch10, &
@@ -51,9 +51,8 @@ program test_fortran_error
 
   ! Check single error
   write(*, '(a)') "test_fortran_error: checking single error (EVALUE)"
-  call pspio_f90_error_set(PSPIO_EVALUE)
   write(filename, '(a)') "test_1_1.F90"
-  call pspio_f90_error_add(filename, 1234)
+  call pspio_f90_error_add(PSPIO_EVALUE, filename, 1234)
   call check_status("after pspio_f90_error_add", eid, PSPIO_SUCCESS, &
 &   pspio_f90_error_len(), 1)
   write(*, '(a)') "test_fortran_error: BEGIN FLUSH"
@@ -65,14 +64,12 @@ program test_fortran_error
 
   ! Check double error
   write(*, '(a)') "test_fortran_error: checking double error (EGSL, ENOSUPPORT)"
-  call pspio_f90_error_set(PSPIO_EGSL)
   write(filename, '(a)') "test_2_1.F90"
-  call pspio_f90_error_add(filename, 201)
+  call pspio_f90_error_add(PSPIO_EGSL, filename, 201)
   call check_status("after pspio_f90_error_add", eid, PSPIO_SUCCESS, &
 &    pspio_f90_error_len(), 1)
-  call pspio_f90_error_set(PSPIO_ENOSUPPORT)
   write(filename, '(a)') "test_2_2.F90"
-  call pspio_f90_error_add(filename, 202)
+  call pspio_f90_error_add(PSPIO_ENOSUPPORT, filename, 202)
   call check_status("after pspio_f90_error_add", eid, PSPIO_SUCCESS, &
 &    pspio_f90_error_len(), 2)
   write(*, '(a)') "test_fortran_error: BEGIN FLUSH"
@@ -84,19 +81,16 @@ program test_fortran_error
 
   ! Check triple error
   write(*, '(a)') "test_fortran_error: checking triple error (EVALUE, ENOFILE, ERROR)"
-  call pspio_f90_error_set(PSPIO_EVALUE)
   write(filename, '(a)') "test_3_1.F90"
-  call pspio_f90_error_add(filename, 311)
+  call pspio_f90_error_add(PSPIO_EVALUE, filename, 311)
   call check_status("after pspio_f90_error_add", eid, PSPIO_SUCCESS, &
 &    pspio_f90_error_len(), 1)
-  call pspio_f90_error_set(PSPIO_ENOFILE)
   write(filename, '(a)') "test_3_2.F90"
-  call pspio_f90_error_add(filename, 322)
+  call pspio_f90_error_add(PSPIO_ENOFILE, filename, 322)
   call check_status("after pspio_f90_error_add", eid, PSPIO_SUCCESS, &
 &    pspio_f90_error_len(), 2)
-  call pspio_f90_error_set(PSPIO_ERROR)
   write(filename, '(a)') "test_3_3.F90"
-  call pspio_f90_error_add(filename, 333)
+  call pspio_f90_error_add(PSPIO_ERROR, filename, 333)
   call check_status("after pspio_f90_error_add", eid, PSPIO_SUCCESS, &
 &    pspio_f90_error_len(), 3)
   write(*, '(a)') "test_fortran_error: BEGIN FLUSH"
@@ -108,19 +102,16 @@ program test_fortran_error
 
   ! Check fetchall on triple error
   write(*, '(a)') "test_fortran_error: checking pspio_f90_error_fetchall"
-  call pspio_f90_error_set(PSPIO_EVALUE)
   write(filename, '(a)') "test_4_1.F90"
-  call pspio_f90_error_add(filename, 411)
+  call pspio_f90_error_add(PSPIO_EVALUE, filename, 411)
   call check_status("after pspio_f90_error_add", eid, PSPIO_SUCCESS, &
 &    pspio_f90_error_len(), 1)
-  call pspio_f90_error_set(PSPIO_ENOFILE)
   write(filename, '(a)') "test_4_2.F90"
-  call pspio_f90_error_add(filename, 422)
+  call pspio_f90_error_add(PSPIO_ENOFILE, filename, 422)
   call check_status("after pspio_f90_error_add", eid, PSPIO_SUCCESS, &
 &    pspio_f90_error_len(), 2)
-  call pspio_f90_error_set(PSPIO_ERROR)
   write(filename, '(a)') "test_4_3.F90"
-  call pspio_f90_error_add(filename, 433)
+  call pspio_f90_error_add(PSPIO_ERROR, filename, 433)
   call check_status("after pspio_f90_error_add", eid, PSPIO_SUCCESS, &
 &    pspio_f90_error_len(), 3)
   eid = pspio_f90_error_fetchall(err_msg)

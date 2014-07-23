@@ -55,7 +55,7 @@ typedef struct pspio_error_type pspio_error_t;
  * @param[in] line: line number in the source file (ignored if filename
  *            is NULL).
  */
-void pspio_error_add(const char *filename, const int line);
+void pspio_error_add(const int error_id, const char *filename, const int line);
 
 
 /**
@@ -84,7 +84,7 @@ int pspio_error_free(void);
  * Get the current error status.
  * @return error code
  */
-int pspio_error_get(void);
+int pspio_error_get_last(void);
 
 
 /**
@@ -99,13 +99,6 @@ int pspio_error_len(void);
  * @return error structure pointer
  */
 pspio_error_t *pspio_error_pop(void);
-
-
-/**
- * Set the internal error ID holder.
- * @param[in] error_id: value of the error ID to set
- */
-void pspio_error_set(const int error_id);
 
 
 /**
@@ -138,9 +131,9 @@ const char *pspio_error_str(const int pspio_errorid);
  * @param[in] error_id: error code to set if condition is false
  */
 #define ASSERT(condition, error_id) \
-  pspio_error_set(( condition ) ?  PSPIO_SUCCESS : error_id);	\
-  if ( pspio_error_get() != PSPIO_SUCCESS ) { \
-    pspio_error_show(pspio_error_get(), __FILE__, __LINE__); \
+  if ( !(condition) ) { \
+    pspio_error_add(error_id, __FILE__, __LINE__); \
+    pspio_error_show(pspio_error_get_last(), __FILE__, __LINE__); \
     exit(1); \
   }
 
@@ -152,8 +145,7 @@ const char *pspio_error_str(const int pspio_errorid);
  */
 #define CHECK_ERROR(condition, error_id) \
   if (!(condition)) {		    \
-    pspio_error_set(error_id); \
-    pspio_error_add(__FILE__, __LINE__); \
+    pspio_error_add(error_id, __FILE__, __LINE__); \
     return error_id; \
   } 
 
@@ -163,10 +155,9 @@ const char *pspio_error_str(const int pspio_errorid);
  * @param[in] function_call: the function to be called with all parameters
  */
 #define HANDLE_FUNC_ERROR(function_call) \
-  pspio_error_set(function_call); \
-  if ( pspio_error_get() != PSPIO_SUCCESS ) { \
-    pspio_error_add(__FILE__, __LINE__); \
-    return pspio_error_get(); \
+  pspio_error_add(function_call, __FILE__, __LINE__); \
+  if ( pspio_error_get_last() != PSPIO_SUCCESS ) { \
+    return pspio_error_get_last(); \
   }
 
 
@@ -176,8 +167,7 @@ const char *pspio_error_str(const int pspio_errorid);
  */
 #define HANDLE_ERROR(error_id) \
   if ( error_id != PSPIO_SUCCESS ) { \
-    pspio_error_set(error_id); \
-    pspio_error_add(__FILE__, __LINE__); \
+    pspio_error_add(error_id, __FILE__, __LINE__); \
     return error_id; \
   }
 
@@ -187,8 +177,7 @@ const char *pspio_error_str(const int pspio_errorid);
  */
 #define TRIGGER_ERROR(condition, error_id) \
   if ( !(condition) ) { \
-    pspio_error_set(error_id); \
-    pspio_error_add(__FILE__, __LINE__); \
+    pspio_error_add(error_id, __FILE__, __LINE__); \
   }
 
 #endif

@@ -377,12 +377,12 @@ void FC_FUNC_(pspio_f90_xc_nlcc_eval_v, PSPIO_F90_XC_NLCC_EVAL_V)
  **********************************************************************/
 
 void FC_FUNC_(pspio_f90_error_add, PSPIO_F90_ERROR_ADD)
-  (STR_F_TYPE filename, int *lineno STR_ARG1)
+  (int *error_id, STR_F_TYPE filename, int *lineno STR_ARG1)
 {
   char *tmp_name;
 
   TO_C_STR1(filename, tmp_name);
-  pspio_error_add(tmp_name, *lineno);
+  pspio_error_add(*error_id, tmp_name, *lineno);
   free(tmp_name);
 }
 
@@ -415,10 +415,10 @@ CC_FORTRAN_INT FC_FUNC_(pspio_f90_error_free, PSPIO_F90_ERROR_FREE)
 }
 
 
-CC_FORTRAN_INT FC_FUNC_(pspio_f90_error_get, PSPIO_F90_ERROR_GET)
+CC_FORTRAN_INT FC_FUNC_(pspio_f90_error_get_last, PSPIO_F90_ERROR_GET_LAST)
   (void)
 {
-  return (CC_FORTRAN_INT) pspio_error_get();
+  return (CC_FORTRAN_INT) pspio_error_get_last();
 }
 
 
@@ -426,13 +426,6 @@ CC_FORTRAN_INT FC_FUNC_(pspio_f90_error_len, PSPIO_F90_ERROR_LEN)
   (void)
 {
   return (CC_FORTRAN_INT) pspio_error_len();
-}
-
-
-void FC_FUNC_(pspio_f90_error_set, PSPIO_F90_ERROR_SET)
-  (int *eid)
-{
-  pspio_error_set(*eid);
 }
 
 
