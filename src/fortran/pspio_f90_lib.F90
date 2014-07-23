@@ -165,7 +165,7 @@ module pspio_f90_lib_m
       use pspio_f90_types_m
       implicit none
       type(pspio_f90_mesh_t), intent(in)    :: mesh
-      real(pspio_f90_kind),   intent(inout) :: r
+      real(pspio_f90_kind),   intent(out) :: r(*)
     end subroutine pspio_f90_mesh_get_r
 
     subroutine pspio_f90_mesh_get_rab(mesh, rab)
