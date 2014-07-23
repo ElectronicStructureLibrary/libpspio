@@ -20,6 +20,7 @@
 
 program test_fortran_error
 
+  use pspio_f90_types_m
   use pspio_f90_lib_m
 
   implicit none

@@ -92,7 +92,7 @@ test_fortran_error_DEPENDENCIES = ../libpspio.la libpspio_fortran.la $(pio_fortr
 # Explicit dependencies
 #
 
-pspio_f90_lib.$(LTOBJEXT): pspio_f90_types.$(LTOBJEXT)
+pspio_f90_lib.$(LTOBJEXT): pspio_f90_types.F90
 
                     # ------------------------------------ #
 
