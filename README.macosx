@@ -1,0 +1,9 @@
+Specific issues encountered with Mac OS X
+=========================================
+
+1. The configure script complains about a non-existing install-sh script.
+
+Run the following command:
+
+  autoreconf -f -i -Wall,no-obsolete
+
