@@ -89,7 +89,7 @@ pio_hidden_hdrs = \
 #
 
 # Essential build parameters
-INCLUDES = @pio_core_incs@
+AM_CPPFLAGS = @pio_core_incs@
 
 # Libraries
 lib_LTLIBRARIES = libpspio.la

@@ -54,7 +54,7 @@ endif
 #
 
 # Essential build parameters
-INCLUDES = @pio_core_incs@ -I$(srcdir)/..
+AM_CPPFLAGS = @pio_core_incs@ -I$(srcdir)/..
 
 # Libraries
 lib_LTLIBRARIES = libpspio_fortran.la
