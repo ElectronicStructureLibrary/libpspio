@@ -28,6 +28,9 @@ if test ! -s "./configure.ac" -o ! -d "psp_references"; then
   exit 1
 fi
 
+# Update source code
+python scripts/make-fortran-constants.py
+
 # Create possibly missing directories
 mkdir -p config/gnu config/m4
 

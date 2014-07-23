@@ -18,8 +18,6 @@
 !! @file test_fortran_error.F90
 !! @brief checks pspio_f90_error.F90 and pspio_f90_error.h
 
-#include "pspio_common.h"
-
 program test_fortran_error
 
   use pspio_f90_lib_m

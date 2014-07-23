@@ -16,8 +16,6 @@
 !!
 !! $Id$
 
-#include "pspio_common.h"
-
 program test_fortran
   use pspio_f90_types_m
   use pspio_f90_lib_m
