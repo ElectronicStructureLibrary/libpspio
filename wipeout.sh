@@ -60,6 +60,23 @@ echo "done."
 echo "Removing object files, libraries and programs..."
 find . -depth -name '.deps' -exec rm -rf {} \;
 find . -depth -name '.libs' -exec rm -rf {} \;
-find . -name '*.la' -o -name '*.lo' -exec rm {} \;
-find . -name '*.a' -o -name '*.o' -exec rm {} \;
+find . -name '*.la' -exec rm {} \;
+find . -name '*.lo' -exec rm {} \;
+find . -name '*.a' -exec rm {} \;
+find . -name '*.o' -exec rm {} \;
 echo "done."
+
+# Remove test programs
+(while read f; do rm $f; done) <<EOF
+./src/fortran/test_fortran
+./src/fortran/test_fortran_error
+./src/test_error
+./src/test_io
+./src/test_mesh
+./src/test_meshfunc
+./src/test_potential
+./src/test_projector
+./src/test_qn
+./src/test_state
+./src/test_xc
+EOF
