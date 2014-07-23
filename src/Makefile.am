@@ -111,7 +111,7 @@ endif
 # Test programs
 #
 
-check_PROGRAMS = \
+pio_basic_tests = \
   test_error \
   test_io \
   test_mesh \
@@ -121,6 +121,9 @@ check_PROGRAMS = \
   test_projector \
   test_state \
   test_xc
+
+check_PROGRAMS = $(pio_basic_tests)
+TESTS = $(pio_basic_tests)
 
 test_error_SOURCES = test_error.c
 test_error_LDADD = -lpspio

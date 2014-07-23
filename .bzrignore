@@ -22,6 +22,7 @@ tmp-*
 /config/gnu/install-sh
 /config/gnu/ltmain.sh
 /config/gnu/missing
+/config/gnu/test-driver
 /config/m4/libtool.m4
 /config/m4/ltoptions.m4
 /config/m4/ltsugar.m4

@@ -71,9 +71,12 @@ nodist_include_HEADERS = $(pio_fortran_mods)
 # Test programs
 #
 
-check_PROGRAMS = \
+pio_f90_basic_tests = \
   test_fortran \
   test_fortran_error
+
+check_PROGRAMS = $(pio_f90_basic_tests)
+TESTS = $(pio_f90_basic_tests)
 
 test_fortran_SOURCES = test_fortran.F90
 test_fortran_LDADD = -lpspio_fortran -L$(builddir)/../.libs -lpspio

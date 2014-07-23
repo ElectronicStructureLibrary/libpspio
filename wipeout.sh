@@ -46,7 +46,7 @@ echo "done."
 echo "Removing autotools files..."
 rm -f core config.log config.status stamp-h1 config.h config.h.in*
 rm -rf aclocal.m4 autom4te.cache configure confstat*
-(cd config/gnu && rm -f compile config.guess config.sub depcomp install-sh ltmain.sh missing)
+(cd config/gnu && rm -f compile config.guess config.sub depcomp install-sh ltmain.sh missing test-driver)
 (cd config/m4 && rm -f libtool.m4 ltoptions.m4 ltsugar.m4 ltversion.m4 lt~obsolete.m4)
 echo "done."
 
