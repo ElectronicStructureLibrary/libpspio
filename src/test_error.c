@@ -111,7 +111,7 @@ int main(void) {
   DEBUG_PRINT("\n");
 
   /* Check ASSERT macro */
-  DEBUG_PRINT("test_error: checking ASSERT macro (0==0)\n");
+  DEBUG_PRINT("test_error: checking successful ASSERT macro (0==0)\n");
   eid = test_assert(0);
   DEBUG_PRINT("test_error: BEGIN FLUSH\n");
   eid = pspio_error_flush();
@@ -128,12 +128,6 @@ int main(void) {
   DEBUG_PRINT("\n");
 
   DEBUG_PRINT("=== END test_error ===\n");
-
-  DEBUG_PRINT("\n");
-  DEBUG_PRINT("test_error: will now check fatal error\n");
-  DEBUG_PRINT("test_error: checking ASSERT macro (1==0)\n");
-  eid = test_assert(1);
-  eid = pspio_error_flush();
 
   return 0;
 }

@@ -2,7 +2,9 @@ Makefile
 Makefile.in
 *.la
 *.lo
+*.log
 *.mod
+*.tmp
 tmp
 tmp-*
 /aclocal.m4
