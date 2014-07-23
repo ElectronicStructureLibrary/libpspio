@@ -36,6 +36,8 @@ cd tmp-standard
 ../configure
 make dist
 make
+make clean && make -j4
+make check
 mkdir install-standard
 make install DESTDIR="${PWD}/install-standard"
 ls -lR install-standard
@@ -47,6 +49,8 @@ cd tmp-fortran
 ../configure --enable-fortran
 make dist
 make
+make clean && make -j4
+make check
 mkdir install-fortran
 make install DESTDIR="${PWD}/install-fortran"
 ls -lR install-fortran

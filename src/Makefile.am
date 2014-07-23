@@ -112,7 +112,7 @@ endif
 # Test programs
 #
 
-noinst_PROGRAMS = \
+check_PROGRAMS = \
   test_error \
   test_io \
   test_mesh \

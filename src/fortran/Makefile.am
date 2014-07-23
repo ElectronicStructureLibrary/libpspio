@@ -72,7 +72,7 @@ nodist_include_HEADERS = $(pio_fortran_mods)
 # Test programs
 #
 
-noinst_PROGRAMS = \
+check_PROGRAMS = \
   test_fortran \
   test_fortran_error
 
