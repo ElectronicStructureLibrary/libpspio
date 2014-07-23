@@ -16,7 +16,6 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #
-# $Id$
 #
 
 #
@@ -33,6 +32,9 @@ if test ! -s "./configure.ac" -o ! -d "psp_references"; then
   echo "wipeout: Cowardly refusing to remove something from here!"
   exit 1
 fi
+
+# Make sure the whole directory tree is writable
+chmod -R u+w .
 
 # Remove temporary directories and files
 echo "Removing temporary directories and files..."

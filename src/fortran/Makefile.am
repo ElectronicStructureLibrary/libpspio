@@ -60,8 +60,7 @@ AM_CPPFLAGS = @pio_core_incs@ -I$(srcdir)/..
 lib_LTLIBRARIES = libpspio_fortran.la
 
 libpspio_fortran_la_LDFLAGS = -version-info 0:0:0
-libpspio_fortran_la_SOURCES = $(pio_fortran_c_srcs)
-nodist_libpspio_fortran_la_SOURCES = $(pio_fortran_f_srcs)
+libpspio_fortran_la_SOURCES = $(pio_fortran_c_srcs) $(pio_fortran_f_srcs)
 
 # Headers
 nodist_include_HEADERS = $(pio_fortran_mods)
@@ -92,7 +91,8 @@ test_fortran_error_DEPENDENCIES = ../libpspio.la libpspio_fortran.la $(pio_fortr
 # Explicit dependencies
 #
 
-pspio_f90_lib.$(LTOBJEXT): pspio_f90_types.$(LTOBJEXT)
+pspio_f90_lib.$(LTOBJEXT) pspio_f90_lib.$(OBJEXT): \
+  pspio_f90_types.$(LTOBJEXT) pspio_f90_types.$(OBJEXT)
 
                     # ------------------------------------ #
 
