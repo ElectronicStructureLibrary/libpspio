@@ -114,7 +114,7 @@ int pspio_state_copy(pspio_state_t **dst, const pspio_state_t *src) {
 }
 
 
-int pspio_states_lookup_table(const int n_states, const pspio_state_t **states, 
+int pspio_states_lookup_table(const int n_states, pspio_state_t **states, 
 			    int ***table_ptr){
   int i, nmax, lmax, rel, lsize;
   pspio_qn_t *qn;
