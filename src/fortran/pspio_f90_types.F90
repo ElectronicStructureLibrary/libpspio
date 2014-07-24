@@ -21,6 +21,8 @@ module pspio_f90_types_m
   implicit none
 
   integer, parameter, public :: pspio_f90_kind = selected_real_kind(14)
+  ! Should be replaced by C_INT if iso_c_binding is available
+  integer, parameter, public :: pspio_cint = 4 
 
   ! DO NOT EDIT THE FOLLOWING SECTION - ALL CHANGES WILL BE OVERWRITTEN!
   ! Add new definitions into pspio_common.h instead

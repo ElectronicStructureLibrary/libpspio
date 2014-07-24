@@ -34,7 +34,7 @@ module pspio_f90_lib_m
       use pspio_f90_types_m
       implicit none
       type(pspio_f90_pspdata_t), intent(inout) :: pspdata
-      integer,                   intent(inout) :: format
+      integer,                   intent(in)    :: format
       character(len=*),          intent(in)    :: filename
     end function pspio_f90_pspdata_read
 
@@ -109,6 +109,21 @@ module pspio_f90_lib_m
       type(pspio_f90_state_t),   intent(out) :: state
     end subroutine pspio_f90_pspdata_get_state
 
+    subroutine pspio_f90_pspdata_get_n_potentials(pspdata, n_potentials)
+      use pspio_f90_types_m
+      implicit none
+      type(pspio_f90_pspdata_t), intent(in)  :: pspdata
+      integer,                   intent(out) :: n_potentials
+    end subroutine pspio_f90_pspdata_get_n_potentials
+
+    subroutine pspio_f90_pspdata_get_potential(pspdata, i, potential)
+      use pspio_f90_types_m
+      implicit none
+      type(pspio_f90_pspdata_t),   intent(in)  :: pspdata
+      integer,                     intent(in)  :: i
+      type(pspio_f90_potential_t), intent(out) :: potential
+    end subroutine pspio_f90_pspdata_get_potential
+
     subroutine pspio_f90_pspdata_get_n_kbproj(pspdata, n_kbproj)
       use pspio_f90_types_m
       implicit none
@@ -152,8 +167,37 @@ module pspio_f90_lib_m
     end subroutine pspio_f90_pspdata_get_xc
   end interface
 
+  interface pspio_f90_pspdata_rho_valence_eval
+    subroutine pspio_f90_pspdata_rho_valence_eval_s(pspdata, r, rho)
+      use pspio_f90_types_m
+      implicit none
+      type(pspio_f90_pspdata_t), intent(in)  :: pspdata
+      real(pspio_f90_kind),      intent(in)  :: r
+      real(pspio_f90_kind),      intent(out) :: rho
+    end subroutine pspio_f90_pspdata_rho_valence_eval_s
+
+    subroutine pspio_f90_pspdata_rho_valence_eval_v(pspdata, np, r, rho)
+      use pspio_f90_types_m
+      implicit none
+      type(pspio_f90_pspdata_t), intent(in)  :: pspdata
+      integer,                   intent(in)  :: np
+      real(pspio_f90_kind),      intent(in)  :: r(np)
+      real(pspio_f90_kind),      intent(out) :: rho(np)
+    end subroutine pspio_f90_pspdata_rho_valence_eval_v
+  end interface
+
   ! pspio_mesh
   interface
+    subroutine pspio_f90_mesh_get_info(mesh, mesh_type, np, a, b)
+      use pspio_f90_types_m
+      implicit none
+      type(pspio_f90_mesh_t), intent(in)  :: mesh
+      integer,                intent(out) :: mesh_type
+      integer,                intent(out) :: np
+      real(pspio_f90_kind),   intent(out) :: a
+      real(pspio_f90_kind),   intent(out) :: b
+    end subroutine pspio_f90_mesh_get_info
+
     subroutine pspio_f90_mesh_get_np(mesh, np)
       use pspio_f90_types_m
       implicit none

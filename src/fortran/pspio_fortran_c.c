@@ -37,39 +37,39 @@
  * pspio_pspdata                                                      *
  **********************************************************************/
 
-CC_FORTRAN_INT FC_FUNC_(pspio_f90_pspdata_init, PSPIO_F90_PSPDATA_INIT)
+int FC_FUNC_(pspio_f90_pspdata_init, PSPIO_F90_PSPDATA_INIT)
      (void **pspdata)
 {
   pspio_pspdata_t *pspdata_p = NULL;
   int ierr;
 
-  ierr = (CC_FORTRAN_INT) pspio_pspdata_init(&pspdata_p);
+  ierr = (int) pspio_pspdata_init(&pspdata_p);
   *pspdata = (void *) pspdata_p;
 
   return ierr;
 }
 
-CC_FORTRAN_INT FC_FUNC_(pspio_f90_pspdata_read, PSPIO_F90_PSPDATA_READ)
-     (void **pspdata, CC_FORTRAN_INT *format, STR_F_TYPE filename STR_ARG1)
+int FC_FUNC_(pspio_f90_pspdata_read, PSPIO_F90_PSPDATA_READ)
+     (void **pspdata, const int *format, STR_F_TYPE filename STR_ARG1)
 {
   char *filename_c;
   int ierr;
 
   TO_C_STR1(filename, filename_c);
-  ierr = (CC_FORTRAN_INT) pspio_pspdata_read( (pspio_pspdata_t **)(pspdata), (int *) format, filename_c);
+  ierr = (int) pspio_pspdata_read( (pspio_pspdata_t **)(pspdata), (int *) format, filename_c);
   free(filename_c);
 
   return ierr;
 }
 
-CC_FORTRAN_INT FC_FUNC_(pspio_f90_pspdata_write, PSPIO_F90_PSPDATA_WRITE)
-     (void ** pspdata, CC_FORTRAN_INT *format, STR_F_TYPE filename STR_ARG1)
+int FC_FUNC_(pspio_f90_pspdata_write, PSPIO_F90_PSPDATA_WRITE)
+     (void ** pspdata, int *format, STR_F_TYPE filename STR_ARG1)
 {
   char *filename_c;
   int ierr;
 
   TO_C_STR1(filename, filename_c);
-  ierr = (CC_FORTRAN_INT) pspio_pspdata_write( (pspio_pspdata_t *)(*pspdata), (int) (*format), filename_c);
+  ierr = (int) pspio_pspdata_write( (pspio_pspdata_t *)(*pspdata), (int) (*format), filename_c);
   free(filename_c);
 
   return ierr;
@@ -108,7 +108,7 @@ void FC_FUNC_(pspio_f90_pspdata_get_zvalence, PSPIO_F90_PSPDATA_GET_ZVALENCE)
 }
 
 void FC_FUNC_(pspio_f90_pspdata_get_l_max, PSPIO_F90_PSPDATA_GET_L_MAX)
-     (void ** pspdata, CC_FORTRAN_INT *l_max)
+     (void ** pspdata, int *l_max)
 {
 
   *l_max = ((pspio_pspdata_t *)(*pspdata))->l_max;
@@ -116,7 +116,7 @@ void FC_FUNC_(pspio_f90_pspdata_get_l_max, PSPIO_F90_PSPDATA_GET_L_MAX)
 }
 
 void FC_FUNC_(pspio_f90_pspdata_get_wave_eq, PSPIO_F90_PSPDATA_GET_WAVE_EQ)
-     (void ** pspdata, CC_FORTRAN_INT *wave_eq)
+     (void ** pspdata, int *wave_eq)
 {
 
   *wave_eq = ((pspio_pspdata_t *)(*pspdata))->wave_eq;
@@ -132,7 +132,7 @@ void FC_FUNC_(pspio_f90_pspdata_get_mesh, PSPIO_F90_PSPDATA_GET_MESH)
 }
 
 void FC_FUNC_(pspio_f90_pspdata_get_n_states, PSPIO_F90_PSPDATA_GET_N_STATES)
-     (void ** pspdata, CC_FORTRAN_INT *n_states)
+     (void ** pspdata, int *n_states)
 {
 
   *n_states = ((pspio_pspdata_t *)(*pspdata))->n_states;
@@ -140,15 +140,31 @@ void FC_FUNC_(pspio_f90_pspdata_get_n_states, PSPIO_F90_PSPDATA_GET_N_STATES)
 }
 
 void FC_FUNC_(pspio_f90_pspdata_get_state, PSPIO_F90_PSPDATA_GET_STATE)
-     (void ** pspdata, CC_FORTRAN_INT *i, void ** state)
+     (void ** pspdata, int *i, void ** state)
 {
 
   *state = (void *) ((pspio_pspdata_t *)(*pspdata))->states[*i-1];
 
 }
 
+void FC_FUNC_(pspio_f90_pspdata_get_n_potentials, PSPIO_F90_PSPDATA_GET_N_POTENTIALS)
+     (void ** pspdata, int *n_potentials)
+{
+
+  *n_potentials = ((pspio_pspdata_t *)(*pspdata))->n_potentials;
+
+}
+
+void FC_FUNC_(pspio_f90_pspdata_get_potential, PSPIO_F90_PSPDATA_GET_POTENTIAL)
+     (void ** pspdata, int *i, void ** potential)
+{
+
+  *potential = (void *) ((pspio_pspdata_t *)(*pspdata))->potentials[*i-1];
+
+}
+
 void FC_FUNC_(pspio_f90_pspdata_get_n_kbproj, PSPIO_F90_PSPDATA_GET_N_KBPROJ)
-     (void ** pspdata, CC_FORTRAN_INT *n_kbproj)
+     (void ** pspdata, int *n_kbproj)
 {
 
   *n_kbproj = ((pspio_pspdata_t *)(*pspdata))->n_kbproj;
@@ -156,7 +172,7 @@ void FC_FUNC_(pspio_f90_pspdata_get_n_kbproj, PSPIO_F90_PSPDATA_GET_N_KBPROJ)
 }
 
 void FC_FUNC_(pspio_f90_pspdata_get_kb_projector, PSPIO_F90_PSPDATA_GET_KB_PROJECTOR)
-     (void ** pspdata, CC_FORTRAN_INT *i, void ** kb_projector)
+     (void ** pspdata, int *i, void ** kb_projector)
 {
 
   *kb_projector = (void *) ((pspio_pspdata_t *)(*pspdata))->kb_projectors[*i-1];
@@ -164,7 +180,7 @@ void FC_FUNC_(pspio_f90_pspdata_get_kb_projector, PSPIO_F90_PSPDATA_GET_KB_PROJE
 }
 
 void FC_FUNC_(pspio_f90_pspdata_get_l_local, PSPIO_F90_PSPDATA_GET_L_LOCAL)
-     (void ** pspdata, CC_FORTRAN_INT *l_local)
+     (void ** pspdata, int *l_local)
 {
 
   *l_local = ((pspio_pspdata_t *)(*pspdata))->l_local;
@@ -172,7 +188,7 @@ void FC_FUNC_(pspio_f90_pspdata_get_l_local, PSPIO_F90_PSPDATA_GET_L_LOCAL)
 }
 
 void FC_FUNC_(pspio_f90_pspdata_get_kb_l_max, PSPIO_F90_PSPDATA_GET_KB_L_MAX)
-     (void ** pspdata, CC_FORTRAN_INT *kb_l_max)
+     (void ** pspdata, int *kb_l_max)
 {
 
   *kb_l_max = ((pspio_pspdata_t *)(*pspdata))->kb_l_max;
@@ -195,18 +211,43 @@ void FC_FUNC_(pspio_f90_pspdata_get_xc, PSPIO_F90_PSPDATA_GET_XC)
 
 }
 
+void FC_FUNC_(pspio_f90_pspdata_rho_valence_eval_s, PSPIO_F90_PSPDATA_RHO_VALENCE_EVAL_S)
+     (void ** pspdata, double *r, double *rho)
+{
+
+  pspio_meshfunc_eval(((pspio_pspdata_t *)(*pspdata))->rho_valence, 1, r, rho);
+
+}
+
+void FC_FUNC_(pspio_f90_pspdata_rho_valence_eval_v, PSPIO_F90_PSPDATA_RHO_VALENCE_EVAL_V)
+     (void ** pspdata, int *np, double *r, double *rho)
+{
+
+  pspio_meshfunc_eval(((pspio_pspdata_t *)(*pspdata))->rho_valence, *np, r, rho);
+
+}
 
 /**********************************************************************
  * pspio_mesh                                                         *
  **********************************************************************/
 
 void FC_FUNC_(pspio_f90_mesh_get_np, PSPIO_F90_MESH_GET_NP)
-     (void ** mesh, CC_FORTRAN_INT *np)
+     (void ** mesh, int *np)
 {
 
   pspio_mesh_get_np( ((pspio_mesh_t *)(*mesh)), np);
 
 }
+
+void FC_FUNC_(pspio_f90_mesh_get_info, PSPIO_F90_MESH_GET_INFO)
+  (void **mesh, int *type, int *np, double *a, double *b){
+
+  *type = ((pspio_mesh_t *)(*mesh))->type;
+  *np = ((pspio_mesh_t *)(*mesh))->np;
+  *a = ((pspio_mesh_t *)(*mesh))->a;
+  *b = ((pspio_mesh_t *)(*mesh))->b;
+}
+
 
 void FC_FUNC_(pspio_f90_mesh_get_r, PSPIO_F90_MESH_GET_R)
      (void ** mesh, double *r)
@@ -246,7 +287,7 @@ void FC_FUNC_(pspio_f90_state_wf_eval_v, PSPIO_F90_STATE_WF_EVAL_V)
 }
 
 void FC_FUNC_(pspio_f90_state_get_qn, PSPIO_F90_STATE_GET_QN)
-     (void ** state, CC_FORTRAN_INT *n, CC_FORTRAN_INT *l, double *j)
+     (void ** state, int *n, int *l, double *j)
 {
   pspio_state_get_n(((pspio_state_t *)(*state)), n);
   pspio_state_get_l(((pspio_state_t *)(*state)), l);
@@ -387,7 +428,7 @@ void FC_FUNC_(pspio_f90_error_add, PSPIO_F90_ERROR_ADD)
 }
 
 
-CC_FORTRAN_INT FC_FUNC_(pspio_f90_error_fetchall, PSPIO_F90_ERROR_FETCHALL)
+int FC_FUNC_(pspio_f90_error_fetchall, PSPIO_F90_ERROR_FETCHALL)
   (STR_F_TYPE err_msg STR_ARG1)
 {
   char *tmp_msg;
@@ -397,35 +438,35 @@ CC_FORTRAN_INT FC_FUNC_(pspio_f90_error_fetchall, PSPIO_F90_ERROR_FETCHALL)
   TO_F_STR1(tmp_msg, err_msg);
   free(tmp_msg);
 
-  return (CC_FORTRAN_INT) eid;
+  return (int) eid;
 }
 
 
-CC_FORTRAN_INT FC_FUNC_(pspio_f90_error_flush, PSPIO_F90_ERROR_FLUSH)
+int FC_FUNC_(pspio_f90_error_flush, PSPIO_F90_ERROR_FLUSH)
   (void)
 {
-  return (CC_FORTRAN_INT) pspio_error_flush();
+  return (int) pspio_error_flush();
 }
 
 
-CC_FORTRAN_INT FC_FUNC_(pspio_f90_error_free, PSPIO_F90_ERROR_FREE)
+int FC_FUNC_(pspio_f90_error_free, PSPIO_F90_ERROR_FREE)
   (void)
 {
-  return (CC_FORTRAN_INT) pspio_error_free();
+  return (int) pspio_error_free();
 }
 
 
-CC_FORTRAN_INT FC_FUNC_(pspio_f90_error_get_last, PSPIO_F90_ERROR_GET_LAST)
+int FC_FUNC_(pspio_f90_error_get_last, PSPIO_F90_ERROR_GET_LAST)
   (void)
 {
-  return (CC_FORTRAN_INT) pspio_error_get_last();
+  return (int) pspio_error_get_last();
 }
 
 
-CC_FORTRAN_INT FC_FUNC_(pspio_f90_error_len, PSPIO_F90_ERROR_LEN)
+int FC_FUNC_(pspio_f90_error_len, PSPIO_F90_ERROR_LEN)
   (void)
 {
-  return (CC_FORTRAN_INT) pspio_error_len();
+  return (int) pspio_error_len();
 }
 
 
@@ -433,8 +474,8 @@ CC_FORTRAN_INT FC_FUNC_(pspio_f90_error_len, PSPIO_F90_ERROR_LEN)
  * pspio_info                                                         *
  **********************************************************************/
 
-CC_FORTRAN_INT FC_FUNC_(pspio_f90_version, PSPIO_F90_VERSION)
+int FC_FUNC_(pspio_f90_version, PSPIO_F90_VERSION)
  (int *major, int *minor, int *micro)
 {
-  return (CC_FORTRAN_INT)  pspio_version(major, minor, micro);
+  return (int)  pspio_version(major, minor, micro);
 }

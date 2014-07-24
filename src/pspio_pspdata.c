@@ -48,6 +48,7 @@ int pspio_pspdata_init(pspio_pspdata_t **pspdata) {
   CHECK_ERROR(*pspdata != NULL, PSPIO_ENOMEM);
 
   // Nullify pointers and initialize all values to 0
+  (*pspdata)->format = PSPIO_FMT_UNKNOWN;
   (*pspdata)->info = NULL;
   (*pspdata)->symbol = NULL;
   (*pspdata)->z = 0.0;
@@ -80,7 +81,7 @@ int pspio_pspdata_init(pspio_pspdata_t **pspdata) {
   return PSPIO_SUCCESS;
 }
 
-int pspio_pspdata_read(pspio_pspdata_t **pspdata, int *file_format, 
+int pspio_pspdata_read(pspio_pspdata_t **pspdata, const int *file_format, 
       const char *file_name){
   int eid, fmt, psp_fmt;
   FILE * fp;
@@ -107,28 +108,28 @@ int pspio_pspdata_read(pspio_pspdata_t **pspdata, int *file_format,
     rewind(fp);
 
     switch (fmt) {
-      case PSPIO_FMT_ABINIT_6:
-        eid = pspio_abinit_read(fp, pspdata, fmt);
-        psp_fmt = PSPIO_FMT_ABINIT_6;
-        break;
-      case PSPIO_FMT_FHI98PP:
-        eid = pspio_fhi_read(fp, pspdata);
-        psp_fmt = PSPIO_FMT_FHI98PP;
-        break;
-      case PSPIO_FMT_UPF:
-        eid = pspio_upf_read(fp, pspdata);
-        psp_fmt = PSPIO_FMT_UPF;
-        break;
+    case PSPIO_FMT_ABINIT_6:
+      eid = pspio_abinit_read(fp, pspdata, fmt);
+      psp_fmt = PSPIO_FMT_ABINIT_6;
+      break;
+    case PSPIO_FMT_FHI98PP:
+      eid = pspio_fhi_read(fp, pspdata);
+      psp_fmt = PSPIO_FMT_FHI98PP;
+      break;
+    case PSPIO_FMT_UPF:
+      eid = pspio_upf_read(fp, pspdata);
+      psp_fmt = PSPIO_FMT_UPF;
+      break;
 
-      default:
-        eid = PSPIO_ENOSUPPORT;
+    default:
+      eid = PSPIO_ENOSUPPORT;
     }
 
     if ( (eid == PSPIO_SUCCESS) || (*file_format != PSPIO_FMT_UNKNOWN) ) break;
   }
 
-  // Propagate format to calling program
-  *file_format = psp_fmt;
+  // Store the format
+  (*pspdata)->format = psp_fmt;
 
   // Close file
   TRIGGER_ERROR(fclose(fp) == 0, PSPIO_EIO);
