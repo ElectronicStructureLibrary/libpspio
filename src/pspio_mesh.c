@@ -42,16 +42,16 @@ int pspio_mesh_alloc(pspio_mesh_t **mesh, const int np){
 
   // Memory allocation
   *mesh = (pspio_mesh_t *) malloc (sizeof(pspio_mesh_t));
-  CHECK_ERROR(*mesh != NULL, PSPIO_ENOMEM);
+  CHECK_FATAL(*mesh != NULL, PSPIO_ENOMEM);
 
   (*mesh)->r = NULL;
   (*mesh)->rab = NULL;
 
   (*mesh)->r = (double *) malloc (np * sizeof(double));
-  CHECK_ERROR((*mesh)->r != NULL, PSPIO_ENOMEM);
+  CHECK_FATAL((*mesh)->r != NULL, PSPIO_ENOMEM);
 
   (*mesh)->rab = (double *) malloc (np * sizeof(double));
-  CHECK_ERROR((*mesh)->rab != NULL, PSPIO_ENOMEM);
+  CHECK_FATAL((*mesh)->rab != NULL, PSPIO_ENOMEM);
 
   // Presets
   (*mesh)->np = np;

@@ -50,14 +50,14 @@ int upf_read_info(FILE *fp, pspio_pspdata_t **pspdata){
 
   //Allocate memory
   (*pspdata)->info = (char *) malloc (1*sizeof(char));
-  CHECK_ERROR((*pspdata)->info != NULL, PSPIO_ENOMEM);
+  CHECK_FATAL((*pspdata)->info != NULL, PSPIO_ENOMEM);
   (*pspdata)->info[0] = '\0';
 
   //Store all the lines
   for (il=0; il<nlines; il++) {
     CHECK_ERROR(fgets(line, PSPIO_STRLEN_LINE, fp) != NULL, PSPIO_EIO);
     (*pspdata)->info = realloc((*pspdata)->info, strlen((*pspdata)->info)+strlen(line)+1);
-    CHECK_ERROR((*pspdata)->info != NULL, PSPIO_ENOMEM);
+    CHECK_FATAL((*pspdata)->info != NULL, PSPIO_ENOMEM);
     strncat((*pspdata)->info, line, strlen(line));
   }
 
@@ -85,7 +85,7 @@ int upf_read_header(FILE *fp, int *np, pspio_pspdata_t **pspdata){
   //Read the atomic symbol
   CHECK_ERROR(fgets(line, PSPIO_STRLEN_LINE, fp) != NULL, PSPIO_EIO);
   (*pspdata)->symbol = (char *) malloc (3*sizeof(char));
-  CHECK_ERROR((*pspdata)->symbol != NULL, PSPIO_ENOMEM);
+  CHECK_FATAL((*pspdata)->symbol != NULL, PSPIO_ENOMEM);
   strcpy((*pspdata)->symbol, strtok(line," "));
   symbol_to_z((*pspdata)->symbol, (*pspdata)->z);
 
@@ -161,10 +161,10 @@ int upf_read_mesh(FILE *fp, const int np, pspio_pspdata_t **pspdata){
 
   //Allocate memory
   r = (double *) malloc (np*sizeof(double));
-  CHECK_ERROR(r != NULL, PSPIO_ENOMEM);
+  CHECK_FATAL(r != NULL, PSPIO_ENOMEM);
 
   drdi = (double *) malloc (np*sizeof(double));
-  CHECK_ERROR(drdi != NULL, PSPIO_ENOMEM);
+  CHECK_FATAL(drdi != NULL, PSPIO_ENOMEM);
 
   //Read mesh points
   HANDLE_FUNC_ERROR(upf_tag_init(fp, "PP_R", NO_GO_BACK));
@@ -212,7 +212,7 @@ int upf_read_nlcc(FILE *fp, const int np, pspio_pspdata_t **pspdata){
 
   //Allocate memory
   rho = (double *) malloc (np*sizeof(double));
-  CHECK_ERROR(rho != NULL, PSPIO_ENOMEM);
+  CHECK_FATAL(rho != NULL, PSPIO_ENOMEM);
 
   //Read core rho
   for (i=0; i<np; i+=4) {
@@ -251,17 +251,17 @@ int upf_read_nonlocal(FILE *fp, const int np, pspio_pspdata_t **pspdata){
   HANDLE_FUNC_ERROR(pspio_qn_alloc(&qn));
 
   proj_j = (double *) malloc ((*pspdata)->n_kbproj * sizeof(double));
-  CHECK_ERROR(proj_j != NULL, PSPIO_ENOMEM);
+  CHECK_FATAL(proj_j != NULL, PSPIO_ENOMEM);
 
   projector_read = (double *) malloc (np * sizeof(double));
-  CHECK_ERROR(projector_read != NULL, PSPIO_ENOMEM);
+  CHECK_FATAL(projector_read != NULL, PSPIO_ENOMEM);
 
   (*pspdata)->kb_projectors = (pspio_projector_t **) malloc ( (*pspdata)->n_kbproj*sizeof(pspio_projector_t *));
-  CHECK_ERROR((*pspdata)->kb_projectors != NULL, PSPIO_ENOMEM);
+  CHECK_FATAL((*pspdata)->kb_projectors != NULL, PSPIO_ENOMEM);
   for (i=0; i<(*pspdata)->n_kbproj; i++) (*pspdata)->kb_projectors[i] = NULL;
 
   ekb = (double *) malloc ((*pspdata)->n_kbproj*sizeof(double));
-  CHECK_ERROR(ekb != NULL, PSPIO_ENOMEM);
+  CHECK_FATAL(ekb != NULL, PSPIO_ENOMEM);
   memset(ekb, 0, (*pspdata)->n_kbproj*sizeof(double));
 
   // We start by reading the KB energies, as it is more convinient this way
@@ -364,7 +364,7 @@ int upf_read_local(FILE *fp, const int np, pspio_pspdata_t **pspdata){
   HANDLE_FUNC_ERROR(pspio_qn_alloc(&qn));
 
   vlocal = (double *) malloc (np*sizeof(double));
-  CHECK_ERROR(vlocal != NULL, PSPIO_ENOMEM);
+  CHECK_FATAL(vlocal != NULL, PSPIO_ENOMEM);
 
   //Deduce l local (this is done in a very crude way and it should probably be made more robust)
   (*pspdata)->l_local = -1;
@@ -418,13 +418,13 @@ int upf_read_pswfc(FILE *fp, const int np, pspio_pspdata_t **pspdata){
   HANDLE_FUNC_ERROR(pspio_qn_alloc(&qn));
 
   wf = (double *) malloc (np * sizeof(double));
-  CHECK_ERROR(wf != NULL, PSPIO_ENOMEM);
+  CHECK_FATAL(wf != NULL, PSPIO_ENOMEM);
 
   j = (double *) malloc ((*pspdata)->n_states*sizeof(double));
-  CHECK_ERROR(j != NULL, PSPIO_ENOMEM);
+  CHECK_FATAL(j != NULL, PSPIO_ENOMEM);
 
   (*pspdata)->states = (pspio_state_t **) malloc ( (*pspdata)->n_states*sizeof(pspio_state_t *));
-  CHECK_ERROR((*pspdata)->states != NULL, PSPIO_ENOMEM);
+  CHECK_FATAL((*pspdata)->states != NULL, PSPIO_ENOMEM);
   for (is=0; is<(*pspdata)->n_states; is++) {
     (*pspdata)->states[is] = NULL;
   }
@@ -493,7 +493,7 @@ int upf_read_rhoatom(FILE *fp, const int np, pspio_pspdata_t **pspdata){
 
   //Allocate memory
   rho_read = (double *) malloc (np * sizeof(double));
-  CHECK_ERROR(rho_read != NULL, PSPIO_ENOMEM);
+  CHECK_FATAL(rho_read != NULL, PSPIO_ENOMEM);
 
   //Read valence density
   for (i=0; i<np; i+=4){

@@ -41,7 +41,7 @@ int pspio_meshfunc_alloc(pspio_meshfunc_t **func, const int np){
   assert(np > 1);
 
   *func = (pspio_meshfunc_t *) malloc (sizeof(pspio_meshfunc_t));
-  CHECK_ERROR(*func != NULL, PSPIO_ENOMEM);
+  CHECK_FATAL(*func != NULL, PSPIO_ENOMEM);
 
   (*func)->mesh = NULL;
   ierr = pspio_mesh_alloc(&(*func)->mesh, np);
@@ -51,19 +51,19 @@ int pspio_meshfunc_alloc(pspio_meshfunc_t **func, const int np){
   }
 
   (*func)->f = (double *) malloc (np * sizeof(double));
-  CHECK_ERROR((*func)->f != NULL, PSPIO_ENOMEM);
+  CHECK_FATAL((*func)->f != NULL, PSPIO_ENOMEM);
   memset((*func)->f, 0, np*sizeof(double));
   (*func)->f_spl = gsl_spline_alloc(gsl_interp_cspline, np);
   (*func)->f_acc = gsl_interp_accel_alloc();
 
   (*func)->fp = (double *) malloc (np * sizeof(double));
-  CHECK_ERROR((*func)->fp != NULL, PSPIO_ENOMEM);
+  CHECK_FATAL((*func)->fp != NULL, PSPIO_ENOMEM);
   memset((*func)->fp, 0, np*sizeof(double));
   (*func)->fp_spl = gsl_spline_alloc(gsl_interp_cspline, np);
   (*func)->fp_acc = gsl_interp_accel_alloc();
 
   (*func)->fpp = (double *) malloc (np * sizeof(double));
-  CHECK_ERROR((*func)->fpp != NULL, PSPIO_ENOMEM);
+  CHECK_FATAL((*func)->fpp != NULL, PSPIO_ENOMEM);
   memset((*func)->fpp, 0, np*sizeof(double));
   (*func)->fpp_spl = gsl_spline_alloc(gsl_interp_cspline, np);
   (*func)->fpp_acc = gsl_interp_accel_alloc();

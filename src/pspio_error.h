@@ -139,6 +139,19 @@ const char *pspio_error_str(const int pspio_errorid);
 
 
 /**
+ * Fatal error macro, for user-related problems
+ * @param[in] condition: condition to check
+ * @param[in] error_id: error code to set before aborting
+ */
+#define CHECK_FATAL(condition, error_id) \
+  if (!(condition)) {		    \
+    pspio_error_add(error_id, __FILE__, __LINE__); \
+    pspio_error_flush(); \
+    exit(1); \
+  } 
+
+
+/**
  * Basic error handler macro
  * @param[in] error_id: error code to check
  */

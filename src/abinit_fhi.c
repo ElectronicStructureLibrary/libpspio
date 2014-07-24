@@ -63,12 +63,12 @@ int abinit_fhi_read(FILE *fp, pspio_pspdata_t **pspdata){
   // Allocate states and potentials
   (*pspdata)->n_states = (*pspdata)->n_potentials;
   (*pspdata)->states = (pspio_state_t **) malloc ( (*pspdata)->n_states*sizeof(pspio_state_t *));
-  CHECK_ERROR((*pspdata)->states != NULL, PSPIO_ENOMEM);
+  CHECK_FATAL((*pspdata)->states != NULL, PSPIO_ENOMEM);
   for (i=0; i<(*pspdata)->n_states; i++) {
     (*pspdata)->states[i] = NULL;
   }
   (*pspdata)->potentials = (pspio_potential_t **) malloc ( (*pspdata)->n_potentials*sizeof(pspio_potential_t *));
-  CHECK_ERROR((*pspdata)->potentials != NULL, PSPIO_ENOMEM);
+  CHECK_FATAL((*pspdata)->potentials != NULL, PSPIO_ENOMEM);
   for (i=0; i<(*pspdata)->n_potentials; i++) {
     (*pspdata)->potentials[i] = NULL;
   }
@@ -83,13 +83,13 @@ int abinit_fhi_read(FILE *fp, pspio_pspdata_t **pspdata){
     HANDLE_FUNC_ERROR(pspio_qn_alloc(&qn));
 
     r = (double *) malloc (np*sizeof(double));
-    CHECK_ERROR(r != NULL, PSPIO_ENOMEM);
+    CHECK_FATAL(r != NULL, PSPIO_ENOMEM);
 
     v = (double *) malloc (np*sizeof(double));
-    CHECK_ERROR(v != NULL, PSPIO_ENOMEM);
+    CHECK_FATAL(v != NULL, PSPIO_ENOMEM);
 
     wf = (double *) malloc (np*sizeof(double));
-    CHECK_ERROR(wf != NULL, PSPIO_ENOMEM);
+    CHECK_FATAL(wf != NULL, PSPIO_ENOMEM);
 
     // Read first line of block
     for (ir=0; ir<np; ir++) {
@@ -127,13 +127,13 @@ int abinit_fhi_read(FILE *fp, pspio_pspdata_t **pspdata){
 
     // Allocate temporary data
     cd = (double *) malloc (np*sizeof(double));
-    CHECK_ERROR(cd != NULL, PSPIO_ENOMEM);
+    CHECK_FATAL(cd != NULL, PSPIO_ENOMEM);
 
     cdp = (double *) malloc (np*sizeof(double));
-    CHECK_ERROR(cdp != NULL, PSPIO_ENOMEM);
+    CHECK_FATAL(cdp != NULL, PSPIO_ENOMEM);
 
     cdpp = (double *) malloc (np*sizeof(double));
-    CHECK_ERROR(cdpp != NULL, PSPIO_ENOMEM);
+    CHECK_FATAL(cdpp != NULL, PSPIO_ENOMEM);
 
     // Read core density
     for (ir=0; ir<np; ir++) {

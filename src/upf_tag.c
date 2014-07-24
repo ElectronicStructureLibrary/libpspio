@@ -41,7 +41,7 @@ int upf_tag_init(FILE * fp, const char * tag, const int go_back){
   
   //Prepare base string
   init_tag = (char *) malloc ((strlen(tag)+3) * sizeof(char));
-  CHECK_ERROR(init_tag != NULL, PSPIO_ENOMEM);
+  CHECK_FATAL(init_tag != NULL, PSPIO_ENOMEM);
   init_tag[0] = '\0';
   strcat(init_tag,"<");
   strncat(init_tag,tag,strlen(tag));
@@ -77,7 +77,7 @@ int upf_tag_check_end(FILE * fp, const char * tag){
   
   //Prepare base string
   ending_tag = (char *) malloc ((strlen(tag)+4) * sizeof(char));
-  CHECK_ERROR(ending_tag != NULL, PSPIO_ENOMEM);
+  CHECK_FATAL(ending_tag != NULL, PSPIO_ENOMEM);
   ending_tag[0] = '\0';
   strcat(ending_tag,"</");
   strncat(ending_tag,tag,strlen(tag));
@@ -117,7 +117,7 @@ int upf_tag_isdef(FILE * fp, const char * tag){
   
   //Prepare base string
   init_tag = (char *) malloc ((strlen(tag)+3) * sizeof(char));
-  CHECK_ERROR(init_tag != NULL, PSPIO_ENOMEM);
+  CHECK_FATAL(init_tag != NULL, PSPIO_ENOMEM);
   init_tag[0] = '\0';
   strcat(init_tag,"<");
   strncat(init_tag,tag,strlen(tag));

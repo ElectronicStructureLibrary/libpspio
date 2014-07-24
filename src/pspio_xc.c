@@ -55,7 +55,7 @@ int pspio_xc_alloc(pspio_xc_t **xc, const int nlcc_scheme, const int np){
   }
 
   *xc = (pspio_xc_t *) malloc (sizeof(pspio_xc_t));
-  CHECK_ERROR(*xc != NULL, PSPIO_ENOMEM);
+  CHECK_FATAL(*xc != NULL, PSPIO_ENOMEM);
 
   (*xc)->nlcc_scheme = nlcc_scheme;
   (*xc)->core_dens = NULL;

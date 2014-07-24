@@ -45,7 +45,7 @@ int pspio_pspdata_init(pspio_pspdata_t **pspdata) {
   
   // Memory allocation
   *pspdata = (pspio_pspdata_t *) malloc (sizeof(pspio_pspdata_t));
-  CHECK_ERROR(*pspdata != NULL, PSPIO_ENOMEM);
+  CHECK_FATAL(*pspdata != NULL, PSPIO_ENOMEM);
 
   // Nullify pointers and initialize all values to 0
   (*pspdata)->format = PSPIO_FMT_UNKNOWN;
@@ -80,6 +80,7 @@ int pspio_pspdata_init(pspio_pspdata_t **pspdata) {
 
   return PSPIO_SUCCESS;
 }
+
 
 int pspio_pspdata_read(pspio_pspdata_t **pspdata, const int *file_format, 
       const char *file_name){
