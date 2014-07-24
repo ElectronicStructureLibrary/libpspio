@@ -42,7 +42,7 @@ int upf_write_header(FILE *fp, const pspio_pspdata_t *pspdata){
   int is, l;
   double occ;
   char label[5];
-  int has_nlcc, exchange, correlation;
+  int exchange, correlation;
   char shortname[5], longname[21];
 
   //Write init tag
@@ -59,8 +59,7 @@ int upf_write_header(FILE *fp, const pspio_pspdata_t *pspdata){
   fprintf(fp, "   NC                  Norm - Conserving pseudopotential\n");
   
   //Write the if there are nonlinear core corrections
-  pspio_xc_has_nlcc(pspdata->xc, &has_nlcc);
-  if (has_nlcc) {
+  if (pspio_xc_has_nlcc(pspdata->xc)) {
     fprintf(fp, "    T                  Nonlinear Core Correction\n");
   } else {
     fprintf(fp, "    F                  Nonlinear Core Correction\n");
@@ -141,7 +140,7 @@ void upf_write_nlcc(FILE *fp, const pspio_pspdata_t *pspdata){
 
   //Print density
   for (i=0; i<pspdata->mesh->np; i++) {
-    pspio_xc_nlcc_eval(pspdata->xc, 1, &(pspdata->mesh->r[i]), &rho);
+    pspio_xc_core_density_eval(pspdata->xc, 1, &(pspdata->mesh->r[i]), &rho);
     if (i != 0 && i % 4 == 0) fprintf(fp, "\n");
     fprintf(fp, " %18.11E", rho);
   }

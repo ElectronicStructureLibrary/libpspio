@@ -36,7 +36,7 @@ int main(void) {
 
   int eid;
   pspio_mesh_t *mesh = NULL;
-  pspio_xc_t *xc1 = NULL, *xc2 = NULL;
+  pspio_xc_t *xc = NULL;
 
   /* Display basic information */
   DEBUG_PRINT("%s - test_xc\nReport bugs to %s\n\n", PACKAGE_STRING,
@@ -53,27 +53,25 @@ int main(void) {
   DEBUG_PRINT("\n");
 
   /* Check creation and destruction of xc */
-  DEBUG_PRINT("test_xc: creating xc1 with NLCC\n");
-  eid = pspio_xc_alloc(&xc1, PSPIO_NLCC_UNKNOWN, np);
+  DEBUG_PRINT("test_xc: creating xc\n");
+  eid = pspio_xc_alloc(&xc);
   eid = pspio_error_flush();
-  DEBUG_PRINT("test_xc: creating xc2 with no NLCC\n");
-  eid = pspio_xc_alloc(&xc2, PSPIO_NLCC_NONE, 0);
-  eid = pspio_error_flush();
-  DEBUG_PRINT("test_xc: destroying xc2\n");
-  pspio_xc_free(&xc2);
   DEBUG_PRINT("\n");
 
   /* Check setting of the xc */
-  DEBUG_PRINT("test_xc: setting xc1 with PW92 LDA\n");
-  pspio_xc_set(&xc1, XC_LDA_X, XC_LDA_C_PW);
-  DEBUG_PRINT("test_xc: setting NLCC of xc1\n");
-  eid = pspio_xc_nlcc_set(&xc1, mesh, cd, NULL, NULL);
+  DEBUG_PRINT("test_xc: setting xc with PW92 LDA\n");
+  pspio_xc_set_id(&xc, XC_LDA_X, XC_LDA_C_PW);
+  DEBUG_PRINT("test_xc: setting of NLCC scheme of xc\n");
+  eid = pspio_xc_set_nlcc_scheme(&xc, PSPIO_NLCC_UNKNOWN);
+  eid = pspio_error_flush();
+  DEBUG_PRINT("test_xc: setting of core density of xc\n");
+  eid = pspio_xc_set_core_density(&xc, mesh, cd, NULL, NULL);
   eid = pspio_error_flush();
   DEBUG_PRINT("\n");
 
   /* Destroy xc */
-  DEBUG_PRINT("test_xc: destroying xc1\n");
-  pspio_xc_free(&xc1);
+  DEBUG_PRINT("test_xc: destroying xc\n");
+  pspio_xc_free(&xc);
   DEBUG_PRINT("\n");
 
   DEBUG_PRINT("=== END test_xc ===\n");

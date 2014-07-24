@@ -35,7 +35,7 @@
 
 
 int pspio_upf_read(FILE *fp, pspio_pspdata_t **pspdata){
-  int np, has_nlcc;
+  int np;
 
   HANDLE_FUNC_ERROR(upf_read_info(fp, pspdata));
 
@@ -49,8 +49,7 @@ int pspio_upf_read(FILE *fp, pspio_pspdata_t **pspdata){
 
   HANDLE_FUNC_ERROR(upf_read_header(fp, &np, pspdata));
   HANDLE_FUNC_ERROR(upf_read_mesh(fp, np, pspdata));
-  pspio_xc_has_nlcc((*pspdata)->xc, &has_nlcc);
-  if (has_nlcc) {
+  if (pspio_xc_has_nlcc((*pspdata)->xc)) {
     HANDLE_FUNC_ERROR(upf_read_nlcc(fp, np, pspdata));
   }
   HANDLE_FUNC_ERROR(upf_read_nonlocal(fp, np, pspdata));
@@ -62,15 +61,12 @@ int pspio_upf_read(FILE *fp, pspio_pspdata_t **pspdata){
 }
 
 int pspio_upf_write(FILE *fp, const pspio_pspdata_t *pspdata){
-  int has_nlcc;
-
   assert(pspdata != NULL);
 
   upf_write_info(fp, pspdata);
   HANDLE_FUNC_ERROR(upf_write_header(fp, pspdata));
   upf_write_mesh(fp, pspdata);
-  pspio_xc_has_nlcc(pspdata->xc, &has_nlcc);
-  if (has_nlcc) {
+  if (pspio_xc_has_nlcc(pspdata->xc)) {
     upf_write_nlcc(fp, pspdata);
   }
   upf_write_local(fp, pspdata);

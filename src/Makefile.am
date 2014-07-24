@@ -29,8 +29,6 @@
 
 # C source - keep this in alphabetical order
 pio_core_srcs = \
-  abinit_fhi.c \
-  abinit_format6.c \
   abinit_util.c \
   abinit_xc.c \
   pspio_abinit.c \

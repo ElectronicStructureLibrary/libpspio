@@ -110,12 +110,21 @@ int pspio_fhi_read(FILE *fp, pspio_pspdata_t **pspdata){
     pspio_qn_free(&qn);
   }
 
+  // If not done yet, then allocate the xc structure
+  if (&(*pspdata)->xc == NULL) {
+    HANDLE_FUNC_ERROR(pspio_xc_alloc(&(*pspdata)->xc));
+  }
+
+  //We do not know the xc functional:
+  pspio_xc_set_id(&(*pspdata)->xc, XC_NONE, XC_NONE);
+
+
   //Non-linear core-corrections
   has_nlcc = (fgets(line, PSPIO_STRLEN_LINE, fp) != NULL);
   if (has_nlcc) {
     double *cd, *cdp, *cdpp;
 
-    HANDLE_FUNC_ERROR(pspio_xc_alloc(&(*pspdata)->xc, PSPIO_NLCC_FHI, np));
+    pspio_xc_set_nlcc_scheme(&(*pspdata)->xc, PSPIO_NLCC_FHI);
 
     //Allocate memory
     cd = (double *) malloc (np*sizeof(double));
@@ -138,26 +147,21 @@ int pspio_fhi_read(FILE *fp, pspio_pspdata_t **pspdata){
     }
 
     //Store the non-linear core corrections in the pspdata structure
-    HANDLE_FUNC_ERROR(pspio_xc_nlcc_set(&(*pspdata)->xc, (*pspdata)->mesh, cd, cdp, cdpp));
+    HANDLE_FUNC_ERROR(pspio_xc_set_core_density(&(*pspdata)->xc, (*pspdata)->mesh, cd, cdp, cdpp));
 
     //Free memory
     free(cd); 
     free(cdp); 
     free(cdpp);
 
-  } else {
-    HANDLE_FUNC_ERROR(pspio_xc_alloc(&(*pspdata)->xc, PSPIO_NLCC_NONE, np));
   }
-
-  //We do not know the xc functional:
-  pspio_xc_set(&(*pspdata)->xc, XC_NONE, XC_NONE);
 
   return PSPIO_SUCCESS;
 }
 
 
 int pspio_fhi_write(FILE *fp, const pspio_pspdata_t *pspdata){
-  int i, l, is, ir, has_nlcc;
+  int i, l, is, ir;
   double wf, v, r, j;
 
   assert(pspdata != NULL);
@@ -194,12 +198,11 @@ int pspio_fhi_write(FILE *fp, const pspio_pspdata_t *pspdata){
   }
 
   // Write non-linear core corrections
-  pspio_xc_has_nlcc(pspdata->xc, &has_nlcc);
-  if (has_nlcc) {
+  if (pspio_xc_has_nlcc(pspdata->xc)) {
     pspio_meshfunc_t *core_dens = NULL;
     double cd, cdp, cdpp;
 
-    pspio_xc_nlcc_get(pspdata->xc, &core_dens);
+    pspio_xc_get_core_density(pspdata->xc, &core_dens);
 
     for (ir=0; ir<pspdata->mesh->np; ir++) {
       r = pspdata->mesh->r[ir];

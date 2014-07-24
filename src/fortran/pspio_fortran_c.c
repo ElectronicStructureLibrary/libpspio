@@ -388,27 +388,27 @@ void FC_FUNC_(pspio_f90_xc_get_exchange, PSPIO_F90_XC_GET_EXCHANGE)
 
 }
 
-void FC_FUNC_(pspio_f90_xc_has_nlcc_int, PSPIO_F90_XC_HAS_NLCC_INT)
-     (void ** xc, int *has_nlcc)
+int FC_FUNC_(pspio_f90_xc_has_nlcc_int, PSPIO_F90_XC_HAS_NLCC_INT)
+     (void ** xc)
 {
 
-  pspio_xc_has_nlcc(((pspio_xc_t *)(*xc)), has_nlcc);
+  return pspio_xc_has_nlcc(((pspio_xc_t *)(*xc)));
 
 }
 
-void FC_FUNC_(pspio_f90_xc_nlcc_eval_s, PSPIO_F90_XC_NLCC_EVAL_S)
+void FC_FUNC_(pspio_f90_xc_core_density_eval_s, PSPIO_F90_XC_CORE_DENSITY_EVAL_S)
      (void ** xc, double *r, double *core_dens)
 {
 
-  pspio_xc_nlcc_eval(((pspio_xc_t *)(*xc)), 1, r, core_dens);
+  pspio_xc_core_density_eval(((pspio_xc_t *)(*xc)), 1, r, core_dens);
 
 }
 
-void FC_FUNC_(pspio_f90_xc_nlcc_eval_v, PSPIO_F90_XC_NLCC_EVAL_V)
+void FC_FUNC_(pspio_f90_xc_core_density_eval_v, PSPIO_F90_XC_NLCC_EVAL_V)
      (void ** xc, int *np, double *r, double *core_dens)
 {
 
-  pspio_xc_nlcc_eval(((pspio_xc_t *)(*xc)), *np, r, core_dens);
+  pspio_xc_core_density_eval(((pspio_xc_t *)(*xc)), *np, r, core_dens);
 
 }
 

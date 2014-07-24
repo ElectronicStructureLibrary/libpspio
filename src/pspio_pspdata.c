@@ -130,7 +130,7 @@ int pspio_pspdata_read(pspio_pspdata_t **pspdata, const int *file_format,
 
   // Store the format
   (*pspdata)->format = psp_fmt;
-
+  printf("This is the error code %d\n", eid);
   // Close file
   TRIGGER_ERROR(fclose(fp) == 0, PSPIO_EIO);
 

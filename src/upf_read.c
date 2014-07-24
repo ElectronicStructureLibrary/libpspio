@@ -136,12 +136,13 @@ int upf_read_header(FILE *fp, int *np, pspio_pspdata_t **pspdata){
   }
 
   // Initialize xc
+  HANDLE_FUNC_ERROR(pspio_xc_alloc(&(*pspdata)->xc));
   if (strcmp(nlcc_flag, "T") == 0) {
-    HANDLE_FUNC_ERROR(pspio_xc_alloc(&(*pspdata)->xc, PSPIO_NLCC_UNKNOWN, *np));
+    HANDLE_FUNC_ERROR(pspio_xc_set_nlcc_scheme(&(*pspdata)->xc, PSPIO_NLCC_UNKNOWN));
   } else {
-    HANDLE_FUNC_ERROR(pspio_xc_alloc(&(*pspdata)->xc, PSPIO_NLCC_NONE, *np));
+    HANDLE_FUNC_ERROR(pspio_xc_set_nlcc_scheme(&(*pspdata)->xc, PSPIO_NLCC_NONE));
   }
-  pspio_xc_set(&(*pspdata)->xc, exchange, correlation);
+  pspio_xc_set_id(&(*pspdata)->xc, exchange, correlation);
 
   //Check end tag
   HANDLE_FUNC_ERROR(upf_tag_check_end(fp, "PP_HEADER"));
@@ -223,7 +224,7 @@ int upf_read_nlcc(FILE *fp, const int np, pspio_pspdata_t **pspdata){
   }
 
   //Store the non-linear core corrections in the pspdata structure
-  HANDLE_FUNC_ERROR(pspio_xc_nlcc_set(&(*pspdata)->xc, (*pspdata)->mesh, rho, NULL, NULL));
+  HANDLE_FUNC_ERROR(pspio_xc_set_core_density(&(*pspdata)->xc, (*pspdata)->mesh, rho, NULL, NULL));
 
   //Free memory
   free(rho);
