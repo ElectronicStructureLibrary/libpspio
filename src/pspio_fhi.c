@@ -111,7 +111,7 @@ int pspio_fhi_read(FILE *fp, pspio_pspdata_t **pspdata){
   }
 
   // If not done yet, then allocate the xc structure
-  if (&(*pspdata)->xc == NULL) {
+  if ((*pspdata)->xc == NULL) {
     HANDLE_FUNC_ERROR(pspio_xc_alloc(&(*pspdata)->xc));
   }
 
