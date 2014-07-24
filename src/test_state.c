@@ -93,6 +93,7 @@ int main(void) {
   /* Check creation of lookup table */
   DEBUG_PRINT("test_state: creating st[3]\n");
   st = (pspio_state_t **) malloc (3 * sizeof(pspio_state_t *));
+  memset(st, 0, 3 * sizeof(pspio_state_t *));
   PTR_STAT_SHOW(st);
   DEBUG_PRINT("test_state: creating st[0]\n");
   eid = pspio_state_alloc(&st[0], np);
