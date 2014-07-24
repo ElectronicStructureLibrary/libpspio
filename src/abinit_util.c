@@ -56,7 +56,8 @@ int abinit_read_header(FILE *fp, const int format,  pspio_pspdata_t **pspdata) {
   // Line 1: read title
   CHECK_ERROR( fgets(line, PSPIO_STRLEN_LINE, fp) != NULL, PSPIO_EIO);
   s = strlen(line);
-  (*pspdata)->info = (char *) malloc (s + 1);
+  (*pspdata)->info = (char *) malloc ((s+1)*sizeof(char));
+  CHECK_ERROR((*pspdata)->info != NULL, PSPIO_ENOMEM);
   strncpy((*pspdata)->info, line, s);
   (*pspdata)->info[s] = '\0';
 
@@ -66,6 +67,9 @@ int abinit_read_header(FILE *fp, const int format,  pspio_pspdata_t **pspdata) {
   CHECK_ERROR( sscanf(line, "%lf %lf", &zatom, &zval) == 2, PSPIO_EFILE_CORRUPT);
   (*pspdata)->z = zatom;
   (*pspdata)->zvalence = zval;
+  (*pspdata)->symbol = (char *) malloc (3*sizeof(char));
+  CHECK_ERROR((*pspdata)->symbol != NULL, PSPIO_ENOMEM);
+  HANDLE_FUNC_ERROR(z_to_symbol((*pspdata)->z, (*pspdata)->symbol));
 
   // Line 3: read pspcod, pspxc, lmax, lloc, mmax, r2well
   CHECK_ERROR( fgets(line, PSPIO_STRLEN_LINE, fp) != NULL, PSPIO_EIO);

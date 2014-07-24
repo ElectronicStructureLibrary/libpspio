@@ -38,6 +38,9 @@ int pspio_xc_alloc(pspio_xc_t **xc){
   *xc = (pspio_xc_t *) malloc (sizeof(pspio_xc_t));
   CHECK_ERROR(*xc != NULL, PSPIO_ENOMEM);
 
+  (*xc)->correlation = XC_NONE;
+  (*xc)->exchange = XC_NONE;
+
   (*xc)->nlcc_scheme = PSPIO_NLCC_NONE;
   (*xc)->core_dens = NULL;
 

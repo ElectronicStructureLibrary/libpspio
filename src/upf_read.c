@@ -87,7 +87,7 @@ int upf_read_header(FILE *fp, int *np, pspio_pspdata_t **pspdata){
   (*pspdata)->symbol = (char *) malloc (3*sizeof(char));
   CHECK_ERROR((*pspdata)->symbol != NULL, PSPIO_ENOMEM);
   strcpy((*pspdata)->symbol, strtok(line," "));
-  symbol_to_z((*pspdata)->symbol, (*pspdata)->z);
+  HANDLE_FUNC_ERROR(symbol_to_z((*pspdata)->symbol, (*pspdata)->z));
 
   //Read the kind of pseudo-potentials US|NC|PAW
   CHECK_ERROR(fgets(line, PSPIO_STRLEN_LINE, fp) != NULL, PSPIO_EIO);

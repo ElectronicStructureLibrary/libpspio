@@ -52,8 +52,9 @@
  * @param[in] z: atomic number
  * @param[out] symbol: the symbol
  * @note z should be larger than 0 and smaller than 113.
+ * @return error code
  */
-void z_to_symbol(const double z, char *symbol);
+int z_to_symbol(const double z, char *symbol);
 
 
 /**

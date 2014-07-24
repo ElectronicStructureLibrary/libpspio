@@ -115,10 +115,6 @@ int pspio_fhi_read(FILE *fp, pspio_pspdata_t **pspdata){
     HANDLE_FUNC_ERROR(pspio_xc_alloc(&(*pspdata)->xc));
   }
 
-  //We do not know the xc functional:
-  pspio_xc_set_id(&(*pspdata)->xc, XC_NONE, XC_NONE);
-
-
   //Non-linear core-corrections
   has_nlcc = (fgets(line, PSPIO_STRLEN_LINE, fp) != NULL);
   if (has_nlcc) {
@@ -155,6 +151,14 @@ int pspio_fhi_read(FILE *fp, pspio_pspdata_t **pspdata){
     free(cdpp);
 
   }
+
+  //We do not know the symbol (note that it might have been set somewhere else)
+  if ((*pspdata)->symbol == NULL) {
+    (*pspdata)->symbol = (char *) malloc (3*sizeof(char));
+    CHECK_ERROR((*pspdata)->symbol != NULL, PSPIO_ENOMEM);
+    sprintf((*pspdata)->symbol, "N/D");
+  }
+
 
   return PSPIO_SUCCESS;
 }
