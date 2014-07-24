@@ -267,4 +267,5 @@ fi
 AC_MSG_NOTICE([LDFLAGS  = ${LDFLAGS}])
 AC_MSG_NOTICE([LIBS     = ${LIBS}])
 
-AC_OUTPUT([Makefile src/Makefile src/fortran/Makefile])
+AC_OUTPUT([Makefile src/Makefile src/fortran/Makefile src/test_io_multiple.sh])
+AC_CONFIG_COMMANDS([script-perms],[chmod u+x src/test_io_multiple.sh])

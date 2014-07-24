@@ -1,5 +1,17 @@
 #!/usr/bin/env python
 
+"""\
+This script generates Fortran constants in src/fortran/pspio_f90_types.F90
+from those declared in src/pspio_common.h, to ensure a perfect match between
+C and Fortran namespaces and avoid the inclusion of pspio_common.h in Fortran
+files.
+"""
+
+__author__ = "Yann Pouillon"
+__copyright__ = "Copyright (C) 2014 Yann Pouillon"
+__license__ = "LGPL version 3"
+__version__ = "0.1"
+
 import os
 import re
 

@@ -113,7 +113,6 @@ endif
 
 pio_basic_tests = \
   test_error \
-  test_io \
   test_mesh \
   test_meshfunc \
   test_qn \
@@ -121,9 +120,21 @@ pio_basic_tests = \
   test_projector \
   test_state \
   test_xc
+pio_xfail_tests = \
+  test_assert \
+  test_io
+pio_wrapped_tests = \
+  test_io_multiple.sh
 
-check_PROGRAMS = $(pio_basic_tests)
-TESTS = $(pio_basic_tests)
+check_PROGRAMS = $(pio_basic_tests) $(pio_xfail_tests)
+nodist_check_SCRIPTS = $(pio_wrapped_tests)
+TESTS = $(pio_basic_tests) $(pio_xfail_tests) $(pio_wrapped_tests)
+XFAIL_TESTS = $(pio_xfail_tests)
+
+test_assert_SOURCES = test_assert.c
+test_assert_LDADD = -lpspio
+test_assert_CPPFLAGS = -I$(srcdir)/../src
+test_assert_DEPENDENCIES = libpspio.la
 
 test_error_SOURCES = test_error.c
 test_error_LDADD = -lpspio

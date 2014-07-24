@@ -326,8 +326,9 @@ module pspio_f90_lib_m
 
   ! pspio_error
   interface
-    subroutine pspio_f90_error_add(filename, lineno)
+    subroutine pspio_f90_error_add(error_id, filename, lineno)
       implicit none
+      integer, intent(in) :: error_id
       integer, intent(in) :: lineno
       character(len=*), intent(in) :: filename
     end subroutine pspio_f90_error_add
@@ -345,6 +346,10 @@ module pspio_f90_lib_m
     integer function pspio_f90_error_free()
       implicit none
     end function pspio_f90_error_free
+
+    integer function pspio_f90_error_get_last()
+      implicit none
+    end function pspio_f90_error_get_last
 
     integer function pspio_f90_error_len()
       implicit none

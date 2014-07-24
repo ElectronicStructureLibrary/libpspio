@@ -27,31 +27,40 @@
 #include "config.h"
 #endif
 
-/* The following is a VERY bad trick. Whoever finds something better
- * is welcome to speak. */
-static int pspio_error_tmp_id = PSPIO_SUCCESS;
+/* Store successive errors in a chain */
 static pspio_error_t *pspio_error_chain = NULL;
 
-
-void pspio_error_add(const char *filename, const int line) {
+void pspio_error_add(const int error_id, const char *filename,
+       const int line) {
   int s;
   pspio_error_t *last_err;
 
   /* Notes:
        * errors in this routine must be fatal, in order to avoid
          infinite loops;
-       * the error status must be left untouched.
+       * PSPIO_SUCCESS must always be ignored;
+       * the routine cannot call any error macro, in order to avoid
+         infinite loops.
    */
-  if ( pspio_error_chain == NULL ) {
-    pspio_error_chain = (pspio_error_t *) malloc (sizeof(pspio_error_t));
-    ASSERT(pspio_error_chain != NULL, PSPIO_ENOMEM)
 
-    pspio_error_chain->id = pspio_error_tmp_id;
+  if ( error_id == PSPIO_SUCCESS ) return;
+
+  if ( pspio_error_chain == NULL ) {
+    pspio_error_chain = malloc (sizeof(pspio_error_t));
+    if ( pspio_error_chain == NULL ) {
+      pspio_error_show(PSPIO_ENOMEM, __FILE__, __LINE__);
+      exit(1);
+    }
+
+    pspio_error_chain->id = error_id;
     pspio_error_chain->line = line;
     pspio_error_chain->next = NULL;
     s = strlen(filename);
     pspio_error_chain->filename = (char *) malloc (s + 1);
-    ASSERT(pspio_error_chain->filename != NULL, PSPIO_ENOMEM)
+    if ( pspio_error_chain->filename == NULL ) {
+      pspio_error_show(PSPIO_ENOMEM, __FILE__, __LINE__);
+      exit(1);
+    }
     memcpy(pspio_error_chain->filename, filename, s);
     pspio_error_chain->filename[s] = '\0';
   } else {
@@ -61,14 +70,20 @@ void pspio_error_add(const char *filename, const int line) {
     }
 
     last_err->next = (pspio_error_t *) malloc (sizeof(pspio_error_t));
-    ASSERT(last_err->next != NULL, PSPIO_ENOMEM)
+    if ( last_err->next == NULL ) {
+      pspio_error_show(PSPIO_ENOMEM, __FILE__, __LINE__);
+      exit(1);
+    }
     last_err = last_err->next;
-    last_err->id = pspio_error_tmp_id;
+    last_err->id = error_id;
     last_err->line = line;
     last_err->next = NULL;
     s = strlen(filename);
     last_err->filename = (char *) malloc (s + 1);
-    ASSERT(last_err->filename != NULL, PSPIO_ENOMEM)
+    if ( last_err->filename == NULL ) {
+      pspio_error_show(PSPIO_ENOMEM, __FILE__, __LINE__);
+      exit(1);
+    }
     memcpy(last_err->filename, filename, s);
     last_err->filename[s] = '\0';
   }
@@ -135,13 +150,16 @@ int pspio_error_free(void) {
     free(first_err);
   }
 
-  pspio_error_tmp_id = PSPIO_SUCCESS;
   return PSPIO_SUCCESS;
 }
 
 
-int pspio_error_get(void) {
-  return pspio_error_tmp_id;
+int pspio_error_get_last(void) {
+  if ( pspio_error_chain == NULL ) {
+    return PSPIO_SUCCESS;
+  } else {
+    return pspio_error_chain->id;
+  }
 }
 
 
@@ -167,11 +185,6 @@ pspio_error_t *pspio_error_pop(void) {
   }
 
   return first_error;
-}
-
-
-void pspio_error_set(const int error_id) {
-  pspio_error_tmp_id = error_id;
 }
 
 
