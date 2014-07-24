@@ -102,6 +102,10 @@ int pspio_pspdata_read(pspio_pspdata_t **pspdata, const int *file_format,
     if ( (*file_format != PSPIO_FMT_UNKNOWN) && (fmt != *file_format) ) {
       continue;
     }
+    
+    // The error chain should be reset, as some errors might have been
+    // set in the previous iteration of this loop
+    pspio_error_free();
 
     // Always rewind the file to allow for multiple reads
     CHECK_ERROR(fp != NULL, PSPIO_ENOFILE);
