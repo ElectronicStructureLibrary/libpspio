@@ -1,4 +1,6 @@
 #!/usr/bin/env python
+#
+# Copyright (C) 2014 Yann Pouillon
 
 """\
 This script generates Fortran constants in src/fortran/pspio_f90_types.F90
