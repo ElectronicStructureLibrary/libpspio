@@ -208,6 +208,16 @@ void FC_FUNC_(pspio_f90_mesh_get_np, PSPIO_F90_MESH_GET_NP)
 
 }
 
+void FC_FUNC_(pspio_f90_mesh_get_info, PSPIO_F90_MESH_GET_INFO)
+  (void **mesh, int *type, int *np, double *a, double *b){
+
+  *type = ((pspio_mesh_t *)(*mesh))->type;
+  *np = ((pspio_mesh_t *)(*mesh))->np;
+  *a = ((pspio_mesh_t *)(*mesh))->a;
+  *b = ((pspio_mesh_t *)(*mesh))->b;
+}
+
+
 void FC_FUNC_(pspio_f90_mesh_get_r, PSPIO_F90_MESH_GET_R)
      (void ** mesh, double *r)
 {

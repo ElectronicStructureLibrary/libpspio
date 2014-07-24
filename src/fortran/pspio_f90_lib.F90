@@ -154,6 +154,16 @@ module pspio_f90_lib_m
 
   ! pspio_mesh
   interface
+    subroutine pspio_f90_mesh_get_info(mesh, mesh_type, np, a, b)
+      use pspio_f90_types_m
+      implicit none
+      type(pspio_f90_mesh_t), intent(in)  :: mesh
+      integer,                intent(out) :: mesh_type
+      integer,                intent(out) :: np
+      real(pspio_f90_kind),   intent(out) :: a
+      real(pspio_f90_kind),   intent(out) :: b
+    end subroutine pspio_f90_mesh_get_info
+
     subroutine pspio_f90_mesh_get_np(mesh, np)
       use pspio_f90_types_m
       implicit none
