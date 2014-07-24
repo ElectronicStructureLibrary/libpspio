@@ -38,8 +38,8 @@ chmod -R u+w .
 
 # Remove temporary directories and files
 echo "Removing temporary directories and files..."
-rm -rf tmp*
-find . -depth -name 'tmp-*' -exec rm -rf {} \;
+find . -depth -name 'tmp*' -exec rm -rf {} \;
+find . -depth -name '*.tmp' -exec rm -rf {} \;
 echo "done."
 
 # Remove autotools files
