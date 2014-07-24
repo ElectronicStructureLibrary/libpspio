@@ -152,6 +152,25 @@ module pspio_f90_lib_m
     end subroutine pspio_f90_pspdata_get_xc
   end interface
 
+  interface pspio_f90_pspdata_rho_valence_eval
+    subroutine pspio_f90_pspdata_rho_valence_eval_s(pspdata, r, rho)
+      use pspio_f90_types_m
+      implicit none
+      type(pspio_f90_pspdata_t), intent(in)  :: pspdata
+      real(pspio_f90_kind),      intent(in)  :: r
+      real(pspio_f90_kind),      intent(out) :: rho
+    end subroutine pspio_f90_pspdata_rho_valence_eval_s
+
+    subroutine pspio_f90_pspdata_rho_valence_eval_v(pspdata, np, r, rho)
+      use pspio_f90_types_m
+      implicit none
+      type(pspio_f90_pspdata_t), intent(in)  :: pspdata
+      integer,                   intent(in)  :: np
+      real(pspio_f90_kind),      intent(in)  :: r(np)
+      real(pspio_f90_kind),      intent(out) :: rho(np)
+    end subroutine pspio_f90_pspdata_rho_valence_eval_v
+  end interface
+
   ! pspio_mesh
   interface
     subroutine pspio_f90_mesh_get_info(mesh, mesh_type, np, a, b)

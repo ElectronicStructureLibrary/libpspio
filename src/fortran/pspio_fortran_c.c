@@ -195,6 +195,21 @@ void FC_FUNC_(pspio_f90_pspdata_get_xc, PSPIO_F90_PSPDATA_GET_XC)
 
 }
 
+void FC_FUNC_(pspio_f90_pspdata_rho_valence_eval_s, PSPIO_F90_PSPDATA_RHO_VALENCE_EVAL_S)
+     (void ** pspdata, double *r, double *rho)
+{
+
+  pspio_meshfunc_eval(((pspio_pspdata_t *)(*pspdata))->rho_valence, 1, r, rho);
+
+}
+
+void FC_FUNC_(pspio_f90_pspdata_rho_valence_eval_v, PSPIO_F90_PSPDATA_RHO_VALENCE_EVAL_V)
+     (void ** pspdata, int *np, double *r, double *rho)
+{
+
+  pspio_meshfunc_eval(((pspio_pspdata_t *)(*pspdata))->rho_valence, *np, r, rho);
+
+}
 
 /**********************************************************************
  * pspio_mesh                                                         *
