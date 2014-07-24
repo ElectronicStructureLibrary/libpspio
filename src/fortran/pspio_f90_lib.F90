@@ -418,15 +418,14 @@ module pspio_f90_lib_m
 
 contains
 
-  subroutine pspio_f90_xc_has_nlcc(xc, has_nlcc)
+  logical function pspio_f90_xc_has_nlcc(xc)
     use pspio_f90_types_m
     implicit none
     type(pspio_f90_xc_t), intent(in)  :: xc
-    logical,              intent(out) :: has_nlcc
     
-    has_nlcc = pspio_f90_xc_has_nlcc_int(xc) /= 0
+    pspio_f90_xc_has_nlcc = pspio_f90_xc_has_nlcc_int(xc) /= 0
 
-  end subroutine pspio_f90_xc_has_nlcc
+  end function pspio_f90_xc_has_nlcc
 
 
 end module pspio_f90_lib_m
