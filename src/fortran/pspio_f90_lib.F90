@@ -109,6 +109,21 @@ module pspio_f90_lib_m
       type(pspio_f90_state_t),   intent(out) :: state
     end subroutine pspio_f90_pspdata_get_state
 
+    subroutine pspio_f90_pspdata_get_n_potentials(pspdata, n_potentials)
+      use pspio_f90_types_m
+      implicit none
+      type(pspio_f90_pspdata_t), intent(in)  :: pspdata
+      integer,                   intent(out) :: n_potentials
+    end subroutine pspio_f90_pspdata_get_n_potentials
+
+    subroutine pspio_f90_pspdata_get_potential(pspdata, i, potential)
+      use pspio_f90_types_m
+      implicit none
+      type(pspio_f90_pspdata_t),   intent(in)  :: pspdata
+      integer,                     intent(in)  :: i
+      type(pspio_f90_potential_t), intent(out) :: potential
+    end subroutine pspio_f90_pspdata_get_potential
+
     subroutine pspio_f90_pspdata_get_n_kbproj(pspdata, n_kbproj)
       use pspio_f90_types_m
       implicit none

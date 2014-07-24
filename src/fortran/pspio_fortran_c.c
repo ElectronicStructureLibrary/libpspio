@@ -147,6 +147,22 @@ void FC_FUNC_(pspio_f90_pspdata_get_state, PSPIO_F90_PSPDATA_GET_STATE)
 
 }
 
+void FC_FUNC_(pspio_f90_pspdata_get_n_potentials, PSPIO_F90_PSPDATA_GET_N_POTENTIALS)
+     (void ** pspdata, int *n_potentials)
+{
+
+  *n_potentials = ((pspio_pspdata_t *)(*pspdata))->n_potentials;
+
+}
+
+void FC_FUNC_(pspio_f90_pspdata_get_potential, PSPIO_F90_PSPDATA_GET_POTENTIAL)
+     (void ** pspdata, int *i, void ** potential)
+{
+
+  *potential = (void *) ((pspio_pspdata_t *)(*pspdata))->potentials[*i-1];
+
+}
+
 void FC_FUNC_(pspio_f90_pspdata_get_n_kbproj, PSPIO_F90_PSPDATA_GET_N_KBPROJ)
      (void ** pspdata, int *n_kbproj)
 {
