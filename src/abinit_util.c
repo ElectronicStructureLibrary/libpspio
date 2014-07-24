@@ -22,6 +22,7 @@
  * @brief Utility routines to read/write Abinit files
  */
 #include <stdio.h>
+#include <assert.h>
 #include <string.h>
 #include <ctype.h>
 #include <time.h>
@@ -155,7 +156,7 @@ int abinit_write_header(FILE *fp, const int format, const pspio_pspdata_t *pspda
   time_t int_now;
   struct tm *now;
 
-  ASSERT(pspdata != NULL, PSPIO_ERROR);
+  assert(pspdata != NULL);
 
   // Init auxiliary data
   pspio_xc_has_nlcc(pspdata->xc, &have_nlcc);

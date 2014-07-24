@@ -23,6 +23,7 @@
  *        format.
  */
 #include <stdio.h>
+#include <assert.h>
 #include <string.h>
 #include <ctype.h>
 #include "pspio_abinit.h"
@@ -162,12 +163,12 @@ int abinit_fhi_write(FILE *fp, const pspio_pspdata_t *pspdata){
   int i, l, is, ir, have_nlcc;
   double wf, v, r, j;
 
-  ASSERT(pspdata != NULL, PSPIO_ERROR);
+  assert(pspdata != NULL);
 
   // If one considers that the specifications of this format is the way
   // how FHI98PP writes the data, then only meshes of type log1 should
   // be allowed. For the moment, we will just check that this is the case.
-  ASSERT(pspdata->mesh->type == PSPIO_MESH_LOG1, PSPIO_ERROR);  
+  assert(pspdata->mesh->type == PSPIO_MESH_LOG1);
 
   // Write header
   fprintf(fp, "%20.14E   %d\n", pspdata->zvalence, pspdata->l_max+1);

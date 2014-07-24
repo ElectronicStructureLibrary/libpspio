@@ -24,6 +24,7 @@
 
 #include <stdlib.h>
 #include <stdio.h>
+#include <assert.h>
 #include <string.h>
 
 #include "pspio_error.h"
@@ -39,7 +40,7 @@
  **********************************************************************/
 
 int pspio_version(int *major, int *minor, int *micro) {
-  ASSERT((major != NULL) && (minor != NULL) && (micro != NULL), PSPIO_ERROR)
+  assert((major != NULL) && (minor != NULL) && (micro != NULL));
 #if !defined HAVE_CONFIG_H
   return PSPIO_ERROR;
 #endif
@@ -56,7 +57,7 @@ int pspio_version(int *major, int *minor, int *micro) {
 
 
 int pspio_info_string(char *info) {
-  ASSERT(info == NULL, PSPIO_ERROR)
+  assert(info == NULL);
 #if !defined HAVE_CONFIG_H
   return PSPIO_ERROR;
 #endif
@@ -65,7 +66,7 @@ int pspio_info_string(char *info) {
 
   int s = strlen(package_string);
   info = (char *) malloc (s + 1);
-  ASSERT(info != NULL, PSPIO_ENOMEM)
+  assert(info != NULL);
   strncpy(info, package_string, s);
   info[s] = '\0';
 

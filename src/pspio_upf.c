@@ -21,8 +21,11 @@
  * @file pspio_upf.c
  * @brief implementation to read and write in PSPIO_FMT_UPF files 
  */
+#include <stdlib.h>
 #include <string.h>
+#include <assert.h>
 #include <ctype.h>
+
 #include "upf.h"
 #include "util.h"
 
@@ -61,7 +64,7 @@ int pspio_upf_read(FILE *fp, pspio_pspdata_t **pspdata){
 int pspio_upf_write(FILE *fp, const pspio_pspdata_t *pspdata){
   int has_nlcc;
 
-  ASSERT (pspdata != NULL, PSPIO_ERROR);
+  assert(pspdata != NULL);
 
   upf_write_info(fp, pspdata);
   HANDLE_FUNC_ERROR(upf_write_header(fp, pspdata));

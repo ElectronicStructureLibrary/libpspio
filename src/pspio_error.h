@@ -51,11 +51,13 @@ typedef struct pspio_error_type pspio_error_t;
 
 /**
  * Add an error to the chain.
+ * @param[in] error_id: error code.
  * @param[in] filename: source filename (use NULL if none).
  * @param[in] line: line number in the source file (ignored if filename
  *            is NULL).
+ * @return the error code provided as input (for automation purposes).
  */
-void pspio_error_add(const int error_id, const char *filename, const int line);
+int pspio_error_add(const int error_id, const char *filename, const int line);
 
 
 /**
@@ -126,39 +128,14 @@ const char *pspio_error_str(const int pspio_errorid);
  **********************************************************************/
 
 /**
- * Libpspio-specific assert
- * @param[in] condition: condition to check
- * @param[in] error_id: error code to set if condition is false
- */
-#define ASSERT(condition, error_id) \
-  if ( !(condition) ) { \
-    pspio_error_add(error_id, __FILE__, __LINE__); \
-    pspio_error_show(pspio_error_get_last(), __FILE__, __LINE__); \
-    exit(1); \
-  }
-
-
-/**
  * Error checker macro
  * @param[in] condition: condition to check
  * @param[in] error_id: error code to set before aborting
  */
 #define CHECK_ERROR(condition, error_id) \
   if (!(condition)) {		    \
-    pspio_error_add(error_id, __FILE__, __LINE__); \
-    return error_id; \
+    return pspio_error_add(error_id, __FILE__, __LINE__); \
   } 
-
-
-/**
- * Error handler macro for function calls
- * @param[in] function_call: the function to be called with all parameters
- */
-#define HANDLE_FUNC_ERROR(function_call) \
-  pspio_error_add(function_call, __FILE__, __LINE__); \
-  if ( pspio_error_get_last() != PSPIO_SUCCESS ) { \
-    return pspio_error_get_last(); \
-  }
 
 
 /**
@@ -167,8 +144,17 @@ const char *pspio_error_str(const int pspio_errorid);
  */
 #define HANDLE_ERROR(error_id) \
   if ( error_id != PSPIO_SUCCESS ) { \
-    pspio_error_add(error_id, __FILE__, __LINE__); \
-    return error_id; \
+    return pspio_error_add(error_id, __FILE__, __LINE__); \
+  }
+
+
+/**
+ * Error handler macro for function calls
+ * @param[in] function_call: the function to be called with all parameters
+ */
+#define HANDLE_FUNC_ERROR(function_call) \
+  if ( pspio_error_add(function_call, __FILE__, __LINE__) != PSPIO_SUCCESS ) { \
+    return pspio_error_get_last(); \
   }
 
 

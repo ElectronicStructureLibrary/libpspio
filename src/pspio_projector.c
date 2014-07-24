@@ -18,6 +18,7 @@
 */
 
 #include <stdlib.h>
+#include <assert.h>
 
 #include "pspio_projector.h"
 
@@ -33,9 +34,9 @@
 int pspio_projector_alloc(pspio_projector_t **projector, const int np){
   int ierr;
 
-  ASSERT(projector != NULL, PSPIO_ERROR);
-  ASSERT(*projector == NULL, PSPIO_ERROR);
-  ASSERT(np > 1, PSPIO_EVALUE);
+  assert(projector != NULL);
+  assert(*projector == NULL);
+  assert(np > 1);
 
   *projector = (pspio_projector_t *) malloc (sizeof(pspio_projector_t));
   CHECK_ERROR(*projector != NULL, PSPIO_ENOMEM);
@@ -86,28 +87,28 @@ void pspio_projector_free(pspio_projector_t **projector){
 
 void pspio_projector_eval(const pspio_projector_t *projector, const int np, 
 			 const double *r, double *p){
-  ASSERT(projector != NULL, PSPIO_ERROR);
+  assert(projector != NULL);
 
   pspio_meshfunc_eval(projector->proj, np, r, p);
 }
 
 
 void pspio_projector_get_energy(const pspio_projector_t *projector, double *e) {
-  ASSERT(projector != NULL, PSPIO_ERROR);
+  assert(projector != NULL);
 
   *e = projector->energy;
 }
 
 
 void pspio_projector_get_l(const pspio_projector_t *projector, int *l) {
-  ASSERT(projector != NULL, PSPIO_ERROR);
+  assert(projector != NULL);
 
   pspio_qn_get_l(projector->qn, l);
 }
 
 
 void pspio_projector_get_j(const pspio_projector_t *projector, double *j) {
-  ASSERT(projector != NULL, PSPIO_ERROR);
+  assert(projector != NULL);
 
   pspio_qn_get_j(projector->qn, j);
 }

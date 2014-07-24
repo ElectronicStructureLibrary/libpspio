@@ -19,6 +19,7 @@
 
 #include <stdlib.h>
 #include <stdio.h>
+#include <assert.h>
 #include <string.h>
 
 #include "pspio_error.h"
@@ -30,20 +31,22 @@
 /* Store successive errors in a chain */
 static pspio_error_t *pspio_error_chain = NULL;
 
-void pspio_error_add(const int error_id, const char *filename,
+int pspio_error_add(const int error_id, const char *filename,
        const int line) {
   int s;
   pspio_error_t *last_err;
 
   /* Notes:
+       * this routine cannot call any error macro, in order to avoid
+         infinite loops;
        * errors in this routine must be fatal, in order to avoid
          infinite loops;
        * PSPIO_SUCCESS must always be ignored;
-       * the routine cannot call any error macro, in order to avoid
-         infinite loops.
+       * this routine returns the submitted error ID for automation
+         purposes.
    */
 
-  if ( error_id == PSPIO_SUCCESS ) return;
+  if ( error_id == PSPIO_SUCCESS ) return error_id;
 
   if ( pspio_error_chain == NULL ) {
     pspio_error_chain = malloc (sizeof(pspio_error_t));
@@ -87,6 +90,8 @@ void pspio_error_add(const int error_id, const char *filename,
     memcpy(last_err->filename, filename, s);
     last_err->filename[s] = '\0';
   }
+
+  return error_id;
 }
 
 
@@ -98,7 +103,7 @@ int pspio_error_fetchall(char **err_str) {
 
   if ( cursor != NULL ) {
     *err_str  = (char *) malloc (20*sizeof(char));
-    ASSERT(*err_str != NULL, PSPIO_ENOMEM);
+    assert(*err_str != NULL);
     sprintf(*err_str, "%s", "libpspio: ERROR:\n");
   }
 
@@ -110,7 +115,7 @@ int pspio_error_fetchall(char **err_str) {
     err_len += strlen(buf);
 
     tmp_str  = (char *) malloc ((err_len+1)*sizeof(char));
-    ASSERT(tmp_str != NULL, PSPIO_ENOMEM);
+    assert(tmp_str != NULL);
     sprintf(tmp_str, "  * %s\n      at %s:%d\n",
       pspio_error_str(cursor->id), cursor->filename, cursor->line);
     fflush(stdout);

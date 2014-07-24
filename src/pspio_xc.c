@@ -18,6 +18,7 @@
 */
 
 #include <stdlib.h>
+#include <assert.h>
 
 #include "pspio_xc.h"
 
@@ -33,8 +34,8 @@
 int pspio_xc_alloc(pspio_xc_t **xc, const int nlcc_scheme, const int np){
   int ierr;
 
-  ASSERT(xc != NULL, PSPIO_EVALUE);
-  ASSERT(*xc == NULL, PSPIO_EVALUE);
+  assert(xc != NULL);
+  assert(*xc == NULL);
 
   switch (nlcc_scheme) {
   case PSPIO_NLCC_NONE:
@@ -72,7 +73,7 @@ int pspio_xc_alloc(pspio_xc_t **xc, const int nlcc_scheme, const int np){
 
 
 void pspio_xc_set(pspio_xc_t **xc, const int exchange, const int correlation){
-  ASSERT(*xc != NULL, PSPIO_EVALUE);
+  assert(*xc != NULL);
 
   (*xc)->exchange = exchange;
   (*xc)->correlation = correlation;
@@ -102,30 +103,30 @@ void pspio_xc_free(pspio_xc_t **xc){
  **********************************************************************/
 
 void pspio_xc_get_id(const pspio_xc_t *xc, int *exchange, int *correlation){
-  ASSERT(xc != NULL, PSPIO_EVALUE);
+  assert(xc != NULL);
 
   *exchange = xc->exchange;
   *correlation = xc->correlation;
 }
 
 void pspio_xc_has_nlcc(const pspio_xc_t *xc, int *has_nlcc) {
-  ASSERT (xc != NULL, PSPIO_EVALUE);
+  assert(xc != NULL);
 
   *has_nlcc = (xc->nlcc_scheme != PSPIO_NLCC_NONE);
 }
 
 void pspio_xc_nlcc_eval(const pspio_xc_t *xc, const int np, const double *r, double *core_dens) {
-  ASSERT(xc != NULL, PSPIO_ERROR);
-  ASSERT(r != NULL, PSPIO_ERROR);
-  ASSERT(core_dens != NULL, PSPIO_ERROR);
-  ASSERT(xc->nlcc_scheme != PSPIO_NLCC_NONE, PSPIO_ERROR);
+  assert(xc != NULL);
+  assert(r != NULL);
+  assert(core_dens != NULL);
+  assert(xc->nlcc_scheme != PSPIO_NLCC_NONE);
 
   pspio_meshfunc_eval(xc->core_dens, np, r, core_dens);
 }
 
 void pspio_xc_nlcc_get(const pspio_xc_t *xc, pspio_meshfunc_t **cd_func) {
-  ASSERT(xc != NULL, PSPIO_ERROR);
-  ASSERT(xc->nlcc_scheme != PSPIO_NLCC_NONE, PSPIO_ERROR);
+  assert(xc != NULL);
+  assert(xc->nlcc_scheme != PSPIO_NLCC_NONE);
 
   (*cd_func) = xc->core_dens;
 }

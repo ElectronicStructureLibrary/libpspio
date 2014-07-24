@@ -18,6 +18,7 @@
 */
 
 #include <stdio.h>
+#include <assert.h>
 #include <string.h>
 
 #include "pspio_error.h"
@@ -36,9 +37,9 @@
 int pspio_state_alloc(pspio_state_t **state, const int np) {
   int ierr;
 
-  ASSERT(state != NULL, PSPIO_ERROR);
-  ASSERT(*state == NULL, PSPIO_ERROR);
-  ASSERT(np > 1, PSPIO_EVALUE);
+  assert(state != NULL);
+  assert(*state == NULL);
+  assert(np > 1);
 
   *state = (pspio_state_t *) malloc (sizeof(pspio_state_t));
   CHECK_ERROR(*state != NULL, PSPIO_ENOMEM);
@@ -71,8 +72,8 @@ int pspio_state_set(pspio_state_t **state, const double eigenval,
 		    const double rc, const pspio_mesh_t *mesh, const double *wf) {
   int s;
 
-  ASSERT(*state != NULL, PSPIO_ERROR);
-  ASSERT((label != NULL) && ((*state)->label == NULL), PSPIO_ERROR);
+  assert(*state != NULL);
+  assert((label != NULL) && ((*state)->label == NULL));
 
   (*state)->eigenval = eigenval;
   (*state)->occ = occ;
@@ -92,8 +93,8 @@ int pspio_state_set(pspio_state_t **state, const double eigenval,
 int pspio_state_copy(pspio_state_t **dst, const pspio_state_t *src) {
   int s;
 
-  ASSERT(src != NULL, PSPIO_ERROR);
-  ASSERT((src->label != NULL) && ((*dst)->label == NULL), PSPIO_ERROR)
+  assert(src != NULL);
+  assert((src->label != NULL) && ((*dst)->label == NULL));
 
   if ( *dst == NULL ) {
     HANDLE_FUNC_ERROR(pspio_state_alloc(dst, src->wf->mesh->np));
@@ -119,9 +120,9 @@ int pspio_states_lookup_table(const int n_states, pspio_state_t **states,
   pspio_qn_t *qn;
   int **table;
 
-  ASSERT(n_states > 0,   PSPIO_EVALUE);
-  ASSERT(states != NULL, PSPIO_EVALUE);
-  ASSERT(table_ptr != NULL, PSPIO_EVALUE);
+  assert(n_states > 0);
+  assert(states != NULL);
+  assert(table_ptr != NULL);
 
   // Determine dimensions of the table
   nmax = 0; lmax = 0, rel = 0;
@@ -172,9 +173,9 @@ void pspio_state_free(pspio_state_t **state) {
  **********************************************************************/
 
 void pspio_state_wf_eval(const pspio_state_t *state, const int np, const double *r, double *wf){
-  ASSERT(state != NULL, PSPIO_ERROR);
-  ASSERT(r != NULL, PSPIO_ERROR);
-  ASSERT(wf != NULL, PSPIO_ERROR);
+  assert(state != NULL);
+  assert(r != NULL);
+  assert(wf != NULL);
   
   pspio_meshfunc_eval(state->wf, np, r, wf);
 }
@@ -182,7 +183,7 @@ void pspio_state_wf_eval(const pspio_state_t *state, const int np, const double 
 void pspio_state_get_label(const pspio_state_t *state, char *label){
   int s;
 
-  ASSERT(state != NULL, PSPIO_ERROR);
+  assert(state != NULL);
 
   s = strlen(state->label);
   memcpy(label,state->label,s);
@@ -190,25 +191,25 @@ void pspio_state_get_label(const pspio_state_t *state, char *label){
 }
 
 void pspio_state_get_n(const pspio_state_t *state, int *n){
-  ASSERT(state != NULL, PSPIO_ERROR);
+  assert(state != NULL);
   
   pspio_qn_get_n(state->qn, n);
 }
 
 void pspio_state_get_l(const pspio_state_t *state, int *l){
-  ASSERT(state != NULL, PSPIO_ERROR);
+  assert(state != NULL);
   
   pspio_qn_get_l(state->qn, l);
 }
 
 void pspio_state_get_j(const pspio_state_t *state, double *j){
-  ASSERT(state != NULL, PSPIO_ERROR);
+  assert(state != NULL);
   
   pspio_qn_get_j(state->qn, j);
 }
 
 void pspio_state_get_occ(const pspio_state_t *state, double *occ){
-  ASSERT(state != NULL, PSPIO_ERROR);
+  assert(state != NULL);
   
   *occ = state->occ;
 }

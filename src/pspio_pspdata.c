@@ -19,6 +19,7 @@
 */
 
 #include <stdio.h>
+#include <assert.h>
 
 #include "pspio_common.h"
 #include "pspio_error.h"
@@ -39,8 +40,8 @@
  **********************************************************************/
 
 int pspio_pspdata_init(pspio_pspdata_t **pspdata) {
-  ASSERT(pspdata != NULL, PSPIO_EVALUE);
-  ASSERT(*pspdata == NULL, PSPIO_EVALUE);
+  assert(pspdata != NULL);
+  assert(*pspdata == NULL);
   
   // Memory allocation
   *pspdata = (pspio_pspdata_t *) malloc (sizeof(pspio_pspdata_t));
@@ -84,9 +85,9 @@ int pspio_pspdata_read(pspio_pspdata_t **pspdata, int *file_format,
   int eid, fmt, psp_fmt;
   FILE * fp;
 
-  ASSERT(file_format != NULL, PSPIO_EVALUE);
-  ASSERT(pspdata != NULL, PSPIO_EVALUE);
-  ASSERT(*pspdata != NULL, PSPIO_EVALUE);
+  assert(file_format != NULL);
+  assert(pspdata != NULL);
+  assert(*pspdata != NULL);
 
   psp_fmt = PSPIO_FMT_UNKNOWN;
 
@@ -147,7 +148,7 @@ int pspio_pspdata_write(const pspio_pspdata_t *pspdata, const int file_format,
   FILE * fp;
   int eid;
 
-  ASSERT(pspdata != NULL, PSPIO_EVALUE);
+  assert(pspdata != NULL);
   
   // Open file
   fp = fopen(file_name, "w");
