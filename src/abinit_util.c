@@ -34,6 +34,13 @@
 #include "config.h"
 #endif
 
+/* proptotypes for the replacement functions */
+static char *
+my_strndup (char const *s, size_t n);
+
+static size_t
+my_strnlen (const char *string, size_t maxlen);
+
 
 int abinit_read_header(FILE *fp, int *format, int *np, int *have_nlcc,
   pspio_pspdata_t **pspdata) {
@@ -74,7 +81,7 @@ int abinit_read_header(FILE *fp, int *format, int *np, int *have_nlcc,
   // Note: tolerance copied from Abinit
   // FIXME: store rchrg, fchrg, qchrg
   CHECK_ERROR( fgets(line, PSPIO_STRLEN_LINE, fp) != NULL, PSPIO_EIO);
-  line4 = strndup(line, 3);
+  line4 = my_strndup(line, 3);
   if ( strcmp("4--", line4) != 0 ) {
     CHECK_ERROR( sscanf(line, "%lf %lf %lf",
       &rchrg, &fchrg, &qchrg) == 3, PSPIO_EFILE_CORRUPT );
@@ -206,4 +213,31 @@ int abinit_write_header(FILE *fp, const int format, const pspio_pspdata_t *pspda
   }
 
   return PSPIO_SUCCESS;
+}
+
+/* A replacement function, for systems that lack strndup (MacOs) */
+
+char *
+my_strndup (char const *s, size_t n)
+{
+  size_t len = my_strnlen (s, n);
+  char *new = malloc (len + 1);
+
+  if (new == NULL)
+    return NULL;
+
+  new[len] = '\0';
+  return memcpy (new, s, len);
+}
+
+
+/* A replacement function, for systems that lack strnlen. (MacOs)
+   Find the length of STRING, but scan at most MAXLEN characters.
+   If no '\0' terminator is found in that many characters, return MAXLEN.  */
+
+size_t
+my_strnlen (const char *string, size_t maxlen)
+{
+  const char *end = memchr (string, '\0', maxlen);
+  return end ? (size_t) (end - string) : maxlen;
 }
