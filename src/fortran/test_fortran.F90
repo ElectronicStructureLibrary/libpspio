@@ -16,33 +16,39 @@
 !!
 
 program test_fortran
+
   use pspio_f90_types_m
   use pspio_f90_lib_m
+
   implicit none
 
+  character(len=*), parameter :: file_inp = "test_fortran_input.tmp"
+  character(len=*), parameter :: file_out = "test_fortran_output.tmp"
+
   integer :: pio_fmt, ierr, np
-  character(len=100) :: file_in, file_out
   type(pspio_f90_mesh_t) :: pspmesh
   type(pspio_f90_pspdata_t) :: pspdata
   
   ierr = pspio_f90_pspdata_init(pspdata)
   if (ierr /= 0) ierr = pspio_f90_error_flush()
 
-  write(*,'("UPF filename to read:")')
-  read(*,'(A)') file_in
   pio_fmt = PSPIO_FMT_UPF
-  ierr = pspio_f90_pspdata_read(pspdata, pio_fmt, file_in)
-  if (ierr /= 0) ierr = pspio_f90_error_flush()
+  ierr = pspio_f90_pspdata_read(pspdata, pio_fmt, file_inp)
+  if (ierr /= 0) then
+    ierr = pspio_f90_error_flush()
+    stop 1
+  end if
 
   call pspio_f90_pspdata_get_mesh(pspdata, pspmesh)
-  if (ierr /= 0) ierr = pspio_f90_error_flush()
+  ierr = pspio_f90_error_flush()
   call pspio_f90_mesh_get_np(pspmesh, np)
   write(*,'("Mesh number of points: ", I6)') np
 
-  write(*,'("UPF filename to write:")')
-  read(*,'(A)') file_out
   ierr = pspio_f90_pspdata_write(pspdata, pio_fmt, file_out)
-  if (ierr /= 0) ierr = pspio_f90_error_flush()
+  if (ierr /= 0) then
+    ierr = pspio_f90_error_flush()
+    stop 1
+  end if
 
   call pspio_f90_pspdata_free(pspdata)
 
