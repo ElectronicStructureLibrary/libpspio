@@ -32,7 +32,7 @@
  * Global routines                                                    *
  **********************************************************************/
 
-int pspio_potential_alloc(pspio_potential_t **potential, const int np){
+int pspio_potential_alloc(pspio_potential_t **potential, const int np) {
   int ierr;
 
   assert(potential != NULL);
@@ -60,12 +60,15 @@ int pspio_potential_alloc(pspio_potential_t **potential, const int np){
 }
 
 
-int pspio_potential_set(pspio_potential_t **potential, const pspio_qn_t *qn, const pspio_mesh_t *mesh, const double *v){
+int pspio_potential_set(pspio_potential_t **potential, const pspio_qn_t *qn, const pspio_mesh_t *mesh, const double *vofr) {
 
   assert((*potential) != NULL);
+  assert(qn != NULL);
+  assert(mesh != NULL);
+  assert(vofr != NULL);
 
   HANDLE_FUNC_ERROR(pspio_qn_copy(&(*potential)->qn, qn));
-  HANDLE_FUNC_ERROR(pspio_meshfunc_set(&(*potential)->v, mesh, v, NULL, NULL));
+  HANDLE_FUNC_ERROR(pspio_meshfunc_set(&(*potential)->v, mesh, vofr, NULL, NULL));
 
   return PSPIO_SUCCESS;
 }
@@ -87,10 +90,10 @@ void pspio_potential_free(pspio_potential_t **potential){
  **********************************************************************/
 
 void pspio_potential_eval(const pspio_potential_t *potential, const int np, 
-			 const double *r, double *v) {
+			 const double *radii, double *vofr) {
   assert(potential != NULL);
-  assert(r != NULL);
-  assert(v != NULL);
+  assert(radii != NULL);
+  assert(vofr != NULL);
 
-  pspio_meshfunc_eval(potential->v, np, r, v);
+  pspio_meshfunc_eval(potential->v, np, radii, vofr);
 }

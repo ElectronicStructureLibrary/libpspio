@@ -139,6 +139,9 @@ AM_PROG_CC_C_O
 # Required headers
 AC_CHECK_HEADERS([time.h])
 
+# Required functions
+AC_CHECK_FUNCS([strnlen strndup])
+
                     # ------------------------------------ #
 
 # Look for the Fortran compiler

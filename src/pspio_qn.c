@@ -146,5 +146,4 @@ void pspio_qn_label(const pspio_qn_t *qn, char *s) {
   } else {
     sprintf(s, "%1d%1c%3.1f", qn->n, llabel[qn->l], qn->j);
   }
-
 }

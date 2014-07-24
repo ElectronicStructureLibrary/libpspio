@@ -36,11 +36,8 @@
 #endif
 
 /* proptotypes for the replacement functions */
-static char *
-my_strndup (char const *s, size_t n);
-
-static size_t
-my_strnlen (const char *string, size_t maxlen);
+static char *my_strndup (char const *s, size_t n);
+static size_t my_strnlen (const char *string, size_t maxlen);
 
 
 int abinit_read_header(FILE *fp, const int format,  pspio_pspdata_t **pspdata) {
@@ -74,10 +71,10 @@ int abinit_read_header(FILE *fp, const int format,  pspio_pspdata_t **pspdata) {
   (*pspdata)->l_max = lmax;
   (*pspdata)->l_local = lloc;
 
-  // FIXME: assuming pspxc = -(exchange * 1000 + correlation)
+  // Following APE conventions: pspxc = -(exchange + correlation * 1000)
   if ( pspxc < 0 ) {
-    exchange = -pspxc / 1000;
-    correlation = -pspxc % 1000;
+    exchange = -pspxc % 1000;
+    correlation = -pspxc / 1000;
   } else {
     HANDLE_FUNC_ERROR(abinit_to_libxc(pspxc, &exchange, &correlation));
   }
@@ -157,6 +154,7 @@ int abinit_write_header(FILE *fp, const int format, const pspio_pspdata_t *pspda
   time_t int_now;
   struct tm *now;
 
+  assert(fp != NULL);
   assert(pspdata != NULL);
 
   // Init auxiliary data
@@ -210,29 +208,43 @@ int abinit_write_header(FILE *fp, const int format, const pspio_pspdata_t *pspda
   return PSPIO_SUCCESS;
 }
 
-/* A replacement function, for systems that lack strndup (MacOs) */
 
-char *
-my_strndup (char const *s, size_t n)
+/**
+ * A replacement function for systems that lack strndup (MacOSX).
+ * @param[in] s: string to duplicate.
+ * @param[in] n: number of characters to duplicate.
+ * @return the duplicated string.
+ */
+char *my_strndup(char const *s, size_t n)
 {
-  size_t len = my_strnlen (s, n);
-  char *new = malloc (len + 1);
+#if defined HAVE_STRNDUP
+  return strndup(s, n);
+#else
+  size_t len = my_strnlen(s, n);
+  char *new = malloc(len + 1);
 
-  if (new == NULL)
-    return NULL;
+  if ( new == NULL ) return NULL;
 
   new[len] = '\0';
-  return memcpy (new, s, len);
+  return memcpy(new, s, len);
+#endif
 }
 
 
-/* A replacement function, for systems that lack strnlen. (MacOs)
-   Find the length of STRING, but scan at most MAXLEN characters.
-   If no '\0' terminator is found in that many characters, return MAXLEN.  */
-
-size_t
-my_strnlen (const char *string, size_t maxlen)
+/**
+ * A replacement function for systems that lack strnlen (MacOSX).
+ * Find the length of STRING, but scan at most MAXLEN characters.
+ * If no '\0' terminator is found in that many characters, return MAXLEN.
+ * @param[in] string: string to measure.
+ * @param[in] maxlen: maximum length to measure.
+ * @return the length of the string.
+ */
+size_t my_strnlen(const char *string, size_t maxlen)
 {
-  const char *end = memchr (string, '\0', maxlen);
+#if defined HAVE_STRNLEN
+  return strnlen(string, maxlen);
+#else
+  const char *end = memchr(string, '\0', maxlen);
   return end ? (size_t) (end - string) : maxlen;
+#endif
 }

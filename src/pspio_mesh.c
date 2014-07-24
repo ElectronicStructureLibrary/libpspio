@@ -34,7 +34,7 @@
  * Global routines                                                    *
  **********************************************************************/
 
-int pspio_mesh_alloc(pspio_mesh_t **mesh, const int np){
+int pspio_mesh_alloc(pspio_mesh_t **mesh, const int np) {
 
   assert(mesh != NULL);
   assert(*mesh == NULL);
@@ -66,7 +66,7 @@ int pspio_mesh_alloc(pspio_mesh_t **mesh, const int np){
 
 
 int pspio_mesh_set(pspio_mesh_t **mesh, const int type, const double a, 
-		   const double b, const double *r, const double *rab){
+		   const double b, const double *r, const double *rab) {
   assert((*mesh) != NULL);
 
   (*mesh)->type = type;
@@ -79,7 +79,7 @@ int pspio_mesh_set(pspio_mesh_t **mesh, const int type, const double a,
 }
 
 
-int pspio_mesh_copy(pspio_mesh_t **dst, const pspio_mesh_t *src){
+int pspio_mesh_copy(pspio_mesh_t **dst, const pspio_mesh_t *src) {
   assert(src != NULL);
 
   if (*dst == NULL) {
@@ -193,7 +193,7 @@ void pspio_mesh_init_from_parameters(pspio_mesh_t **mesh, const int type,
 }
 
 
-void pspio_mesh_free(pspio_mesh_t **mesh){
+void pspio_mesh_free(pspio_mesh_t **mesh) {
 
   if (*mesh != NULL) {
     if ((*mesh)->r != NULL) free ((*mesh)->r);
@@ -214,7 +214,8 @@ void pspio_mesh_get_np(const pspio_mesh_t *mesh, int *np) {
   *np = mesh->np;
 }
 
-void pspio_mesh_get_r(const pspio_mesh_t *mesh, double *r){
+
+void pspio_mesh_get_r(const pspio_mesh_t *mesh, double *r) {
   int i;
 
   assert(mesh != NULL);
@@ -222,7 +223,8 @@ void pspio_mesh_get_r(const pspio_mesh_t *mesh, double *r){
   for (i=0; i<mesh->np; i++) r[i] = mesh->r[i];
 }
 
-void pspio_mesh_get_rab(const pspio_mesh_t *mesh, double *rab){
+
+void pspio_mesh_get_rab(const pspio_mesh_t *mesh, double *rab) {
   int i;
 
   assert(mesh != NULL);

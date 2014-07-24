@@ -68,8 +68,8 @@ int pspio_state_alloc(pspio_state_t **state, const int np) {
 
 
 int pspio_state_set(pspio_state_t **state, const double eigenval, 
-		    const char *label, const pspio_qn_t *qn, const double occ, 
-		    const double rc, const pspio_mesh_t *mesh, const double *wf) {
+      const char *label, const pspio_qn_t *qn, const double occ, 
+      const double rc, const pspio_mesh_t *mesh, const double *wf) {
   int s;
 
   assert(*state != NULL);
@@ -115,7 +115,7 @@ int pspio_state_copy(pspio_state_t **dst, const pspio_state_t *src) {
 
 
 int pspio_states_lookup_table(const int n_states, pspio_state_t **states, 
-			    int ***table_ptr){
+      int ***table_ptr) {
   int i, nmax, lmax, rel, lsize;
   pspio_qn_t *qn;
   int **table;
@@ -172,7 +172,8 @@ void pspio_state_free(pspio_state_t **state) {
  * Atomic routines                                                    *
  **********************************************************************/
 
-void pspio_state_wf_eval(const pspio_state_t *state, const int np, const double *r, double *wf){
+void pspio_state_wf_eval(const pspio_state_t *state, const int np,
+       const double *r, double *wf) {
   assert(state != NULL);
   assert(r != NULL);
   assert(wf != NULL);
@@ -180,7 +181,8 @@ void pspio_state_wf_eval(const pspio_state_t *state, const int np, const double 
   pspio_meshfunc_eval(state->wf, np, r, wf);
 }
 
-void pspio_state_get_label(const pspio_state_t *state, char *label){
+
+void pspio_state_get_label(const pspio_state_t *state, char *label) {
   int s;
 
   assert(state != NULL);
@@ -190,25 +192,29 @@ void pspio_state_get_label(const pspio_state_t *state, char *label){
   label[s] = '\0';
 }
 
-void pspio_state_get_n(const pspio_state_t *state, int *n){
+
+void pspio_state_get_n(const pspio_state_t *state, int *n) {
   assert(state != NULL);
   
   pspio_qn_get_n(state->qn, n);
 }
 
-void pspio_state_get_l(const pspio_state_t *state, int *l){
+
+void pspio_state_get_l(const pspio_state_t *state, int *l) {
   assert(state != NULL);
   
   pspio_qn_get_l(state->qn, l);
 }
 
-void pspio_state_get_j(const pspio_state_t *state, double *j){
+
+void pspio_state_get_j(const pspio_state_t *state, double *j) {
   assert(state != NULL);
   
   pspio_qn_get_j(state->qn, j);
 }
 
-void pspio_state_get_occ(const pspio_state_t *state, double *occ){
+
+void pspio_state_get_occ(const pspio_state_t *state, double *occ) {
   assert(state != NULL);
   
   *occ = state->occ;

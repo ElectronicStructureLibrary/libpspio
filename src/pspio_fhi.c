@@ -156,7 +156,6 @@ int pspio_fhi_read(FILE *fp, pspio_pspdata_t **pspdata){
     free(cd); 
     free(cdp); 
     free(cdpp);
-
   }
 
   return PSPIO_SUCCESS;
@@ -170,9 +169,9 @@ int pspio_fhi_write(FILE *fp, const pspio_pspdata_t *pspdata){
   assert(fp != NULL);
   assert(pspdata != NULL);
 
-  // If one considers that the specifications of this format is the way how FHI98PP writes the
-  // data, then only meshes of type log1 should be allowed. For the moment, we will just
-  // check that this is the case.
+  // If one considers that the specifications of this format is the way
+  // FHI98PP writes the data, then only meshes of type log1 should be
+  // allowed. For the moment, we will just check that this is the case.
   assert(pspdata->mesh->type == PSPIO_MESH_LOG1);
 
   // Write header
@@ -187,8 +186,9 @@ int pspio_fhi_write(FILE *fp, const pspio_pspdata_t *pspdata){
     i = LJ_TO_I(l,0.0);
     is = pspdata->qn_to_istate[0][i];
 
+    // This format is not suitable for j-dependent pseudos
     pspio_state_get_j(pspdata->states[is], &j);
-    CHECK_ERROR(j == 0.0, PSPIO_EVALUE); // This format is not suitable for j-dependent pseudos
+    CHECK_ERROR(j == 0.0, PSPIO_EVALUE);
 
     for (ir=0; ir<pspdata->mesh->np; ir++) {
       r = pspdata->mesh->r[ir];
@@ -198,7 +198,6 @@ int pspio_fhi_write(FILE *fp, const pspio_pspdata_t *pspdata){
 
       fprintf(fp, "%4d %20.14E %20.14E %20.14E\n", ir+1, pspdata->mesh->r[ir], wf, v);
     }
-
   }
 
   // Write non-linear core corrections

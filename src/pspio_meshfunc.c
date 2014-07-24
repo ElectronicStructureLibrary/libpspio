@@ -33,7 +33,7 @@
  * Global routines                                                    *
  **********************************************************************/
 
-int pspio_meshfunc_alloc(pspio_meshfunc_t **func, const int np){
+int pspio_meshfunc_alloc(pspio_meshfunc_t **func, const int np) {
   int ierr;
 
   assert(func != NULL);
@@ -73,7 +73,7 @@ int pspio_meshfunc_alloc(pspio_meshfunc_t **func, const int np){
 
 
 int pspio_meshfunc_set(pspio_meshfunc_t **func, const pspio_mesh_t *mesh, 
-		       const double *f, const double *fp, const double *fpp){
+		       const double *f, const double *fp, const double *fpp) {
   int i;
 
   // Copy mesh
@@ -105,7 +105,7 @@ int pspio_meshfunc_set(pspio_meshfunc_t **func, const pspio_mesh_t *mesh,
 }
 
 
-int pspio_meshfunc_copy(pspio_meshfunc_t **dst, const pspio_meshfunc_t *src){
+int pspio_meshfunc_copy(pspio_meshfunc_t **dst, const pspio_meshfunc_t *src) {
 
   assert(src != NULL);
 
@@ -130,7 +130,7 @@ int pspio_meshfunc_copy(pspio_meshfunc_t **dst, const pspio_meshfunc_t *src){
 }
 
 
-void pspio_meshfunc_free(pspio_meshfunc_t **func){
+void pspio_meshfunc_free(pspio_meshfunc_t **func) {
 
   if (*func != NULL) {
     pspio_mesh_free(&(*func)->mesh);
@@ -158,7 +158,7 @@ void pspio_meshfunc_free(pspio_meshfunc_t **func){
  **********************************************************************/
 
 void pspio_meshfunc_eval(const pspio_meshfunc_t *func, const int np, 
-			 const double *r, double *f){
+			 const double *r, double *f) {
   assert(func != NULL);
   assert(r != NULL);
   assert(f != NULL);
@@ -183,7 +183,7 @@ void pspio_meshfunc_eval(const pspio_meshfunc_t *func, const int np,
 
 
 void pspio_meshfunc_eval_deriv(const pspio_meshfunc_t *func, const int np, 
-			       const double *r, double *fp){
+			       const double *r, double *fp) {
   assert(func != NULL);
   assert(r != NULL);
   assert(fp != NULL);
@@ -208,7 +208,7 @@ void pspio_meshfunc_eval_deriv(const pspio_meshfunc_t *func, const int np,
 
 
 void pspio_meshfunc_eval_deriv2(const pspio_meshfunc_t *func, const int np, 
-				const double *r, double *fpp){
+				const double *r, double *fpp) {
   assert(func != NULL);
   assert(r != NULL);
   assert(fpp != NULL);

@@ -31,7 +31,7 @@
  * Global routines                                                    *
  **********************************************************************/
 
-int pspio_projector_alloc(pspio_projector_t **projector, const int np){
+int pspio_projector_alloc(pspio_projector_t **projector, const int np) {
   int ierr;
 
   assert(projector != NULL);
@@ -60,17 +60,23 @@ int pspio_projector_alloc(pspio_projector_t **projector, const int np){
 
 
 int pspio_projector_set(pspio_projector_t **projector, const pspio_qn_t *qn, 
-			const double e, const pspio_mesh_t *mesh, const double *p){
+      const double energy, const pspio_mesh_t *mesh, const double *pofr) {
+
+  assert(projector != NULL);
+  assert((*projector) != NULL);
+  assert(qn != NULL);
+  assert(mesh != NULL);
+  assert(pofr != NULL);
 
   HANDLE_FUNC_ERROR(pspio_qn_copy(&(*projector)->qn, qn));
-  (*projector)->energy = e;
-  HANDLE_FUNC_ERROR(pspio_meshfunc_set(&(*projector)->proj, mesh, p, NULL, NULL));
+  (*projector)->energy = energy;
+  HANDLE_FUNC_ERROR(pspio_meshfunc_set(&(*projector)->proj, mesh, pofr, NULL, NULL));
 
   return PSPIO_SUCCESS;
 }
 
 
-void pspio_projector_free(pspio_projector_t **projector){
+void pspio_projector_free(pspio_projector_t **projector) {
 
   if (*projector != NULL) {
     pspio_meshfunc_free(&(*projector)->proj);
@@ -86,17 +92,19 @@ void pspio_projector_free(pspio_projector_t **projector){
  **********************************************************************/
 
 void pspio_projector_eval(const pspio_projector_t *projector, const int np, 
-			 const double *r, double *p){
+			 const double *radii, double *pofr) {
   assert(projector != NULL);
+  assert(radii != NULL);
 
-  pspio_meshfunc_eval(projector->proj, np, r, p);
+  pspio_meshfunc_eval(projector->proj, np, radii, pofr);
 }
 
 
-void pspio_projector_get_energy(const pspio_projector_t *projector, double *e) {
+void pspio_projector_get_energy(const pspio_projector_t *projector,
+       double *energy) {
   assert(projector != NULL);
 
-  *e = projector->energy;
+  *energy = projector->energy;
 }
 
 
