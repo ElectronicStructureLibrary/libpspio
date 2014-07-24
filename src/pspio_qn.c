@@ -19,6 +19,7 @@
 
 #include <stdlib.h>
 #include <stdio.h>
+#include <assert.h>
 #include <string.h>
 #include <math.h>
 
@@ -35,7 +36,7 @@
  **********************************************************************/
 
 int pspio_qn_alloc(pspio_qn_t **qn) {
-  ASSERT( *qn == NULL, PSPIO_ERROR);
+  assert( *qn == NULL);
 
   *qn = (pspio_qn_t *) malloc (sizeof(pspio_qn_t));
   CHECK_ERROR(*qn != NULL, PSPIO_ENOMEM);
@@ -49,7 +50,7 @@ int pspio_qn_alloc(pspio_qn_t **qn) {
 
 
 int pspio_qn_copy(pspio_qn_t **dst, const pspio_qn_t *src) {
-  ASSERT(src != NULL, PSPIO_ERROR);
+  assert(src != NULL);
 
   if ( *dst == NULL ) {
     HANDLE_FUNC_ERROR(pspio_qn_alloc(dst));
@@ -73,7 +74,7 @@ void pspio_qn_free(pspio_qn_t **qn) {
 
 
 void pspio_qn_get(const pspio_qn_t *qn, int *n, int *l, double *j) {
-  ASSERT(qn != NULL, PSPIO_EVALUE);
+  assert(qn != NULL);
 
   *n = qn->n;
   *l = qn->l;
@@ -82,7 +83,7 @@ void pspio_qn_get(const pspio_qn_t *qn, int *n, int *l, double *j) {
 
 
 int pspio_qn_set(pspio_qn_t **qn, const int n, const int l, const double j) {
-  ASSERT((qn != NULL) && (*qn != NULL), PSPIO_ERROR);
+  assert((qn != NULL) && (*qn != NULL));
 
   CHECK_ERROR(l >= 0, PSPIO_EVALUE);
   CHECK_ERROR( (j == 0.0) || (fabs(j - (double)l) - 0.5 < 1.0e-8), PSPIO_EVALUE);
@@ -100,19 +101,19 @@ int pspio_qn_set(pspio_qn_t **qn, const int n, const int l, const double j) {
  **********************************************************************/
 
 void pspio_qn_get_n(const pspio_qn_t *qn, int *n) {
-  ASSERT(qn != NULL, PSPIO_ERROR);
+  assert(qn != NULL);
 
   *n = qn->n;
 }
 
 void pspio_qn_get_l(const pspio_qn_t *qn, int *l) {
-  ASSERT(qn != NULL, PSPIO_ERROR);
+  assert(qn != NULL);
 
   *l = qn->l;
 }
 
 void pspio_qn_get_j(const pspio_qn_t *qn, double *j) {
-  ASSERT(qn != NULL, PSPIO_ERROR);
+  assert(qn != NULL);
 
   *j = qn->j;
 }
@@ -123,7 +124,7 @@ void pspio_qn_get_j(const pspio_qn_t *qn, double *j) {
  **********************************************************************/
 
 int pspio_qn_cmp(const pspio_qn_t *qn1, const pspio_qn_t *qn2) {
-  ASSERT((qn1 != NULL) && (qn2 != NULL), PSPIO_ERROR);
+  assert((qn1 != NULL) && (qn2 != NULL));
 
   if ( (qn1->n == qn2->n) && (qn1->l == qn2->l) &&
        (fabs(qn2->j - qn1->j) < 1.0e-9) ) {
@@ -138,7 +139,7 @@ int pspio_qn_cmp(const pspio_qn_t *qn1, const pspio_qn_t *qn2) {
 void pspio_qn_label(const pspio_qn_t *qn, char *s) {
   char llabel[4] = "spdf";
 
-  ASSERT(qn != NULL, PSPIO_ERROR);
+  assert(qn != NULL);
 
   if (qn->j == 0.0) {
     sprintf(s, "%1u%1c", qn->n, llabel[qn->l]);

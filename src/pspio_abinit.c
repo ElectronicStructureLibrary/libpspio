@@ -21,7 +21,10 @@
  * @file pspio_abinit.c
  * @brief implementation to read and write Abinit files 
  */
+
+#include <stdlib.h>
 #include <string.h>
+#include <assert.h>
 #include <ctype.h>
 
 #include "pspio_abinit.h"
@@ -66,7 +69,7 @@ int pspio_abinit_read(FILE *fp, pspio_pspdata_t **pspdata, const int format){
 int pspio_abinit_write(FILE *fp, const pspio_pspdata_t *pspdata, const int format){
   int eid = PSPIO_ERROR;
 
-  ASSERT (pspdata != NULL, PSPIO_ERROR);
+  assert(pspdata != NULL);
 
   switch (format) {
     case PSPIO_FMT_ABINIT_1:

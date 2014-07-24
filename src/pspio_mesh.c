@@ -19,6 +19,7 @@
 
 #include <stdlib.h>
 #include <string.h>
+#include <assert.h>
 #include <math.h>
 
 #include "pspio_mesh.h"
@@ -35,9 +36,9 @@
 
 int pspio_mesh_alloc(pspio_mesh_t **mesh, const int np){
 
-  ASSERT(mesh != NULL, PSPIO_ERROR);
-  ASSERT(*mesh == NULL, PSPIO_ERROR);
-  ASSERT(np > 1, PSPIO_EVALUE);
+  assert(mesh != NULL);
+  assert(*mesh == NULL);
+  assert(np > 1);
 
   // Memory allocation
   *mesh = (pspio_mesh_t *) malloc (sizeof(pspio_mesh_t));
@@ -66,7 +67,7 @@ int pspio_mesh_alloc(pspio_mesh_t **mesh, const int np){
 
 int pspio_mesh_set(pspio_mesh_t **mesh, const int type, const double a, 
 		   const double b, const double *r, const double *rab){
-  ASSERT((*mesh) != NULL, PSPIO_ERROR);
+  assert((*mesh) != NULL);
 
   (*mesh)->type = type;
   (*mesh)->a = a;
@@ -79,7 +80,7 @@ int pspio_mesh_set(pspio_mesh_t **mesh, const int type, const double a,
 
 
 int pspio_mesh_copy(pspio_mesh_t **dst, const pspio_mesh_t *src){
-  ASSERT(src != NULL, PSPIO_ERROR);
+  assert(src != NULL);
 
   if (*dst == NULL) {
     HANDLE_FUNC_ERROR(pspio_mesh_alloc(dst, src->np));
@@ -100,7 +101,7 @@ int pspio_mesh_init_from_points(pspio_mesh_t **mesh, const double *r,
   int i;
   double tol = 5.0e-10;
 
-  ASSERT(*mesh != NULL, PSPIO_ERROR);
+  assert(*mesh != NULL);
 
   memcpy((*mesh)->r, r, (*mesh)->np * sizeof(double));
   if (rab != NULL) {
@@ -165,8 +166,8 @@ void pspio_mesh_init_from_parameters(pspio_mesh_t **mesh, const int type,
 				    const double a, const double b) {
   int i;
 
-  ASSERT(*mesh != NULL, PSPIO_ERROR);
-  ASSERT(type == PSPIO_MESH_LINEAR || type == PSPIO_MESH_LOG1 || type == PSPIO_MESH_LOG2, PSPIO_EVALUE);
+  assert(*mesh != NULL);
+  assert(type == PSPIO_MESH_LINEAR || type == PSPIO_MESH_LOG1 || type == PSPIO_MESH_LOG2);
 
   (*mesh)->type = type;
   (*mesh)->a = a;
@@ -208,7 +209,7 @@ void pspio_mesh_free(pspio_mesh_t **mesh){
  **********************************************************************/
 
 void pspio_mesh_get_np(const pspio_mesh_t *mesh, int *np) {
-  ASSERT(mesh != NULL, PSPIO_ERROR);
+  assert(mesh != NULL);
 
   *np = mesh->np;
 }
@@ -216,7 +217,7 @@ void pspio_mesh_get_np(const pspio_mesh_t *mesh, int *np) {
 void pspio_mesh_get_r(const pspio_mesh_t *mesh, double *r){
   int i;
 
-  ASSERT(mesh != NULL, PSPIO_ERROR);
+  assert(mesh != NULL);
 
   for (i=0; i<mesh->np; i++) r[i] = mesh->r[i];
 }
@@ -224,7 +225,7 @@ void pspio_mesh_get_r(const pspio_mesh_t *mesh, double *r){
 void pspio_mesh_get_rab(const pspio_mesh_t *mesh, double *rab){
   int i;
 
-  ASSERT(mesh != NULL, PSPIO_ERROR);
+  assert(mesh != NULL);
 
   for (i=0; i<mesh->np; i++) rab[i] = mesh->rab[i];
 }

@@ -18,6 +18,7 @@
 */
 
 #include <stdlib.h>
+#include <assert.h>
 
 #include "pspio_potential.h"
 #include "pspio_qn.h"
@@ -34,9 +35,9 @@
 int pspio_potential_alloc(pspio_potential_t **potential, const int np){
   int ierr;
 
-  ASSERT(potential != NULL, PSPIO_ERROR);
-  ASSERT(*potential == NULL, PSPIO_ERROR);
-  ASSERT(np > 1, PSPIO_EVALUE);
+  assert(potential != NULL);
+  assert(*potential == NULL);
+  assert(np > 1);
 
   *potential = (pspio_potential_t *) malloc (sizeof(pspio_potential_t));
   CHECK_ERROR(*potential != NULL, PSPIO_ENOMEM);
@@ -61,7 +62,7 @@ int pspio_potential_alloc(pspio_potential_t **potential, const int np){
 
 int pspio_potential_set(pspio_potential_t **potential, const pspio_qn_t *qn, const pspio_mesh_t *mesh, const double *v){
 
-  ASSERT ((*potential) != NULL, PSPIO_ERROR);
+  assert((*potential) != NULL);
 
   HANDLE_FUNC_ERROR(pspio_qn_copy(&(*potential)->qn, qn));
   HANDLE_FUNC_ERROR(pspio_meshfunc_set(&(*potential)->v, mesh, v, NULL, NULL));
@@ -87,9 +88,9 @@ void pspio_potential_free(pspio_potential_t **potential){
 
 void pspio_potential_eval(const pspio_potential_t *potential, const int np, 
 			 const double *r, double *v) {
-  ASSERT(potential != NULL, PSPIO_ERROR);
-  ASSERT(r != NULL, PSPIO_ERROR);
-  ASSERT(v != NULL, PSPIO_ERROR);
+  assert(potential != NULL);
+  assert(r != NULL);
+  assert(v != NULL);
 
   pspio_meshfunc_eval(potential->v, np, r, v);
 }

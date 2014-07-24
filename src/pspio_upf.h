@@ -26,6 +26,7 @@
 #define PSPIO_UPF_H
 
 #include <stdio.h>
+#include <assert.h>
 
 #include "pspio_pspdata.h"
 

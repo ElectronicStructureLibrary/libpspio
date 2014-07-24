@@ -17,10 +17,11 @@
 
 */
 
+#include <string.h>
+#include <assert.h>
+
 #include "util.h"
 #include "pspio_error.h"
-
-#include <string.h>
 
 #if defined HAVE_CONFIG_H
 #include "config.h"
@@ -43,7 +44,7 @@ const char *symbols[] = {"H  ","He ","Li ","Be ","B  ","C  ","N  ","O  ","F  ","
 int symbol_to_z(const char *symbol, double z){
   int i;
 
-  ASSERT(symbol != NULL, PSPIO_EVALUE);
+  assert(symbol != NULL);
 
   for (i=0; i<112; i++) {
     if (strncmp(symbol, symbols[i], 2)) {
@@ -57,7 +58,7 @@ int symbol_to_z(const char *symbol, double z){
 
 
 void z_to_symbol(const double z, char *symbol){
-  ASSERT( (z < 113.0 && z > 0.0), PSPIO_EVALUE);
+  assert( (z < 113.0 && z > 0.0));
 
   strncpy(symbol, symbols[(int)z-1], 3);
 }

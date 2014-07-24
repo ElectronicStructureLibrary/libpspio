@@ -19,6 +19,7 @@
 
 #include <stdlib.h>
 #include <string.h>
+#include <assert.h>
 
 #include "pspio_meshfunc.h"
 #include "util.h"
@@ -35,9 +36,9 @@
 int pspio_meshfunc_alloc(pspio_meshfunc_t **func, const int np){
   int ierr;
 
-  ASSERT(func != NULL, PSPIO_ERROR);
-  ASSERT(*func == NULL, PSPIO_ERROR);
-  ASSERT(np > 1, PSPIO_EVALUE);
+  assert(func != NULL);
+  assert(*func == NULL);
+  assert(np > 1);
 
   *func = (pspio_meshfunc_t *) malloc (sizeof(pspio_meshfunc_t));
   CHECK_ERROR(*func != NULL, PSPIO_ENOMEM);
@@ -106,7 +107,7 @@ int pspio_meshfunc_set(pspio_meshfunc_t **func, const pspio_mesh_t *mesh,
 
 int pspio_meshfunc_copy(pspio_meshfunc_t **dst, const pspio_meshfunc_t *src){
 
-  ASSERT(src != NULL, PSPIO_ERROR);
+  assert(src != NULL);
 
   if (*dst == NULL) {
     HANDLE_FUNC_ERROR(pspio_meshfunc_alloc(dst, src->mesh->np))
@@ -158,9 +159,9 @@ void pspio_meshfunc_free(pspio_meshfunc_t **func){
 
 void pspio_meshfunc_eval(const pspio_meshfunc_t *func, const int np, 
 			 const double *r, double *f){
-  ASSERT(func != NULL, PSPIO_ERROR);
-  ASSERT(r != NULL, PSPIO_ERROR);
-  ASSERT(f != NULL, PSPIO_ERROR);
+  assert(func != NULL);
+  assert(r != NULL);
+  assert(f != NULL);
 
   int i;
 
@@ -183,9 +184,9 @@ void pspio_meshfunc_eval(const pspio_meshfunc_t *func, const int np,
 
 void pspio_meshfunc_eval_deriv(const pspio_meshfunc_t *func, const int np, 
 			       const double *r, double *fp){
-  ASSERT(func != NULL, PSPIO_ERROR);
-  ASSERT(r != NULL, PSPIO_ERROR);
-  ASSERT(fp != NULL, PSPIO_ERROR);
+  assert(func != NULL);
+  assert(r != NULL);
+  assert(fp != NULL);
 
   int i;
 
@@ -208,9 +209,9 @@ void pspio_meshfunc_eval_deriv(const pspio_meshfunc_t *func, const int np,
 
 void pspio_meshfunc_eval_deriv2(const pspio_meshfunc_t *func, const int np, 
 				const double *r, double *fpp){
-  ASSERT(func != NULL, PSPIO_ERROR);
-  ASSERT(r != NULL, PSPIO_ERROR);
-  ASSERT(fpp != NULL, PSPIO_ERROR);
+  assert(func != NULL);
+  assert(r != NULL);
+  assert(fpp != NULL);
 
   int i;
 
