@@ -161,7 +161,7 @@ void pspio_state_free(pspio_state_t **state) {
   if ( *state != NULL ) {
     pspio_meshfunc_free(&(*state)->wf);
     pspio_qn_free(&(*state)->qn);
-    if ((*state)->label != NULL) free((*state)->label);
+    free((*state)->label);
     free(*state);
     *state = NULL;
   }

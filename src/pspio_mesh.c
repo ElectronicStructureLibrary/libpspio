@@ -196,8 +196,8 @@ void pspio_mesh_init_from_parameters(pspio_mesh_t **mesh, const int type,
 void pspio_mesh_free(pspio_mesh_t **mesh){
 
   if (*mesh != NULL) {
-    if ((*mesh)->r != NULL) free ((*mesh)->r);
-    if ((*mesh)->rab != NULL) free ((*mesh)->rab);
+    free ((*mesh)->r);
+    free ((*mesh)->rab);
     free (*mesh);
     *mesh = NULL;
   }

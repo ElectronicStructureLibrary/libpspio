@@ -135,15 +135,15 @@ void pspio_meshfunc_free(pspio_meshfunc_t **func){
   if (*func != NULL) {
     pspio_mesh_free(&(*func)->mesh);
 
-    if ((*func)->f != NULL) free((*func)->f);
+    free((*func)->f);
     gsl_spline_free((*func)->f_spl);
     gsl_interp_accel_free((*func)->f_acc);
 
-    if ((*func)->fp != NULL) free((*func)->fp);
+    free((*func)->fp);
     gsl_spline_free((*func)->fp_spl);
     gsl_interp_accel_free((*func)->fp_acc);
 
-    if ((*func)->fpp != NULL) free((*func)->fpp);
+    free((*func)->fpp);
     gsl_spline_free((*func)->fpp_spl);
     gsl_interp_accel_free((*func)->fpp_acc);
 
