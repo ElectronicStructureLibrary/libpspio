@@ -43,18 +43,15 @@ static size_t
 my_strnlen (const char *string, size_t maxlen);
 
 
-int abinit_read_header(FILE *fp, int *format, int *np, int *have_nlcc,
-  pspio_pspdata_t **pspdata) {
+int abinit_read_header(FILE *fp, const int format,  pspio_pspdata_t **pspdata) {
   char line[PSPIO_STRLEN_LINE];
   char *line4;
-  int pspcod, pspxc, lmax, lloc, mmax;
+  int format_read, pspcod, pspxc, lmax, lloc, mmax;
   int exchange, correlation, s;
   double zatom, zval, r2well, rchrg, fchrg, qchrg;
 
   // Init
-  *format = PSPIO_FMT_UNKNOWN;
-  *np = 0;
-  *have_nlcc = 0;
+  format_read = PSPIO_FMT_UNKNOWN;
 
   // Line 1: read title
   CHECK_ERROR( fgets(line, PSPIO_STRLEN_LINE, fp) != NULL, PSPIO_EIO);
@@ -74,9 +71,19 @@ int abinit_read_header(FILE *fp, int *format, int *np, int *have_nlcc,
   CHECK_ERROR( fgets(line, PSPIO_STRLEN_LINE, fp) != NULL, PSPIO_EIO);
   CHECK_ERROR( sscanf(line, "%d %d %d %d %d %lf",
     &pspcod, &pspxc, &lmax, &lloc, &mmax, &r2well) == 6, PSPIO_EFILE_CORRUPT);
-  *np = mmax;
   (*pspdata)->l_max = lmax;
   (*pspdata)->l_local = lloc;
+
+  // FIXME: assuming pspxc = -(exchange * 1000 + correlation)
+  if ( pspxc < 0 ) {
+    exchange = -pspxc / 1000;
+    correlation = -pspxc % 1000;
+  } else {
+    HANDLE_FUNC_ERROR(abinit_to_libxc(pspxc, &exchange, &correlation));
+  }
+  HANDLE_FUNC_ERROR(pspio_xc_alloc(&(*pspdata)->xc));
+  pspio_xc_set_id(&(*pspdata)->xc, exchange, correlation);
+
 
   // Line 4: read rchrg, fchrg, qchrg if NLCC
   // Note: tolerance copied from Abinit
@@ -87,7 +94,7 @@ int abinit_read_header(FILE *fp, int *format, int *np, int *have_nlcc,
     CHECK_ERROR( sscanf(line, "%lf %lf %lf",
       &rchrg, &fchrg, &qchrg) == 3, PSPIO_EFILE_CORRUPT );
     if ( abs(fchrg) >= 1.0e-14 ) {
-      *have_nlcc = 1;
+      pspio_xc_set_nlcc_scheme(&(*pspdata)->xc, PSPIO_NLCC_FHI);
     }
   }
 
@@ -96,61 +103,48 @@ int abinit_read_header(FILE *fp, int *format, int *np, int *have_nlcc,
   CHECK_ERROR( fgets(line, PSPIO_STRLEN_LINE, fp) != NULL, PSPIO_EIO);
   CHECK_ERROR( fgets(line, PSPIO_STRLEN_LINE, fp) != NULL, PSPIO_EIO);
 
-  // FIXME: assuming pspxc = -(exchange * 1000 + correlation)
-  if ( pspxc < 0 ) {
-    exchange = -pspxc / 1000;
-    correlation = -pspxc % 1000;
-  } else {
-    HANDLE_FUNC_ERROR(abinit_to_libxc(pspxc, &exchange, &correlation));
-  }
-  if ( have_nlcc ) {
-    HANDLE_FUNC_ERROR(pspio_xc_alloc(&(*pspdata)->xc, PSPIO_NLCC_FHI, *np));
-  } else {
-    HANDLE_FUNC_ERROR(pspio_xc_alloc(&(*pspdata)->xc, PSPIO_NLCC_NONE, *np));
-  }
-  (*pspdata)->xc->exchange = exchange;
-  (*pspdata)->xc->correlation = correlation;
-
+  // Check that the format found is the one we expected
   switch (pspcod) {
     case 1:
-      *format = PSPIO_FMT_ABINIT_1;
+      format_read = PSPIO_FMT_ABINIT_1;
       break;
     case 2:
-      *format = PSPIO_FMT_ABINIT_2;
+      format_read = PSPIO_FMT_ABINIT_2;
       break;
     case 3:
-      *format = PSPIO_FMT_ABINIT_3;
+      format_read = PSPIO_FMT_ABINIT_3;
       break;
     case 4:
-      *format = PSPIO_FMT_ABINIT_4;
+      format_read = PSPIO_FMT_ABINIT_4;
       break;
     case 5:
-      *format = PSPIO_FMT_ABINIT_5;
+      format_read = PSPIO_FMT_ABINIT_5;
       break;
     case 6:
-      *format = PSPIO_FMT_ABINIT_6;
+      format_read = PSPIO_FMT_ABINIT_6;
       break;
     case 7:
-      *format = PSPIO_FMT_ABINIT_7;
+      format_read = PSPIO_FMT_ABINIT_7;
       break;
     case 8:
-      *format = PSPIO_FMT_ABINIT_8;
+      format_read = PSPIO_FMT_ABINIT_8;
       break;
     case 9:
-      *format = PSPIO_FMT_ABINIT_9;
+      format_read = PSPIO_FMT_ABINIT_9;
       break;
     case 10:
-      *format = PSPIO_FMT_ABINIT_10;
+      format_read = PSPIO_FMT_ABINIT_10;
       break;
     case 11:
-      *format = PSPIO_FMT_ABINIT_11;
+      format_read = PSPIO_FMT_ABINIT_11;
       break;
     case 17:
-      *format = PSPIO_FMT_ABINIT_17;
+      format_read = PSPIO_FMT_ABINIT_17;
       break;
     default:
-      *format = PSPIO_FMT_UNKNOWN;
+      format_read = PSPIO_FMT_UNKNOWN;
   }
+  CHECK_ERROR(format_read == format, PSPIO_EFILE_FORMAT)
 
   return PSPIO_SUCCESS;
 }
@@ -166,7 +160,7 @@ int abinit_write_header(FILE *fp, const int format, const pspio_pspdata_t *pspda
   assert(pspdata != NULL);
 
   // Init auxiliary data
-  pspio_xc_has_nlcc(pspdata->xc, &have_nlcc);
+  have_nlcc = pspio_xc_has_nlcc(pspdata->xc);
   HANDLE_FUNC_ERROR(libxc_to_abinit(pspdata->xc->exchange, \
     pspdata->xc->correlation, &pspxc));
 

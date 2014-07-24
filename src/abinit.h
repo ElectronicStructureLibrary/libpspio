@@ -37,50 +37,6 @@
 
 
 /**********************************************************************
- * Abinit FHI generic routines                                        *
- **********************************************************************/
-
-/**
- * Read an ABINIT format 6 file
- * @param[in] fp: a stream of the input file
- * @param[inout] pspdata: a pseudopotential data structure
- * @return error code
- */
-int abinit_fhi_read(FILE *fp, pspio_pspdata_t **pspdata);
-
-
-/**
- * Write an ABINIT format 6 file
- * @param[in] fp: a stream of the input file
- * @param[in] pspdata: a pseudopotential data structure
- * @return error code
- */
-int abinit_fhi_write(FILE *fp, const pspio_pspdata_t *pspdata);
-
-
-/**********************************************************************
- * Abinit Format 6 routines                                           *
- **********************************************************************/
-
-/**
- * Read an ABINIT format 6 file
- * @param[in] fp: a stream of the input file
- * @param[inout] pspdata: a pseudopotential data structure
- * @return error code
- */
-int abinit_format6_read(FILE *fp, pspio_pspdata_t **pspdata);
-
-
-/**
- * Write an ABINIT format 6 file
- * @param[in] fp: a stream of the input file
- * @param[in] pspdata: a pseudopotential data structure
- * @return error code
- */
-int abinit_format6_write(FILE *fp, const pspio_pspdata_t *pspdata);
-
-
-/**********************************************************************
  * ABINIT XC routines                                                 *
  **********************************************************************/
 
@@ -110,14 +66,11 @@ int libxc_to_abinit(const int exchange, const int correlation, int *pspxc);
 /**
  * Read the ABINIT header
  * @param[in] fp: a stream of the input file
- * @param[out] format: the file format
- * @param[out] np: the number of radial mesh points
- * @param[out] have_nlcc: whether there are non-linear core corrections
+ * @param[in] format: the file format
  * @param[out] pspdata: pseudopotential data structure
  * @return error code
  */
-int abinit_read_header(FILE *fp, int *format, int *np, int *have_nlcc,
-  pspio_pspdata_t **pspdata);
+int abinit_read_header(FILE *fp, const int format, pspio_pspdata_t **pspdata);
 
 
 /**
@@ -127,8 +80,7 @@ int abinit_read_header(FILE *fp, int *format, int *np, int *have_nlcc,
  * @param[in] pspdata: pseudopotential data structure
  * @return error code
  */
-int abinit_write_header(FILE *fp, const int format,
-  const pspio_pspdata_t *pspdata);
+int abinit_write_header(FILE *fp, const int format, const pspio_pspdata_t *pspdata);
 
 
 #endif

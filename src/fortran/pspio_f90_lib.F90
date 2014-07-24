@@ -341,31 +341,30 @@ module pspio_f90_lib_m
   end interface
 
   interface
-    subroutine pspio_f90_xc_has_nlcc_int(xc, has_nlcc)
+    integer function pspio_f90_xc_has_nlcc_int(xc)
       use pspio_f90_types_m
       implicit none
       type(pspio_f90_xc_t), intent(in)  :: xc
-      integer,              intent(out) :: has_nlcc
-    end subroutine pspio_f90_xc_has_nlcc_int
+    end function pspio_f90_xc_has_nlcc_int
   end interface
 
-  interface pspio_f90_xc_nlcc_eval
-    subroutine pspio_f90_xc_nlcc_eval_s(xc, r, core_dens)
+  interface pspio_f90_xc_core_density_eval
+    subroutine pspio_f90_xc_core_density_eval_s(xc, r, core_dens)
       use pspio_f90_types_m
       implicit none
       type(pspio_f90_xc_t), intent(in)  :: xc
       real(pspio_f90_kind), intent(in)  :: r
       real(pspio_f90_kind), intent(out) :: core_dens
-    end subroutine pspio_f90_xc_nlcc_eval_s
+    end subroutine pspio_f90_xc_core_density_eval_s
 
-    subroutine pspio_f90_xc_nlcc_eval_v(xc, np, r, core_dens)
+    subroutine pspio_f90_xc_core_density_eval_v(xc, np, r, core_dens)
       use pspio_f90_types_m
       implicit none
       type(pspio_f90_xc_t), intent(in)  :: xc
       integer,              intent(in)  :: np
       real(pspio_f90_kind), intent(in)  :: r(np)
       real(pspio_f90_kind), intent(out) :: core_dens(np)
-    end subroutine pspio_f90_xc_nlcc_eval_v
+    end subroutine pspio_f90_xc_core_density_eval_v
   end interface
 
   ! pspio_error
@@ -419,18 +418,14 @@ module pspio_f90_lib_m
 
 contains
 
-  subroutine pspio_f90_xc_has_nlcc(xc, has_nlcc)
+  logical function pspio_f90_xc_has_nlcc(xc)
     use pspio_f90_types_m
     implicit none
     type(pspio_f90_xc_t), intent(in)  :: xc
-    logical,              intent(out) :: has_nlcc
     
-    integer :: i
+    pspio_f90_xc_has_nlcc = pspio_f90_xc_has_nlcc_int(xc) /= 0
 
-    call pspio_f90_xc_has_nlcc_int(xc, i)
-    has_nlcc = i /= 0
-
-  end subroutine pspio_f90_xc_has_nlcc
+  end function pspio_f90_xc_has_nlcc
 
 
 end module pspio_f90_lib_m
