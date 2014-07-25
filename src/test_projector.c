@@ -87,13 +87,13 @@ int main(void) {
   pspio_projector_eval(proj1, 1, &r[6], &pr);
   DEBUG_PRINT("test_projector: result=%f\n", pr);
   DEBUG_PRINT("test_projector: evaluating energy of proj1 (should be 2.0)\n");
-  pspio_projector_get_energy(proj1, &e);
+  e = pspio_projector_get_energy(proj1);
   DEBUG_PRINT("test_projector: result=%f\n", e);
   DEBUG_PRINT("test_projector: evaluating angular momentum of proj1 (should be 2)\n");
-  pspio_projector_get_l(proj1, &l);
+  l = pspio_projector_get_l(proj1);
   DEBUG_PRINT("test_projector: result=%d\n", l);
   DEBUG_PRINT("test_projector: evaluating angular momentum of proj1 (should be 0.0)\n");
-  pspio_projector_get_j(proj1, &j);
+  j = pspio_projector_get_j(proj1);
   DEBUG_PRINT("test_projector: result=%3.1f\n", j);
   DEBUG_PRINT("\n");
 

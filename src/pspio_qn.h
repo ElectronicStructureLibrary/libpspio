@@ -108,23 +108,23 @@ int pspio_qn_set(pspio_qn_t **qn, const int n, const int l, const double j);
 /**
  * Returns the main quantum number
  * @param[in] qn: set of quantum numbers
- * @param[out] n: main quantum number
+ * @return main quantum number
  */
-void pspio_qn_get_n(const pspio_qn_t *qn, int *n);
+int pspio_qn_get_n(const pspio_qn_t *qn);
 
 /**
  * Returns the angular momentum quantum number
  * @param[in] qn: set of quantum numbers
- * @param[out] l: angular momentum quantum number
+ * @return angular momentum quantum number
  */
-void pspio_qn_get_l(const pspio_qn_t *qn, int *l);
+int pspio_qn_get_l(const pspio_qn_t *qn);
 
 /**
  * Returns the total angular momentum quantum number
  * @param[in] qn: set of quantum numbers
- * @param[out] j: total angular momentum quantum number
+ * @return total angular momentum quantum number
  */
-void pspio_qn_get_j(const pspio_qn_t *qn, double *j);
+double pspio_qn_get_j(const pspio_qn_t *qn);
 
 
 /**********************************************************************

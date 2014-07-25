@@ -93,22 +93,22 @@ void pspio_projector_eval(const pspio_projector_t *projector, const int np,
 }
 
 
-void pspio_projector_get_energy(const pspio_projector_t *projector, double *e) {
+double pspio_projector_get_energy(const pspio_projector_t *projector) {
   assert(projector != NULL);
 
-  *e = projector->energy;
+  return projector->energy;
 }
 
 
-void pspio_projector_get_l(const pspio_projector_t *projector, int *l) {
+int pspio_projector_get_l(const pspio_projector_t *projector) {
   assert(projector != NULL);
 
-  pspio_qn_get_l(projector->qn, l);
+  return pspio_qn_get_l(projector->qn);
 }
 
 
-void pspio_projector_get_j(const pspio_projector_t *projector, double *j) {
+double pspio_projector_get_j(const pspio_projector_t *projector) {
   assert(projector != NULL);
 
-  pspio_qn_get_j(projector->qn, j);
+  return pspio_qn_get_j(projector->qn);
 }

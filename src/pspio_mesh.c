@@ -208,10 +208,10 @@ void pspio_mesh_free(pspio_mesh_t **mesh){
  * Atomic routines                                                    *
  **********************************************************************/
 
-void pspio_mesh_get_np(const pspio_mesh_t *mesh, int *np) {
+int pspio_mesh_get_np(const pspio_mesh_t *mesh) {
   assert(mesh != NULL);
 
-  *np = mesh->np;
+  return mesh->np;
 }
 
 void pspio_mesh_get_r(const pspio_mesh_t *mesh, double *r){
