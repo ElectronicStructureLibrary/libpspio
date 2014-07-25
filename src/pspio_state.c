@@ -42,7 +42,7 @@ int pspio_state_alloc(pspio_state_t **state, const int np) {
   assert(np > 1);
 
   *state = (pspio_state_t *) malloc (sizeof(pspio_state_t));
-  CHECK_FATAL(*state != NULL, PSPIO_ENOMEM);
+  FULFILL_OR_EXIT(*state != NULL, PSPIO_ENOMEM);
 
   (*state)->wf = NULL;
   ierr = pspio_meshfunc_alloc(&(*state)->wf, np);
@@ -83,8 +83,8 @@ int pspio_state_set(pspio_state_t **state, const double eigenval,
   memcpy((*state)->label,label,s);
   (*state)->label[s] = '\0';
 
-  HANDLE_FUNC_ERROR(pspio_qn_copy(&(*state)->qn, qn));
-  HANDLE_FUNC_ERROR(pspio_meshfunc_set(&(*state)->wf, mesh, wf, NULL, NULL));
+  SUCCEED_OR_RETURN(pspio_qn_copy(&(*state)->qn, qn));
+  SUCCEED_OR_RETURN(pspio_meshfunc_set(&(*state)->wf, mesh, wf, NULL, NULL));
 
   return PSPIO_SUCCESS;
 }
@@ -97,11 +97,11 @@ int pspio_state_copy(pspio_state_t **dst, const pspio_state_t *src) {
   assert((src->label != NULL) && ((*dst)->label == NULL));
 
   if ( *dst == NULL ) {
-    HANDLE_FUNC_ERROR(pspio_state_alloc(dst, src->wf->mesh->np));
+    SUCCEED_OR_RETURN(pspio_state_alloc(dst, src->wf->mesh->np));
   }
 
-  HANDLE_FUNC_ERROR(pspio_meshfunc_copy(&(*dst)->wf, src->wf));
-  HANDLE_FUNC_ERROR(pspio_qn_copy(&(*dst)->qn, src->qn));
+  SUCCEED_OR_RETURN(pspio_meshfunc_copy(&(*dst)->wf, src->wf));
+  SUCCEED_OR_RETURN(pspio_qn_copy(&(*dst)->qn, src->qn));
   (*dst)->eigenval = src->eigenval;
   (*dst)->occ = src->occ;
   (*dst)->rc = src->rc;
@@ -137,10 +137,10 @@ int pspio_states_lookup_table(const int n_states, pspio_state_t **states,
 
   // Allocate memory and preset table
   table = malloc ( (nmax+1) * sizeof(int*));
-  CHECK_FATAL(table != NULL, PSPIO_ENOMEM);
+  FULFILL_OR_EXIT(table != NULL, PSPIO_ENOMEM);
   for(i=0; i<nmax; i++) {
     table[i] = malloc(lsize*sizeof(int));
-    CHECK_FATAL(table[i] != NULL, PSPIO_ENOMEM);
+    FULFILL_OR_EXIT(table[i] != NULL, PSPIO_ENOMEM);
     memset(table[i], -1, lsize*sizeof(int));
   }
   table[nmax] = NULL;

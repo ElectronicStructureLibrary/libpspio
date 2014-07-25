@@ -40,7 +40,7 @@ int pspio_potential_alloc(pspio_potential_t **potential, const int np) {
   assert(np > 1);
 
   *potential = (pspio_potential_t *) malloc (sizeof(pspio_potential_t));
-  CHECK_FATAL(*potential != NULL, PSPIO_ENOMEM);
+  FULFILL_OR_EXIT(*potential != NULL, PSPIO_ENOMEM);
 
   (*potential)->v = NULL;
   ierr = pspio_meshfunc_alloc(&(*potential)->v, np);
@@ -67,8 +67,8 @@ int pspio_potential_set(pspio_potential_t **potential, const pspio_qn_t *qn, con
   assert(mesh != NULL);
   assert(vofr != NULL);
 
-  HANDLE_FUNC_ERROR(pspio_qn_copy(&(*potential)->qn, qn));
-  HANDLE_FUNC_ERROR(pspio_meshfunc_set(&(*potential)->v, mesh, vofr, NULL, NULL));
+  SUCCEED_OR_RETURN(pspio_qn_copy(&(*potential)->qn, qn));
+  SUCCEED_OR_RETURN(pspio_meshfunc_set(&(*potential)->v, mesh, vofr, NULL, NULL));
 
   return PSPIO_SUCCESS;
 }

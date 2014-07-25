@@ -72,8 +72,7 @@ nodist_include_HEADERS = $(pio_fortran_mods)
 #
 
 pio_f90_basic_tests = \
-  test_fortran \
-  test_fortran_error
+  test_fortran
 
 check_PROGRAMS = $(pio_f90_basic_tests)
 TESTS = $(pio_f90_basic_tests)
@@ -82,11 +81,6 @@ test_fortran_SOURCES = test_fortran.F90
 test_fortran_LDADD = -lpspio_fortran -L$(builddir)/../.libs -lpspio
 test_fortran_CPPFLAGS = -I$(srcdir)/..
 test_fortran_DEPENDENCIES = ../libpspio.la libpspio_fortran.la $(pio_fortran_f_objs)
-
-test_fortran_error_SOURCES = test_fortran_error.F90
-test_fortran_error_LDADD = -lpspio_fortran -L$(builddir)/../.libs -lpspio
-test_fortran_error_CPPFLAGS = -I$(srcdir)/..
-test_fortran_error_DEPENDENCIES = ../libpspio.la libpspio_fortran.la $(pio_fortran_f_objs)
 
                     # ------------------------------------ #
 

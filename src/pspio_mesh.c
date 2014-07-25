@@ -42,16 +42,16 @@ int pspio_mesh_alloc(pspio_mesh_t **mesh, const int np) {
 
   // Memory allocation
   *mesh = (pspio_mesh_t *) malloc (sizeof(pspio_mesh_t));
-  CHECK_FATAL(*mesh != NULL, PSPIO_ENOMEM);
+  FULFILL_OR_EXIT(*mesh != NULL, PSPIO_ENOMEM);
 
   (*mesh)->r = NULL;
   (*mesh)->rab = NULL;
 
   (*mesh)->r = (double *) malloc (np * sizeof(double));
-  CHECK_FATAL((*mesh)->r != NULL, PSPIO_ENOMEM);
+  FULFILL_OR_EXIT((*mesh)->r != NULL, PSPIO_ENOMEM);
 
   (*mesh)->rab = (double *) malloc (np * sizeof(double));
-  CHECK_FATAL((*mesh)->rab != NULL, PSPIO_ENOMEM);
+  FULFILL_OR_EXIT((*mesh)->rab != NULL, PSPIO_ENOMEM);
 
   // Presets
   (*mesh)->np = np;
@@ -83,7 +83,7 @@ int pspio_mesh_copy(pspio_mesh_t **dst, const pspio_mesh_t *src) {
   assert(src != NULL);
 
   if (*dst == NULL) {
-    HANDLE_FUNC_ERROR(pspio_mesh_alloc(dst, src->np));
+    SUCCEED_OR_RETURN(pspio_mesh_alloc(dst, src->np));
   }
 
   (*dst)->type = src->type;
@@ -115,7 +115,7 @@ int pspio_mesh_init_from_points(pspio_mesh_t **mesh, const double *r,
     (*mesh)->type = PSPIO_MESH_LINEAR;
     for (i=0; i<(*mesh)->np; i++) {
       if (rab != NULL) {
-	CHECK_ERROR(fabs(rab[i] - (*mesh)->a) < tol, PSPIO_EVALUE);
+	FULFILL_OR_RETURN(fabs(rab[i] - (*mesh)->a) < tol, PSPIO_EVALUE);
       } else {
 	(*mesh)->rab[i] = (*mesh)->a;
       }
@@ -130,7 +130,7 @@ int pspio_mesh_init_from_points(pspio_mesh_t **mesh, const double *r,
     (*mesh)->type = PSPIO_MESH_LOG1;
     for (i=0; i<(*mesh)->np; i++) {
       if (rab != NULL) {
-	CHECK_ERROR(fabs(rab[i] - (*mesh)->a*r[i]) < tol, PSPIO_EVALUE);
+	FULFILL_OR_RETURN(fabs(rab[i] - (*mesh)->a*r[i]) < tol, PSPIO_EVALUE);
       } else {
 	(*mesh)->rab[i] = (*mesh)->a*r[i];
       }
@@ -145,7 +145,7 @@ int pspio_mesh_init_from_points(pspio_mesh_t **mesh, const double *r,
     (*mesh)->type = PSPIO_MESH_LOG2;
     for (i=0; i<(*mesh)->np; i++) {
       if (rab != NULL) {
-	CHECK_ERROR(fabs(rab[i] - (*mesh)->a*r[i]) < tol, PSPIO_EVALUE);
+	FULFILL_OR_RETURN(fabs(rab[i] - (*mesh)->a*r[i]) < tol, PSPIO_EVALUE);
       } else {
 	(*mesh)->rab[i] = (*mesh)->a*r[i];
       }

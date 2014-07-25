@@ -53,28 +53,28 @@ int main(void) {
   /* Check creation and destruction of meshes */
   DEBUG_PRINT("test_meshfunc: creating m1\n");
   eid = pspio_mesh_alloc(&m1, np);
-  eid = pspio_error_flush();
+  pspio_error_flush(stdout);
   DEBUG_PRINT("test_meshfunc: setting m1\n");
   eid = pspio_mesh_set(&m1, PSPIO_MESH_LOG1, a, b, r, rab);
-  eid = pspio_error_flush();
+  pspio_error_flush(stdout);
   DEBUG_PRINT("test_meshfunc: creating m2\n");
   eid = pspio_mesh_alloc(&m2, np);
-  eid = pspio_error_flush();
+  pspio_error_flush(stdout);
   DEBUG_PRINT("test_meshfunc: setting m2\n");
   eid = pspio_mesh_set(&m2, PSPIO_MESH_LINEAR, a, b, r, rab);
-  eid = pspio_error_flush();
+  pspio_error_flush(stdout);
   DEBUG_PRINT("\n");
 
   /* Check creation and destruction of mesh functions */
   DEBUG_PRINT("test_meshfunc: creating f1\n");
   eid = pspio_meshfunc_alloc(&f1, np);
-  eid = pspio_error_flush();
+  pspio_error_flush(stdout);
   DEBUG_PRINT("test_meshfunc: creating f2\n");
   eid = pspio_meshfunc_alloc(&f2, np);
-  eid = pspio_error_flush();
+  pspio_error_flush(stdout);
   DEBUG_PRINT("test_meshfunc: creating f3\n");
   eid = pspio_meshfunc_alloc(&f3, np);
-  eid = pspio_error_flush();
+  pspio_error_flush(stdout);
   DEBUG_PRINT("test_meshfunc: destroying f3\n");
   pspio_meshfunc_free(&f3);
   DEBUG_PRINT("\n");
@@ -82,19 +82,19 @@ int main(void) {
   /* Check setting of mesh functions */
   DEBUG_PRINT("test_meshfunc: setting f1\n");
   eid = pspio_meshfunc_set(&f1, m1, f, NULL, NULL);
-  eid = pspio_error_flush();
+  pspio_error_flush(stdout);
   DEBUG_PRINT("test_meshfunc: setting f2 with explicit derivative\n");
   eid = pspio_meshfunc_set(&f1, m1, f, fp, NULL);
-  eid = pspio_error_flush();
+  pspio_error_flush(stdout);
   DEBUG_PRINT("\n");
 
   /* Check copy of mesh functions */
   DEBUG_PRINT("test_meshfunc: copying f1 to a NULL f3\n");
   eid = pspio_meshfunc_copy(&f2, f1);
-  eid = pspio_error_flush();
+  pspio_error_flush(stdout);
   DEBUG_PRINT("test_meshfunc: copying f1 to a non-empty f3\n");
   eid = pspio_meshfunc_copy(&f2, f1);
-  eid = pspio_error_flush();
+  pspio_error_flush(stdout);
   DEBUG_PRINT("\n");
 
   /* Check evaluation of mesh functions */

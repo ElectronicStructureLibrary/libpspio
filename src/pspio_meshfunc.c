@@ -41,7 +41,7 @@ int pspio_meshfunc_alloc(pspio_meshfunc_t **func, const int np) {
   assert(np > 1);
 
   *func = (pspio_meshfunc_t *) malloc (sizeof(pspio_meshfunc_t));
-  CHECK_FATAL(*func != NULL, PSPIO_ENOMEM);
+  FULFILL_OR_EXIT(*func != NULL, PSPIO_ENOMEM);
 
   (*func)->mesh = NULL;
   ierr = pspio_mesh_alloc(&(*func)->mesh, np);
@@ -51,19 +51,19 @@ int pspio_meshfunc_alloc(pspio_meshfunc_t **func, const int np) {
   }
 
   (*func)->f = (double *) malloc (np * sizeof(double));
-  CHECK_FATAL((*func)->f != NULL, PSPIO_ENOMEM);
+  FULFILL_OR_EXIT((*func)->f != NULL, PSPIO_ENOMEM);
   memset((*func)->f, 0, np*sizeof(double));
   (*func)->f_spl = gsl_spline_alloc(gsl_interp_cspline, np);
   (*func)->f_acc = gsl_interp_accel_alloc();
 
   (*func)->fp = (double *) malloc (np * sizeof(double));
-  CHECK_FATAL((*func)->fp != NULL, PSPIO_ENOMEM);
+  FULFILL_OR_EXIT((*func)->fp != NULL, PSPIO_ENOMEM);
   memset((*func)->fp, 0, np*sizeof(double));
   (*func)->fp_spl = gsl_spline_alloc(gsl_interp_cspline, np);
   (*func)->fp_acc = gsl_interp_accel_alloc();
 
   (*func)->fpp = (double *) malloc (np * sizeof(double));
-  CHECK_FATAL((*func)->fpp != NULL, PSPIO_ENOMEM);
+  FULFILL_OR_EXIT((*func)->fpp != NULL, PSPIO_ENOMEM);
   memset((*func)->fpp, 0, np*sizeof(double));
   (*func)->fpp_spl = gsl_spline_alloc(gsl_interp_cspline, np);
   (*func)->fpp_acc = gsl_interp_accel_alloc();
@@ -77,7 +77,7 @@ int pspio_meshfunc_set(pspio_meshfunc_t **func, const pspio_mesh_t *mesh,
   int i;
 
   // Copy mesh
-  HANDLE_FUNC_ERROR(pspio_mesh_copy(&(*func)->mesh, mesh));
+  SUCCEED_OR_RETURN(pspio_mesh_copy(&(*func)->mesh, mesh));
 
   // Function
   memcpy((*func)->f, f, mesh->np * sizeof(double));
@@ -110,10 +110,10 @@ int pspio_meshfunc_copy(pspio_meshfunc_t **dst, const pspio_meshfunc_t *src) {
   assert(src != NULL);
 
   if (*dst == NULL) {
-    HANDLE_FUNC_ERROR(pspio_meshfunc_alloc(dst, src->mesh->np))
+    SUCCEED_OR_RETURN(pspio_meshfunc_alloc(dst, src->mesh->np))
   }
 
-  HANDLE_FUNC_ERROR(pspio_mesh_copy(&(*dst)->mesh, src->mesh));
+  SUCCEED_OR_RETURN(pspio_mesh_copy(&(*dst)->mesh, src->mesh));
   memcpy((*dst)->f, src->f, src->mesh->np * sizeof(double));
   gsl_spline_init((*dst)->f_spl, (*dst)->mesh->r, (*dst)->f,
 		  (*dst)->mesh->np) ;

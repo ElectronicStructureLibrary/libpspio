@@ -39,7 +39,7 @@ int pspio_qn_alloc(pspio_qn_t **qn) {
   assert( *qn == NULL);
 
   *qn = (pspio_qn_t *) malloc (sizeof(pspio_qn_t));
-  CHECK_FATAL(*qn != NULL, PSPIO_ENOMEM);
+  FULFILL_OR_EXIT(*qn != NULL, PSPIO_ENOMEM);
 
   (*qn)->n = 0;
   (*qn)->l = 0;
@@ -53,7 +53,7 @@ int pspio_qn_copy(pspio_qn_t **dst, const pspio_qn_t *src) {
   assert(src != NULL);
 
   if ( *dst == NULL ) {
-    HANDLE_FUNC_ERROR(pspio_qn_alloc(dst));
+    SUCCEED_OR_RETURN(pspio_qn_alloc(dst));
   }
 
   (*dst)->n = src->n;
@@ -85,8 +85,8 @@ void pspio_qn_get(const pspio_qn_t *qn, int *n, int *l, double *j) {
 int pspio_qn_set(pspio_qn_t **qn, const int n, const int l, const double j) {
   assert((qn != NULL) && (*qn != NULL));
 
-  CHECK_ERROR(l >= 0, PSPIO_EVALUE);
-  CHECK_ERROR( (j == 0.0) || (fabs(j - (double)l) - 0.5 < 1.0e-8), PSPIO_EVALUE);
+  FULFILL_OR_RETURN(l >= 0, PSPIO_EVALUE);
+  FULFILL_OR_RETURN( (j == 0.0) || (fabs(j - (double)l) - 0.5 < 1.0e-8), PSPIO_EVALUE);
 
   (*qn)->n = n;
   (*qn)->l = l;

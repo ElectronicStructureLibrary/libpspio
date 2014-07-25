@@ -47,7 +47,7 @@ int main(int argc, char *argv[]) {
   /* init pspdata */
   DEBUG_PRINT("test_io: initializing pspdata\n");
   eid = pspio_pspdata_init(&pspdata);
-  eid = pspio_error_flush();
+  pspio_error_flush(stdout);
   DEBUG_PRINT("\n");
 
   /* check parsing of file */
@@ -56,7 +56,7 @@ int main(int argc, char *argv[]) {
   if ( eid == PSPIO_SUCCESS ) {
     DEBUG_PRINT("test_io: file parsing successful\n");
   }
-  eid = pspio_error_flush();
+  pspio_error_flush(stdout);
   DEBUG_PRINT("\n");
 
   /* check writing of file */
@@ -65,7 +65,7 @@ int main(int argc, char *argv[]) {
   if ( eid == PSPIO_SUCCESS ) {
     DEBUG_PRINT("test_io: file writing successful\n");
   }
-  eid = pspio_error_flush();
+  pspio_error_flush(stdout);
   DEBUG_PRINT("\n");
   
   /* Destroy pspdata structures */

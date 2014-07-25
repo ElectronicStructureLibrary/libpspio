@@ -51,7 +51,7 @@ int abinit_read_header(FILE *fp, const int format,  pspio_pspdata_t **pspdata) {
   format_read = PSPIO_FMT_UNKNOWN;
 
   // Line 1: read title
-  CHECK_ERROR( fgets(line, PSPIO_STRLEN_LINE, fp) != NULL, PSPIO_EIO);
+  FULFILL_OR_RETURN( fgets(line, PSPIO_STRLEN_LINE, fp) != NULL, PSPIO_EIO);
   s = strlen(line);
   (*pspdata)->info = (char *) malloc (s + 1);
   strncpy((*pspdata)->info, line, s);
@@ -59,14 +59,14 @@ int abinit_read_header(FILE *fp, const int format,  pspio_pspdata_t **pspdata) {
 
   // Line 2: read atomic number, Z valence
   // Note: ignoring psp date
-  CHECK_ERROR( fgets(line, PSPIO_STRLEN_LINE, fp) != NULL, PSPIO_EIO);
-  CHECK_ERROR( sscanf(line, "%lf %lf", &zatom, &zval) == 2, PSPIO_EFILE_CORRUPT);
+  FULFILL_OR_RETURN( fgets(line, PSPIO_STRLEN_LINE, fp) != NULL, PSPIO_EIO);
+  FULFILL_OR_RETURN( sscanf(line, "%lf %lf", &zatom, &zval) == 2, PSPIO_EFILE_CORRUPT);
   (*pspdata)->z = zatom;
   (*pspdata)->zvalence = zval;
 
   // Line 3: read pspcod, pspxc, lmax, lloc, mmax, r2well
-  CHECK_ERROR( fgets(line, PSPIO_STRLEN_LINE, fp) != NULL, PSPIO_EIO);
-  CHECK_ERROR( sscanf(line, "%d %d %d %d %d %lf",
+  FULFILL_OR_RETURN( fgets(line, PSPIO_STRLEN_LINE, fp) != NULL, PSPIO_EIO);
+  FULFILL_OR_RETURN( sscanf(line, "%d %d %d %d %d %lf",
     &pspcod, &pspxc, &lmax, &lloc, &mmax, &r2well) == 6, PSPIO_EFILE_CORRUPT);
   (*pspdata)->l_max = lmax;
   (*pspdata)->l_local = lloc;
@@ -76,19 +76,19 @@ int abinit_read_header(FILE *fp, const int format,  pspio_pspdata_t **pspdata) {
     exchange = -pspxc % 1000;
     correlation = -pspxc / 1000;
   } else {
-    HANDLE_FUNC_ERROR(abinit_to_libxc(pspxc, &exchange, &correlation));
+    SUCCEED_OR_RETURN(abinit_to_libxc(pspxc, &exchange, &correlation));
   }
-  HANDLE_FUNC_ERROR(pspio_xc_alloc(&(*pspdata)->xc));
+  SUCCEED_OR_RETURN(pspio_xc_alloc(&(*pspdata)->xc));
   pspio_xc_set_id(&(*pspdata)->xc, exchange, correlation);
 
 
   // Line 4: read rchrg, fchrg, qchrg if NLCC
   // Note: tolerance copied from Abinit
   // FIXME: store rchrg, fchrg, qchrg
-  CHECK_ERROR( fgets(line, PSPIO_STRLEN_LINE, fp) != NULL, PSPIO_EIO);
+  FULFILL_OR_RETURN( fgets(line, PSPIO_STRLEN_LINE, fp) != NULL, PSPIO_EIO);
   line4 = my_strndup(line, 3);
   if ( strcmp("4--", line4) != 0 ) {
-    CHECK_ERROR( sscanf(line, "%lf %lf %lf",
+    FULFILL_OR_RETURN( sscanf(line, "%lf %lf %lf",
       &rchrg, &fchrg, &qchrg) == 3, PSPIO_EFILE_CORRUPT );
     if ( abs(fchrg) >= 1.0e-14 ) {
       pspio_xc_set_nlcc_scheme(&(*pspdata)->xc, PSPIO_NLCC_FHI);
@@ -96,9 +96,9 @@ int abinit_read_header(FILE *fp, const int format,  pspio_pspdata_t **pspdata) {
   }
 
   // Ignore lines 5-7
-  CHECK_ERROR( fgets(line, PSPIO_STRLEN_LINE, fp) != NULL, PSPIO_EIO);
-  CHECK_ERROR( fgets(line, PSPIO_STRLEN_LINE, fp) != NULL, PSPIO_EIO);
-  CHECK_ERROR( fgets(line, PSPIO_STRLEN_LINE, fp) != NULL, PSPIO_EIO);
+  FULFILL_OR_RETURN( fgets(line, PSPIO_STRLEN_LINE, fp) != NULL, PSPIO_EIO);
+  FULFILL_OR_RETURN( fgets(line, PSPIO_STRLEN_LINE, fp) != NULL, PSPIO_EIO);
+  FULFILL_OR_RETURN( fgets(line, PSPIO_STRLEN_LINE, fp) != NULL, PSPIO_EIO);
 
   // Check that the format found is the one we expected
   switch (pspcod) {
@@ -141,7 +141,7 @@ int abinit_read_header(FILE *fp, const int format,  pspio_pspdata_t **pspdata) {
     default:
       format_read = PSPIO_FMT_UNKNOWN;
   }
-  CHECK_ERROR(format_read == format, PSPIO_EFILE_FORMAT)
+  FULFILL_OR_RETURN(format_read == format, PSPIO_EFILE_FORMAT)
 
   return PSPIO_SUCCESS;
 }
@@ -159,7 +159,7 @@ int abinit_write_header(FILE *fp, const int format, const pspio_pspdata_t *pspda
 
   // Init auxiliary data
   have_nlcc = pspio_xc_has_nlcc(pspdata->xc);
-  HANDLE_FUNC_ERROR(libxc_to_abinit(pspdata->xc->exchange, \
+  SUCCEED_OR_RETURN(libxc_to_abinit(pspdata->xc->exchange, \
     pspdata->xc->correlation, &pspxc));
 
   // Line 1: write title

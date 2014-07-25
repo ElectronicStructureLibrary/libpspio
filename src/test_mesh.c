@@ -48,10 +48,10 @@ int main(void) {
   /* Check creation and destruction of meshes */
   DEBUG_PRINT("test_mesh: creating m1\n");
   eid = pspio_mesh_alloc(&m1, np);
-  eid = pspio_error_flush();
+  pspio_error_flush(stdout);
   DEBUG_PRINT("test_mesh: creating m2\n");
   eid = pspio_mesh_alloc(&m2, np);
-  eid = pspio_error_flush();
+  pspio_error_flush(stdout);
   DEBUG_PRINT("test_mesh: destroying m2\n");
   pspio_mesh_free(&m2);
   DEBUG_PRINT("\n");
@@ -59,24 +59,24 @@ int main(void) {
   /* Check setting of meshes */
   DEBUG_PRINT("test_mesh: setting m1\n");
   eid = pspio_mesh_set(&m1, PSPIO_MESH_LOG1, a, b, r, rab);
-  eid = pspio_error_flush();
+  pspio_error_flush(stdout);
   DEBUG_PRINT("test_mesh: initializing m1 from parameters\n");
   pspio_mesh_init_from_parameters(&m1, PSPIO_MESH_LOG1, a, b);
   DEBUG_PRINT("test_mesh: initializing m1 from points\n");
   eid = pspio_mesh_init_from_points(&m1, r, rab);
-  eid = pspio_error_flush();
+  pspio_error_flush(stdout);
   DEBUG_PRINT("\n");
 
   /* Check copy of meshes */
   DEBUG_PRINT("test_mesh: copying m1 to a NULL m2\n");
   eid = pspio_mesh_copy(&m2, m1);
-  eid = pspio_error_flush();
+  pspio_error_flush(stdout);
   DEBUG_PRINT("test_mesh: copying m1 to a non-empty m2\n");
   eid = pspio_mesh_copy(&m2, m1);
-  eid = pspio_error_flush();
+  pspio_error_flush(stdout);
   DEBUG_PRINT("test_mesh: setting m2\n");
   eid = pspio_mesh_set(&m2, PSPIO_MESH_LINEAR, a, b, r, rab);
-  eid = pspio_error_flush();
+  pspio_error_flush(stdout);
   DEBUG_PRINT("\n");
 
   /* Destroy meshes */

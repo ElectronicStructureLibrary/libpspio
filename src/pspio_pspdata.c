@@ -45,7 +45,7 @@ int pspio_pspdata_init(pspio_pspdata_t **pspdata) {
   
   // Memory allocation
   *pspdata = (pspio_pspdata_t *) malloc (sizeof(pspio_pspdata_t));
-  CHECK_FATAL(*pspdata != NULL, PSPIO_ENOMEM);
+  FULFILL_OR_EXIT(*pspdata != NULL, PSPIO_ENOMEM);
 
   // Nullify pointers and initialize all values to 0
   (*pspdata)->format = PSPIO_FMT_UNKNOWN;
@@ -95,7 +95,7 @@ int pspio_pspdata_read(pspio_pspdata_t **pspdata, const int *file_format,
 
   // Open file
   fp = fopen(file_name, "r");
-  CHECK_ERROR(fp != NULL, PSPIO_ENOFILE);
+  FULFILL_OR_RETURN(fp != NULL, PSPIO_ENOFILE);
 
   // Read from file
   eid = PSPIO_ERROR;
@@ -105,7 +105,7 @@ int pspio_pspdata_read(pspio_pspdata_t **pspdata, const int *file_format,
     }
 
     // Always rewind the file to allow for multiple reads
-    CHECK_ERROR(fp != NULL, PSPIO_ENOFILE);
+    FULFILL_OR_RETURN(fp != NULL, PSPIO_ENOFILE);
     rewind(fp);
 
     switch (fmt) {
@@ -139,7 +139,7 @@ int pspio_pspdata_read(pspio_pspdata_t **pspdata, const int *file_format,
   HANDLE_ERROR(eid);
 
   // Create states lookup table
-  HANDLE_FUNC_ERROR(pspio_states_lookup_table((*pspdata)->n_states, (*pspdata)->states, &(*pspdata)->qn_to_istate));
+  SUCCEED_OR_RETURN(pspio_states_lookup_table((*pspdata)->n_states, (*pspdata)->states, &(*pspdata)->qn_to_istate));
 
   return PSPIO_SUCCESS;
 }
@@ -154,7 +154,7 @@ int pspio_pspdata_write(const pspio_pspdata_t *pspdata, const int file_format,
   
   // Open file
   fp = fopen(file_name, "w");
-  CHECK_ERROR(fp != NULL, PSPIO_ENOFILE);
+  FULFILL_OR_RETURN(fp != NULL, PSPIO_ENOFILE);
 
   // Write to file in the selected format
   switch(file_format) {

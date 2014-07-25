@@ -49,7 +49,7 @@ int main(void) {
   /* Check creation and setting of mesh */
   DEBUG_PRINT("test_state: creating mesh\n");
   eid = pspio_mesh_alloc(&mesh, np);
-  eid = pspio_error_flush();
+  pspio_error_flush(stdout);
   DEBUG_PRINT("test_state: setting mesh\n");
   pspio_mesh_init_from_parameters(&mesh, PSPIO_MESH_LINEAR, 0.1, 0.05);
   DEBUG_PRINT("\n");
@@ -57,29 +57,29 @@ int main(void) {
   /* Check creation and setting of quantum numbers */
   DEBUG_PRINT("test_state: creating qn1\n");
   eid = pspio_qn_alloc(&qn1);
-  eid = pspio_error_flush();
+  pspio_error_flush(stdout);
   DEBUG_PRINT("test_state: creating qn2\n");
   eid = pspio_qn_alloc(&qn2);
-  eid = pspio_error_flush();
+  pspio_error_flush(stdout);
   DEBUG_PRINT("test_state: creating qn3\n");
   eid = pspio_qn_alloc(&qn3);
-  eid = pspio_error_flush();
+  pspio_error_flush(stdout);
   DEBUG_PRINT("test_state: setting qn1 to (2, 0, 0.5)\n");
   eid = pspio_qn_set(&qn1, 2, 0, 0.5);
   DEBUG_PRINT("test_state: setting qn2 to (3, 1, 0.5)\n");
   eid = pspio_qn_set(&qn2, 3, 1, 0.5);
   DEBUG_PRINT("test_state: setting qn3 to (3, 1, 1.5)\n");
   eid = pspio_qn_set(&qn3, 3, 1, 1.5);
-  eid = pspio_error_flush();
+  pspio_error_flush(stdout);
   DEBUG_PRINT("\n");
 
   /* Check creation and destruction of states */
   DEBUG_PRINT("test_state: creating s1\n");
   eid = pspio_state_alloc(&s1, np);
-  eid = pspio_error_flush();
+  pspio_error_flush(stdout);
   DEBUG_PRINT("test_state: creating s2\n");
   eid = pspio_state_alloc(&s2, np);
-  eid = pspio_error_flush();
+  pspio_error_flush(stdout);
   DEBUG_PRINT("test_state: destroying s2\n");
   pspio_state_free(&s2);
   DEBUG_PRINT("\n");
@@ -87,7 +87,7 @@ int main(void) {
   /* Check setting of states */
   DEBUG_PRINT("test_state: setting s1 to (-1.0, '2s', qn1, 2.0, 1.0, ...)\n");
   eid = pspio_state_set(&s1, -1.0, "1s2", qn1, 2.0, 1.0, mesh, wf);
-  eid = pspio_error_flush();
+  pspio_error_flush(stdout);
   DEBUG_PRINT("\n");
 
   /* Check creation of lookup table */
@@ -97,25 +97,25 @@ int main(void) {
   PTR_STAT_SHOW(st);
   DEBUG_PRINT("test_state: creating st[0]\n");
   eid = pspio_state_alloc(&st[0], np);
-  eid = pspio_error_flush();
+  pspio_error_flush(stdout);
   DEBUG_PRINT("test_state: creating st[1]\n");
   eid = pspio_state_alloc(&st[1], np);
-  eid = pspio_error_flush();
+  pspio_error_flush(stdout);
   DEBUG_PRINT("test_state: creating st[2]\n");
   eid = pspio_state_alloc(&st[2], np);
-  eid = pspio_error_flush();
+  pspio_error_flush(stdout);
   DEBUG_PRINT("test_state: setting st[0] to (-1.00, '2s0.5', qn1, 2.0, 1.0, ...)\n");
   eid = pspio_state_set(&st[0], -1.0, "2s0.5", qn1, 2.0, 1.0, mesh, wf);
-  eid = pspio_error_flush();
+  pspio_error_flush(stdout);
   DEBUG_PRINT("test_state: setting st[1] to (-0.50, '3p0.5', qn2, 2.0, 1.0, ...)\n");
   eid = pspio_state_set(&st[1], -1.0, "2s0.5", qn2, 2.0, 1.0, mesh, wf);
-  eid = pspio_error_flush();
+  pspio_error_flush(stdout);
   DEBUG_PRINT("test_state: setting st[2] to (-0.25, '3p1.5', qn3, 4.0, 1.0, ...)\n");
   eid = pspio_state_set(&st[2], -1.0, "2s0.5", qn3, 4.0, 1.0, mesh, wf);
-  eid = pspio_error_flush();
+  pspio_error_flush(stdout);
   DEBUG_PRINT("test_state: Creating lookup table\n");
   eid = pspio_states_lookup_table(3, st, &table);
-  eid = pspio_error_flush();
+  pspio_error_flush(stdout);
   if (! eid) {
     lsize = 3;
     for (i=0; table[i]!=NULL; i++) {

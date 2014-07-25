@@ -417,56 +417,28 @@ void FC_FUNC_(pspio_f90_xc_core_density_eval_v, PSPIO_F90_XC_NLCC_EVAL_V)
  * pspio_error                                                        *
  **********************************************************************/
 
-void FC_FUNC_(pspio_f90_error_add, PSPIO_F90_ERROR_ADD)
-  (int *error_id, STR_F_TYPE filename, int *lineno STR_ARG1)
-{
-  char *tmp_name;
-
-  TO_C_STR1(filename, tmp_name);
-  pspio_error_add(*error_id, tmp_name, *lineno);
-  free(tmp_name);
-}
-
-
-int FC_FUNC_(pspio_f90_error_fetchall, PSPIO_F90_ERROR_FETCHALL)
+void FC_FUNC_(pspio_f90_error_fetchall, PSPIO_F90_ERROR_FETCHALL)
   (STR_F_TYPE err_msg STR_ARG1)
 {
   char *tmp_msg;
-  int eid;
 
-  eid = pspio_error_fetchall(&tmp_msg);
+  pspio_error_fetchall(&tmp_msg);
   TO_F_STR1(tmp_msg, err_msg);
   free(tmp_msg);
-
-  return (int) eid;
 }
 
 
-int FC_FUNC_(pspio_f90_error_flush, PSPIO_F90_ERROR_FLUSH)
+void FC_FUNC_(pspio_f90_error_flush, PSPIO_F90_ERROR_FLUSH)
   (void)
 {
-  return (int) pspio_error_flush();
+  pspio_error_flush(stdout);
 }
 
 
-int FC_FUNC_(pspio_f90_error_free, PSPIO_F90_ERROR_FREE)
+void FC_FUNC_(pspio_f90_error_free, PSPIO_F90_ERROR_FREE)
   (void)
 {
-  return (int) pspio_error_free();
-}
-
-
-int FC_FUNC_(pspio_f90_error_get_last, PSPIO_F90_ERROR_GET_LAST)
-  (void)
-{
-  return (int) pspio_error_get_last();
-}
-
-
-int FC_FUNC_(pspio_f90_error_len, PSPIO_F90_ERROR_LEN)
-  (void)
-{
-  return (int) pspio_error_len();
+  pspio_error_free();
 }
 
 
@@ -474,8 +446,8 @@ int FC_FUNC_(pspio_f90_error_len, PSPIO_F90_ERROR_LEN)
  * pspio_info                                                         *
  **********************************************************************/
 
-int FC_FUNC_(pspio_f90_version, PSPIO_F90_VERSION)
+void FC_FUNC_(pspio_f90_version, PSPIO_F90_VERSION)
  (int *major, int *minor, int *micro)
 {
-  return (int)  pspio_version(major, minor, micro);
+  pspio_version(major, minor, micro);
 }

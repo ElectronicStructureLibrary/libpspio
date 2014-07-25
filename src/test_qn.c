@@ -43,10 +43,10 @@ int main(void) {
   /* Check creation and destruction of quantum numbers */
   DEBUG_PRINT("test_qn: creating qn1\n");
   eid = pspio_qn_alloc(&qn1);
-  eid = pspio_error_flush();
+  pspio_error_flush(stdout);
   DEBUG_PRINT("test_qn: creating qn2\n");
   eid = pspio_qn_alloc(&qn2);
-  eid = pspio_error_flush();
+  pspio_error_flush(stdout);
   DEBUG_PRINT("test_qn: destroying qn2\n");
   pspio_qn_free(&qn2);
   DEBUG_PRINT("\n");
@@ -54,25 +54,25 @@ int main(void) {
   /* Check setting of quantum numbers */
   DEBUG_PRINT("test_qn: setting qn1 to (1, 2, 3.0) = wrong\n");
   eid = pspio_qn_set(&qn1, 1, 2, 3.0);
-  eid = pspio_error_flush();
+  pspio_error_flush(stdout);
   DEBUG_PRINT("test_qn: setting qn1 to (1, 2, 0.0) = correct\n");
   eid = pspio_qn_set(&qn1, 1, 2, 0.0);
-  eid = pspio_error_flush();
+  pspio_error_flush(stdout);
   DEBUG_PRINT("test_qn: setting qn1 to (1, 2, 1.5) = correct\n");
   eid = pspio_qn_set(&qn1, 1, 2, 1.5);
-  eid = pspio_error_flush();
+  pspio_error_flush(stdout);
   DEBUG_PRINT("test_qn: setting qn1 to (1, 2, 2.5) = correct\n");
   eid = pspio_qn_set(&qn1, 1, 2, 2.5);
-  eid = pspio_error_flush();
+  pspio_error_flush(stdout);
   DEBUG_PRINT("\n");
 
   /* Check copy of quantum numbers */
   DEBUG_PRINT("test_qn: copying qn1 to a NULL qn2\n");
   eid = pspio_qn_copy(&qn2, qn1);
-  eid = pspio_error_flush();
+  pspio_error_flush(stdout);
   DEBUG_PRINT("test_qn: copying qn1 to a non-empty qn2\n");
   eid = pspio_qn_copy(&qn2, qn1);
-  eid = pspio_error_flush();
+  pspio_error_flush(stdout);
   DEBUG_PRINT("\n");
 
   /* Check comparison of quantum numbers */
@@ -80,14 +80,14 @@ int main(void) {
   CHECK_STAT(pspio_qn_cmp(qn2, qn1), PSPIO_QN_EQUAL);
   DEBUG_PRINT("test_qn: comparing qn1 and qn2 with identical momenta\n");
   eid = pspio_qn_set(&qn2, 2, 2, 2.5);
-  eid = pspio_error_flush();
+  pspio_error_flush(stdout);
   CHECK_STAT(pspio_qn_cmp(qn2, qn1), PSPIO_QN_MTEQUAL);
   DEBUG_PRINT("test_qn: comparing different qn1 and qn2\n");
   eid = pspio_qn_set(&qn2, 2, 3, 2.5);
-  eid = pspio_error_flush();
+  pspio_error_flush(stdout);
   CHECK_STAT(pspio_qn_cmp(qn1, qn2), PSPIO_QN_DIFF);
   eid = pspio_qn_set(&qn2, 1, 2, 1.5);
-  eid = pspio_error_flush();
+  pspio_error_flush(stdout);
   CHECK_STAT(pspio_qn_cmp(qn2, qn1), PSPIO_QN_DIFF);
   DEBUG_PRINT("\n");
 
@@ -95,11 +95,11 @@ int main(void) {
   DEBUG_PRINT("test_qn: printing quantum number label\n");
   eid = pspio_qn_set(&qn1, 1, 0, 0.0);
   pspio_qn_label(qn1, label);
-  eid = pspio_error_flush();
+  pspio_error_flush(stdout);
   DEBUG_PRINT("test_qn:  label 1 = '%s' (should be '1s')\n", label);
   eid = pspio_qn_set(&qn1, 2, 1, 1.5);
   pspio_qn_label(qn1, label);
-  eid = pspio_error_flush();
+  pspio_error_flush(stdout);
   DEBUG_PRINT("test_qn:  label 2 = '%s' (should be '2p1.5')\n", label);
   DEBUG_PRINT("\n");
 
