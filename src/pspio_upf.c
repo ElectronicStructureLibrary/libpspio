@@ -37,7 +37,7 @@
 int pspio_upf_read(FILE *fp, pspio_pspdata_t **pspdata){
   int np;
 
-  HANDLE_FUNC_ERROR(upf_read_info(fp, pspdata));
+  SUCCEED_OR_RETURN(upf_read_info(fp, pspdata));
 
   //At the moment the wave equation type is not defined in the header,
   //so we set it to 0 if the ADDINFO tag is not present, and to PSPIO_EQN_DIRAC if it is
@@ -47,15 +47,15 @@ int pspio_upf_read(FILE *fp, pspio_pspdata_t **pspdata){
     (*pspdata)->wave_eq = 0;
   }
 
-  HANDLE_FUNC_ERROR(upf_read_header(fp, &np, pspdata));
-  HANDLE_FUNC_ERROR(upf_read_mesh(fp, np, pspdata));
+  SUCCEED_OR_RETURN(upf_read_header(fp, &np, pspdata));
+  SUCCEED_OR_RETURN(upf_read_mesh(fp, np, pspdata));
   if (pspio_xc_has_nlcc((*pspdata)->xc)) {
-    HANDLE_FUNC_ERROR(upf_read_nlcc(fp, np, pspdata));
+    SUCCEED_OR_RETURN(upf_read_nlcc(fp, np, pspdata));
   }
-  HANDLE_FUNC_ERROR(upf_read_nonlocal(fp, np, pspdata));
-  HANDLE_FUNC_ERROR(upf_read_pswfc(fp, np, pspdata));
-  HANDLE_FUNC_ERROR(upf_read_local(fp, np, pspdata));
-  HANDLE_FUNC_ERROR(upf_read_rhoatom(fp, np, pspdata));
+  SUCCEED_OR_RETURN(upf_read_nonlocal(fp, np, pspdata));
+  SUCCEED_OR_RETURN(upf_read_pswfc(fp, np, pspdata));
+  SUCCEED_OR_RETURN(upf_read_local(fp, np, pspdata));
+  SUCCEED_OR_RETURN(upf_read_rhoatom(fp, np, pspdata));
 
   return PSPIO_SUCCESS;
 }
@@ -64,7 +64,7 @@ int pspio_upf_write(FILE *fp, const pspio_pspdata_t *pspdata){
   assert(pspdata != NULL);
 
   upf_write_info(fp, pspdata);
-  HANDLE_FUNC_ERROR(upf_write_header(fp, pspdata));
+  SUCCEED_OR_RETURN(upf_write_header(fp, pspdata));
   upf_write_mesh(fp, pspdata);
   if (pspio_xc_has_nlcc(pspdata->xc)) {
     upf_write_nlcc(fp, pspdata);

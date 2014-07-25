@@ -172,3 +172,5 @@ test_xc_SOURCES = test_xc.c
 test_xc_LDADD = -lpspio
 test_xc_CPPFLAGS = -I$(srcdir)/../src
 test_xc_DEPENDENCIES = libpspio.la
+
+MOSTLYCLEANFILES = test_*.tmp

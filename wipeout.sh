@@ -55,6 +55,8 @@ echo "Removing files produced by the configure script..."
 rm -f libtool
 find . -name Makefile -exec rm {} \;
 find . -name Makefile.in -exec rm {} \;
+find . -name '*.log' -exec rm {} \;
+find . -name '*.trs' -exec rm {} \;
 rm -rf libpspio-*.tar.gz
 echo "done."
 

@@ -30,7 +30,7 @@
 
 
 int main(void) {
-  int eid = pspio_error_get_last();
+  int eid = pspio_error_get_last(NULL);
 
   /* Display basic information */
   DEBUG_PRINT("%s - test_error\nReport bugs to %s\n\n", PACKAGE_STRING,
@@ -43,7 +43,8 @@ int main(void) {
     eid, pspio_error_len());
   CHECK_STAT_LEN(eid, PSPIO_SUCCESS, pspio_error_len(), 0);
   DEBUG_PRINT("test_error: BEGIN FLUSH\n");
-  eid = pspio_error_flush();
+  pspio_error_flush(stdout);
+  eid = pspio_error_get_last(NULL);
   DEBUG_PRINT("test_error: END FLUSH\n");
   DEBUG_PRINT("test_error: after pspio_error_flush, status = %d, length = %d\n",
     eid, pspio_error_len());
@@ -52,12 +53,14 @@ int main(void) {
 
   /* Check single error */
   DEBUG_PRINT("test_error: checking single error (EVALUE)\n");
-  pspio_error_add(PSPIO_EVALUE, "test_1_1.c", 1234);
+  pspio_error_add(PSPIO_EVALUE, "test_1_1.c", 1234, "dummy1");
+  eid = pspio_error_get_last(NULL);
   DEBUG_PRINT("test_error: after pspio_error_add, status = %d, length = %d\n",
     eid, pspio_error_len());
-  CHECK_STAT_LEN(eid, PSPIO_SUCCESS, pspio_error_len(), 1);
+  CHECK_STAT_LEN(eid, PSPIO_EVALUE, pspio_error_len(), 1);
   DEBUG_PRINT("test_error: BEGIN FLUSH\n");
-  pspio_error_flush();
+  pspio_error_flush(stdout);
+  eid = pspio_error_get_last(NULL);
   DEBUG_PRINT("test_error: END FLUSH\n");
   DEBUG_PRINT("test_error: after pspio_error_flush, status = %d, length = %d\n",
     eid, pspio_error_len());
@@ -66,16 +69,19 @@ int main(void) {
 
   /* Check double error */
   DEBUG_PRINT("test_error: checking double error (EGSL, ENOSUPPORT)\n");
-  pspio_error_add(PSPIO_EGSL, "test_2_1.c", 201);
+  pspio_error_add(PSPIO_EGSL, "test_2_1.c", 201, "dummy21");
+  eid = pspio_error_get_last(NULL);
   DEBUG_PRINT("test_error: after pspio_error_add, status = %d, length = %d\n",
     eid, pspio_error_len());
-  CHECK_STAT_LEN(eid, PSPIO_SUCCESS, pspio_error_len(), 1);
-  pspio_error_add(PSPIO_ENOSUPPORT, "test_2_2.c", 202);
+  CHECK_STAT_LEN(eid, PSPIO_EGSL, pspio_error_len(), 1);
+  pspio_error_add(PSPIO_ENOSUPPORT, "test_2_2.c", 202, "dummy22");
+  eid = pspio_error_get_last(NULL);
   DEBUG_PRINT("test_error: after pspio_error_add, status = %d, length = %d\n",
     eid, pspio_error_len());
-  CHECK_STAT_LEN(eid, PSPIO_SUCCESS, pspio_error_len(), 2);
+  CHECK_STAT_LEN(eid, PSPIO_ENOSUPPORT, pspio_error_len(), 2);
   DEBUG_PRINT("test_error: BEGIN FLUSH\n");
-  pspio_error_flush();
+  pspio_error_flush(stdout);
+  eid = pspio_error_get_last(NULL);
   DEBUG_PRINT("test_error: END FLUSH\n");
   DEBUG_PRINT("test_error: after pspio_error_flush, status = %d, length = %d\n",
     eid, pspio_error_len());
@@ -84,20 +90,24 @@ int main(void) {
 
   /* Check triple error */
   DEBUG_PRINT("test_error: checking triple error (EVALUE, ENOFILE, ERROR)\n");
-  pspio_error_add(PSPIO_EVALUE, "test_3_1.c", 311);
+  pspio_error_add(PSPIO_EVALUE, "test_3_1.c", 311, "dummy31");
+  eid = pspio_error_get_last(NULL);
   DEBUG_PRINT("test_error: after pspio_error_add, status = %d, length = %d\n",
     eid, pspio_error_len());
-  CHECK_STAT_LEN(eid, PSPIO_SUCCESS, pspio_error_len(), 1);
-  pspio_error_add(PSPIO_ENOFILE, "test_3_2.c", 322);
+  CHECK_STAT_LEN(eid, PSPIO_EVALUE, pspio_error_len(), 1);
+  pspio_error_add(PSPIO_ENOFILE, "test_3_2.c", 322, "dummy32");
+  eid = pspio_error_get_last(NULL);
   DEBUG_PRINT("test_error: after pspio_error_add, status = %d, length = %d\n",
     eid, pspio_error_len());
-  CHECK_STAT_LEN(eid, PSPIO_SUCCESS, pspio_error_len(), 2);
-  pspio_error_add(PSPIO_ERROR, "test_3_3.c", 333);
+  CHECK_STAT_LEN(eid, PSPIO_ENOFILE, pspio_error_len(), 2);
+  pspio_error_add(PSPIO_ERROR, "test_3_3.c", 333, "dummy33");
+  eid = pspio_error_get_last(NULL);
   DEBUG_PRINT("test_error: after pspio_error_add, status = %d, length = %d\n",
     eid, pspio_error_len());
-  CHECK_STAT_LEN(eid, PSPIO_SUCCESS, pspio_error_len(), 3);
+  CHECK_STAT_LEN(eid, PSPIO_ERROR, pspio_error_len(), 3);
   DEBUG_PRINT("test_error: BEGIN FLUSH\n");
-  pspio_error_flush();
+  pspio_error_flush(stdout);
+  eid = pspio_error_get_last(NULL);
   DEBUG_PRINT("test_error: END FLUSH\n");
   DEBUG_PRINT("test_error: after pspio_error_flush, status = %d, length = %d\n",
     eid, pspio_error_len());
@@ -106,7 +116,7 @@ int main(void) {
 
   /* Destroy error-handling structures */
   DEBUG_PRINT("test_error: destroying error-handling structures\n");
-  eid = pspio_error_free();
+  pspio_error_free();
   CHECK_STAT_LEN(eid, PSPIO_SUCCESS, pspio_error_len(), 0);
   DEBUG_PRINT("\n");
 

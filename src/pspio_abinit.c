@@ -38,8 +38,11 @@
 #endif
 
 
-int pspio_abinit_read(FILE *fp, pspio_pspdata_t **pspdata, const int format){
+int pspio_abinit_read(FILE *fp, pspio_pspdata_t **pspdata, const int format) {
   int eid;
+
+  assert(fp != NULL);
+  assert(pspdata != NULL);
 
   switch (format) {
   case PSPIO_FMT_ABINIT_1:
@@ -73,6 +76,7 @@ int pspio_abinit_read(FILE *fp, pspio_pspdata_t **pspdata, const int format){
 int pspio_abinit_write(FILE *fp, const pspio_pspdata_t *pspdata, const int format){
   int eid = PSPIO_ERROR;
 
+  assert(fp != NULL);
   assert(pspdata != NULL);
 
   switch (format) {

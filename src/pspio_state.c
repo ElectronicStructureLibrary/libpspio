@@ -42,7 +42,7 @@ int pspio_state_alloc(pspio_state_t **state, const int np) {
   assert(np > 1);
 
   *state = (pspio_state_t *) malloc (sizeof(pspio_state_t));
-  CHECK_ERROR(*state != NULL, PSPIO_ENOMEM);
+  FULFILL_OR_EXIT(*state != NULL, PSPIO_ENOMEM);
 
   (*state)->wf = NULL;
   ierr = pspio_meshfunc_alloc(&(*state)->wf, np);
@@ -68,8 +68,8 @@ int pspio_state_alloc(pspio_state_t **state, const int np) {
 
 
 int pspio_state_set(pspio_state_t **state, const double eigenval, 
-		    const char *label, const pspio_qn_t *qn, const double occ, 
-		    const double rc, const pspio_mesh_t *mesh, const double *wf) {
+      const char *label, const pspio_qn_t *qn, const double occ, 
+      const double rc, const pspio_mesh_t *mesh, const double *wf) {
   int s;
 
   assert(*state != NULL);
@@ -83,8 +83,8 @@ int pspio_state_set(pspio_state_t **state, const double eigenval,
   memcpy((*state)->label,label,s);
   (*state)->label[s] = '\0';
 
-  HANDLE_FUNC_ERROR(pspio_qn_copy(&(*state)->qn, qn));
-  HANDLE_FUNC_ERROR(pspio_meshfunc_set(&(*state)->wf, mesh, wf, NULL, NULL));
+  SUCCEED_OR_RETURN(pspio_qn_copy(&(*state)->qn, qn));
+  SUCCEED_OR_RETURN(pspio_meshfunc_set(&(*state)->wf, mesh, wf, NULL, NULL));
 
   return PSPIO_SUCCESS;
 }
@@ -97,11 +97,11 @@ int pspio_state_copy(pspio_state_t **dst, const pspio_state_t *src) {
   assert((src->label != NULL) && ((*dst)->label == NULL));
 
   if ( *dst == NULL ) {
-    HANDLE_FUNC_ERROR(pspio_state_alloc(dst, src->wf->mesh->np));
+    SUCCEED_OR_RETURN(pspio_state_alloc(dst, src->wf->mesh->np));
   }
 
-  HANDLE_FUNC_ERROR(pspio_meshfunc_copy(&(*dst)->wf, src->wf));
-  HANDLE_FUNC_ERROR(pspio_qn_copy(&(*dst)->qn, src->qn));
+  SUCCEED_OR_RETURN(pspio_meshfunc_copy(&(*dst)->wf, src->wf));
+  SUCCEED_OR_RETURN(pspio_qn_copy(&(*dst)->qn, src->qn));
   (*dst)->eigenval = src->eigenval;
   (*dst)->occ = src->occ;
   (*dst)->rc = src->rc;
@@ -115,7 +115,7 @@ int pspio_state_copy(pspio_state_t **dst, const pspio_state_t *src) {
 
 
 int pspio_states_lookup_table(const int n_states, pspio_state_t **states, 
-			    int ***table_ptr){
+      int ***table_ptr) {
   int i, nmax, lmax, rel, lsize;
   pspio_qn_t *qn;
   int **table;
@@ -137,10 +137,10 @@ int pspio_states_lookup_table(const int n_states, pspio_state_t **states,
 
   // Allocate memory and preset table
   table = malloc ( (nmax+1) * sizeof(int*));
-  CHECK_ERROR(table != NULL, PSPIO_ENOMEM);
+  FULFILL_OR_EXIT(table != NULL, PSPIO_ENOMEM);
   for(i=0; i<nmax; i++) {
     table[i] = malloc(lsize*sizeof(int));
-    CHECK_ERROR(table[i] != NULL, PSPIO_ENOMEM);
+    FULFILL_OR_EXIT(table[i] != NULL, PSPIO_ENOMEM);
     memset(table[i], -1, lsize*sizeof(int));
   }
   table[nmax] = NULL;
@@ -172,7 +172,8 @@ void pspio_state_free(pspio_state_t **state) {
  * Atomic routines                                                    *
  **********************************************************************/
 
-void pspio_state_wf_eval(const pspio_state_t *state, const int np, const double *r, double *wf){
+void pspio_state_wf_eval(const pspio_state_t *state, const int np,
+       const double *r, double *wf) {
   assert(state != NULL);
   assert(r != NULL);
   assert(wf != NULL);
@@ -180,7 +181,8 @@ void pspio_state_wf_eval(const pspio_state_t *state, const int np, const double 
   pspio_meshfunc_eval(state->wf, np, r, wf);
 }
 
-void pspio_state_get_label(const pspio_state_t *state, char *label){
+
+void pspio_state_get_label(const pspio_state_t *state, char *label) {
   int s;
 
   assert(state != NULL);
@@ -190,11 +192,13 @@ void pspio_state_get_label(const pspio_state_t *state, char *label){
   label[s] = '\0';
 }
 
+
 int pspio_state_get_n(const pspio_state_t *state){
   assert(state != NULL);
   
   return pspio_qn_get_n(state->qn);
 }
+
 
 int pspio_state_get_l(const pspio_state_t *state){
   assert(state != NULL);
@@ -202,11 +206,13 @@ int pspio_state_get_l(const pspio_state_t *state){
   return pspio_qn_get_l(state->qn);
 }
 
+
 double pspio_state_get_j(const pspio_state_t *state){
   assert(state != NULL);
   
   return pspio_qn_get_j(state->qn);
 }
+
 
 double pspio_state_get_occ(const pspio_state_t *state){
   assert(state != NULL);

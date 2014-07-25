@@ -4,7 +4,10 @@ Makefile.in
 *.lo
 *.log
 *.mod
+*.orig
+*.rej
 *.tmp
+*.trs
 tmp
 tmp-*
 /aclocal.m4

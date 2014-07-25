@@ -29,26 +29,24 @@
 #endif
 
 
-/**
- * Note: deduced from the abinit web site
- *       http://www.abinit.org/documentation/helpfiles/for-v6.8/input_variables/varbas.html#ixc
- */
-int abinit_to_libxc(const int pspxc, int *exchange, int *correlation){
+int abinit_to_libxc(const int pspxc, int *exchange, int *correlation) {
+
     int xccode[2];
 
-  // negative values are combined from 2 libxc codes
+  // Negative values are combined from 2 libxc codes
+  // Note: following APE conventions: pspxc = -(exchange + correlation * 1000)
   if (pspxc < 0){
 
-    xccode[1] = abs(pspxc) % 1000;
-    xccode[0] = (int) ((abs(pspxc) - xccode[0]) / 1000);
+    xccode[0] = abs(pspxc) % 1000;
+    xccode[1] = (int) ((abs(pspxc) - xccode[0]) / 1000);
 
-    /// for the moment, presume exchange is first in abinit symbol
+    // We can presume exchange is first in Abinit
     *exchange = xccode[0];
     *correlation = xccode[1];
 
   } else {
 
-    // positive value of pspxc: we need to convert
+    // Positive value of pspxc: we need to convert
     switch(pspxc){
     case 0:
       *exchange = XC_NONE;
@@ -131,20 +129,20 @@ int abinit_to_libxc(const int pspxc, int *exchange, int *correlation){
       *correlation = XC_GGA_XC_HCTH_407;
       break;
 
-    // the following are not in libxc?
+    // The following are not in libxc?
     case 3:
     case 20:
     case 21:
     case 22:
 
-    // the following are real errors
+    // The following are real errors
     case 10:
     case 18:
     case 19:
     case 25:
     case 28:
 
-    // unknown abinit pspxc
+    // Unknown abinit pspxc
     default:
       return PSPIO_EVALUE;
     }
@@ -155,7 +153,7 @@ int abinit_to_libxc(const int pspxc, int *exchange, int *correlation){
 }
 
 
-int libxc_to_abinit(const int exchange, const int correlation, int *pspxc){
+int libxc_to_abinit(const int exchange, const int correlation, int *pspxc) {
 
   *pspxc = -(exchange * 1000 + correlation);
 

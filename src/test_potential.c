@@ -49,28 +49,28 @@ int main(void) {
   /* Check creation and setting of mesh */
   DEBUG_PRINT("test_potential: creating mesh\n");
   eid = pspio_mesh_alloc(&mesh, np);
-  eid = pspio_error_flush();
+  pspio_error_flush(stdout);
   DEBUG_PRINT("test_potential: setting mesh\n");
   eid = pspio_mesh_init_from_points(&mesh, r, NULL);
-  eid = pspio_error_flush();
+  pspio_error_flush(stdout);
   DEBUG_PRINT("\n");
 
   /* Check creation and setting of quantum numbers */
   DEBUG_PRINT("test_potential: creating quantum numbers\n");
   eid = pspio_qn_alloc(&qn);
-  eid = pspio_error_flush();
+  pspio_error_flush(stdout);
   DEBUG_PRINT("test_potential: setting quantum numbers to (1, 2, 0.0)\n");
   eid = pspio_qn_set(&qn, 1, 2, 0.0);
-  eid = pspio_error_flush();
+  pspio_error_flush(stdout);
   DEBUG_PRINT("\n");
 
   /* Check creation and destruction of potential */
   DEBUG_PRINT("test_potential: creating pot1\n");
   eid = pspio_potential_alloc(&pot1, np);
-  eid = pspio_error_flush();
+  pspio_error_flush(stdout);
   DEBUG_PRINT("test_potential: creating pot2\n");
   eid = pspio_potential_alloc(&pot2, np);
-  eid = pspio_error_flush();
+  pspio_error_flush(stdout);
   DEBUG_PRINT("test_potential: destroying pot2\n");
   pspio_potential_free(&pot2);
   DEBUG_PRINT("\n");
@@ -78,7 +78,7 @@ int main(void) {
   /* Check setting of the potentials */
   DEBUG_PRINT("test_potential: setting pot1\n");
   eid = pspio_potential_set(&pot1, qn, mesh, v);
-  eid = pspio_error_flush();
+  pspio_error_flush(stdout);
   DEBUG_PRINT("\n");
 
   /* Check evaluation of the potential */

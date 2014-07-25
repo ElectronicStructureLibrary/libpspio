@@ -46,16 +46,16 @@ int main(void) {
   /* Check creation and setting of mesh */
   DEBUG_PRINT("test_xc: creating mesh\n");
   eid = pspio_mesh_alloc(&mesh, np);
-  eid = pspio_error_flush();
+  pspio_error_flush(stdout);
   DEBUG_PRINT("test_xc: setting mesh\n");
   eid = pspio_mesh_init_from_points(&mesh, r, NULL);
-  eid = pspio_error_flush();
+  pspio_error_flush(stdout);
   DEBUG_PRINT("\n");
 
   /* Check creation and destruction of xc */
   DEBUG_PRINT("test_xc: creating xc\n");
   eid = pspio_xc_alloc(&xc);
-  eid = pspio_error_flush();
+  pspio_error_flush(stdout);
   DEBUG_PRINT("\n");
 
   /* Check setting of the xc */
@@ -63,10 +63,10 @@ int main(void) {
   pspio_xc_set_id(&xc, XC_LDA_X, XC_LDA_C_PW);
   DEBUG_PRINT("test_xc: setting of NLCC scheme of xc\n");
   eid = pspio_xc_set_nlcc_scheme(&xc, PSPIO_NLCC_UNKNOWN);
-  eid = pspio_error_flush();
+  pspio_error_flush(stdout);
   DEBUG_PRINT("test_xc: setting of core density of xc\n");
   eid = pspio_xc_set_core_density(&xc, mesh, cd, NULL, NULL);
-  eid = pspio_error_flush();
+  pspio_error_flush(stdout);
   DEBUG_PRINT("\n");
 
   /* Destroy xc */

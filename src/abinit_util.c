@@ -36,11 +36,8 @@
 #endif
 
 /* proptotypes for the replacement functions */
-static char *
-my_strndup (char const *s, size_t n);
-
-static size_t
-my_strnlen (const char *string, size_t maxlen);
+static char *my_strndup (char const *s, size_t n);
+static size_t my_strnlen (const char *string, size_t maxlen);
 
 
 int abinit_read_header(FILE *fp, const int format,  pspio_pspdata_t **pspdata) {
@@ -54,7 +51,7 @@ int abinit_read_header(FILE *fp, const int format,  pspio_pspdata_t **pspdata) {
   format_read = PSPIO_FMT_UNKNOWN;
 
   // Line 1: read title
-  CHECK_ERROR( fgets(line, PSPIO_STRLEN_LINE, fp) != NULL, PSPIO_EIO);
+  FULFILL_OR_RETURN( fgets(line, PSPIO_STRLEN_LINE, fp) != NULL, PSPIO_EIO);
   s = strlen(line);
   (*pspdata)->info = (char *) malloc ((s+1)*sizeof(char));
   CHECK_ERROR((*pspdata)->info != NULL, PSPIO_ENOMEM);
@@ -63,8 +60,8 @@ int abinit_read_header(FILE *fp, const int format,  pspio_pspdata_t **pspdata) {
 
   // Line 2: read atomic number, Z valence
   // Note: ignoring psp date
-  CHECK_ERROR( fgets(line, PSPIO_STRLEN_LINE, fp) != NULL, PSPIO_EIO);
-  CHECK_ERROR( sscanf(line, "%lf %lf", &zatom, &zval) == 2, PSPIO_EFILE_CORRUPT);
+  FULFILL_OR_RETURN( fgets(line, PSPIO_STRLEN_LINE, fp) != NULL, PSPIO_EIO);
+  FULFILL_OR_RETURN( sscanf(line, "%lf %lf", &zatom, &zval) == 2, PSPIO_EFILE_CORRUPT);
   (*pspdata)->z = zatom;
   (*pspdata)->zvalence = zval;
   (*pspdata)->symbol = (char *) malloc (3*sizeof(char));
@@ -72,30 +69,30 @@ int abinit_read_header(FILE *fp, const int format,  pspio_pspdata_t **pspdata) {
   HANDLE_FUNC_ERROR(z_to_symbol((*pspdata)->z, (*pspdata)->symbol));
 
   // Line 3: read pspcod, pspxc, lmax, lloc, mmax, r2well
-  CHECK_ERROR( fgets(line, PSPIO_STRLEN_LINE, fp) != NULL, PSPIO_EIO);
-  CHECK_ERROR( sscanf(line, "%d %d %d %d %d %lf",
+  FULFILL_OR_RETURN( fgets(line, PSPIO_STRLEN_LINE, fp) != NULL, PSPIO_EIO);
+  FULFILL_OR_RETURN( sscanf(line, "%d %d %d %d %d %lf",
     &pspcod, &pspxc, &lmax, &lloc, &mmax, &r2well) == 6, PSPIO_EFILE_CORRUPT);
   (*pspdata)->l_max = lmax;
   (*pspdata)->l_local = lloc;
 
-  // FIXME: assuming pspxc = -(exchange * 1000 + correlation)
+  // Following APE conventions: pspxc = -(exchange + correlation * 1000)
   if ( pspxc < 0 ) {
-    exchange = -pspxc / 1000;
-    correlation = -pspxc % 1000;
+    exchange = -pspxc % 1000;
+    correlation = -pspxc / 1000;
   } else {
-    HANDLE_FUNC_ERROR(abinit_to_libxc(pspxc, &exchange, &correlation));
+    SUCCEED_OR_RETURN(abinit_to_libxc(pspxc, &exchange, &correlation));
   }
-  HANDLE_FUNC_ERROR(pspio_xc_alloc(&(*pspdata)->xc));
+  SUCCEED_OR_RETURN(pspio_xc_alloc(&(*pspdata)->xc));
   pspio_xc_set_id(&(*pspdata)->xc, exchange, correlation);
 
 
   // Line 4: read rchrg, fchrg, qchrg if NLCC
   // Note: tolerance copied from Abinit
   // FIXME: store rchrg, fchrg, qchrg
-  CHECK_ERROR( fgets(line, PSPIO_STRLEN_LINE, fp) != NULL, PSPIO_EIO);
+  FULFILL_OR_RETURN( fgets(line, PSPIO_STRLEN_LINE, fp) != NULL, PSPIO_EIO);
   line4 = my_strndup(line, 3);
   if ( strcmp("4--", line4) != 0 ) {
-    CHECK_ERROR( sscanf(line, "%lf %lf %lf",
+    FULFILL_OR_RETURN( sscanf(line, "%lf %lf %lf",
       &rchrg, &fchrg, &qchrg) == 3, PSPIO_EFILE_CORRUPT );
     if ( abs(fchrg) >= 1.0e-14 ) {
       pspio_xc_set_nlcc_scheme(&(*pspdata)->xc, PSPIO_NLCC_FHI);
@@ -103,9 +100,9 @@ int abinit_read_header(FILE *fp, const int format,  pspio_pspdata_t **pspdata) {
   }
 
   // Ignore lines 5-7
-  CHECK_ERROR( fgets(line, PSPIO_STRLEN_LINE, fp) != NULL, PSPIO_EIO);
-  CHECK_ERROR( fgets(line, PSPIO_STRLEN_LINE, fp) != NULL, PSPIO_EIO);
-  CHECK_ERROR( fgets(line, PSPIO_STRLEN_LINE, fp) != NULL, PSPIO_EIO);
+  FULFILL_OR_RETURN( fgets(line, PSPIO_STRLEN_LINE, fp) != NULL, PSPIO_EIO);
+  FULFILL_OR_RETURN( fgets(line, PSPIO_STRLEN_LINE, fp) != NULL, PSPIO_EIO);
+  FULFILL_OR_RETURN( fgets(line, PSPIO_STRLEN_LINE, fp) != NULL, PSPIO_EIO);
 
   // Check that the format found is the one we expected
   switch (pspcod) {
@@ -148,7 +145,7 @@ int abinit_read_header(FILE *fp, const int format,  pspio_pspdata_t **pspdata) {
     default:
       format_read = PSPIO_FMT_UNKNOWN;
   }
-  CHECK_ERROR(format_read == format, PSPIO_EFILE_FORMAT)
+  FULFILL_OR_RETURN(format_read == format, PSPIO_EFILE_FORMAT)
 
   return PSPIO_SUCCESS;
 }
@@ -161,11 +158,12 @@ int abinit_write_header(FILE *fp, const int format, const pspio_pspdata_t *pspda
   time_t int_now;
   struct tm *now;
 
+  assert(fp != NULL);
   assert(pspdata != NULL);
 
   // Init auxiliary data
   have_nlcc = pspio_xc_has_nlcc(pspdata->xc);
-  HANDLE_FUNC_ERROR(libxc_to_abinit(pspdata->xc->exchange, \
+  SUCCEED_OR_RETURN(libxc_to_abinit(pspdata->xc->exchange, \
     pspdata->xc->correlation, &pspxc));
 
   // Line 1: write title
@@ -214,29 +212,43 @@ int abinit_write_header(FILE *fp, const int format, const pspio_pspdata_t *pspda
   return PSPIO_SUCCESS;
 }
 
-/* A replacement function, for systems that lack strndup (MacOs) */
 
-char *
-my_strndup (char const *s, size_t n)
+/**
+ * A replacement function for systems that lack strndup (MacOSX).
+ * @param[in] s: string to duplicate.
+ * @param[in] n: number of characters to duplicate.
+ * @return the duplicated string.
+ */
+char *my_strndup(char const *s, size_t n)
 {
-  size_t len = my_strnlen (s, n);
-  char *new = malloc (len + 1);
+#if defined HAVE_STRNDUP
+  return strndup(s, n);
+#else
+  size_t len = my_strnlen(s, n);
+  char *new = malloc(len + 1);
 
-  if (new == NULL)
-    return NULL;
+  if ( new == NULL ) return NULL;
 
   new[len] = '\0';
-  return memcpy (new, s, len);
+  return memcpy(new, s, len);
+#endif
 }
 
 
-/* A replacement function, for systems that lack strnlen. (MacOs)
-   Find the length of STRING, but scan at most MAXLEN characters.
-   If no '\0' terminator is found in that many characters, return MAXLEN.  */
-
-size_t
-my_strnlen (const char *string, size_t maxlen)
+/**
+ * A replacement function for systems that lack strnlen (MacOSX).
+ * Find the length of STRING, but scan at most MAXLEN characters.
+ * If no '\0' terminator is found in that many characters, return MAXLEN.
+ * @param[in] string: string to measure.
+ * @param[in] maxlen: maximum length to measure.
+ * @return the length of the string.
+ */
+size_t my_strnlen(const char *string, size_t maxlen)
 {
-  const char *end = memchr (string, '\0', maxlen);
+#if defined HAVE_STRNLEN
+  return strnlen(string, maxlen);
+#else
+  const char *end = memchr(string, '\0', maxlen);
   return end ? (size_t) (end - string) : maxlen;
+#endif
 }

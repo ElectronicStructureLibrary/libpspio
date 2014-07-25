@@ -34,16 +34,14 @@
  * @param[out] major major version number, -1 if not found
  * @param[out] minor minor version number, -1 if not found
  * @param[out] micro micro version number, -1 if not found
- * @return error code
  */
-int pspio_version(int *major, int *minor, int *micro);
+void pspio_version(int *major, int *minor, int *micro);
 
 
 /**
  * Provide the package string of the library.
  * @param[out] info: package name and version
- * @return error code
  */
-int pspio_info_string(char *info);
+void pspio_info_string(char *info);
 
 #endif

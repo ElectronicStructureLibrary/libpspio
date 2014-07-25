@@ -36,7 +36,7 @@ int pspio_xc_alloc(pspio_xc_t **xc){
   assert(*xc == NULL);
 
   *xc = (pspio_xc_t *) malloc (sizeof(pspio_xc_t));
-  CHECK_ERROR(*xc != NULL, PSPIO_ENOMEM);
+  FULFILL_OR_RETURN(*xc != NULL, PSPIO_ENOMEM);
 
   (*xc)->correlation = XC_NONE;
   (*xc)->exchange = XC_NONE;
@@ -107,7 +107,7 @@ int pspio_xc_set_core_density(pspio_xc_t **xc, const pspio_mesh_t *mesh, const d
     HANDLE_ERROR(ierr);
   }
 
-  HANDLE_FUNC_ERROR(pspio_meshfunc_set(&(*xc)->core_dens, mesh, cd, cdp, cdpp));
+  SUCCEED_OR_RETURN(pspio_meshfunc_set(&(*xc)->core_dens, mesh, cd, cdp, cdpp));
 
   return PSPIO_SUCCESS;
 }

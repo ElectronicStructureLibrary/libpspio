@@ -31,7 +31,7 @@
  * Global routines                                                    *
  **********************************************************************/
 
-int pspio_projector_alloc(pspio_projector_t **projector, const int np){
+int pspio_projector_alloc(pspio_projector_t **projector, const int np) {
   int ierr;
 
   assert(projector != NULL);
@@ -39,7 +39,7 @@ int pspio_projector_alloc(pspio_projector_t **projector, const int np){
   assert(np > 1);
 
   *projector = (pspio_projector_t *) malloc (sizeof(pspio_projector_t));
-  CHECK_ERROR(*projector != NULL, PSPIO_ENOMEM);
+  FULFILL_OR_EXIT(*projector != NULL, PSPIO_ENOMEM);
 
   (*projector)->proj = NULL;
   ierr = pspio_meshfunc_alloc(&(*projector)->proj, np);
@@ -60,17 +60,23 @@ int pspio_projector_alloc(pspio_projector_t **projector, const int np){
 
 
 int pspio_projector_set(pspio_projector_t **projector, const pspio_qn_t *qn, 
-			const double e, const pspio_mesh_t *mesh, const double *p){
+      const double energy, const pspio_mesh_t *mesh, const double *pofr) {
 
-  HANDLE_FUNC_ERROR(pspio_qn_copy(&(*projector)->qn, qn));
-  (*projector)->energy = e;
-  HANDLE_FUNC_ERROR(pspio_meshfunc_set(&(*projector)->proj, mesh, p, NULL, NULL));
+  assert(projector != NULL);
+  assert((*projector) != NULL);
+  assert(qn != NULL);
+  assert(mesh != NULL);
+  assert(pofr != NULL);
+
+  SUCCEED_OR_RETURN(pspio_qn_copy(&(*projector)->qn, qn));
+  (*projector)->energy = energy;
+  SUCCEED_OR_RETURN(pspio_meshfunc_set(&(*projector)->proj, mesh, pofr, NULL, NULL));
 
   return PSPIO_SUCCESS;
 }
 
 
-void pspio_projector_free(pspio_projector_t **projector){
+void pspio_projector_free(pspio_projector_t **projector) {
 
   if (*projector != NULL) {
     pspio_meshfunc_free(&(*projector)->proj);
@@ -86,10 +92,11 @@ void pspio_projector_free(pspio_projector_t **projector){
  **********************************************************************/
 
 void pspio_projector_eval(const pspio_projector_t *projector, const int np, 
-			 const double *r, double *p){
+			 const double *radii, double *pofr) {
   assert(projector != NULL);
+  assert(radii != NULL);
 
-  pspio_meshfunc_eval(projector->proj, np, r, p);
+  pspio_meshfunc_eval(projector->proj, np, radii, pofr);
 }
 
 
