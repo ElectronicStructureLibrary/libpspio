@@ -332,23 +332,23 @@ module pspio_f90_lib_m
     end function pspio_f90_xc_has_nlcc_int
   end interface
 
-  interface pspio_f90_xc_core_density_eval
-    subroutine pspio_f90_xc_core_density_eval_s(xc, r, core_dens)
+  interface pspio_f90_xc_nlcc_density_eval
+    subroutine pspio_f90_xc_nlcc_density_eval_s(xc, r, nlcc_dens)
       use pspio_f90_types_m
       implicit none
       type(pspio_f90_xc_t), intent(in)  :: xc
       real(pspio_cdouble),  intent(in)  :: r
-      real(pspio_cdouble),  intent(out) :: core_dens
-    end subroutine pspio_f90_xc_core_density_eval_s
+      real(pspio_cdouble),  intent(out) :: nlcc_dens
+    end subroutine pspio_f90_xc_nlcc_density_eval_s
 
-    subroutine pspio_f90_xc_core_density_eval_v(xc, np, r, core_dens)
+    subroutine pspio_f90_xc_nlcc_density_eval_v(xc, np, r, nlcc_dens)
       use pspio_f90_types_m
       implicit none
       type(pspio_f90_xc_t), intent(in)  :: xc
       integer(pspio_cint),  intent(in)  :: np
       real(pspio_cdouble),  intent(in)  :: r(np)
-      real(pspio_cdouble),  intent(out) :: core_dens(np)
-    end subroutine pspio_f90_xc_core_density_eval_v
+      real(pspio_cdouble),  intent(out) :: nlcc_dens(np)
+    end subroutine pspio_f90_xc_nlcc_density_eval_v
   end interface
 
   ! pspio_error

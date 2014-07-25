@@ -220,7 +220,7 @@ int upf_read_nlcc(FILE *fp, const int np, pspio_pspdata_t **pspdata){
   }
 
   //Store the non-linear core corrections in the pspdata structure
-  SUCCEED_OR_RETURN(pspio_xc_set_core_density(&(*pspdata)->xc, (*pspdata)->mesh, rho, NULL, NULL));
+  SUCCEED_OR_RETURN(pspio_xc_set_nlcc_density(&(*pspdata)->xc, (*pspdata)->mesh, rho, NULL, NULL));
 
   //Free memory
   free(rho);

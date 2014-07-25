@@ -43,7 +43,7 @@ typedef struct{
   int exchange;    /**< exchange functional id, taken from libxc conventions */
   int correlation; /**< correlation functional id, taken from libxc conventions */  
   int nlcc_scheme; /**< Scheme used to obtain the NLCC */
-  pspio_meshfunc_t *core_dens; /**< core density, on a radial mesh */
+  pspio_meshfunc_t *nlcc_dens; /**< core density, on a radial mesh */
 } pspio_xc_t;
 
 
@@ -102,7 +102,7 @@ int pspio_xc_set_nlcc_scheme(pspio_xc_t **xc, const int nlcc_scheme);
  * @return error code
  *      
  */
-int pspio_xc_set_core_density(pspio_xc_t **xc, const pspio_mesh_t *mesh,
+int pspio_xc_set_nlcc_density(pspio_xc_t **xc, const pspio_mesh_t *mesh,
 			      const double *cd, const double *cdp, const double *cdpp);
 
 
@@ -126,26 +126,26 @@ void pspio_xc_get_nlcc_scheme(const pspio_xc_t *xc, int *nlcc_scheme);
 /**
  * Returns the core density function
  * @param[in] xc: xc structure
- * @param[out] *cd_func: core density function defined on the mesh
+ * @param[out] *cd_func: NLCC core density function defined on the mesh
  */
-void pspio_xc_get_core_density(const pspio_xc_t *xc, pspio_meshfunc_t **cd_func);
+void pspio_xc_get_nlcc_density(const pspio_xc_t *xc, pspio_meshfunc_t **cd_func);
 
 
 /**
- * Returns the value of the core density at an array of arbitrary points
+ * Returns the value of the NLCC core density at an array of arbitrary points
  * @param[in] xc: xc structure
  * @param[in] np: number of points
  * @param[in] *r: positions were we want to evaluate the core density
- * @param[out] *core_dens: values of the core density at r
+ * @param[out] *nlcc_dens: values of the core density at r
  * @note The xc pointer has to be fully set.
  */
-void pspio_xc_core_density_eval(const pspio_xc_t *xc, const int np, 
-				const double *r, double *core_dens);
+void pspio_xc_nlcc_density_eval(const pspio_xc_t *xc, const int np, 
+				const double *r, double *nlcc_dens);
 
 /**
  * Returns if xc has non-linear core-corrections
  * @param[in] xc: xc structure
- * @return: true if xc has nlcc, false otherwise
+ * @return: true if xc has NLCC, false otherwise
  */
 int pspio_xc_has_nlcc(const pspio_xc_t *xc);
 

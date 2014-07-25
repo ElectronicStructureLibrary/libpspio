@@ -60,7 +60,7 @@ int main(void) {
   DEBUG_PRINT("test_xc: setting of NLCC scheme of xc\n");
   CHECK_STAT(pspio_xc_set_nlcc_scheme(&xc, PSPIO_NLCC_UNKNOWN), PSPIO_SUCCESS);
   DEBUG_PRINT("test_xc: setting of core density of xc\n");
-  CHECK_STAT(pspio_xc_set_core_density(&xc, mesh, cd, NULL, NULL), PSPIO_SUCCESS);
+  CHECK_STAT(pspio_xc_set_nlcc_density(&xc, mesh, cd, NULL, NULL), PSPIO_SUCCESS);
   DEBUG_PRINT("\n");
 
   /* Destroy xc */
