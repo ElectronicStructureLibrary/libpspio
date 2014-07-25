@@ -26,6 +26,7 @@
 #include <string.h>
 #include <ctype.h>
 #include <time.h>
+
 #include "pspio_abinit.h"
 #include "pspio_error.h"
 #include "abinit.h"
@@ -40,7 +41,8 @@ static char *my_strndup (char const *s, size_t n);
 static size_t my_strnlen (const char *string, size_t maxlen);
 
 
-int abinit_read_header(FILE *fp, const int format,  pspio_pspdata_t **pspdata) {
+int abinit_read_header(FILE *fp, const int format,
+      pspio_pspdata_t **pspdata) {
   char line[PSPIO_STRLEN_LINE];
   char *line4;
   int format_read, pspcod, pspxc, lmax, lloc, mmax;
@@ -92,17 +94,19 @@ int abinit_read_header(FILE *fp, const int format,  pspio_pspdata_t **pspdata) {
   FULFILL_OR_RETURN( fgets(line, PSPIO_STRLEN_LINE, fp) != NULL, PSPIO_EIO);
   line4 = my_strndup(line, 3);
   if ( strcmp("4--", line4) != 0 ) {
-    FULFILL_OR_RETURN( sscanf(line, "%lf %lf %lf",
+    DEFER_ERROR( sscanf(line, "%lf %lf %lf",
       &rchrg, &fchrg, &qchrg) == 3, PSPIO_EFILE_CORRUPT );
     if ( abs(fchrg) >= 1.0e-14 ) {
       pspio_xc_set_nlcc_scheme(&(*pspdata)->xc, PSPIO_NLCC_FHI);
     }
   }
+  free(line4);
+  RETURN_ON_DEFERRED_ERROR;
 
   // Ignore lines 5-7
-  FULFILL_OR_RETURN( fgets(line, PSPIO_STRLEN_LINE, fp) != NULL, PSPIO_EIO);
-  FULFILL_OR_RETURN( fgets(line, PSPIO_STRLEN_LINE, fp) != NULL, PSPIO_EIO);
-  FULFILL_OR_RETURN( fgets(line, PSPIO_STRLEN_LINE, fp) != NULL, PSPIO_EIO);
+  FULFILL_OR_RETURN( fgets(line, PSPIO_STRLEN_LINE, fp) != NULL, PSPIO_EIO );
+  FULFILL_OR_RETURN( fgets(line, PSPIO_STRLEN_LINE, fp) != NULL, PSPIO_EIO );
+  FULFILL_OR_RETURN( fgets(line, PSPIO_STRLEN_LINE, fp) != NULL, PSPIO_EIO );
 
   // Check that the format found is the one we expected
   switch (pspcod) {
@@ -151,7 +155,8 @@ int abinit_read_header(FILE *fp, const int format,  pspio_pspdata_t **pspdata) {
 }
 
 
-int abinit_write_header(FILE *fp, const int format, const pspio_pspdata_t *pspdata) {
+int abinit_write_header(FILE *fp, const int format,
+      const pspio_pspdata_t *pspdata) {
   char pspdate[7];
   int pspxc, have_nlcc;
   double rchrg, fchrg, qchrg;
@@ -176,8 +181,8 @@ int abinit_write_header(FILE *fp, const int format, const pspio_pspdata_t *pspda
   sprintf(pspdate, "%2.2d%2.2d%2.2d", 
     (*now).tm_year % 100, (*now).tm_mon + 1, (*now).tm_mday);
   pspdate[6] = '\0';
-  fprintf(fp, "%8.3lf %8.3lf   %6s   zatom, zion, pspdat\n",
-    pspdata->z, pspdata->zvalence, pspdate);
+  FULFILL_OR_RETURN( fprintf(fp, "%8.3lf %8.3lf   %6s   zatom, zion, pspdat\n",
+    pspdata->z, pspdata->zvalence, pspdate) > 0, PSPIO_EIO );
 
   // Line 3: write pspcod, pspxc, lmax, lloc, mmax, r2well
   // Line 4: write rchrg, fchrg, qchrg if NLCC
@@ -186,11 +191,12 @@ int abinit_write_header(FILE *fp, const int format, const pspio_pspdata_t *pspda
     case 4:
     case 5:
     case 6:
-      fprintf(fp, "   %d   %d   %d   %d   %d   %8.3lf   pspcod, pspxc, lmax, lloc, mmax, r2well\n",
+      FULFILL_OR_RETURN( fprintf(fp,
+        "   %d   %d   %d   %d   %d   %8.3lf   pspcod, pspxc, lmax, lloc, mmax, r2well\n",
         format, pspxc, pspdata->l_max, pspdata->l_local,
-        pspdata->mesh->np, 0.0);
+        pspdata->mesh->np, 0.0) > 0, PSPIO_EIO );
 
-      // FIXME: write something relevant
+      // FIXME: write something relevant (bug lp:1348721)
       if ( have_nlcc ) {
         rchrg = 0.0;
         fchrg = 0.0;
@@ -200,10 +206,11 @@ int abinit_write_header(FILE *fp, const int format, const pspio_pspdata_t *pspda
         fchrg = 0.0;
         qchrg = 0.0;
       }
-      fprintf(fp, "%8.3lf   %8.3lf   %8.3lf   rchrg, fchrg, qchrg\n",
-        rchrg, fchrg, qchrg);
-      fprintf(fp, "5--- These two lines are available for giving more information, later\n6\n");
-      fprintf(fp, "7-Here follows the cpi file from the fhi98pp code-\n");
+      FULFILL_OR_RETURN(
+        fprintf(fp, "%8.3lf   %8.3lf   %8.3lf   rchrg, fchrg, qchrg\n",
+        rchrg, fchrg, qchrg) > 0, PSPIO_EIO );
+      FULFILL_OR_RETURN( fprintf(fp, "5--- These two lines are available for giving more information, later\n6\n") > 0, PSPIO_EIO );
+      FULFILL_OR_RETURN( fprintf(fp, "7-Here follows the cpi file from the fhi98pp code-\n") > 0, PSPIO_EIO );
       break;
     default:
       return PSPIO_EFILE_FORMAT;
@@ -224,31 +231,13 @@ char *my_strndup(char const *s, size_t n)
 #if defined HAVE_STRNDUP
   return strndup(s, n);
 #else
-  size_t len = my_strnlen(s, n);
+  const char *end = memchr(s, '\0', n);
+  size_t len = end ? (size_t) (end - s) : n;
   char *new = malloc(len + 1);
 
   if ( new == NULL ) return NULL;
 
   new[len] = '\0';
   return memcpy(new, s, len);
-#endif
-}
-
-
-/**
- * A replacement function for systems that lack strnlen (MacOSX).
- * Find the length of STRING, but scan at most MAXLEN characters.
- * If no '\0' terminator is found in that many characters, return MAXLEN.
- * @param[in] string: string to measure.
- * @param[in] maxlen: maximum length to measure.
- * @return the length of the string.
- */
-size_t my_strnlen(const char *string, size_t maxlen)
-{
-#if defined HAVE_STRNLEN
-  return strnlen(string, maxlen);
-#else
-  const char *end = memchr(string, '\0', maxlen);
-  return end ? (size_t) (end - string) : maxlen;
 #endif
 }
