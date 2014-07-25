@@ -105,28 +105,27 @@ void pspio_projector_eval(const pspio_projector_t *projector, const int np,
  * Returns the energy of the projector
  * 
  * @param[in] projector: projector structure
- * @param[out] *energy: value of the projector energy
+ * @return value of the projector energy
  * @note The projector pointer has to be fully set.
  */
-void pspio_projector_get_energy(const pspio_projector_t *projector,
-       double *energy);
+double pspio_projector_get_energy(const pspio_projector_t *projector);
 
 /**
  * Returns the angular momentum of the projector
  * 
  * @param[in] projector: projector structure
- * @param[out] *l: value of the projector angular momentum
+ * @return value of the projector angular momentum
  * @note The projector pointer has to be fully set.
  */
-void pspio_projector_get_l(const pspio_projector_t *projector, int *l);
+int pspio_projector_get_l(const pspio_projector_t *projector);
 
 /**
  * Returns the total angular momentum of the projector
  * 
  * @param[in] projector: projector structure
- * @param[out] *j: value of the projector total angular momentum
+ * @return value of the projector total angular momentum
  * @note The projector pointer has to be fully set.
  */
-void pspio_projector_get_j(const pspio_projector_t *projector, double *j);
+double pspio_projector_get_j(const pspio_projector_t *projector);
 
 #endif

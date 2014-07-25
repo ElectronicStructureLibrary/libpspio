@@ -35,7 +35,6 @@ int main(void) {
   const double v[] = {1.0, 0.95, 0.90, 0.80, 0.50, 0.20, 0.10, 0.05, 0.00};
   const int np = sizeof(r) / sizeof(double);
 
-  int eid;
   double vr;
   pspio_mesh_t *mesh = NULL;
   pspio_qn_t *qn = NULL;
@@ -48,37 +47,30 @@ int main(void) {
 
   /* Check creation and setting of mesh */
   DEBUG_PRINT("test_potential: creating mesh\n");
-  eid = pspio_mesh_alloc(&mesh, np);
-  pspio_error_flush(stdout);
+  CHECK_STAT(pspio_mesh_alloc(&mesh, np), PSPIO_SUCCESS);
   DEBUG_PRINT("test_potential: setting mesh\n");
-  eid = pspio_mesh_init_from_points(&mesh, r, NULL);
-  pspio_error_flush(stdout);
+  CHECK_STAT(pspio_mesh_init_from_points(&mesh, r, NULL), PSPIO_SUCCESS);
   DEBUG_PRINT("\n");
 
   /* Check creation and setting of quantum numbers */
   DEBUG_PRINT("test_potential: creating quantum numbers\n");
-  eid = pspio_qn_alloc(&qn);
-  pspio_error_flush(stdout);
+  CHECK_STAT(pspio_qn_alloc(&qn), PSPIO_SUCCESS);
   DEBUG_PRINT("test_potential: setting quantum numbers to (1, 2, 0.0)\n");
-  eid = pspio_qn_set(&qn, 1, 2, 0.0);
-  pspio_error_flush(stdout);
+  CHECK_STAT(pspio_qn_set(&qn, 1, 2, 0.0), PSPIO_SUCCESS);
   DEBUG_PRINT("\n");
 
   /* Check creation and destruction of potential */
   DEBUG_PRINT("test_potential: creating pot1\n");
-  eid = pspio_potential_alloc(&pot1, np);
-  pspio_error_flush(stdout);
-  DEBUG_PRINT("test_potential: creating pot2\n", np);
-  eid = pspio_potential_alloc(&pot2, np);
-  pspio_error_flush(stdout);
+  CHECK_STAT(pspio_potential_alloc(&pot1, np), PSPIO_SUCCESS);
+  DEBUG_PRINT("test_potential: creating pot2\n");
+  CHECK_STAT(pspio_potential_alloc(&pot2, np), PSPIO_SUCCESS);
   DEBUG_PRINT("test_potential: destroying pot2\n");
   pspio_potential_free(&pot2);
   DEBUG_PRINT("\n");
 
   /* Check setting of the potentials */
   DEBUG_PRINT("test_potential: setting pot1\n");
-  eid = pspio_potential_set(&pot1, qn, mesh, v);
-  pspio_error_flush(stdout);
+  CHECK_STAT(pspio_potential_set(&pot1, qn, mesh, v), PSPIO_SUCCESS);
   DEBUG_PRINT("\n");
 
   /* Check evaluation of the potential */

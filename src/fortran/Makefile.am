@@ -105,4 +105,4 @@ pspio_f90_types_m.mod: pspio_f90_types.$(LTOBJEXT)
 CLEANFILES = $(pio_fortran_mods)
 
 # Temporary test data has to be wiped out explicitely
-MOSTLYCLEANFILES = test_*.tmp
+DISTCLEANFILES = test_*.tmp

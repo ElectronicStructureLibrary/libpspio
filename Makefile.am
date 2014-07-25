@@ -33,6 +33,4 @@ EXTRA_DIST = \
   Doxyfile \
   psp_references
 
-dist-hook:
-	rm -rf `find $(distdir) -name .svn`
-
+DISTCLEANFILES = libpspio-*.tar.gz

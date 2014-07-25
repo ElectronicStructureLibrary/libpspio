@@ -34,7 +34,6 @@ int main(void) {
   const double cd[] = {1.0, 0.95, 0.90, 0.80, 0.50, 0.20, 0.10, 0.05, 0.00};
   const int np = sizeof(r) / sizeof(double);
 
-  int eid;
   pspio_mesh_t *mesh = NULL;
   pspio_xc_t *xc = NULL;
 
@@ -45,28 +44,23 @@ int main(void) {
 
   /* Check creation and setting of mesh */
   DEBUG_PRINT("test_xc: creating mesh\n");
-  eid = pspio_mesh_alloc(&mesh, np);
-  pspio_error_flush(stdout);
+  CHECK_STAT(pspio_mesh_alloc(&mesh, np), PSPIO_SUCCESS);
   DEBUG_PRINT("test_xc: setting mesh\n");
-  eid = pspio_mesh_init_from_points(&mesh, r, NULL);
-  pspio_error_flush(stdout);
+  CHECK_STAT(pspio_mesh_init_from_points(&mesh, r, NULL), PSPIO_SUCCESS);
   DEBUG_PRINT("\n");
 
   /* Check creation and destruction of xc */
   DEBUG_PRINT("test_xc: creating xc\n");
-  eid = pspio_xc_alloc(&xc);
-  pspio_error_flush(stdout);
+  CHECK_STAT(pspio_xc_alloc(&xc), PSPIO_SUCCESS);
   DEBUG_PRINT("\n");
 
   /* Check setting of the xc */
   DEBUG_PRINT("test_xc: setting xc with PW92 LDA\n");
   pspio_xc_set_id(&xc, XC_LDA_X, XC_LDA_C_PW);
   DEBUG_PRINT("test_xc: setting of NLCC scheme of xc\n");
-  eid = pspio_xc_set_nlcc_scheme(&xc, PSPIO_NLCC_UNKNOWN);
-  pspio_error_flush(stdout);
+  CHECK_STAT(pspio_xc_set_nlcc_scheme(&xc, PSPIO_NLCC_UNKNOWN), PSPIO_SUCCESS);
   DEBUG_PRINT("test_xc: setting of core density of xc\n");
-  eid = pspio_xc_set_core_density(&xc, mesh, cd, NULL, NULL);
-  pspio_error_flush(stdout);
+  CHECK_STAT(pspio_xc_set_core_density(&xc, mesh, cd, NULL, NULL), PSPIO_SUCCESS);
   DEBUG_PRINT("\n");
 
   /* Destroy xc */

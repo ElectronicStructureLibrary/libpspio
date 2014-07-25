@@ -40,9 +40,7 @@ int upf_read_info(FILE *fp, pspio_pspdata_t **pspdata){
   //Count how many lines we have
   while (upf_tag_check_end(fp, "PP_INFO") != PSPIO_SUCCESS) {
     nlines += 1;
-    if (fp == NULL) {
-      HANDLE_ERROR(PSPIO_EIO);
-    }
+    FULFILL_OR_RETURN(fp != NULL, PSPIO_EIO);
   }
 
   //Go back
@@ -87,14 +85,12 @@ int upf_read_header(FILE *fp, int *np, pspio_pspdata_t **pspdata){
   (*pspdata)->symbol = (char *) malloc (3*sizeof(char));
   FULFILL_OR_EXIT((*pspdata)->symbol != NULL, PSPIO_ENOMEM);
   strcpy((*pspdata)->symbol, strtok(line," "));
-  symbol_to_z((*pspdata)->symbol, (*pspdata)->z);
+  SUCCEED_OR_RETURN(symbol_to_z((*pspdata)->symbol, &(*pspdata)->z));
 
   //Read the kind of pseudo-potentials US|NC|PAW
   FULFILL_OR_RETURN(fgets(line, PSPIO_STRLEN_LINE, fp) != NULL, PSPIO_EIO);
-  if (strncmp(strtok(line," "),"NC",2)) {
-    //At the moment LIBPSP_IO can only read norm-conserving pseudo-potentials
-    HANDLE_ERROR(PSPIO_ENOSUPPORT);
-  }
+  //At the moment LIBPSP_IO can only read norm-conserving pseudo-potentials
+  FULFILL_OR_RETURN(strncmp(strtok(line," "),"NC",2) == 0, PSPIO_ENOSUPPORT);
 
   // read the nonlinear core correction
   FULFILL_OR_RETURN(fgets(line, PSPIO_STRLEN_LINE, fp) != NULL, PSPIO_EIO);
@@ -353,7 +349,7 @@ int upf_read_nonlocal(FILE *fp, const int np, pspio_pspdata_t **pspdata){
 
 int upf_read_local(FILE *fp, const int np, pspio_pspdata_t **pspdata){
   char line[PSPIO_STRLEN_LINE];
-  int i, j, nargs, n, l;
+  int i, j, nargs, n;
   double *vlocal;
   double tmp[4];
   pspio_qn_t *qn = NULL;
@@ -372,8 +368,7 @@ int upf_read_local(FILE *fp, const int np, pspio_pspdata_t **pspdata){
   for (i=0; i<(*pspdata)->l_max+1; i++) {
     n = 0;
     for (j=0; j<(*pspdata)->n_kbproj; j++) {
-      pspio_projector_get_l((*pspdata)->kb_projectors[j], &l);
-      if (l == i) n++;
+      if (pspio_projector_get_l((*pspdata)->kb_projectors[j]) == i) n++;
     }
     if (n == 0) (*pspdata)->l_local = i;
   }

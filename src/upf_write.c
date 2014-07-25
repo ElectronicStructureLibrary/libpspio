@@ -92,8 +92,8 @@ int upf_write_header(FILE *fp, const pspio_pspdata_t *pspdata){
   fprintf(fp, " Wavefunctions         nl  l   occ\n");
   for (is=0; is<pspdata->n_states; is++) {
     pspio_state_get_label(pspdata->states[is], &label[0]);
-    pspio_state_get_l(pspdata->states[is], &l);
-    pspio_state_get_occ(pspdata->states[is], &occ);
+    l = pspio_state_get_l(pspdata->states[is]);
+    occ = pspio_state_get_occ(pspdata->states[is]);
     fprintf(fp, "                       %2s%3d%6.2f\n", label, l, occ);    
   }
 
@@ -159,7 +159,7 @@ void upf_write_nonlocal(FILE *fp, const pspio_pspdata_t *pspdata){
 
   //Write projectors
   for (ikb=0; ikb<pspdata->n_kbproj; ikb++) {
-    pspio_projector_get_l(pspdata->kb_projectors[ikb], &l);
+    l = pspio_projector_get_l(pspdata->kb_projectors[ikb]);
     fprintf(fp, "  <PP_BETA>\n");
     fprintf(fp, "%5d%5d             Beta    L\n", ikb+1, l);
     fprintf(fp, "%6d\n", pspdata->mesh->np);
@@ -176,7 +176,7 @@ void upf_write_nonlocal(FILE *fp, const pspio_pspdata_t *pspdata){
   fprintf(fp, "  <PP_DIJ>\n");
   fprintf(fp, "%5d                  Number of nonzero Dij\n", pspdata->n_kbproj);
   for (ikb=0; ikb<pspdata->n_kbproj; ikb++) {
-    pspio_projector_get_energy(pspdata->kb_projectors[ikb], &ekb);
+    ekb = pspio_projector_get_energy(pspdata->kb_projectors[ikb]);
     ekb /= 2.0;
     fprintf(fp, "%5d%5d%19.11E\n", ikb+1, ikb+1, ekb);
   }
@@ -218,8 +218,8 @@ void upf_write_pswfc(FILE *fp, const pspio_pspdata_t *pspdata){
   //Write wavefunctions
   for (is=0; is<pspdata->n_states; is++) {
     pspio_state_get_label(pspdata->states[is], &label[0]);
-    pspio_state_get_l(pspdata->states[is], &l);
-    pspio_state_get_occ(pspdata->states[is], &occ);
+    l = pspio_state_get_l(pspdata->states[is]);
+    occ = pspio_state_get_occ(pspdata->states[is]);
     fprintf(fp, "%s %4d %5.2f          Wavefunction\n", label, l, occ);
     for (i=0; i<pspdata->mesh->np; i++) {
       if (i != 0 && i % 4 == 0) fprintf(fp, "\n");
@@ -266,17 +266,17 @@ void upf_write_addinfo(FILE *fp, const pspio_pspdata_t *pspdata){
   //Write wavefunctions data
   for (is=0; is<pspdata->n_states; is++) {
     pspio_state_get_label(pspdata->states[is], &label[0]);
-    pspio_state_get_n(pspdata->states[is], &n);
-    pspio_state_get_l(pspdata->states[is], &l);
-    pspio_state_get_j(pspdata->states[is], &j);
-    pspio_state_get_occ(pspdata->states[is], &occ);
+    n = pspio_state_get_n(pspdata->states[is]);
+    l = pspio_state_get_l(pspdata->states[is]);
+    j = pspio_state_get_j(pspdata->states[is]);
+    occ = pspio_state_get_occ(pspdata->states[is]);
     fprintf(fp, "%2s  %1d  %1d  %4.2f  %4.2f\n", label, n, l, j, occ);
   }
 
   //Write projectors data
   for (is=0; is<pspdata->n_kbproj; is++) {
-    pspio_projector_get_l(pspdata->kb_projectors[is], &l);
-    pspio_projector_get_j(pspdata->kb_projectors[is], &j);
+    l = pspio_projector_get_l(pspdata->kb_projectors[is]);
+    j = pspio_projector_get_j(pspdata->kb_projectors[is]);
     fprintf(fp, "  %2d  %4.2f\n", l, j);
   }
 

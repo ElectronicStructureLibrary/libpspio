@@ -38,6 +38,9 @@ int pspio_xc_alloc(pspio_xc_t **xc){
   *xc = (pspio_xc_t *) malloc (sizeof(pspio_xc_t));
   FULFILL_OR_RETURN(*xc != NULL, PSPIO_ENOMEM);
 
+  (*xc)->correlation = XC_NONE;
+  (*xc)->exchange = XC_NONE;
+
   (*xc)->nlcc_scheme = PSPIO_NLCC_NONE;
   (*xc)->core_dens = NULL;
 
@@ -93,14 +96,12 @@ int pspio_xc_set_nlcc_scheme(pspio_xc_t **xc, const int nlcc_scheme){
 }
 
 int pspio_xc_set_core_density(pspio_xc_t **xc, const pspio_mesh_t *mesh, const double *cd, const double *cdp, const double *cdpp){
-  int ierr, np;
+  int ierr;
 
   assert(*xc != NULL);  
   assert(&(*xc)->nlcc_scheme != PSPIO_NLCC_NONE);
 
-  pspio_mesh_get_np(mesh, &np);
-    
-  ierr = pspio_meshfunc_alloc(&(*xc)->core_dens, np);
+  ierr = pspio_meshfunc_alloc(&(*xc)->core_dens, pspio_mesh_get_np(mesh));
   if (ierr) {
     pspio_meshfunc_free(&(*xc)->core_dens);
     HANDLE_ERROR(ierr);

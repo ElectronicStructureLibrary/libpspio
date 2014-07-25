@@ -100,22 +100,22 @@ int pspio_qn_set(pspio_qn_t **qn, const int n, const int l, const double j) {
  * Atomic routines                                                    *
  **********************************************************************/
 
-void pspio_qn_get_n(const pspio_qn_t *qn, int *n) {
+int pspio_qn_get_n(const pspio_qn_t *qn) {
   assert(qn != NULL);
 
-  *n = qn->n;
+  return qn->n;
 }
 
-void pspio_qn_get_l(const pspio_qn_t *qn, int *l) {
+int pspio_qn_get_l(const pspio_qn_t *qn) {
   assert(qn != NULL);
 
-  *l = qn->l;
+  return qn->l;
 }
 
-void pspio_qn_get_j(const pspio_qn_t *qn, double *j) {
+double pspio_qn_get_j(const pspio_qn_t *qn) {
   assert(qn != NULL);
 
-  *j = qn->j;
+  return qn->j;
 }
 
 

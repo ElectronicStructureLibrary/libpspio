@@ -30,7 +30,7 @@
 
 
 int main(int argc, char *argv[]) {
-  int eid, format;
+  int format;
   pspio_pspdata_t *pspdata = NULL;
 
   if(argc != 4){
@@ -46,26 +46,23 @@ int main(int argc, char *argv[]) {
 
   /* init pspdata */
   DEBUG_PRINT("test_io: initializing pspdata\n");
-  eid = pspio_pspdata_init(&pspdata);
-  pspio_error_flush(stdout);
+  CHECK_STAT(pspio_pspdata_init(&pspdata), PSPIO_SUCCESS);
   DEBUG_PRINT("\n");
 
   /* check parsing of file */
   DEBUG_PRINT("test_io: parsing file %s\n", argv[1]);
-  eid = pspio_pspdata_read(&pspdata, &format, argv[1]);
-  if ( eid == PSPIO_SUCCESS ) {
+  CHECK_STAT(pspio_pspdata_read(&pspdata, &format, argv[1]), PSPIO_SUCCESS);
+  if ( pspio_error_get_last(NULL) == PSPIO_SUCCESS ) {
     DEBUG_PRINT("test_io: file parsing successful\n");
   }
-  pspio_error_flush(stdout);
   DEBUG_PRINT("\n");
 
   /* check writing of file */
   DEBUG_PRINT("test_io: writing file %s\n", argv[2]);
-  eid = pspio_pspdata_write(pspdata, format, argv[2]);
-  if ( eid == PSPIO_SUCCESS ) {
+  CHECK_STAT(pspio_pspdata_write(pspdata, format, argv[2]), PSPIO_SUCCESS);
+  if ( pspio_error_get_last(NULL) == PSPIO_SUCCESS ) {
     DEBUG_PRINT("test_io: file writing successful\n");
   }
-  pspio_error_flush(stdout);
   DEBUG_PRINT("\n");
   
   /* Destroy pspdata structures */

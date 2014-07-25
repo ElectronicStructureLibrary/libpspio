@@ -140,9 +140,9 @@ void pspio_mesh_free(pspio_mesh_t **mesh);
  * Returns the number of points in the mesh
  * 
  * @param[in] mesh: mesh structure
- * @param[out] np: the number of points
+ * @return np: the number of points
  */
-void pspio_mesh_get_np(const pspio_mesh_t *mesh, int *np);
+int pspio_mesh_get_np(const pspio_mesh_t *mesh);
 
 
 /**

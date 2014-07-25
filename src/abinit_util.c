@@ -35,7 +35,7 @@
 #include "config.h"
 #endif
 
-/* proptotypes for the replacement functions */
+/* Prototypes for the replacement functions */
 static char *my_strndup (char const *s, size_t n);
 static size_t my_strnlen (const char *string, size_t maxlen);
 
@@ -53,7 +53,8 @@ int abinit_read_header(FILE *fp, const int format,  pspio_pspdata_t **pspdata) {
   // Line 1: read title
   FULFILL_OR_RETURN( fgets(line, PSPIO_STRLEN_LINE, fp) != NULL, PSPIO_EIO);
   s = strlen(line);
-  (*pspdata)->info = (char *) malloc (s + 1);
+  (*pspdata)->info = (char *) malloc ((s+1)*sizeof(char));
+  FULFILL_OR_EXIT((*pspdata)->info != NULL, PSPIO_ENOMEM);
   strncpy((*pspdata)->info, line, s);
   (*pspdata)->info[s] = '\0';
 
@@ -63,6 +64,9 @@ int abinit_read_header(FILE *fp, const int format,  pspio_pspdata_t **pspdata) {
   FULFILL_OR_RETURN( sscanf(line, "%lf %lf", &zatom, &zval) == 2, PSPIO_EFILE_CORRUPT);
   (*pspdata)->z = zatom;
   (*pspdata)->zvalence = zval;
+  (*pspdata)->symbol = (char *) malloc (3*sizeof(char));
+  FULFILL_OR_EXIT((*pspdata)->symbol != NULL, PSPIO_ENOMEM);
+  SUCCEED_OR_RETURN(z_to_symbol((*pspdata)->z, (*pspdata)->symbol));
 
   // Line 3: read pspcod, pspxc, lmax, lloc, mmax, r2well
   FULFILL_OR_RETURN( fgets(line, PSPIO_STRLEN_LINE, fp) != NULL, PSPIO_EIO);

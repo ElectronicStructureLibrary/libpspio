@@ -91,35 +91,35 @@ void FC_FUNC_(pspio_f90_pspdata_get_symbol, PSPIO_F90_PSPDATA_GET_SYMBOL)
 
 }
 
-void FC_FUNC_(pspio_f90_pspdata_get_z, PSPIO_F90_PSPDATA_GET_Z)
-     (void ** pspdata, double *z)
+double FC_FUNC_(pspio_f90_pspdata_get_z, PSPIO_F90_PSPDATA_GET_Z)
+     (void ** pspdata)
 {
 
-  *z = ((pspio_pspdata_t *)(*pspdata))->z;
+  return ((pspio_pspdata_t *)(*pspdata))->z;
 
 }
 
-void FC_FUNC_(pspio_f90_pspdata_get_zvalence, PSPIO_F90_PSPDATA_GET_ZVALENCE)
-     (void ** pspdata, double *zvalence)
+double FC_FUNC_(pspio_f90_pspdata_get_zvalence, PSPIO_F90_PSPDATA_GET_ZVALENCE)
+     (void ** pspdata)
 {
 
-  *zvalence = ((pspio_pspdata_t *)(*pspdata))->zvalence;
+  return ((pspio_pspdata_t *)(*pspdata))->zvalence;
 
 }
 
-void FC_FUNC_(pspio_f90_pspdata_get_l_max, PSPIO_F90_PSPDATA_GET_L_MAX)
-     (void ** pspdata, int *l_max)
+int FC_FUNC_(pspio_f90_pspdata_get_l_max, PSPIO_F90_PSPDATA_GET_L_MAX)
+     (void ** pspdata)
 {
 
-  *l_max = ((pspio_pspdata_t *)(*pspdata))->l_max;
+  return ((pspio_pspdata_t *)(*pspdata))->l_max;
 
 }
 
-void FC_FUNC_(pspio_f90_pspdata_get_wave_eq, PSPIO_F90_PSPDATA_GET_WAVE_EQ)
-     (void ** pspdata, int *wave_eq)
+int FC_FUNC_(pspio_f90_pspdata_get_wave_eq, PSPIO_F90_PSPDATA_GET_WAVE_EQ)
+     (void ** pspdata)
 {
 
-  *wave_eq = ((pspio_pspdata_t *)(*pspdata))->wave_eq;
+  return ((pspio_pspdata_t *)(*pspdata))->wave_eq;
 
 }
 
@@ -131,11 +131,11 @@ void FC_FUNC_(pspio_f90_pspdata_get_mesh, PSPIO_F90_PSPDATA_GET_MESH)
 
 }
 
-void FC_FUNC_(pspio_f90_pspdata_get_n_states, PSPIO_F90_PSPDATA_GET_N_STATES)
-     (void ** pspdata, int *n_states)
+int FC_FUNC_(pspio_f90_pspdata_get_n_states, PSPIO_F90_PSPDATA_GET_N_STATES)
+     (void ** pspdata)
 {
 
-  *n_states = ((pspio_pspdata_t *)(*pspdata))->n_states;
+  return ((pspio_pspdata_t *)(*pspdata))->n_states;
 
 }
 
@@ -147,11 +147,11 @@ void FC_FUNC_(pspio_f90_pspdata_get_state, PSPIO_F90_PSPDATA_GET_STATE)
 
 }
 
-void FC_FUNC_(pspio_f90_pspdata_get_n_potentials, PSPIO_F90_PSPDATA_GET_N_POTENTIALS)
-     (void ** pspdata, int *n_potentials)
+int FC_FUNC_(pspio_f90_pspdata_get_n_potentials, PSPIO_F90_PSPDATA_GET_N_POTENTIALS)
+     (void ** pspdata)
 {
 
-  *n_potentials = ((pspio_pspdata_t *)(*pspdata))->n_potentials;
+  return ((pspio_pspdata_t *)(*pspdata))->n_potentials;
 
 }
 
@@ -163,11 +163,11 @@ void FC_FUNC_(pspio_f90_pspdata_get_potential, PSPIO_F90_PSPDATA_GET_POTENTIAL)
 
 }
 
-void FC_FUNC_(pspio_f90_pspdata_get_n_kbproj, PSPIO_F90_PSPDATA_GET_N_KBPROJ)
-     (void ** pspdata, int *n_kbproj)
+int FC_FUNC_(pspio_f90_pspdata_get_n_kbproj, PSPIO_F90_PSPDATA_GET_N_KBPROJ)
+     (void ** pspdata)
 {
 
-  *n_kbproj = ((pspio_pspdata_t *)(*pspdata))->n_kbproj;
+  return ((pspio_pspdata_t *)(*pspdata))->n_kbproj;
 
 }
 
@@ -179,19 +179,19 @@ void FC_FUNC_(pspio_f90_pspdata_get_kb_projector, PSPIO_F90_PSPDATA_GET_KB_PROJE
 
 }
 
-void FC_FUNC_(pspio_f90_pspdata_get_l_local, PSPIO_F90_PSPDATA_GET_L_LOCAL)
-     (void ** pspdata, int *l_local)
+int FC_FUNC_(pspio_f90_pspdata_get_l_local, PSPIO_F90_PSPDATA_GET_L_LOCAL)
+     (void ** pspdata)
 {
 
-  *l_local = ((pspio_pspdata_t *)(*pspdata))->l_local;
+  return ((pspio_pspdata_t *)(*pspdata))->l_local;
 
 }
 
-void FC_FUNC_(pspio_f90_pspdata_get_kb_l_max, PSPIO_F90_PSPDATA_GET_KB_L_MAX)
-     (void ** pspdata, int *kb_l_max)
+int FC_FUNC_(pspio_f90_pspdata_get_kb_l_max, PSPIO_F90_PSPDATA_GET_KB_L_MAX)
+     (void ** pspdata)
 {
 
-  *kb_l_max = ((pspio_pspdata_t *)(*pspdata))->kb_l_max;
+  return ((pspio_pspdata_t *)(*pspdata))->kb_l_max;
 
 }
 
@@ -231,11 +231,11 @@ void FC_FUNC_(pspio_f90_pspdata_rho_valence_eval_v, PSPIO_F90_PSPDATA_RHO_VALENC
  * pspio_mesh                                                         *
  **********************************************************************/
 
-void FC_FUNC_(pspio_f90_mesh_get_np, PSPIO_F90_MESH_GET_NP)
-     (void ** mesh, int *np)
+int FC_FUNC_(pspio_f90_mesh_get_np, PSPIO_F90_MESH_GET_NP)
+     (void ** mesh)
 {
 
-  pspio_mesh_get_np( ((pspio_mesh_t *)(*mesh)), np);
+  return pspio_mesh_get_np( ((pspio_mesh_t *)(*mesh)));
 
 }
 
@@ -289,16 +289,16 @@ void FC_FUNC_(pspio_f90_state_wf_eval_v, PSPIO_F90_STATE_WF_EVAL_V)
 void FC_FUNC_(pspio_f90_state_get_qn, PSPIO_F90_STATE_GET_QN)
      (void ** state, int *n, int *l, double *j)
 {
-  pspio_state_get_n(((pspio_state_t *)(*state)), n);
-  pspio_state_get_l(((pspio_state_t *)(*state)), l);
-  pspio_state_get_j(((pspio_state_t *)(*state)), j);
+  *n = pspio_state_get_n(((pspio_state_t *)(*state)));
+  *l = pspio_state_get_l(((pspio_state_t *)(*state)));
+  *j = pspio_state_get_j(((pspio_state_t *)(*state)));
 }
 
-void FC_FUNC_(pspio_f90_state_get_occ, PSPIO_F90_STATE_GET_OCC)
-     (void ** state, double *occ)
+double FC_FUNC_(pspio_f90_state_get_occ, PSPIO_F90_STATE_GET_OCC)
+     (void ** state)
 {
 
-  pspio_state_get_occ(((pspio_state_t *)(*state)), occ);
+  return pspio_state_get_occ((pspio_state_t *)(*state));
 
 }
 
@@ -344,27 +344,27 @@ void FC_FUNC_(pspio_f90_projector_eval_v, PSPIO_F90_PROJECTOR_EVAL_V)
 
 }
 
-void FC_FUNC_(pspio_f90_projector_get_energy, PSPIO_F90_PROJECTOR_GET_ENERGY)
- (void ** projector, double *e)
+double FC_FUNC_(pspio_f90_projector_get_energy, PSPIO_F90_PROJECTOR_GET_ENERGY)
+     (void ** projector)
 {
 
-  pspio_projector_get_energy(((pspio_projector_t *)(*projector)), e);
+  return pspio_projector_get_energy((pspio_projector_t *)(*projector));
 
 }
 
-void FC_FUNC_(pspio_f90_projector_get_l, PSPIO_F90_PROJECTOR_GET_L)
- (void ** projector, int *l)
+int FC_FUNC_(pspio_f90_projector_get_l, PSPIO_F90_PROJECTOR_GET_L)
+     (void ** projector)
 {
 
-  pspio_projector_get_l(((pspio_projector_t *)(*projector)), l);
+  return pspio_projector_get_l((pspio_projector_t *)(*projector));
 
 }
 
-void FC_FUNC_(pspio_f90_projector_get_j, PSPIO_F90_PROJECTOR_GET_J)
- (void ** projector, double *j)
+double FC_FUNC_(pspio_f90_projector_get_j, PSPIO_F90_PROJECTOR_GET_J)
+     (void ** projector)
 {
 
-  pspio_projector_get_j(((pspio_projector_t *)(*projector)), j);
+  return pspio_projector_get_j((pspio_projector_t *)(*projector));
 
 }
 
@@ -373,18 +373,18 @@ void FC_FUNC_(pspio_f90_projector_get_j, PSPIO_F90_PROJECTOR_GET_J)
  * pspio_xc                                                           *
  **********************************************************************/
 
-void FC_FUNC_(pspio_f90_xc_get_correlation, PSPIO_F90_XC_GET_CORRELATION)
-     (void **xc, int *correlation)
+int FC_FUNC_(pspio_f90_xc_get_correlation, PSPIO_F90_XC_GET_CORRELATION)
+     (void **xc)
 {
 
-  *correlation = ((pspio_xc_t *)(xc))->correlation;
+  return ((pspio_xc_t *)(xc))->correlation;
 
 }
-void FC_FUNC_(pspio_f90_xc_get_exchange, PSPIO_F90_XC_GET_EXCHANGE)
-     (void **xc, int *exchange)
+int FC_FUNC_(pspio_f90_xc_get_exchange, PSPIO_F90_XC_GET_EXCHANGE)
+     (void **xc)
 {
 
-  *exchange = ((pspio_xc_t *)(xc))->exchange;
+  return ((pspio_xc_t *)(xc))->exchange;
 
 }
 

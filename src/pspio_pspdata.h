@@ -118,6 +118,13 @@ int pspio_pspdata_write(const pspio_pspdata_t *pspdata, const int file_format,
       const char *file_name);
 
 /**
+ * Reset all the pspdata structure data
+ * @param[in,out] pspdata: pointer to pspdata structure to be
+ */
+void pspio_pspdata_reset(pspio_pspdata_t **pspdata);
+
+
+/**
  * Frees all memory associated with pspdata structure
  * @param[in,out] pspdata: pointer to pspdata structure to be
  */

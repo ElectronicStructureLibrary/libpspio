@@ -41,7 +41,7 @@ program test_fortran
 
   call pspio_f90_pspdata_get_mesh(pspdata, pspmesh)
   ierr = pspio_f90_error_flush()
-  call pspio_f90_mesh_get_np(pspmesh, np)
+  np = pspio_f90_mesh_get_np(pspmesh)
   write(*,'("Mesh number of points: ", I6)') np
 
   ierr = pspio_f90_pspdata_write(pspdata, pio_fmt, file_out)

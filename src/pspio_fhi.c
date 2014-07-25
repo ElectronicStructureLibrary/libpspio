@@ -125,10 +125,6 @@ int pspio_fhi_read(FILE *fp, pspio_pspdata_t **pspdata){
     SUCCEED_OR_RETURN(pspio_xc_alloc(&(*pspdata)->xc));
   }
 
-  // We do not know the xc functional:
-  pspio_xc_set_id(&(*pspdata)->xc, XC_NONE, XC_NONE);
-
-
   // Non-linear core-corrections
   has_nlcc = (fgets(line, PSPIO_STRLEN_LINE, fp) != NULL);
   if (has_nlcc) {
@@ -168,13 +164,21 @@ int pspio_fhi_read(FILE *fp, pspio_pspdata_t **pspdata){
     RETURN_ON_DEFERRED_ERROR;
   }
 
+  //We do not know the symbol (note that it might have been set somewhere else)
+  if ((*pspdata)->symbol == NULL) {
+    (*pspdata)->symbol = (char *) malloc (3*sizeof(char));
+    FULFILL_OR_RETURN((*pspdata)->symbol != NULL, PSPIO_ENOMEM);
+    sprintf((*pspdata)->symbol, "N/D");
+  }
+
+
   return PSPIO_SUCCESS;
 }
 
 
 int pspio_fhi_write(FILE *fp, const pspio_pspdata_t *pspdata){
   int i, l, is, ir;
-  double wf, v, r, j;
+  double wf, v, r;
 
   assert(fp != NULL);
   assert(pspdata != NULL);
@@ -197,8 +201,8 @@ int pspio_fhi_write(FILE *fp, const pspio_pspdata_t *pspdata){
     is = pspdata->qn_to_istate[0][i];
 
     // This format is not suitable for j-dependent pseudos
-    pspio_state_get_j(pspdata->states[is], &j);
-    FULFILL_OR_RETURN(j == 0.0, PSPIO_EVALUE);
+    FULFILL_OR_RETURN(pspio_state_get_j(pspdata->states[is]) == 0.0,
+      PSPIO_EVALUE);
 
     for (ir=0; ir<pspdata->mesh->np; ir++) {
       r = pspdata->mesh->r[ir];
