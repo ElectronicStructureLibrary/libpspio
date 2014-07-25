@@ -26,41 +26,35 @@ set -ev
 # Check that we are in the correct directory
 test -s "configure.ac" -a -s "src/pspio.h" || exit 0
 
+# Init build parameters
+export CC="gcc"
+export CFLAGS="-O0 -g3 -ggdb -Wall -Wextra -fbounds-check -fno-inline"
+export FC="gfortran"
+export FCFLAGS="-O0 -g3 -ggdb -Wall -Wextra -fbounds-check -fno-inline"
+
 # Prepare source tree
 ./wipeout.sh
 ./autogen.sh
 
 # Check default build
-mkdir tmp-standard
-cd tmp-standard
+mkdir tmp-minimal
+cd tmp-minimal
 ../configure
 make dist
 make
 make clean && make -j4
 make check
-mkdir install-standard
-make install DESTDIR="${PWD}/install-standard"
-ls -lR install-standard >install-standard.log
+mkdir install-minimal
+make install DESTDIR="${PWD}/install-minimal"
+ls -lR install-minimal >install-minimal.log
 cd ..
 
-# Check Fortran build
-mkdir tmp-fortran
-cd tmp-fortran
-../configure --enable-fortran
-make dist
-make
-make clean && make -j4
-make check
-mkdir install-fortran
-make install DESTDIR="${PWD}/install-fortran"
-ls -lR install-fortran >install-fortran.log
-cd ..
-
-# Make distcheck
+# Make distcheck (enables Fortran)
 mkdir tmp-distcheck
 cd tmp-distcheck
 ../configure
-make distcheck
+make distcheck -j4
+make distcleancheck
 
 # Clean-up the mess
-rm -rf tmp-standard tmp-fortran
+rm -rf tmp-minimal tmp-distcheck

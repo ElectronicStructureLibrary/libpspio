@@ -253,6 +253,16 @@ fi
 # ---------------------------------------------------------------------------- #
 
 #
+# Prepare data for the test suite
+#
+
+${MKDIR_P} src/fortran
+cp ${ac_top_srcdir}/psp_references/UPF/F.UPF src/fortran/test_fortran_input.tmp
+rm -f src/fortran/test_fortran_output.tmp
+
+# ---------------------------------------------------------------------------- #
+
+#
 # Output configuration
 #
 
@@ -273,7 +283,3 @@ AC_MSG_NOTICE([LIBS     = ${LIBS}])
 AC_CONFIG_COMMANDS([script-perms],[chmod u+x src/test_io_multiple.sh])
 
 AC_OUTPUT([Makefile src/Makefile src/fortran/Makefile src/test_io_multiple.sh])
-
-# Prepare data for the test suite
-cp ${ac_top_srcdir}/psp_references/UPF/F.UPF src/fortran/test_fortran_input.tmp
-rm -f src/fortran/test_fortran_output.tmp
