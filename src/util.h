@@ -64,7 +64,7 @@ int z_to_symbol(const double z, char *symbol);
  * @param[out] z: atomic number
  * @return error code
  */
-int symbol_to_z(const char *symbol, double z);
+int symbol_to_z(const char *symbol, double *z);
 
 
 /**

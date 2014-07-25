@@ -41,14 +41,14 @@ const char *symbols[] = {"H  ","He ","Li ","Be ","B  ","C  ","N  ","O  ","F  ","
 			"Uuu","Uub"};
 
 
-int symbol_to_z(const char *symbol, double z){
+int symbol_to_z(const char *symbol, double *z){
   int i;
 
   assert(symbol != NULL);
 
   for (i=0; i<112; i++) {
     if (strncmp(symbol, symbols[i], 2)) {
-      z = i + 1.0;
+      *z = i + 1.0;
       return PSPIO_SUCCESS;
     }
   }
@@ -59,7 +59,7 @@ int symbol_to_z(const char *symbol, double z){
 
 int z_to_symbol(const double z, char *symbol){
 
-  CHECK_ERROR(z < 113.0 && z > 0.0, PSPIO_EVALUE);
+  FULFILL_OR_RETURN(z < 113.0 && z > 0.0, PSPIO_EVALUE);
 
   strncpy(symbol, symbols[(int)z-1], 3);
 

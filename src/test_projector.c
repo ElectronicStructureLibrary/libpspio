@@ -35,7 +35,6 @@ int main(void) {
   const double p[] = {1.0, 0.95, 0.90, 0.80, 0.50, 0.20, 0.10, 0.05, 0.00};
   const int np = sizeof(r) / sizeof(double);
 
-  int eid;
   int l;
   double pr, e, j;
   pspio_mesh_t *mesh = NULL;
@@ -49,37 +48,30 @@ int main(void) {
 
   /* Check creation and setting of mesh */
   DEBUG_PRINT("test_projector: creating mesh\n");
-  eid = pspio_mesh_alloc(&mesh, np);
-  pspio_error_flush(stdout);
+  CHECK_STAT(pspio_mesh_alloc(&mesh, np), PSPIO_SUCCESS);
   DEBUG_PRINT("test_projector: setting mesh\n");
-  eid = pspio_mesh_init_from_points(&mesh, r, NULL);
-  pspio_error_flush(stdout);
+  CHECK_STAT(pspio_mesh_init_from_points(&mesh, r, NULL), PSPIO_SUCCESS);
   DEBUG_PRINT("\n");
 
   /* Check creation and setting of quantum numbers */
   DEBUG_PRINT("test_projector: creating quantum numbers\n");
-  eid = pspio_qn_alloc(&qn);
-  pspio_error_flush(stdout);
+  CHECK_STAT(pspio_qn_alloc(&qn), PSPIO_SUCCESS);
   DEBUG_PRINT("test_projector: setting quantum numbers to (1, 2, 0.0)\n");
-  eid = pspio_qn_set(&qn, 1, 2, 0.0);
-  pspio_error_flush(stdout);
+  CHECK_STAT(pspio_qn_set(&qn, 1, 2, 0.0), PSPIO_SUCCESS);
   DEBUG_PRINT("\n");
 
   /* Check creation and destruction of projector */
   DEBUG_PRINT("test_projector: creating proj1\n");
-  eid = pspio_projector_alloc(&proj1, np);
-  pspio_error_flush(stdout);
+  CHECK_STAT(pspio_projector_alloc(&proj1, np), PSPIO_SUCCESS);
   DEBUG_PRINT("test_projector: creating proj2\n");
-  eid = pspio_projector_alloc(&proj2, np);
-  pspio_error_flush(stdout);
+  CHECK_STAT(pspio_projector_alloc(&proj2, np), PSPIO_SUCCESS);
   DEBUG_PRINT("test_projector: destroying proj2\n");
   pspio_projector_free(&proj2);
   DEBUG_PRINT("\n");
 
   /* Check setting of the projectors */
   DEBUG_PRINT("test_projector: setting proj1\n");
-  eid = pspio_projector_set(&proj1, qn, 2.0, mesh, p);
-  pspio_error_flush(stdout);
+  CHECK_STAT(pspio_projector_set(&proj1, qn, 2.0, mesh, p), PSPIO_SUCCESS);
   DEBUG_PRINT("\n");
 
   /* Check evaluation of the projector */

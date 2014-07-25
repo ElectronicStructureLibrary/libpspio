@@ -159,7 +159,6 @@ void pspio_error_fetchall(char **err_str) {
 
 void pspio_error_flush(FILE *fd) {
   char *err_str = NULL;
-  int eid;
 
   assert(fd != NULL);
 

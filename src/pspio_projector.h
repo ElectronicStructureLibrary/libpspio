@@ -109,7 +109,6 @@ void pspio_projector_eval(const pspio_projector_t *projector, const int np,
  * @note The projector pointer has to be fully set.
  */
 double pspio_projector_get_energy(const pspio_projector_t *projector);
-       double *energy);
 
 /**
  * Returns the angular momentum of the projector
