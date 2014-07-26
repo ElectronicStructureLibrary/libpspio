@@ -301,7 +301,7 @@ int FC_FUNC_(pspio_f90_pspdata_set_rho_valence, PSPIO_F90_PSPDATA_SET_RHO_VALENC
 {
   pspio_meshfunc_t *rho_valence;
 
-  SUCCEED_OR_RETURN(pspio_meshfunc_alloc(&rho_valence, ((pspio_pspdata_t *)(*pspdata))->mesh->np));
+  SUCCEED_OR_RETURN(pspio_meshfunc_alloc(&rho_valence, PSPIO_INTERP_GSL_CSPLINE, ((pspio_pspdata_t *)(*pspdata))->mesh->np));
   SUCCEED_OR_RETURN(pspio_meshfunc_set(&rho_valence, ((pspio_pspdata_t *)(*pspdata))->mesh, rho, NULL, NULL));
 
   return PSPIO_SUCCESS;

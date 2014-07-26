@@ -21,7 +21,6 @@
 #include <assert.h>
 
 #include "pspio_potential.h"
-#include "pspio_qn.h"
 
 #if defined HAVE_CONFIG_H
 #include "config.h"
@@ -43,7 +42,7 @@ int pspio_potential_alloc(pspio_potential_t **potential, const int np) {
   FULFILL_OR_EXIT(*potential != NULL, PSPIO_ENOMEM);
 
   (*potential)->v = NULL;
-  ierr = pspio_meshfunc_alloc(&(*potential)->v, np);
+  ierr = pspio_meshfunc_alloc(&(*potential)->v, PSPIO_INTERP_GSL_CSPLINE, np);
   if ( ierr != PSPIO_SUCCESS ) {
     pspio_potential_free(potential);
     RETURN_WITH_ERROR(ierr);

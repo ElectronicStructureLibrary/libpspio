@@ -33,7 +33,7 @@
  * Global routines                                                    *
  **********************************************************************/
 
-int pspio_meshfunc_alloc(pspio_meshfunc_t **func, const int np) {
+int pspio_meshfunc_alloc(pspio_meshfunc_t **func, const int interp_method, const int np) {
   int ierr;
 
   assert(func != NULL);
@@ -50,23 +50,22 @@ int pspio_meshfunc_alloc(pspio_meshfunc_t **func, const int np) {
     RETURN_WITH_ERROR(ierr);
   }
 
+  (*func)->interp_method = interp_method;
+
   (*func)->f = (double *) malloc (np * sizeof(double));
   FULFILL_OR_EXIT( (*func)->f != NULL, PSPIO_ENOMEM );
   memset((*func)->f, 0, np*sizeof(double));
-  (*func)->f_spl = gsl_spline_alloc(gsl_interp_cspline, np);
-  (*func)->f_acc = gsl_interp_accel_alloc();
+  SUCCEED_OR_RETURN( interpolation_alloc(&(*func)->f_interp, interp_method, np) );
 
   (*func)->fp = (double *) malloc (np * sizeof(double));
   FULFILL_OR_EXIT( (*func)->fp != NULL, PSPIO_ENOMEM );
   memset((*func)->fp, 0, np*sizeof(double));
-  (*func)->fp_spl = gsl_spline_alloc(gsl_interp_cspline, np);
-  (*func)->fp_acc = gsl_interp_accel_alloc();
+  SUCCEED_OR_RETURN( interpolation_alloc(&(*func)->fp_interp, interp_method, np) );
 
   (*func)->fpp = (double *) malloc (np * sizeof(double));
   FULFILL_OR_EXIT( (*func)->fpp != NULL, PSPIO_ENOMEM );
   memset((*func)->fpp, 0, np*sizeof(double));
-  (*func)->fpp_spl = gsl_spline_alloc(gsl_interp_cspline, np);
-  (*func)->fpp_acc = gsl_interp_accel_alloc();
+  SUCCEED_OR_RETURN( interpolation_alloc(&(*func)->fpp_interp, interp_method, np) );
 
   return PSPIO_SUCCESS;
 }
@@ -74,7 +73,7 @@ int pspio_meshfunc_alloc(pspio_meshfunc_t **func, const int np) {
 
 int pspio_meshfunc_set(pspio_meshfunc_t **func, const pspio_mesh_t *mesh, 
       const double *f, const double *fp, const double *fpp) {
-  int ierr, i;
+  int i;
 
   assert(func != NULL);
   assert((*func)->f != NULL);
@@ -85,72 +84,58 @@ int pspio_meshfunc_set(pspio_meshfunc_t **func, const pspio_mesh_t *mesh,
 
   // Function
   memcpy((*func)->f, f, mesh->np * sizeof(double));
-  ierr = gsl_spline_init((*func)->f_spl, mesh->r, (*func)->f, mesh->np);
-  if ( ierr ) {
-    RETURN_WITH_ERROR( PSPIO_EGSL );
-  }
+  SUCCEED_OR_RETURN( interpolation_set(&(*func)->f_interp, mesh, (*func)->f) );
 
   // First derivative
   if ( fp != NULL ) {
     memcpy((*func)->fp, fp, mesh->np * sizeof(double));
   } else {
     for (i=0; i<mesh->np; i++) 
-      (*func)->fp[i] = gsl_spline_eval_deriv((*func)->f_spl, mesh->r[i],
-        (*func)->f_acc);
+      interpolation_eval_deriv((*func)->f_interp, mesh->r[i], &(*func)->fp[i]);
   }
-  ierr = gsl_spline_init((*func)->fp_spl, mesh->r, (*func)->fp,
-    (*func)->mesh->np);
-  if ( ierr ) {
-    RETURN_WITH_ERROR( PSPIO_EGSL );
-  }
+  SUCCEED_OR_RETURN( interpolation_set(&(*func)->fp_interp, mesh, (*func)->fp) );
 
   // Second derivative
   if ( fpp != NULL ) {
     memcpy((*func)->fpp, fpp, mesh->np * sizeof(double));
   } else {
-    for (i=0; i<mesh->np; i++) 
-      (*func)->fpp[i] = gsl_spline_eval_deriv((*func)->fp_spl, mesh->r[i],
-        (*func)->fp_acc);    
+    for (i=0; i<mesh->np; i++)
+      interpolation_eval_deriv2((*func)->f_interp, mesh->r[i], &(*func)->fpp[i]);
   }
-  ierr = gsl_spline_init((*func)->fpp_spl, mesh->r, (*func)->fpp, mesh->np);
-  if ( ierr ) {
-    RETURN_WITH_ERROR( PSPIO_EGSL );
-  }
+  SUCCEED_OR_RETURN( interpolation_set(&(*func)->fpp_interp, mesh, (*func)->fpp) );
 
   return PSPIO_SUCCESS;
 }
 
 
 int pspio_meshfunc_copy(pspio_meshfunc_t **dst, const pspio_meshfunc_t *src) {
-  int ierr;
-
   assert(src != NULL);
 
   if ( *dst == NULL ) {
-    SUCCEED_OR_RETURN( pspio_meshfunc_alloc(dst, src->mesh->np) )
+    SUCCEED_OR_RETURN( pspio_meshfunc_alloc(dst, src->interp_method, src->mesh->np) );
+
+  } else {
+    /* All the interpolation objects of dst must be free, otherwise we might have 
+       memory leaks if the interpolation method used previously in dst in not the
+       same as in src. */
+    interpolation_free(&(*dst)->f_interp);
+    interpolation_free(&(*dst)->fp_interp);
+    interpolation_free(&(*dst)->fpp_interp);
   }
 
   SUCCEED_OR_RETURN( pspio_mesh_copy(&(*dst)->mesh, src->mesh) );
+
   memcpy((*dst)->f, src->f, src->mesh->np * sizeof(double));
-  ierr = gsl_spline_init((*dst)->f_spl, (*dst)->mesh->r, (*dst)->f,
-    (*dst)->mesh->np) ;
-  if ( ierr ) {
-    RETURN_WITH_ERROR( PSPIO_EGSL );
-  }
+  SUCCEED_OR_RETURN( interpolation_alloc(&(*dst)->f_interp, src->interp_method, src->mesh->np) );
+  SUCCEED_OR_RETURN( interpolation_set(&(*dst)->f_interp, (*dst)->mesh, (*dst)->f) );
 
   memcpy((*dst)->fp, src->fp, src->mesh->np * sizeof(double));
-  ierr = gsl_spline_init((*dst)->fp_spl, (*dst)->mesh->r, (*dst)->fp,
-    (*dst)->mesh->np) ;
-  if ( ierr ) {
-    RETURN_WITH_ERROR( PSPIO_EGSL );
-  }
+  SUCCEED_OR_RETURN( interpolation_alloc(&(*dst)->fp_interp, src->interp_method, src->mesh->np) );
+  SUCCEED_OR_RETURN( interpolation_set(&(*dst)->fp_interp, (*dst)->mesh, (*dst)->fp) );
 
   memcpy((*dst)->fpp, src->fpp, src->mesh->np * sizeof(double));
-  ierr = gsl_spline_init((*dst)->fpp_spl, (*dst)->mesh->r, (*dst)->fpp,
-    (*dst)->mesh->np) ;
-  if ( ierr ) {
-    RETURN_WITH_ERROR( PSPIO_EGSL );
-  }
+  SUCCEED_OR_RETURN( interpolation_alloc(&(*dst)->fpp_interp, src->interp_method, src->mesh->np) );
+  SUCCEED_OR_RETURN( interpolation_set(&(*dst)->fpp_interp, (*dst)->mesh, (*dst)->fpp) );
 
   return PSPIO_SUCCESS;
 }
@@ -162,16 +147,13 @@ void pspio_meshfunc_free(pspio_meshfunc_t **func) {
     pspio_mesh_free(&(*func)->mesh);
 
     free((*func)->f);
-    gsl_spline_free((*func)->f_spl);
-    gsl_interp_accel_free((*func)->f_acc);
+    interpolation_free(&(*func)->f_interp);
 
     free((*func)->fp);
-    gsl_spline_free((*func)->fp_spl);
-    gsl_interp_accel_free((*func)->fp_acc);
+    interpolation_free(&(*func)->fp_interp);
 
     free((*func)->fpp);
-    gsl_spline_free((*func)->fpp_spl);
-    gsl_interp_accel_free((*func)->fpp_acc);
+    interpolation_free(&(*func)->fpp_interp);
 
     free(*func);
     *func = NULL;
@@ -203,7 +185,7 @@ void pspio_meshfunc_eval(const pspio_meshfunc_t *func, const int np,
         func->mesh->r[func->mesh->np-1], func->f[func->mesh->np-2],
         func->f[func->mesh->np-1], r[i]);
     } else {
-      f[i] = gsl_spline_eval(func->f_spl, r[i], func->f_acc);
+      interpolation_eval(func->f_interp, r[i], &f[i]);
     }
   }
 }
@@ -229,7 +211,7 @@ void pspio_meshfunc_eval_deriv(const pspio_meshfunc_t *func, const int np,
         func->mesh->r[func->mesh->np-1], func->fp[func->mesh->np-2],
         func->fp[func->mesh->np-1], r[i]);
     } else {
-      fp[i] = gsl_spline_eval(func->fp_spl, r[i], func->fp_acc);
+      interpolation_eval(func->fp_interp, r[i], &fp[i]);
     }
   }
 }
@@ -255,7 +237,7 @@ void pspio_meshfunc_eval_deriv2(const pspio_meshfunc_t *func, const int np,
         func->mesh->r[func->mesh->np-1], func->fpp[func->mesh->np-2],
         func->fpp[func->mesh->np-1], r[i]);
     } else {
-      fpp[i] = gsl_spline_eval(func->fpp_spl, r[i], func->fpp_acc);
+      interpolation_eval(func->fpp_interp, r[i], &fpp[i]);
     }
   }
 }
