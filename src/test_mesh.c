@@ -59,7 +59,7 @@ int main(void) {
   DEBUG_PRINT("test_mesh: initializing m1 from parameters\n");
   pspio_mesh_init_from_parameters(&m1, PSPIO_MESH_LOG1, a, b);
   DEBUG_PRINT("test_mesh: initializing m1 from points\n");
-  CHECK_STAT(pspio_mesh_init_from_points(&m1, r, rab), PSPIO_SUCCESS);
+  pspio_mesh_init_from_points(&m1, r, rab);
   DEBUG_PRINT("\n");
 
   /* Check copy of meshes */

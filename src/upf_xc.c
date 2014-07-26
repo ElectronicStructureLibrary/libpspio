@@ -28,7 +28,7 @@
 #include "config.h"
 #endif
 
-int upf_to_libxc (const char xc_string[20], int *exchange, int *correlation){
+int upf_to_libxc (const char xc_string[20], int *exchange, int *correlation) {
   char exch[]  = "     ";
   char corr[]  = "     ";
   char gradx[] = "     ";
@@ -105,10 +105,11 @@ int upf_to_libxc (const char xc_string[20], int *exchange, int *correlation){
 }
 
 
-int libxc_to_upf (const int exchange, const int correlation, char longname[21], char shortname[5]){
+int libxc_to_upf (const int exchange, const int correlation,
+      char longname[21], char shortname[5]) {
   char exch[5], corr[5], gradx[5], gradc[5];
 
-  //Exchange:
+  // Exchange:
   if (exchange == 0) {
     strcpy(exch, "NOX ");
     strcpy(gradx,"NOGX");
@@ -138,7 +139,7 @@ int libxc_to_upf (const int exchange, const int correlation, char longname[21], 
     strcpy(gradx,"TPSS");
   }
 
-  //Correlation:
+  // Correlation:
   if (correlation == 0) {
     strcpy(corr, "NOC ");
     strcpy(gradc,"NOGC");
@@ -183,10 +184,10 @@ int libxc_to_upf (const int exchange, const int correlation, char longname[21], 
     strcpy(gradc,"TPSS");
   }
   
-  //Create longname
+  // Create longname
   sprintf(longname, "%4s %4s %4s %4s ", exch, corr, gradx, gradc);
 
-  //Shorname
+  // Create shortname
   strcpy(shortname,"    ");
   if (exchange == XC_LDA_X) {
     strcpy(shortname, corr);

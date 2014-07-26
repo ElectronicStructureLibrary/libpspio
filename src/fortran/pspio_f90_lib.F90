@@ -530,14 +530,6 @@ module pspio_f90_lib_m
 
   ! pspio_error
   interface
-    subroutine pspio_f90_error_add(error_id, filename, lineno)
-      use pspio_f90_types_m
-      implicit none
-      integer(pspio_cint), intent(in) :: error_id
-      integer(pspio_cint), intent(in) :: lineno
-      character(len=*),    intent(in) :: filename
-    end subroutine pspio_f90_error_add
-
     integer(pspio_cint) function pspio_f90_error_fetchall(err_msg)
       use pspio_f90_types_m, only:PSPIO_STRLEN_ERROR, pspio_cint
       implicit none
@@ -553,27 +545,6 @@ module pspio_f90_lib_m
       use pspio_f90_types_m
       implicit none
     end function pspio_f90_error_free
-
-    integer(pspio_cint) function pspio_f90_error_get_last()
-      use pspio_f90_types_m
-      implicit none
-    end function pspio_f90_error_get_last
-
-    integer(pspio_cint) function pspio_f90_error_len()
-      use pspio_f90_types_m
-      implicit none
-    end function pspio_f90_error_len
-
-    integer(pspio_cint) function pspio_f90_error_get()
-      use pspio_f90_types_m
-      implicit none
-    end function pspio_f90_error_get
-
-    subroutine pspio_f90_error_set(eid)
-      use pspio_f90_types_m
-      implicit none
-      integer(pspio_cint), intent(in) :: eid
-    end subroutine pspio_f90_error_set
   end interface
 
   ! pspio_info

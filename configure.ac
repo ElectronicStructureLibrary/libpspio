@@ -140,7 +140,7 @@ AM_PROG_CC_C_O
 AC_CHECK_HEADERS([time.h])
 
 # Required functions
-AC_CHECK_FUNCS([strnlen strndup])
+AC_CHECK_FUNCS([strndup])
 
                     # ------------------------------------ #
 

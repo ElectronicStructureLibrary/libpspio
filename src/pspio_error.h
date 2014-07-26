@@ -134,18 +134,18 @@ const char *pspio_error_str(const int pspio_errorid);
  **********************************************************************/
 
 /**
- * Deferred error checker macro
- * @param[in] condition: condition to check
- * @param[in] error_id: error code to set
+ * Macro to break loops when there are deferred errors, in order to propagate
+ * error conditions from inner loops to outer loops
  */
-#define DEFER_ERROR(condition, error_id) \
-  if ( !(condition) ) {		    \
-    pspio_error_add(error_id, __FILE__, __LINE__, __func__); \
-  } 
+#define BREAK_ON_DEFERRED_ERROR \
+  if ( pspio_error_get_last(__func__) != PSPIO_SUCCESS ) { \
+    break; \
+  }
 
 
 /**
- * Deferred error handler macro for function calls
+ * Deferred error handler macro for function calls, when it is necessary
+ * to continue executing the code despite the error
  * @param[in] function_call: the function to be called with all its parameters
  */
 #define DEFER_FUNC_ERROR(function_call) \
@@ -153,9 +153,21 @@ const char *pspio_error_str(const int pspio_errorid);
 
 
 /**
+ * Deferred error handler macro for unsatisfied conditions, when it is
+ * necessary to continue executing the code despite the error
+ * @param[in] condition: condition to check
+ * @param[in] error_id: error code to set
+ */
+#define DEFER_TEST_ERROR(condition, error_id) \
+  if ( !(condition) ) {		    \
+    pspio_error_add(error_id, __FILE__, __LINE__, __func__); \
+  } 
+
+
+/**
  * Macro to break out of a loop when a condition is unsatisfied
  * @param[in] condition: condition to check
- * @param[in] error_id: error code to set before aborting
+ * @param[in] error_id: error code to set before breaking out of the loop
  */
 #define FULFILL_OR_BREAK(condition, error_id) \
   if (!(condition)) { \
@@ -180,7 +192,7 @@ const char *pspio_error_str(const int pspio_errorid);
 /**
  * Macro to return from a routine when a condition is unsatisfied
  * @param[in] condition: condition to check
- * @param[in] error_id: error code to set before aborting
+ * @param[in] error_id: error code to set before returning
  */
 #define FULFILL_OR_RETURN(condition, error_id) \
   if (!(condition)) {		    \
@@ -198,12 +210,21 @@ const char *pspio_error_str(const int pspio_errorid);
 
 
 /**
- * Basic error handler macro
- * @param[in] error_id: error code to check
+ * Error handler macro ensuring that errors are properly registered
+ * before returning from a function
+ * @param[in] error_id: error code
  */
-#define HANDLE_ERROR(error_id) \
-  if ( error_id != PSPIO_SUCCESS ) { \
-    return pspio_error_add(error_id, __FILE__, __LINE__, __func__); \
+#define RETURN_WITH_ERROR(error_id) \
+  return pspio_error_add(error_id, __FILE__, __LINE__, __func__);
+
+
+/**
+ * Break the current loop when a pspio function call fails
+ * @param[in] function_call: the function to be called with all its parameters
+ */
+#define SUCCEED_OR_BREAK(function_call) \
+  if ( pspio_error_add(function_call, __FILE__, __LINE__, __func__) != PSPIO_SUCCESS ) { \
+    break; \
   }
 
 
@@ -219,18 +240,30 @@ const char *pspio_error_str(const int pspio_errorid);
 
 /**
  * Macro to skip routine execution on error
+ * @param[in] routine_call: the routine to be called with all its parameters
+ */
+#define SKIP_CALL_ON_ERROR(routine_call) \
+  if ( pspio_error_get_last(__func__) == PSPIO_SUCCESS ) { \
+    routine_call; \
+  }
+
+
+/**
+ * Macro to skip function execution on error
  * @param[in] function_call: the function to be called with all its parameters
  */
-#define SKIP_ON_ERROR(function_call) \
-  if ( pspio_error_get_last(__func__) == PSPIO_SUCCESS ) {		    \
+#define SKIP_FUNC_ON_ERROR(function_call) \
+  if ( pspio_error_get_last(__func__) == PSPIO_SUCCESS ) { \
     pspio_error_add(function_call, __FILE__, __LINE__, __func__); \
   }
 
+
 /**
- * Basic error handler without return call
+ * Macro to skip a test on error
+ * @param[in] function_call: the function to be called with all its parameters
  */
-#define TRIGGER_ERROR(condition, error_id) \
-  if ( !(condition) ) { \
+#define SKIP_TEST_ON_ERROR(condition, error_id) \
+  if ( (pspio_error_get_last(__func__) == PSPIO_SUCCESS) && !(condition) ) { \
     pspio_error_add(error_id, __FILE__, __LINE__, __func__); \
   }
 

@@ -23,6 +23,7 @@
  */
 #include <string.h>
 #include <ctype.h>
+
 #include "upf.h"
 #include "util.h"
 
@@ -31,15 +32,15 @@
 #endif
 
 
-int upf_tag_init(FILE * fp, const char * tag, const int go_back){
+int upf_tag_init(FILE * fp, const char * tag, const int go_back) {
   char line[PSPIO_STRLEN_LINE];
   char * init_tag = NULL;
   char * read_string = NULL;
   int i;
 
-  if (go_back) rewind(fp);
+  if ( go_back ) rewind(fp);
   
-  //Prepare base string
+  // Prepare base string
   init_tag = (char *) malloc ((strlen(tag)+3) * sizeof(char));
   FULFILL_OR_EXIT(init_tag != NULL, PSPIO_ENOMEM);
   init_tag[0] = '\0';
@@ -49,17 +50,17 @@ int upf_tag_init(FILE * fp, const char * tag, const int go_back){
   for (i=0;init_tag[i]; i++)
     init_tag[i] = tolower(init_tag[i]);
 
-  while (fgets(line, sizeof line, fp) != NULL){
-    //Skip white spaces
-    if (line[0] == ' ')
+  while ( fgets(line, sizeof line, fp) != NULL ) {
+    // Skip white spaces
+    if ( line[0] == ' ' )
       read_string = strtok(line," ");
     else 
       read_string = line;
-    //Lowercase line
+    // Lowercase line
     for (i=0;read_string[i]; i++)
       read_string[i] = tolower(read_string[i]);
     
-    if (strncmp(read_string,init_tag,strlen(init_tag))==0) {
+    if ( strncmp(read_string,init_tag,strlen(init_tag))==0 ) {
       free(init_tag);
       return PSPIO_SUCCESS;
     }
@@ -69,13 +70,14 @@ int upf_tag_init(FILE * fp, const char * tag, const int go_back){
   return PSPIO_EFILE_CORRUPT;
 }
 
-int upf_tag_check_end(FILE * fp, const char * tag){
+
+int upf_tag_check_end(FILE * fp, const char * tag) {
   char line[PSPIO_STRLEN_LINE];
   char * ending_tag = NULL;
   char * read_string = NULL;
   int i, status;
   
-  //Prepare base string
+  // Prepare base string
   ending_tag = (char *) malloc ((strlen(tag)+4) * sizeof(char));
   FULFILL_OR_EXIT(ending_tag != NULL, PSPIO_ENOMEM);
   ending_tag[0] = '\0';
@@ -85,20 +87,20 @@ int upf_tag_check_end(FILE * fp, const char * tag){
   for (i=0;ending_tag[i]; i++)
     ending_tag[i] = tolower(ending_tag[i]);
   
-  FULFILL_OR_RETURN(fgets(line, sizeof line, fp) != NULL, PSPIO_EIO);
-  //Skip white spaces
+  FULFILL_OR_RETURN( fgets(line, sizeof line, fp) != NULL, PSPIO_EIO );
+  // Skip white spaces
   if (line[0] == ' ')
     read_string = strtok(line," ");
   else 
     read_string = line;
-  //Lowercase line
+  // Lowercase line
   for (i=0;read_string[i]; i++)
     read_string[i] = tolower(read_string[i]);
 
-  //Compare with the ending tag
-  if (strncmp(read_string,ending_tag,strlen(ending_tag)) == 0) 
+  // Compare with the ending tag
+  if ( strncmp(read_string,ending_tag,strlen(ending_tag)) == 0 ) { 
     status = PSPIO_SUCCESS;
-  else {
+  } else {
     status = PSPIO_EFILE_CORRUPT;
   }
   free(ending_tag);
@@ -106,16 +108,17 @@ int upf_tag_check_end(FILE * fp, const char * tag){
   return status;
 }
 
-int upf_tag_isdef(FILE * fp, const char * tag){
+
+int upf_tag_isdef(FILE * fp, const char * tag) {
   char line[PSPIO_STRLEN_LINE];
   char * init_tag = NULL; 
   char * read_string = NULL;
   int i;
   
-  //Go to the beginning of the buffer
+  // Go to the beginning of the buffer
   rewind(fp);
   
-  //Prepare base string
+  // Prepare base string
   init_tag = (char *) malloc ((strlen(tag)+3) * sizeof(char));
   FULFILL_OR_EXIT(init_tag != NULL, PSPIO_ENOMEM);
   init_tag[0] = '\0';
@@ -124,24 +127,24 @@ int upf_tag_isdef(FILE * fp, const char * tag){
   strcat(init_tag,">");
   for (i=0;init_tag[i]; i++)
     init_tag[i] = tolower(init_tag[i]);
-  
-  while (fgets(line, sizeof line, fp) != NULL){
-    //Skip white spaces
-    if (line[0] == ' ')
+
+  while ( fgets(line, sizeof line, fp) != NULL ) {
+    // Skip white spaces
+    if ( line[0] == ' ' )
       read_string = strtok(line," ");
     else 
       read_string = line;
-    //Lowercase line
+    // Lowercase line
     for (i=0;line[i]; i++)
       line[i] = tolower(line[i]);
 
-    if (strncmp(read_string,init_tag,strlen(init_tag))==0) {
+    if ( strncmp(read_string,init_tag,strlen(init_tag))==0 ) {
       free(init_tag);
       return 1;
     }
   }
 
   free(init_tag);
-  //End of the buffer reached; so return false
+  // End of the buffer reached; so return false
   return 0;
 }

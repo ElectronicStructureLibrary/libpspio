@@ -49,7 +49,7 @@ int main(void) {
   DEBUG_PRINT("test_potential: creating mesh\n");
   CHECK_STAT(pspio_mesh_alloc(&mesh, np), PSPIO_SUCCESS);
   DEBUG_PRINT("test_potential: setting mesh\n");
-  CHECK_STAT(pspio_mesh_init_from_points(&mesh, r, NULL), PSPIO_SUCCESS);
+  pspio_mesh_init_from_points(&mesh, r, NULL);
   DEBUG_PRINT("\n");
 
   /* Check creation and setting of quantum numbers */
