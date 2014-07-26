@@ -44,7 +44,7 @@ AC_CONFIG_SRCDIR([.])
 
 # Initialize Automake
 AC_CANONICAL_TARGET
-AM_INIT_AUTOMAKE(1.10)
+AM_INIT_AUTOMAKE([1.10 parallel-tests color-tests])
 AM_CONFIG_HEADER([config.h])
 
 # ---------------------------------------------------------------------------- #
@@ -57,54 +57,49 @@ AM_CONFIG_HEADER([config.h])
 # FIXME: disable debug by default when releasing
 AC_ARG_ENABLE([debug],
   AC_HELP_STRING([--enable-debug],
-    [Enable debug mode (default: enabled)]))
-if test "${enable_debug}" = ""; then
-  enable_debug="yes"
-fi
+    [Enable debug mode (default: enabled)]),
+  [],
+  [enable_debug="yes"])
 
 # Fortran - Optional support
 AC_ARG_ENABLE([fortran],
   AC_HELP_STRING([--enable-fortran],
-    [Enable Fortran bindings (default: disabled)]))
-if test "${enable_fortran}" = ""; then
-  enable_fortran="no"
-fi
+    [Enable Fortran bindings (default: disabled)]),
+  [],
+  [enable_fortran="no"])
 
 # GCOV - Optional support
 AC_ARG_ENABLE([gcov],
   AC_HELP_STRING([--enable-gcov],
-    [Enable code coverage (default: disabled)]))
-if test "${enable_gcov}" = ""; then
-  enable_gcov="no"
-fi
+    [Enable code coverage (default: disabled)]),
+  [],
+  [enable_gcov="no"])
 
 # GSL - Optional support (because of licensing issues)
 AC_ARG_ENABLE([gsl],
   AC_HELP_STRING([--enable-gsl],
-    [Enable support for GSL (default: enabled)]))
+    [Enable support for GSL (default: enabled)]),
+  [],
+  [enable_gsl="yes"])
 AC_ARG_WITH([gsl-incs],
   AC_HELP_STRING([--with-gsl-incs],
     [Includes for the GSL library]))
 AC_ARG_WITH([gsl-libs],
   AC_HELP_STRING([--with-gsl-libs],
     [Link flags for the GSL library]))
-if test "${enable_gsl}" = ""; then
-  enable_gsl="yes"
-fi
 
 # XML - Optional support
 AC_ARG_ENABLE([xml],
   AC_HELP_STRING([--enable-xml],
-    [Enable support for XML (default: disabled)]))
+    [Enable support for XML (default: disabled)]),
+  [],
+  [enable_xml="no"])
 AC_ARG_WITH([xml-incs],
   AC_HELP_STRING([--with-xml-incs],
     [Includes for the XML library]))
 AC_ARG_WITH([xml-libs],
   AC_HELP_STRING([--with-xml-libs],
     [Link flags for the XML library]))
-if test "${enable_xml}" = ""; then
-  enable_xml="no"
-fi
 
 # ---------------------------------------------------------------------------- #
 
@@ -162,6 +157,11 @@ AC_CHECK_HEADERS([time.h])
 
 # Required functions
 AC_CHECK_FUNCS([strndup])
+
+# Code coverage
+AC_MSG_CHECKING([whether to enable code coverage (GCC only)])
+AC_MSG_RESULT([${enable_gcov}])
+AM_CONDITIONAL([DO_COVERAGE], [test "${enable_gcov}" = "yes"])
 
                     # ------------------------------------ #
 

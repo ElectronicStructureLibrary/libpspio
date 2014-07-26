@@ -85,8 +85,14 @@ pio_hidden_hdrs = \
 # Build targets
 #
 
+# Code coverage parameters
+if DO_COVERAGE
+  CFLAGS_COVERAGE = -fprofile-arcs -ftest-coverage -fno-inline
+endif
+
 # Essential build parameters
 AM_CPPFLAGS = @pio_core_incs@
+AM_CFLAGS = $(CFLAGS_COVERAGE)
 
 # Libraries
 lib_LTLIBRARIES = libpspio.la
@@ -125,8 +131,6 @@ pio_wrapped_tests = \
 
 check_PROGRAMS = $(pio_basic_tests) $(pio_xfail_tests)
 nodist_check_SCRIPTS = $(pio_wrapped_tests)
-TESTS = $(pio_basic_tests) $(pio_xfail_tests) $(pio_wrapped_tests)
-XFAIL_TESTS = $(pio_xfail_tests)
 
 test_error_SOURCES = test_error.c
 test_error_LDADD = -lpspio
@@ -173,4 +177,23 @@ test_xc_LDADD = -lpspio
 test_xc_CPPFLAGS = -I$(srcdir)/../src
 test_xc_DEPENDENCIES = libpspio.la
 
-MOSTLYCLEANFILES = test_*.tmp
+PSPIO_TESTS = $(pio_basic_tests) $(pio_xfail_tests) $(pio_wrapped_tests)
+
+define GCDEP_RECIPE
+$1.log: test/rmgcda.log
+
+if DO_COVERAGE
+TESTS = gcov/rmgcda $(PSPIO_TESTS) gcov/analyze
+$(foreach test,$(PSPIO_TESTS),$(eval $(call GCDEP_RECIPE,$(test))))
+test/gcov.log: $(foreach test,$(PSPIO_TESTS),$(test).log)
+else
+TESTS = $(PSPIO_TESTS)
+XFAIL_TESTS = $(pio_xfail_tests)
+endif
+                    # ------------------------------------ #
+
+#
+# Clean targets
+#
+
+MOSTLYCLEANFILES = *.gcda *.gcno *.gcov test_*.tmp
