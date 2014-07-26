@@ -31,12 +31,12 @@
  * Global routines                                                    *
  **********************************************************************/
 
-int pspio_xc_alloc(pspio_xc_t **xc){
+int pspio_xc_alloc(pspio_xc_t **xc) {
   assert(xc != NULL);
   assert(*xc == NULL);
 
   *xc = (pspio_xc_t *) malloc (sizeof(pspio_xc_t));
-  FULFILL_OR_RETURN(*xc != NULL, PSPIO_ENOMEM);
+  FULFILL_OR_RETURN( *xc != NULL, PSPIO_ENOMEM );
 
   (*xc)->correlation = XC_NONE;
   (*xc)->exchange = XC_NONE;
@@ -64,75 +64,76 @@ void pspio_xc_free(pspio_xc_t **xc){
  * Atomic routines                                                    *
  **********************************************************************/
 
-void pspio_xc_set_id(pspio_xc_t **xc, const int exchange, const int correlation){
+void pspio_xc_set_id(pspio_xc_t **xc, const int exchange,
+       const int correlation) {
   assert(*xc != NULL);
 
   (*xc)->exchange = exchange;
   (*xc)->correlation = correlation;
 }
 
-int pspio_xc_set_nlcc_scheme(pspio_xc_t **xc, const int nlcc_scheme){
+int pspio_xc_set_nlcc_scheme(pspio_xc_t **xc, const int nlcc_scheme) {
   assert(*xc != NULL);
 
   switch (nlcc_scheme) {
-  case PSPIO_NLCC_NONE:
-    break;
-  case PSPIO_NLCC_UNKNOWN:
-    break;
-  case PSPIO_NLCC_LOUIE:
-    break;
-  case PSPIO_NLCC_FHI:
-    break;
-  case PSPIO_NLCC_TETER1:
-    break;
-  case PSPIO_NLCC_TETER2:
-    break;
-  default:
-    return PSPIO_EVALUE;
+    case PSPIO_NLCC_NONE:
+    case PSPIO_NLCC_UNKNOWN:
+    case PSPIO_NLCC_LOUIE:
+    case PSPIO_NLCC_FHI:
+    case PSPIO_NLCC_TETER1:
+    case PSPIO_NLCC_TETER2:
+      break;
+
+    default:
+      return PSPIO_EVALUE;
   }
   (*xc)->nlcc_scheme = nlcc_scheme;
 
   return PSPIO_SUCCESS;
 }
 
-int pspio_xc_set_nlcc_density(pspio_xc_t **xc, const pspio_mesh_t *mesh, const double *cd, const double *cdp, const double *cdpp){
+int pspio_xc_set_nlcc_density(pspio_xc_t **xc, const pspio_mesh_t *mesh,
+      const double *cd, const double *cdp, const double *cdpp) {
   int ierr;
 
   assert(*xc != NULL);  
   assert(&(*xc)->nlcc_scheme != PSPIO_NLCC_NONE);
 
   ierr = pspio_meshfunc_alloc(&(*xc)->nlcc_dens, pspio_mesh_get_np(mesh));
-  if (ierr) {
+  if ( ierr != PSPIO_SUCCESS ) {
     pspio_meshfunc_free(&(*xc)->nlcc_dens);
-    HANDLE_ERROR(ierr);
+    RETURN_WITH_ERROR(ierr);
   }
 
-  SUCCEED_OR_RETURN(pspio_meshfunc_set(&(*xc)->nlcc_dens, mesh, cd, cdp, cdpp));
+  SUCCEED_OR_RETURN( pspio_meshfunc_set(&(*xc)->nlcc_dens, mesh, cd, cdp,
+    cdpp) );
 
   return PSPIO_SUCCESS;
 }
 
-void pspio_xc_get_id(const pspio_xc_t *xc, int *exchange, int *correlation){
+void pspio_xc_get_id(const pspio_xc_t *xc, int *exchange, int *correlation) {
   assert(xc != NULL);
 
   *exchange = xc->exchange;
   *correlation = xc->correlation;
 }
 
-void pspio_xc_get_nlcc_scheme(const pspio_xc_t *xc, int *nlcc_scheme){
+void pspio_xc_get_nlcc_scheme(const pspio_xc_t *xc, int *nlcc_scheme) {
   assert(xc != NULL);
 
   *nlcc_scheme = xc->nlcc_scheme;
 }
 
-void pspio_xc_get_nlcc_density(const pspio_xc_t *xc, pspio_meshfunc_t **cd_func) {
+void pspio_xc_get_nlcc_density(const pspio_xc_t *xc,
+       pspio_meshfunc_t **cd_func) {
   assert(xc != NULL);
   assert(xc->nlcc_scheme != PSPIO_NLCC_NONE);
 
   (*cd_func) = xc->nlcc_dens;
 }
 
-void pspio_xc_nlcc_density_eval(const pspio_xc_t *xc, const int np, const double *r, double *nlcc_dens) {
+void pspio_xc_nlcc_density_eval(const pspio_xc_t *xc, const int np,
+       const double *r, double *core_dens) {
   assert(xc != NULL);
   assert(r != NULL);
   assert(nlcc_dens != NULL);
@@ -146,4 +147,3 @@ int pspio_xc_has_nlcc(const pspio_xc_t *xc) {
 
   return (xc->nlcc_scheme != PSPIO_NLCC_NONE);
 }
-

@@ -83,8 +83,8 @@ int pspio_pspdata_init(pspio_pspdata_t **pspdata) {
 
 
 int pspio_pspdata_read(pspio_pspdata_t **pspdata, const int *file_format, 
-      const char *file_name){
-  int eid, fmt, psp_fmt;
+      const char *file_name) {
+  int ierr, fmt, psp_fmt;
   FILE * fp;
 
   assert(file_format != NULL);
@@ -98,7 +98,7 @@ int pspio_pspdata_read(pspio_pspdata_t **pspdata, const int *file_format,
   FULFILL_OR_RETURN(fp != NULL, PSPIO_ENOFILE);
 
   // Read from file
-  eid = PSPIO_ERROR;
+  ierr = PSPIO_ERROR;
   for (fmt=0; fmt<PSPIO_FMT_NFORMATS; fmt++) {
     if ( (*file_format != PSPIO_FMT_UNKNOWN) && (fmt != *file_format) ) {
       continue;
@@ -114,47 +114,47 @@ int pspio_pspdata_read(pspio_pspdata_t **pspdata, const int *file_format,
 
     switch (fmt) {
     case PSPIO_FMT_ABINIT_6:
-      eid = pspio_abinit_read(fp, pspdata, fmt);
+      ierr = pspio_abinit_read(fp, pspdata, fmt);
       psp_fmt = PSPIO_FMT_ABINIT_6;
       break;
     case PSPIO_FMT_FHI98PP:
-      eid = pspio_fhi_read(fp, pspdata);
+      ierr = pspio_fhi_read(fp, pspdata);
       psp_fmt = PSPIO_FMT_FHI98PP;
       break;
     case PSPIO_FMT_UPF:
-      eid = pspio_upf_read(fp, pspdata);
+      ierr = pspio_upf_read(fp, pspdata);
       psp_fmt = PSPIO_FMT_UPF;
       break;
 
     default:
-      eid = PSPIO_ENOSUPPORT;
+      ierr = PSPIO_ENOSUPPORT;
     }
 
-    if (eid != PSPIO_SUCCESS) pspio_pspdata_reset(pspdata);
-
-    if ( (eid == PSPIO_SUCCESS) || (*file_format != PSPIO_FMT_UNKNOWN) ) break;
+    if (ierr != PSPIO_SUCCESS) pspio_pspdata_reset(pspdata);
+    if ( (ierr == PSPIO_SUCCESS) || (*file_format != PSPIO_FMT_UNKNOWN) ) break;
   }
 
   // Store the format
   (*pspdata)->format = psp_fmt;
 
   // Close file
-  TRIGGER_ERROR(fclose(fp) == 0, PSPIO_EIO);
+  FULFILL_OR_RETURN( fclose(fp) == 0, PSPIO_EIO );
 
-  // Make sure eid is not silently ignored
-  HANDLE_ERROR(eid);
+  // Make sure ierr is not silently ignored
+  RETURN_WITH_ERROR(ierr);
 
   // Create states lookup table
-  SUCCEED_OR_RETURN(pspio_states_lookup_table((*pspdata)->n_states, (*pspdata)->states, &(*pspdata)->qn_to_istate));
+  SUCCEED_OR_RETURN( pspio_states_lookup_table((*pspdata)->n_states,
+    (*pspdata)->states, &(*pspdata)->qn_to_istate) );
 
   return PSPIO_SUCCESS;
 }
 
 
 int pspio_pspdata_write(const pspio_pspdata_t *pspdata, const int file_format, 
-      const char *file_name){
+      const char *file_name) {
   FILE * fp;
-  int eid;
+  int ierr;
 
   assert(pspdata != NULL);
   
@@ -166,29 +166,29 @@ int pspio_pspdata_write(const pspio_pspdata_t *pspdata, const int file_format,
   switch(file_format) {
     case PSPIO_FMT_ABINIT_5:
     case PSPIO_FMT_ABINIT_6:
-      eid = pspio_abinit_write(fp, pspdata, file_format);
+      ierr = pspio_abinit_write(fp, pspdata, file_format);
       break;
     case PSPIO_FMT_FHI98PP:
-      eid = pspio_fhi_write(fp, pspdata);
+      ierr = pspio_fhi_write(fp, pspdata);
       break;
     case PSPIO_FMT_UPF:
-      eid = pspio_upf_write(fp, pspdata);
+      ierr = pspio_upf_write(fp, pspdata);
       break;
     default:
-      eid = PSPIO_EFILE_FORMAT;
+      ierr = PSPIO_EFILE_FORMAT;
   }
   
-  // Close file and check for eid being non 0
-  TRIGGER_ERROR(fclose(fp) == 0, PSPIO_EIO);
+  // Close file and check for ierr being non 0
+  FULFILL_OR_RETURN( fclose(fp) == 0, PSPIO_EIO );
 
-  // Make sure eid is not silently ignored
-  HANDLE_ERROR(eid);
+  // Make sure ierr is not silently ignored
+  RETURN_WITH_ERROR(ierr);
 
   return PSPIO_SUCCESS;
 }
 
 
-void pspio_pspdata_reset(pspio_pspdata_t **pspdata){
+void pspio_pspdata_reset(pspio_pspdata_t **pspdata) {
   int i;
 
   assert(*pspdata != NULL);
@@ -257,11 +257,10 @@ void pspio_pspdata_reset(pspio_pspdata_t **pspdata){
   }
 }
 
-void pspio_pspdata_free(pspio_pspdata_t **pspdata){
-
+void pspio_pspdata_free(pspio_pspdata_t **pspdata) {
   if (*pspdata != NULL) {
     pspio_pspdata_reset(pspdata);
     free(*pspdata);
+    *pspdata = NULL;
   }
-
 }

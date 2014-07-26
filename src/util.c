@@ -41,7 +41,7 @@ const char *symbols[] = {"H  ","He ","Li ","Be ","B  ","C  ","N  ","O  ","F  ","
 			"Uuu","Uub"};
 
 
-int symbol_to_z(const char *symbol, double *z){
+int symbol_to_z(const char *symbol, double *z) {
   int i;
 
   assert(symbol != NULL);
@@ -57,8 +57,7 @@ int symbol_to_z(const char *symbol, double *z){
 }
 
 
-int z_to_symbol(const double z, char *symbol){
-
+int z_to_symbol(const double z, char *symbol) {
   FULFILL_OR_RETURN(z < 113.0 && z > 0.0, PSPIO_EVALUE);
 
   strncpy(symbol, symbols[(int)z-1], 3);
@@ -67,11 +66,12 @@ int z_to_symbol(const double z, char *symbol){
 }
   
 
-double linear_extrapolation(const double x1, const double x2, const double f1, const double f2, const double x) {
+double linear_extrapolation(const double x1, const double x2,
+         const double f1, const double f2, const double x) {
   double mm, f;
 
-  mm = (f2 - f1)/(x2 - x1);
-  f = f1 + mm*(x - x1);
+  mm = (f2 - f1) / (x2 - x1);
+  f = f1 + mm * (x - x1);
 
   return f;
 }
