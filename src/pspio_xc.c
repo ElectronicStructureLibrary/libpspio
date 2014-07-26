@@ -133,7 +133,7 @@ void pspio_xc_get_nlcc_density(const pspio_xc_t *xc,
 }
 
 void pspio_xc_nlcc_density_eval(const pspio_xc_t *xc, const int np,
-       const double *r, double *core_dens) {
+       const double *r, double *nlcc_dens) {
   assert(xc != NULL);
   assert(r != NULL);
   assert(nlcc_dens != NULL);

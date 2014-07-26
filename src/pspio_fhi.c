@@ -153,11 +153,7 @@ int pspio_fhi_read(FILE *fp, pspio_pspdata_t **pspdata) {
     }
 
     // Store the non-linear core corrections in the pspdata structure
-<<<<<<< TREE
-    SKIP_ON_ERROR(pspio_xc_set_nlcc_density(&(*pspdata)->xc,
-=======
-    SKIP_FUNC_ON_ERROR(pspio_xc_set_core_density(&(*pspdata)->xc,
->>>>>>> MERGE-SOURCE
+    SKIP_FUNC_ON_ERROR(pspio_xc_set_nlcc_density(&(*pspdata)->xc,
       (*pspdata)->mesh, cd, cdp, cdpp));
 
     // Free temporary variables
@@ -226,13 +222,8 @@ int pspio_fhi_write(FILE *fp, const pspio_pspdata_t *pspdata){
   }
 
   // Write non-linear core corrections
-<<<<<<< TREE
   if (pspio_xc_has_nlcc(pspdata->xc)) {
     pspio_meshfunc_t *nlcc_dens = NULL;
-=======
-  if ( pspio_xc_has_nlcc(pspdata->xc) ) {
-    pspio_meshfunc_t *core_dens = NULL;
->>>>>>> MERGE-SOURCE
     double cd, cdp, cdpp;
 
     pspio_xc_get_nlcc_density(pspdata->xc, &nlcc_dens);
