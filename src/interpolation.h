@@ -25,11 +25,17 @@
 #ifndef INTERPOLATION_H
 #define INTERPOLATION_H
 
-#include <gsl/gsl_spline.h>
-
 #include "pspio_common.h"
 #include "pspio_error.h"
 #include "pspio_mesh.h"
+
+#if defined HAVE_CONFIG_H
+#include "config.h"
+#endif
+
+#ifdef HAVE_GSL
+#include <gsl/gsl_spline.h>
+#endif
 
 
 /**********************************************************************
@@ -42,9 +48,11 @@
 typedef struct{
   int method; /**< Interpolation method */
 
+#ifdef HAVE_GSL
   // Objects to the used with GSL interpolation
   gsl_spline *gsl_spl;       /**< gsl spline structure */
   gsl_interp_accel *gsl_acc; /**< gsl accelerator for interpolation lookups */
+#endif
 
   // Objects to be used with ...
 

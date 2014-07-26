@@ -21,6 +21,10 @@
 
 #include "interpolation.h"
 
+#if defined HAVE_CONFIG_H
+#include "config.h"
+#endif
+
 
 /**********************************************************************
  * Global routines                                                    *
@@ -35,15 +39,19 @@ int interpolation_alloc(interpolation_t **interp, const int method, const int np
   FULFILL_OR_EXIT(*interp != NULL, PSPIO_ENOMEM);
 
   //Make sure all pointers are initialized to NULL, as only some of them will be used
+#ifdef HAVE_GSL
   (*interp)->gsl_spl = NULL;
   (*interp)->gsl_acc = NULL;
+#endif
 
   (*interp)->method = method;
   switch (method) {
+#ifdef HAVE_GSL
   case PSPIO_INTERP_GSL_CSPLINE:
     (*interp)->gsl_spl = gsl_spline_alloc(gsl_interp_cspline, np);
     (*interp)->gsl_acc = gsl_interp_accel_alloc();
     break;
+#endif
   case PSPIO_INTERP_JB_CSPLINE:
     //Not yet implemented
   default:
@@ -55,20 +63,21 @@ int interpolation_alloc(interpolation_t **interp, const int method, const int np
 
 
 int interpolation_set(interpolation_t **interp, const pspio_mesh_t *mesh, const double *f) {
-  int ierr;
-
   assert(interp != NULL);
   assert(*interp != NULL);
   assert(mesh != NULL);
   assert(f != NULL);
 
   switch ((*interp)->method) {
+#ifdef HAVE_GSL
   case PSPIO_INTERP_GSL_CSPLINE:
+    int ierr;
     ierr = gsl_spline_init((*interp)->gsl_spl, mesh->r, f, mesh->np);
     if ( ierr ) {
       RETURN_WITH_ERROR( PSPIO_EGSL );
     }
     break;
+#endif
   case PSPIO_INTERP_JB_CSPLINE:
     //Not yet implemented
   default:
@@ -84,10 +93,12 @@ void interpolation_free(interpolation_t **interp) {
   if (*interp != NULL) {
 
     switch ((*interp)->method) {
+#ifdef HAVE_GSL
     case PSPIO_INTERP_GSL_CSPLINE:
       gsl_spline_free((*interp)->gsl_spl);
       gsl_interp_accel_free((*interp)->gsl_acc);
       break;
+#endif
     }
 
     free(*interp);
@@ -105,9 +116,11 @@ void interpolation_eval(const interpolation_t *interp, const double r, double *f
   assert(f != NULL);
 
   switch (interp->method) {
+#ifdef HAVE_GSL
   case PSPIO_INTERP_GSL_CSPLINE:
     *f = gsl_spline_eval(interp->gsl_spl, r, interp->gsl_acc);
     break;
+#endif
   }
 
 }
@@ -118,9 +131,11 @@ void interpolation_eval_deriv(const interpolation_t *interp, const double r, dou
   assert(fp != NULL);
 
   switch (interp->method) {
+#ifdef HAVE_GSL
   case PSPIO_INTERP_GSL_CSPLINE:
     *fp = gsl_spline_eval_deriv(interp->gsl_spl, r, interp->gsl_acc);
     break;
+#endif
   }
 
 }
@@ -131,9 +146,11 @@ void interpolation_eval_deriv2(const interpolation_t *interp, const double r, do
   assert(fpp != NULL);
 
   switch (interp->method) {
+#ifdef HAVE_GSL
   case PSPIO_INTERP_GSL_CSPLINE:
     *fpp = gsl_spline_eval_deriv2(interp->gsl_spl, r, interp->gsl_acc);
     break;
+#endif
   }
 
 }
