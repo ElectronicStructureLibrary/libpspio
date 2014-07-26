@@ -36,9 +36,8 @@
 #include "config.h"
 #endif
 
-/* Prototypes for the replacement functions */
+/* Prototypes of the replacement functions for MacOSX */
 static char *my_strndup (char const *s, size_t n);
-static size_t my_strnlen (const char *string, size_t maxlen);
 
 
 int abinit_read_header(FILE *fp, const int format,
@@ -53,7 +52,7 @@ int abinit_read_header(FILE *fp, const int format,
   format_read = PSPIO_FMT_UNKNOWN;
 
   // Line 1: read title
-  FULFILL_OR_RETURN( fgets(line, PSPIO_STRLEN_LINE, fp) != NULL, PSPIO_EIO);
+  FULFILL_OR_RETURN( fgets(line, PSPIO_STRLEN_LINE, fp) != NULL, PSPIO_EIO );
   s = strlen(line);
   (*pspdata)->info = (char *) malloc ((s+1)*sizeof(char));
   FULFILL_OR_EXIT((*pspdata)->info != NULL, PSPIO_ENOMEM);
@@ -62,18 +61,18 @@ int abinit_read_header(FILE *fp, const int format,
 
   // Line 2: read atomic number, Z valence
   // Note: ignoring psp date
-  FULFILL_OR_RETURN( fgets(line, PSPIO_STRLEN_LINE, fp) != NULL, PSPIO_EIO);
-  FULFILL_OR_RETURN( sscanf(line, "%lf %lf", &zatom, &zval) == 2, PSPIO_EFILE_CORRUPT);
+  FULFILL_OR_RETURN( fgets(line, PSPIO_STRLEN_LINE, fp) != NULL, PSPIO_EIO );
+  FULFILL_OR_RETURN( sscanf(line, "%lf %lf", &zatom, &zval) == 2, PSPIO_EFILE_CORRUPT );
   (*pspdata)->z = zatom;
   (*pspdata)->zvalence = zval;
   (*pspdata)->symbol = (char *) malloc (3*sizeof(char));
-  FULFILL_OR_EXIT((*pspdata)->symbol != NULL, PSPIO_ENOMEM);
-  SUCCEED_OR_RETURN(z_to_symbol((*pspdata)->z, (*pspdata)->symbol));
+  FULFILL_OR_EXIT( (*pspdata)->symbol != NULL, PSPIO_ENOMEM );
+  SUCCEED_OR_RETURN( z_to_symbol((*pspdata)->z, (*pspdata)->symbol) );
 
   // Line 3: read pspcod, pspxc, lmax, lloc, mmax, r2well
-  FULFILL_OR_RETURN( fgets(line, PSPIO_STRLEN_LINE, fp) != NULL, PSPIO_EIO);
+  FULFILL_OR_RETURN( fgets(line, PSPIO_STRLEN_LINE, fp) != NULL, PSPIO_EIO );
   FULFILL_OR_RETURN( sscanf(line, "%d %d %d %d %d %lf",
-    &pspcod, &pspxc, &lmax, &lloc, &mmax, &r2well) == 6, PSPIO_EFILE_CORRUPT);
+    &pspcod, &pspxc, &lmax, &lloc, &mmax, &r2well) == 6, PSPIO_EFILE_CORRUPT );
   (*pspdata)->l_max = lmax;
   (*pspdata)->l_local = lloc;
 
@@ -82,22 +81,22 @@ int abinit_read_header(FILE *fp, const int format,
     exchange = -pspxc % 1000;
     correlation = -pspxc / 1000;
   } else {
-    SUCCEED_OR_RETURN(abinit_to_libxc(pspxc, &exchange, &correlation));
+    SUCCEED_OR_RETURN( abinit_to_libxc(pspxc, &exchange, &correlation) );
   }
-  SUCCEED_OR_RETURN(pspio_xc_alloc(&(*pspdata)->xc));
+  SUCCEED_OR_RETURN( pspio_xc_alloc(&(*pspdata)->xc) );
   pspio_xc_set_id(&(*pspdata)->xc, exchange, correlation);
 
 
   // Line 4: read rchrg, fchrg, qchrg if NLCC
   // Note: tolerance copied from Abinit
   // FIXME: store rchrg, fchrg, qchrg
-  FULFILL_OR_RETURN( fgets(line, PSPIO_STRLEN_LINE, fp) != NULL, PSPIO_EIO);
+  FULFILL_OR_RETURN( fgets(line, PSPIO_STRLEN_LINE, fp) != NULL, PSPIO_EIO );
   line4 = my_strndup(line, 3);
   if ( strcmp("4--", line4) != 0 ) {
-    DEFER_ERROR( sscanf(line, "%lf %lf %lf",
+    DEFER_TEST_ERROR( sscanf(line, "%lf %lf %lf",
       &rchrg, &fchrg, &qchrg) == 3, PSPIO_EFILE_CORRUPT );
     if ( abs(fchrg) >= 1.0e-14 ) {
-      pspio_xc_set_nlcc_scheme(&(*pspdata)->xc, PSPIO_NLCC_FHI);
+      pspio_xc_set_nlcc_scheme( &(*pspdata)->xc, PSPIO_NLCC_FHI );
     }
   }
   free(line4);
@@ -149,7 +148,7 @@ int abinit_read_header(FILE *fp, const int format,
     default:
       format_read = PSPIO_FMT_UNKNOWN;
   }
-  FULFILL_OR_RETURN(format_read == format, PSPIO_EFILE_FORMAT)
+  FULFILL_OR_RETURN( format_read == format, PSPIO_EFILE_FORMAT );
 
   return PSPIO_SUCCESS;
 }
@@ -191,8 +190,8 @@ int abinit_write_header(FILE *fp, const int format,
     case 4:
     case 5:
     case 6:
-      FULFILL_OR_RETURN( fprintf(fp,
-        "   %d   %d   %d   %d   %d   %8.3lf   pspcod, pspxc, lmax, lloc, mmax, r2well\n",
+      FULFILL_OR_RETURN(
+        fprintf(fp, "   %d   %d   %d   %d   %d   %8.3lf   pspcod, pspxc, lmax, lloc, mmax, r2well\n",
         format, pspxc, pspdata->l_max, pspdata->l_local,
         pspdata->mesh->np, 0.0) > 0, PSPIO_EIO );
 

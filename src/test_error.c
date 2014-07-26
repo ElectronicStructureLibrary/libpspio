@@ -114,6 +114,46 @@ int main(void) {
   CHECK_STAT_LEN(eid, PSPIO_SUCCESS, pspio_error_len(), 0);
   DEBUG_PRINT("\n");
 
+  /* Check whether pspio_error_get_last() works */
+  DEBUG_PRINT("test_error: checking pspio_error_get_last() on triple error\n");
+  pspio_error_add(PSPIO_EGSL, "test_4_1.c", 411, "dummy41");
+  eid = pspio_error_get_last(NULL);
+  DEBUG_PRINT("test_error: after pspio_error_add, status = %d, length = %d\n",
+    eid, pspio_error_len());
+  pspio_error_add(PSPIO_ENOFILE, "test_4_2.c", 422, "dummy42");
+  eid = pspio_error_get_last(NULL);
+  DEBUG_PRINT("test_error: after pspio_error_add, status = %d, length = %d\n",
+    eid, pspio_error_len());
+  pspio_error_add(PSPIO_ERROR, "test_4_3.c", 433, "dummy43");
+  eid = pspio_error_get_last(NULL);
+  DEBUG_PRINT("test_error: after pspio_error_add, status = %d, length = %d\n",
+    eid, pspio_error_len());
+  CHECK_STAT_LEN(eid, PSPIO_ERROR, pspio_error_len(), 3);
+  DEBUG_PRINT("test_error: pspio_error_get_last(dummy41) == EVALUE ?\n");
+  eid = pspio_error_get_last("dummy41");
+  DEBUG_PRINT("test_error: ---> %s\n", ( eid == PSPIO_EGSL ) ? "yes" : "no");
+  CHECK_STAT(eid, PSPIO_EGSL);
+  DEBUG_PRINT("test_error: pspio_error_get_last(dummy42) == ENOFILE ?\n");
+  eid = pspio_error_get_last("dummy42");
+  DEBUG_PRINT("test_error: ---> %s\n", ( eid == PSPIO_EGSL ) ? "yes" : "no");
+  CHECK_STAT(eid, PSPIO_ENOFILE);
+  DEBUG_PRINT("test_error: pspio_error_get_last(dummy43) == ERROR ?\n");
+  eid = pspio_error_get_last("dummy43");
+  DEBUG_PRINT("test_error: ---> %s\n", ( eid == PSPIO_EGSL ) ? "yes" : "no");
+  CHECK_STAT(eid, PSPIO_ERROR);
+  DEBUG_PRINT("test_error: pspio_error_get_last(dummy44) == SUCCESS ?\n");
+  eid = pspio_error_get_last("dummy44");
+  DEBUG_PRINT("test_error: ---> %s\n", ( eid == PSPIO_EGSL ) ? "yes" : "no");
+  CHECK_STAT(eid, PSPIO_SUCCESS);
+  DEBUG_PRINT("test_error: BEGIN FLUSH\n");
+  pspio_error_flush(stdout);
+  eid = pspio_error_get_last(NULL);
+  DEBUG_PRINT("test_error: END FLUSH\n");
+  DEBUG_PRINT("test_error: after pspio_error_flush, status = %d, length = %d\n",
+    eid, pspio_error_len());
+  CHECK_STAT_LEN(eid, PSPIO_SUCCESS, pspio_error_len(), 0);
+  DEBUG_PRINT("\n");
+
   /* Destroy error-handling structures */
   DEBUG_PRINT("test_error: destroying error-handling structures\n");
   pspio_error_free();
