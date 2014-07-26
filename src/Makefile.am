@@ -31,6 +31,7 @@
 pio_core_srcs = \
   abinit_util.c \
   abinit_xc.c \
+  interpolation.c \
   pspio_abinit.c \
   pspio_error.c \
   pspio_fhi.c \
@@ -74,6 +75,7 @@ pio_core_hdrs = \
 # Internal C headers - keep this in alphabetical order
 pio_hidden_hdrs = \
   abinit.h \
+  interpolation.h \
   string_f.h \
   test_common.h \
   upf.h \
