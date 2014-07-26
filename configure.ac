@@ -35,8 +35,8 @@
 
 # Initialize Autoconf
 AC_PREREQ(2.62)
-AC_INIT([Libpspio],[0.0.0],
-  [https://bugs.launchpad.net/libpspio/],[libpspio])
+AC_INIT([Libpspio], [0.0.0],
+  [https://bugs.launchpad.net/libpspio/], [libpspio])
 AC_REVISION([Autotools support for Libpspio])
 AC_CONFIG_AUX_DIR([config/gnu])
 AC_CONFIG_MACRO_DIR([config/m4])
@@ -56,31 +56,52 @@ AM_CONFIG_HEADER([config.h])
 # Debugging
 # FIXME: disable debug by default when releasing
 AC_ARG_ENABLE([debug],
-  AC_HELP_STRING([--enable-debug],[Enable debug mode (default: enabled)]))
+  AC_HELP_STRING([--enable-debug],
+    [Enable debug mode (default: enabled)]))
 if test "${enable_debug}" = ""; then
   enable_debug="yes"
 fi
 
 # Fortran - Optional support
 AC_ARG_ENABLE([fortran],
-  AC_HELP_STRING([--enable-fortran],[Enable Fortran bindings (default: disabled)]))
+  AC_HELP_STRING([--enable-fortran],
+    [Enable Fortran bindings (default: disabled)]))
 if test "${enable_fortran}" = ""; then
   enable_fortran="no"
 fi
 
-# GSL - Mandatory support
+# GCOV - Optional support
+AC_ARG_ENABLE([gcov],
+  AC_HELP_STRING([--enable-gcov],
+    [Enable code coverage (default: disabled)]))
+if test "${enable_gcov}" = ""; then
+  enable_gcov="no"
+fi
+
+# GSL - Optional support (because of licensing issues)
+AC_ARG_ENABLE([gsl],
+  AC_HELP_STRING([--enable-gsl],
+    [Enable support for GSL (default: enabled)]))
 AC_ARG_WITH([gsl-incs],
-  AC_HELP_STRING([--with-gsl-incs],[Includes for the GSL library]))
+  AC_HELP_STRING([--with-gsl-incs],
+    [Includes for the GSL library]))
 AC_ARG_WITH([gsl-libs],
-  AC_HELP_STRING([--with-gsl-libs],[Link flags for the GSL library]))
+  AC_HELP_STRING([--with-gsl-libs],
+    [Link flags for the GSL library]))
+if test "${enable_gsl}" = ""; then
+  enable_gsl="yes"
+fi
 
 # XML - Optional support
 AC_ARG_ENABLE([xml],
-  AC_HELP_STRING([--enable-xml],[Enable support for XML (default: disabled)]))
+  AC_HELP_STRING([--enable-xml],
+    [Enable support for XML (default: disabled)]))
 AC_ARG_WITH([xml-incs],
-  AC_HELP_STRING([--with-xml-incs],[Includes for the XML library]))
+  AC_HELP_STRING([--with-xml-incs],
+    [Includes for the XML library]))
 AC_ARG_WITH([xml-libs],
-  AC_HELP_STRING([--with-xml-libs],[Link flags for the XML library]))
+  AC_HELP_STRING([--with-xml-libs],
+    [Link flags for the XML library]))
 if test "${enable_xml}" = ""; then
   enable_xml="no"
 fi
@@ -116,7 +137,7 @@ AC_SUBST(pio_core_incs)
 #
 
 # Look for useful utilities
-AC_CHECK_PROGS([PKG_CONFIG],[pkg-config])
+AC_CHECK_PROGS([PKG_CONFIG], [pkg-config])
 
                     # ------------------------------------ #
 
@@ -149,7 +170,7 @@ if test "${enable_fortran}" = "yes"; then
   if test "${FC}" != "" -a ! -x "${FC}"; then
     pio_fc_probe=`echo "${FC}" | sed -e 's/ .*//'`
     if test ! -x "${pio_fc_probe}"; then
-      AC_PATH_PROG([pio_fc_path],[${pio_fc_probe}])
+      AC_PATH_PROG([pio_fc_path], [${pio_fc_probe}])
       if test "${pio_fc_path}" = ""; then
         AC_MSG_ERROR([could not run Fortran compiler "${FC}"])
       fi
@@ -163,7 +184,7 @@ if test "${enable_fortran}" = "yes"; then
 
   # Enforce strict file extensions
   pio_fc_src_ok="unknown"
-  AC_FC_SRCEXT([F90],[pio_fc_src_ok="yes"],[pio_fc_src_ok="no"])
+  AC_FC_SRCEXT([F90], [pio_fc_src_ok="yes"], [pio_fc_src_ok="no"])
   if test "${pio_fc_src_ok}" != "yes"; then
     AC_MSG_WARN([Fortran file extension could not be changed])
     AC_MSG_WARN([Fortran tests may fail])
@@ -210,13 +231,13 @@ AC_SUBST(LTOBJEXT)
 #
 
 if test "${enable_debug}" = "yes"; then
-  AC_DEFINE([DEBUG_MODE],1,
+  AC_DEFINE([DEBUG_MODE], 1,
     [Define to 1 if you want to enable debug mode])
-  AC_DEFINE([DEBUG_LEVEL],1,
-    [Set to 1 if you want to enable debug mode])
+  AC_DEFINE([DEBUG_LEVEL], 1,
+    [Set to 1 or above if you want to enable debug messages])
 else
-  AC_DEFINE([DEBUG_LEVEL],0,
-    [Set to 1 if you want to enable debug mode])
+  AC_DEFINE([DEBUG_LEVEL], 0,
+    [Set to 1 or above if you want to enable debug messages])
 fi
 
 # ---------------------------------------------------------------------------- #
@@ -225,24 +246,28 @@ fi
 # Check that all required features are there
 #
 
-# GNU Scientific Library (required)
-PIO_CHECK_GSL
-if test "${pio_gsl_ok}" = "yes"; then
-  CPPFLAGS="${CPPFLAGS} ${pio_gsl_incs}"
-  LIBS="${pio_gsl_libs} ${LIBS}"
-  if test "${enable_fortran}" = "yes"; then
-    FCFLAGS="${FCFLAGS} ${pio_gsl_incs}"
+# GNU Scientific Library (optional)
+if test "${enable_gsl}" = "yes"; then
+  PIO_CHECK_GSL
+  if test "${pio_gsl_ok}" = "yes"; then
+    AC_DEFINE([HAVE_GSL], 1,
+      [Define to 1 if you have GSL support.])
+    CPPFLAGS="${CPPFLAGS} ${pio_gsl_incs}"
+    LIBS="${pio_gsl_libs} ${LIBS}"
+    if test "${enable_fortran}" = "yes"; then
+      FCFLAGS="${FCFLAGS} ${pio_gsl_incs}"
+    fi
+  else
+    AC_ERROR([GSL support does not work])
   fi
-else
-  AC_ERROR([GSL support does not work])
 fi
 
 # XML (optional)
 if test "${enable_xml}" = "yes"; then
   PIO_CHECK_XML
   if test "${pio_xml_ok}" = "yes"; then
-    AC_DEFINE([HAVE_XML],1,
-      [Set to 1 if you have XML support.])
+    AC_DEFINE([HAVE_XML], 1,
+      [Define to 1 if you have XML support.])
     CPPFLAGS="${CPPFLAGS} ${pio_xml_incs}"
     LIBS="${pio_xml_libs} ${LIBS}"
   else
@@ -267,6 +292,7 @@ rm -f src/fortran/test_fortran_output.tmp
 #
 
 AC_MSG_NOTICE([Fortran  : ${enable_fortran}])
+AC_MSG_NOTICE([GSL      : ${enable_gsl}])
 AC_MSG_NOTICE([XML      : ${enable_xml}])
 AC_MSG_NOTICE([])
 AC_MSG_NOTICE([CPP      = ${CPP}])
@@ -280,6 +306,6 @@ fi
 AC_MSG_NOTICE([LDFLAGS  = ${LDFLAGS}])
 AC_MSG_NOTICE([LIBS     = ${LIBS}])
 
-AC_CONFIG_COMMANDS([script-perms],[chmod u+x src/test_io_multiple.sh])
+AC_CONFIG_COMMANDS([script-perms], [chmod u+x src/test_io_multiple.sh])
 
 AC_OUTPUT([Makefile src/Makefile src/fortran/Makefile src/test_io_multiple.sh])
