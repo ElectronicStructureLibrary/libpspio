@@ -15,7 +15,6 @@
  along with this program; if not, write to the Free Software
  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
- $Id$
 */
 
 
@@ -29,125 +28,127 @@
 #include "config.h"
 #endif
 
-
 /**
- * Note: deduced from the abinit web site
- *       http://www.abinit.org/documentation/helpfiles/for-v6.8/input_variables/varbas.html#ixc
+ * Convert an Abinit exchange-correlation index into LibXC identifiers
+ * Negative values are combined from 2 libxc codes following Abinit
+ * conventions:
+ *   pspxc = -(exchange * 1000 + correlation)
+ * For positive values of pspxc, we need to make an explicit conversion.
+ * @param[in] pspxc: the Abinit XC index
+ * @param[out] exchange: LibXC identifier for exchange
+ * @param[out] correlation: LibXC identifier for correlation
+ *
+ * \note
+ * pspxc = 13 is a bit problematic because correlation in LB94 is
+ * undetermined and this is up to the codes to check the physics.
+ * Here we use the same correlation as in Abinit, i.e. PW91.
  */
-int abinit_to_libxc(const int pspxc, int *exchange, int *correlation){
-    int xccode[2];
+int abinit_to_libxc(const int pspxc, int *exchange, int *correlation) {
+  if ( pspxc < 0 ) {
 
-  // negative values are combined from 2 libxc codes
-  if (pspxc < 0){
-
-    xccode[1] = abs(pspxc) % 1000;
-    xccode[0] = (int) ((abs(pspxc) - xccode[0]) / 1000);
-
-    /// for the moment, presume exchange is first in abinit symbol
-    *exchange = xccode[0];
-    *correlation = xccode[1];
+    *correlation = abs(pspxc) % 1000;
+    *exchange = (int) ((abs(pspxc) - *correlation) / 1000);
 
   } else {
 
-    // positive value of pspxc: we need to convert
-    switch(pspxc){
-    case 0:
-      *exchange = XC_NONE;
-      *correlation = XC_NONE;
-      break;
-    case 1:
-      *exchange = XC_LDA_XC_TETER93;
-      *correlation = XC_LDA_XC_TETER93;
-      break;
-    case 2:
-      *exchange = XC_LDA_X;
-      *correlation = XC_LDA_C_PZ_MOD;
-      break;
-    case 4:
-      *exchange = XC_LDA_X;
-      *correlation = XC_LDA_C_WIGNER;
-      break;
-    case 5:
-      *exchange = XC_LDA_X;
-      *correlation = XC_LDA_C_HL;
-      break;
-    case 6:
-      *exchange = XC_LDA_X;
-      *correlation = XC_LDA_C_XALPHA;
-      break;
-    case 7:
-      *exchange = XC_LDA_X;
-      *correlation = XC_LDA_C_PW;
-      break;
-    case 8:
-      *exchange = XC_LDA_X;
-      *correlation = XC_NONE;
-      break;
-    case 9:
-      *exchange = XC_LDA_X;
-      *correlation = XC_LDA_C_PW_RPA;
-      break;
-    case 11:
-      *exchange = XC_GGA_X_PBE;
-      *correlation = XC_GGA_C_PBE;
-      break;
-    case 12:
-      *exchange = XC_GGA_X_PBE;
-      *correlation = XC_NONE;
-      break;
-    case 13:
-      *exchange = XC_GGA_X_LB;
-      *correlation = XC_GGA_C_PW91; // this is probably incorrect - which correlation do VL Baerends use?
-      break;
-    case 14:
-      *exchange = XC_GGA_X_PBE_R;
-      *correlation = XC_GGA_C_PBE;
-      break;
-    case 15:
-      *exchange = XC_GGA_X_RPBE;
-      *correlation = XC_GGA_C_PBE; // is this correct? correlation for RPBE?
-      break;
-    case 16:
-      *exchange = XC_GGA_XC_HCTH_93;
-      *correlation = XC_GGA_XC_HCTH_93;
-      break;
-    case 17:
-      *exchange = XC_GGA_XC_HCTH_120;
-      *correlation = XC_GGA_XC_HCTH_120;
-      break;
-    case 23:
-      *exchange = XC_GGA_X_WC;
-      *correlation = XC_GGA_C_PBE;
-      break;
-    case 24:
-      *exchange = XC_GGA_X_C09X;
-      *correlation = XC_NONE;
-      break;
-    case 26:
-      *exchange = XC_GGA_XC_HCTH_147;
-      *correlation = XC_GGA_XC_HCTH_147;
-      break;
-    case 27:
-      *exchange = XC_GGA_XC_HCTH_407;
-      *correlation = XC_GGA_XC_HCTH_407;
-      break;
+    switch(pspxc) {
+      case 0:
+        *exchange = XC_NONE;
+        *correlation = XC_NONE;
+        break;
+      case 1:
+        *exchange = XC_LDA_XC_TETER93;
+        *correlation = XC_LDA_XC_TETER93;
+        break;
+      case 2:
+        *exchange = XC_LDA_X;
+        *correlation = XC_LDA_C_PZ_MOD;
+        break;
+      case 4:
+        *exchange = XC_LDA_X;
+        *correlation = XC_LDA_C_WIGNER;
+        break;
+      case 5:
+        *exchange = XC_LDA_X;
+        *correlation = XC_LDA_C_HL;
+        break;
+      case 6:
+        *exchange = XC_LDA_X;
+        *correlation = XC_LDA_C_XALPHA;
+        break;
+      case 7:
+        *exchange = XC_LDA_X;
+        *correlation = XC_LDA_C_PW;
+        break;
+      case 8:
+        *exchange = XC_LDA_X;
+        *correlation = XC_NONE;
+        break;
+      case 9:
+        *exchange = XC_LDA_X;
+        *correlation = XC_LDA_C_PW_RPA;
+        break;
+      case 11:
+        *exchange = XC_GGA_X_PBE;
+        *correlation = XC_GGA_C_PBE;
+        break;
+      case 12:
+        *exchange = XC_GGA_X_PBE;
+        *correlation = XC_NONE;
+        break;
+      case 13:
+        *exchange = XC_GGA_X_LB;
+        *correlation = XC_GGA_C_PW91;
+        break;
+      case 14:
+        *exchange = XC_GGA_X_PBE_R;
+        *correlation = XC_GGA_C_PBE;
+        break;
+      case 15:
+        *exchange = XC_GGA_X_RPBE;
+        *correlation = XC_GGA_C_PBE;
+        break;
+      case 16:
+        *exchange = XC_GGA_XC_HCTH_93;
+        *correlation = XC_GGA_XC_HCTH_93;
+        break;
+      case 17:
+        *exchange = XC_GGA_XC_HCTH_120;
+        *correlation = XC_GGA_XC_HCTH_120;
+        break;
+      case 23:
+        *exchange = XC_GGA_X_WC;
+        *correlation = XC_GGA_C_PBE;
+        break;
+      case 24:
+        *exchange = XC_GGA_X_C09X;
+        *correlation = XC_NONE;
+        break;
+      case 26:
+        *exchange = XC_GGA_XC_HCTH_147;
+        *correlation = XC_GGA_XC_HCTH_147;
+        break;
+      case 27:
+        *exchange = XC_GGA_XC_HCTH_407;
+        *correlation = XC_GGA_XC_HCTH_407;
+        break;
 
-    // the following are not in libxc?
-    case 3:
-    case 20:
-    case 21:
-    case 22:
+      // The following are not in LibXC
+      case 3:
+      case 20:
+      case 21:
+      case 22:
 
-    // the following are real errors
-    case 10:
-    case 18:
-    case 19:
-    case 25:
-    case 28:
+      // The following are real errors
+      case 10:
+      case 18:
+      case 19:
+      case 25:
+      case 28:
 
-    // unknown abinit pspxc
-    default:
-      return PSPIO_EVALUE;
+      // Unknown abinit pspxc
+      default:
+        return PSPIO_EVALUE;
     }
 
   }
@@ -156,7 +157,7 @@ int abinit_to_libxc(const int pspxc, int *exchange, int *correlation){
 }
 
 
-int libxc_to_abinit(const int exchange, const int correlation, int *pspxc){
+int libxc_to_abinit(const int exchange, const int correlation, int *pspxc) {
 
   *pspxc = -(exchange * 1000 + correlation);
 

@@ -15,7 +15,6 @@
  along with this program; if not, write to the Free Software
  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
- $Id$
 */
 
 /**
@@ -65,13 +64,13 @@ int pspio_potential_alloc(pspio_potential_t **potential, const int np);
  * @param[in,out] potential: potential structure to set
  * @param[in] qn: pointer to quantum numbers
  * @param[in] mesh: the mesh structure
- * @param[in] v: values of the potential on the mesh
+ * @param[in] vofr: values of the potential on the mesh
  * @return error code
  * @note The potential pointer has to be allocated first with the
  *       pspio_potential_alloc method.
  */
 int pspio_potential_set(pspio_potential_t **potential, const pspio_qn_t *qn, 
-			const pspio_mesh_t *mesh, const double *v);
+			const pspio_mesh_t *mesh, const double *vofr);
 
 
 /**
@@ -93,12 +92,12 @@ void pspio_potential_free(pspio_potential_t **potential);
  * 
  * @param[in] potential: potential structure
  * @param[in] np: number of points
- * @param[in] *r: positions were we want to evaluate the function
- * @param[out] *v: value of the potential at r
+ * @param[in] *radii: positions were we want to evaluate the function
+ * @param[out] *vofr: value of the potential at r
  * @note The potential pointer has to be fully set.
  */
 void pspio_potential_eval(const pspio_potential_t *potential, const int np, 
-			 const double *r, double *v);
+			 const double *radii, double *vofr);
 
 
 #endif

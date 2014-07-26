@@ -15,7 +15,6 @@
  along with this program; if not, write to the Free Software
  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
- $Id$
 */
 
 /**
@@ -45,7 +44,7 @@
  */
 #define CHECK_STAT(stat_var, stat_val) \
   if ( stat_var != stat_val ) { \
-    pspio_error_flush(); \
+    pspio_error_flush(stdout); \
     return 1; \
   }
 
@@ -60,7 +59,7 @@
  */
 #define CHECK_STAT_LEN(stat_var, stat_val, len_var, len_val) \
   if ( (stat_var != stat_val) || ( len_var != len_val) ) { \
-    pspio_error_flush(); \
+    pspio_error_flush(stdout); \
     return 1; \
   }
 

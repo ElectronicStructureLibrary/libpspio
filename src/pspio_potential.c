@@ -15,10 +15,10 @@
  along with this program; if not, write to the Free Software
  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
- $Id$
 */
 
 #include <stdlib.h>
+#include <assert.h>
 
 #include "pspio_potential.h"
 #include "pspio_qn.h"
@@ -32,40 +32,45 @@
  * Global routines                                                    *
  **********************************************************************/
 
-int pspio_potential_alloc(pspio_potential_t **potential, const int np){
+int pspio_potential_alloc(pspio_potential_t **potential, const int np) {
   int ierr;
 
-  ASSERT(potential != NULL, PSPIO_ERROR);
-  ASSERT(*potential == NULL, PSPIO_ERROR);
-  ASSERT(np > 1, PSPIO_EVALUE);
+  assert(potential != NULL);
+  assert(*potential == NULL);
+  assert(np > 1);
 
   *potential = (pspio_potential_t *) malloc (sizeof(pspio_potential_t));
-  CHECK_ERROR(*potential != NULL, PSPIO_ENOMEM);
+  FULFILL_OR_EXIT(*potential != NULL, PSPIO_ENOMEM);
 
   (*potential)->v = NULL;
   ierr = pspio_meshfunc_alloc(&(*potential)->v, np);
-  if (ierr) {
+  if ( ierr != PSPIO_SUCCESS ) {
     pspio_potential_free(potential);
-    HANDLE_ERROR(ierr);
+    RETURN_WITH_ERROR(ierr);
   }
 
   (*potential)->qn = NULL;
   ierr = pspio_qn_alloc(&(*potential)->qn);
-  if (ierr) {
+  if ( ierr != PSPIO_SUCCESS ) {
     pspio_potential_free(potential);
-    HANDLE_ERROR(ierr);
+    RETURN_WITH_ERROR(ierr);
   }
 
   return PSPIO_SUCCESS;
 }
 
 
-int pspio_potential_set(pspio_potential_t **potential, const pspio_qn_t *qn, const pspio_mesh_t *mesh, const double *v){
+int pspio_potential_set(pspio_potential_t **potential, const pspio_qn_t *qn,
+      const pspio_mesh_t *mesh, const double *vofr) {
 
-  ASSERT ((*potential) != NULL, PSPIO_ERROR);
+  assert((*potential) != NULL);
+  assert(qn != NULL);
+  assert(mesh != NULL);
+  assert(vofr != NULL);
 
-  HANDLE_FUNC_ERROR(pspio_qn_copy(&(*potential)->qn, qn));
-  HANDLE_FUNC_ERROR(pspio_meshfunc_set(&(*potential)->v, mesh, v, NULL, NULL));
+  SUCCEED_OR_RETURN( pspio_qn_copy(&(*potential)->qn, qn) );
+  SUCCEED_OR_RETURN( pspio_meshfunc_set(&(*potential)->v, mesh, vofr,
+    NULL, NULL) );
 
   return PSPIO_SUCCESS;
 }
@@ -87,10 +92,10 @@ void pspio_potential_free(pspio_potential_t **potential){
  **********************************************************************/
 
 void pspio_potential_eval(const pspio_potential_t *potential, const int np, 
-			 const double *r, double *v) {
-  ASSERT(potential != NULL, PSPIO_ERROR);
-  ASSERT(r != NULL, PSPIO_ERROR);
-  ASSERT(v != NULL, PSPIO_ERROR);
+			 const double *radii, double *vofr) {
+  assert(potential != NULL);
+  assert(radii != NULL);
+  assert(vofr != NULL);
 
-  pspio_meshfunc_eval(potential->v, np, r, v);
+  pspio_meshfunc_eval(potential->v, np, radii, vofr);
 }

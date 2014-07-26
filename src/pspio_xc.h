@@ -15,7 +15,6 @@
  along with this program; if not, write to the Free Software
  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
- $Id$
 */
 
 /**
@@ -44,7 +43,7 @@ typedef struct{
   int exchange;    /**< exchange functional id, taken from libxc conventions */
   int correlation; /**< correlation functional id, taken from libxc conventions */  
   int nlcc_scheme; /**< Scheme used to obtain the NLCC */
-  pspio_meshfunc_t *core_dens; /**< core density, on a radial mesh */
+  pspio_meshfunc_t *nlcc_dens; /**< core density, on a radial mesh */
 } pspio_xc_t;
 
 
@@ -56,37 +55,9 @@ typedef struct{
  * Allocates memory and preset xc structure
  * 
  * @param[in,out] xc: xc structure
- * @param[in] nlcc_scheme: scheme used to obtain core density 
- * @param[in] np: number of points
  * @return error code
- * @note the number of points is only relevant if the nlcc scheme is different 
- *       from PSPIO_NLCC_NONE. In that case it should be larger than 1.
  */
-int pspio_xc_alloc(pspio_xc_t **xc, const int nlcc_scheme, const int np);
-
-
-/**
- * Sets the xc data.
- * @param[in,out] xc: xc structure to set
- * @param[in] exchange: exchange functional id, taken from libxc conventions
- * @param[in] correlation: correlation functional id, taken from libxc conventions
- */
-void pspio_xc_set(pspio_xc_t **xc, const int exchange, const int correlation);
-
-
-/**
- * Sets the xc data related to NLCC.
- * @param[in,out] xc: xc structure to set
- * @param[in] mesh: pointer to radial mesh
- * @param[in] cd: values of the core density on the mesh
- * @param[in] cdp: values of the core density first derivative on the mesh (optional)
- * @param[in] cdpp: values of the core density second derivative on the mesh (optional)
- * @return error code
- * @note The xc pointer has to be allocated first with the pspio_xc_alloc
- *       method.
- */
-int pspio_xc_nlcc_set(pspio_xc_t **xc, const pspio_mesh_t *mesh,
-		      const double *cd, const double *cdp, const double *cdpp);
+int pspio_xc_alloc(pspio_xc_t **xc);
 
 
 /**
@@ -104,6 +75,38 @@ void pspio_xc_free(pspio_xc_t **xc);
  **********************************************************************/
 
 /**
+ * Sets the exchange-correlation id.
+ * @param[in,out] xc: xc structure to set
+ * @param[in] exchange: identifier
+ * @param[in] correlation: identifier
+ */
+void pspio_xc_set_id(pspio_xc_t **xc, const int exchange, const int correlation);
+
+
+/**
+ * Sets the xc data.
+ * @param[in,out] xc: xc structure to set
+ * @param[in] nlcc_scheme: scheme used to obtain core density
+ * @return error code
+ */
+int pspio_xc_set_nlcc_scheme(pspio_xc_t **xc, const int nlcc_scheme);
+
+
+/**
+ * Sets the core density for NLCC.
+ * @param[in,out] xc: xc structure to set
+ * @param[in] mesh: pointer to radial mesh
+ * @param[in] cd: values of the core density on the mesh
+ * @param[in] cdp: values of the core density first derivative on the mesh (optional)
+ * @param[in] cdpp: values of the core density second derivative on the mesh (optional)
+ * @return error code
+ *      
+ */
+int pspio_xc_set_nlcc_density(pspio_xc_t **xc, const pspio_mesh_t *mesh,
+			      const double *cd, const double *cdp, const double *cdpp);
+
+
+/**
  * Returns the xc identifiers
  * @param[in] xc: xc structure
  * @param[out] exchange: identifier
@@ -111,32 +114,39 @@ void pspio_xc_free(pspio_xc_t **xc);
  */
 void pspio_xc_get_id(const pspio_xc_t *xc, int *exchange, int *correlation);
 
-/**
- * Returns if xc has non-linear core-corrections
- * @param[in] xc: xc structure
- * @param[out] has_nlcc: true if xc has nlcc, false otherwise
- */
-void pspio_xc_has_nlcc(const pspio_xc_t *xc, int *has_nlcc);
 
 /**
- * Returns the value of the core density at an array of arbitrary points
+ * Returns the scheme used to generate the NLCC core density
  * @param[in] xc: xc structure
- * @param[in] np: number of points
- * @param[in] *r: positions were we want to evaluate the core density
- * @param[out] *core_dens: values of the core density at r
- * @note The xc pointer has to be fully set.
+ * @param[out] nlcc_scheme: the scheme used
  */
-void pspio_xc_nlcc_eval(const pspio_xc_t *xc, const int np, 
-		       const double *r, double *core_dens);
+void pspio_xc_get_nlcc_scheme(const pspio_xc_t *xc, int *nlcc_scheme);
 
 
 /**
  * Returns the core density function
  * @param[in] xc: xc structure
- * @param[out] *cd_func: core density function defined on the mesh
+ * @param[out] *cd_func: NLCC core density function defined on the mesh
+ */
+void pspio_xc_get_nlcc_density(const pspio_xc_t *xc, pspio_meshfunc_t **cd_func);
+
+
+/**
+ * Returns the value of the NLCC core density at an array of arbitrary points
+ * @param[in] xc: xc structure
+ * @param[in] np: number of points
+ * @param[in] *r: positions were we want to evaluate the core density
+ * @param[out] *nlcc_dens: values of the core density at r
  * @note The xc pointer has to be fully set.
  */
-void pspio_xc_nlcc_get(const pspio_xc_t *xc, pspio_meshfunc_t **cd_func);
+void pspio_xc_nlcc_density_eval(const pspio_xc_t *xc, const int np, 
+				const double *r, double *nlcc_dens);
 
+/**
+ * Returns if xc has non-linear core-corrections
+ * @param[in] xc: xc structure
+ * @return: true if xc has NLCC, false otherwise
+ */
+int pspio_xc_has_nlcc(const pspio_xc_t *xc);
 
 #endif

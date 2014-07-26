@@ -16,7 +16,6 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #
-# $Id: autogen.sh 144 2011-08-31 18:11:24Z pouillon $
 #
 
 # Note: this script is temporary and will be removed upon release.
@@ -27,31 +26,35 @@ set -ev
 # Check that we are in the correct directory
 test -s "configure.ac" -a -s "src/pspio.h" || exit 0
 
+# Init build parameters
+export CC="gcc"
+export CFLAGS="-O0 -g3 -ggdb -Wall -Wextra -fbounds-check -fno-inline"
+export FC="gfortran"
+export FCFLAGS="-O0 -g3 -ggdb -Wall -Wextra -fbounds-check -fno-inline"
+
 # Prepare source tree
 ./wipeout.sh
 ./autogen.sh
 
 # Check default build
-mkdir tmp-standard
-cd tmp-standard
+mkdir tmp-minimal
+cd tmp-minimal
 ../configure
 make dist
 make
-mkdir install-standard
-make install DESTDIR="${PWD}/install-standard"
-ls -lR install-standard
+make clean && make -j4
+make check
+mkdir install-minimal
+make install DESTDIR="${PWD}/install-minimal"
+ls -lR install-minimal >install-minimal.log
 cd ..
 
-# Check Fortran build
-mkdir tmp-fortran
-cd tmp-fortran
-../configure --enable-fortran
-make dist
-make
-mkdir install-fortran
-make install DESTDIR="${PWD}/install-fortran"
-ls -lR install-fortran
-cd ..
+# Make distcheck (enables Fortran)
+mkdir tmp-distcheck
+cd tmp-distcheck
+../configure
+make distcheck -j4
+make distcleancheck
 
 # Clean-up the mess
-rm -rf tmp-standard tmp-fortran
+rm -rf tmp-minimal tmp-distcheck

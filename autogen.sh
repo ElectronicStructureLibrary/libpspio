@@ -16,7 +16,6 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #
-# $Id$
 #
 
 # Stop at first error encountered
@@ -27,6 +26,9 @@ if test ! -s "./configure.ac" -o ! -d "psp_references"; then
   echo "This is not a Libpspio source tree - aborting now"
   exit 1
 fi
+
+# Update source code
+python scripts/make-fortran-constants.py
 
 # Create possibly missing directories
 mkdir -p config/gnu config/m4

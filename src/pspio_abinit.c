@@ -15,17 +15,20 @@
  along with this program; if not, write to the Free Software
  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
- $Id$
 */
 
 /** 
  * @file pspio_abinit.c
  * @brief implementation to read and write Abinit files 
  */
+
+#include <stdlib.h>
 #include <string.h>
+#include <assert.h>
 #include <ctype.h>
 
 #include "pspio_abinit.h"
+#include "pspio_fhi.h"
 #include "pspio_error.h"
 #include "abinit.h"
 #include "util.h"
@@ -35,10 +38,21 @@
 #endif
 
 
-int pspio_abinit_read(FILE *fp, pspio_pspdata_t **pspdata, const int format){
-  int eid;
+int pspio_abinit_read(FILE *fp, pspio_pspdata_t **pspdata, const int format) {
+  int ierr;
+
+  assert(fp != NULL);
+  assert(pspdata != NULL);
 
   switch (format) {
+    case PSPIO_FMT_ABINIT_5:
+    case PSPIO_FMT_ABINIT_6:
+      ierr = abinit_read_header(fp, format, pspdata);
+      if (ierr == PSPIO_SUCCESS) {
+        ierr = pspio_fhi_read(fp, pspdata);
+      }
+      break;
+
     case PSPIO_FMT_ABINIT_1:
     case PSPIO_FMT_ABINIT_2:
     case PSPIO_FMT_ABINIT_3:
@@ -49,27 +63,32 @@ int pspio_abinit_read(FILE *fp, pspio_pspdata_t **pspdata, const int format){
     case PSPIO_FMT_ABINIT_10:
     case PSPIO_FMT_ABINIT_11:
     case PSPIO_FMT_ABINIT_17:
-      eid = PSPIO_ENOSUPPORT;
+      ierr = PSPIO_ENOSUPPORT;
       break;
-    case PSPIO_FMT_ABINIT_5:
-    case PSPIO_FMT_ABINIT_6:
-      eid = abinit_format6_read(fp, pspdata);
-      break;
-
+      
     default:
-      eid = PSPIO_EVALUE;
+      ierr = PSPIO_EVALUE;
   }
 
-  HANDLE_ERROR(eid);
-  return PSPIO_SUCCESS;
+  RETURN_WITH_ERROR(ierr);
 }
 
-int pspio_abinit_write(FILE *fp, const pspio_pspdata_t *pspdata, const int format){
-  int eid = PSPIO_ERROR;
 
-  ASSERT (pspdata != NULL, PSPIO_ERROR);
+int pspio_abinit_write(FILE *fp, const pspio_pspdata_t *pspdata,
+      const int format){
+  int ierr = PSPIO_ERROR;
+
+  assert(fp != NULL);
+  assert(pspdata != NULL);
 
   switch (format) {
+    case PSPIO_FMT_ABINIT_5:
+    case PSPIO_FMT_ABINIT_6:
+      ierr = abinit_write_header(fp, format, pspdata);
+      if (ierr == PSPIO_SUCCESS) {
+        ierr = pspio_fhi_write(fp, pspdata);
+      }
+      break;
     case PSPIO_FMT_ABINIT_1:
     case PSPIO_FMT_ABINIT_2:
     case PSPIO_FMT_ABINIT_3:
@@ -80,17 +99,12 @@ int pspio_abinit_write(FILE *fp, const pspio_pspdata_t *pspdata, const int forma
     case PSPIO_FMT_ABINIT_10:
     case PSPIO_FMT_ABINIT_11:
     case PSPIO_FMT_ABINIT_17:
-      eid = PSPIO_ENOSUPPORT;
+      ierr = PSPIO_ENOSUPPORT;
       break;
-    case PSPIO_FMT_ABINIT_5:
-    case PSPIO_FMT_ABINIT_6:
-      eid = abinit_format6_write(fp, pspdata);
-      break;
-
+      
     default:
-      eid = PSPIO_EVALUE;
+      ierr = PSPIO_EVALUE;
   }
 
-  HANDLE_ERROR(eid);
-  return PSPIO_SUCCESS;
+  RETURN_WITH_ERROR(ierr);
 }

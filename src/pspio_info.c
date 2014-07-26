@@ -15,7 +15,6 @@
  along with this program; if not, write to the Free Software
  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
- $Id$
 */
 
 /**
@@ -25,6 +24,7 @@
 
 #include <stdlib.h>
 #include <stdio.h>
+#include <assert.h>
 #include <string.h>
 
 #include "pspio_error.h"
@@ -39,8 +39,8 @@
  * Global routines                                                    *
  **********************************************************************/
 
-int pspio_version(int *major, int *minor, int *micro) {
-  ASSERT((major != NULL) && (minor != NULL) && (micro != NULL), PSPIO_ERROR)
+void pspio_version(int *major, int *minor, int *micro) {
+  assert((major != NULL) && (minor != NULL) && (micro != NULL));
 #if !defined HAVE_CONFIG_H
   return PSPIO_ERROR;
 #endif
@@ -51,13 +51,11 @@ int pspio_version(int *major, int *minor, int *micro) {
   *minor = -1;
   *micro = -1;
   sscanf(version_string,"%d.%d.%d",major,minor,micro);
-
-  return PSPIO_SUCCESS;
 }
 
 
-int pspio_info_string(char *info) {
-  ASSERT(info == NULL, PSPIO_ERROR)
+void pspio_info_string(char *info) {
+  assert(info == NULL);
 #if !defined HAVE_CONFIG_H
   return PSPIO_ERROR;
 #endif
@@ -66,9 +64,7 @@ int pspio_info_string(char *info) {
 
   int s = strlen(package_string);
   info = (char *) malloc (s + 1);
-  ASSERT(info != NULL, PSPIO_ENOMEM)
+  assert(info != NULL);
   strncpy(info, package_string, s);
   info[s] = '\0';
-
-  return PSPIO_SUCCESS;
 }

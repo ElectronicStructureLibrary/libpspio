@@ -15,7 +15,6 @@
  along with this program; if not, write to the Free Software
  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
- $Id: test_potential.c 232 2011-09-06 07:39:57Z micael $
 */
 
 /**
@@ -35,9 +34,8 @@ int main(void) {
   const double cd[] = {1.0, 0.95, 0.90, 0.80, 0.50, 0.20, 0.10, 0.05, 0.00};
   const int np = sizeof(r) / sizeof(double);
 
-  int eid;
   pspio_mesh_t *mesh = NULL;
-  pspio_xc_t *xc1 = NULL, *xc2 = NULL;
+  pspio_xc_t *xc = NULL;
 
   /* Display basic information */
   DEBUG_PRINT("%s - test_xc\nReport bugs to %s\n\n", PACKAGE_STRING,
@@ -46,35 +44,28 @@ int main(void) {
 
   /* Check creation and setting of mesh */
   DEBUG_PRINT("test_xc: creating mesh\n");
-  eid = pspio_mesh_alloc(&mesh, np);
-  eid = pspio_error_flush();
+  CHECK_STAT(pspio_mesh_alloc(&mesh, np), PSPIO_SUCCESS);
   DEBUG_PRINT("test_xc: setting mesh\n");
-  eid = pspio_mesh_init_from_points(&mesh, r, NULL);
-  eid = pspio_error_flush();
+  pspio_mesh_init_from_points(&mesh, r, NULL);
   DEBUG_PRINT("\n");
 
   /* Check creation and destruction of xc */
-  DEBUG_PRINT("test_xc: creating xc1 with NLCC\n");
-  eid = pspio_xc_alloc(&xc1, PSPIO_NLCC_UNKNOWN, np);
-  eid = pspio_error_flush();
-  DEBUG_PRINT("test_xc: creating xc2 with no NLCC\n");
-  eid = pspio_xc_alloc(&xc2, PSPIO_NLCC_NONE, 0);
-  eid = pspio_error_flush();
-  DEBUG_PRINT("test_xc: destroying xc2\n");
-  pspio_xc_free(&xc2);
+  DEBUG_PRINT("test_xc: creating xc\n");
+  CHECK_STAT(pspio_xc_alloc(&xc), PSPIO_SUCCESS);
   DEBUG_PRINT("\n");
 
   /* Check setting of the xc */
-  DEBUG_PRINT("test_xc: setting xc1 with PW92 LDA\n");
-  pspio_xc_set(&xc1, XC_LDA_X, XC_LDA_C_PW);
-  DEBUG_PRINT("test_xc: setting NLCC of xc1\n");
-  eid = pspio_xc_nlcc_set(&xc1, mesh, cd, NULL, NULL);
-  eid = pspio_error_flush();
+  DEBUG_PRINT("test_xc: setting xc with PW92 LDA\n");
+  pspio_xc_set_id(&xc, XC_LDA_X, XC_LDA_C_PW);
+  DEBUG_PRINT("test_xc: setting of NLCC scheme of xc\n");
+  CHECK_STAT(pspio_xc_set_nlcc_scheme(&xc, PSPIO_NLCC_UNKNOWN), PSPIO_SUCCESS);
+  DEBUG_PRINT("test_xc: setting of core density of xc\n");
+  CHECK_STAT(pspio_xc_set_nlcc_density(&xc, mesh, cd, NULL, NULL), PSPIO_SUCCESS);
   DEBUG_PRINT("\n");
 
   /* Destroy xc */
-  DEBUG_PRINT("test_xc: destroying xc1\n");
-  pspio_xc_free(&xc1);
+  DEBUG_PRINT("test_xc: destroying xc\n");
+  pspio_xc_free(&xc);
   DEBUG_PRINT("\n");
 
   DEBUG_PRINT("=== END test_xc ===\n");

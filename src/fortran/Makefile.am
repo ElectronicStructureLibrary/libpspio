@@ -15,7 +15,6 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #
-# $Id: Makefile.am 256 2012-09-06 10:06:13Z micael $
 #
 
 #
@@ -37,7 +36,7 @@ pio_fortran_f_srcs = \
   pspio_f90_types.F90
 
 # Fortran objects
-pio_fortran_f_objs := $(pio_fortran_f_srcs:F90=$(LTOBJEXT))
+pio_fortran_f_objs = $(pio_fortran_f_srcs:F90=$(LTOBJEXT))
 
 # Fortran modules
 if F90_MOD_UPPERCASE
@@ -55,14 +54,13 @@ endif
 #
 
 # Essential build parameters
-INCLUDES = @pio_core_incs@ -I$(srcdir)/..
+AM_CPPFLAGS = @pio_core_incs@ -I$(srcdir)/..
 
 # Libraries
 lib_LTLIBRARIES = libpspio_fortran.la
 
 libpspio_fortran_la_LDFLAGS = -version-info 0:0:0
-libpspio_fortran_la_SOURCES = $(pio_fortran_c_srcs)
-nodist_libpspio_fortran_la_SOURCES = $(pio_fortran_f_srcs)
+libpspio_fortran_la_SOURCES = $(pio_fortran_c_srcs) $(pio_fortran_f_srcs)
 
 # Headers
 nodist_include_HEADERS = $(pio_fortran_mods)
@@ -73,19 +71,16 @@ nodist_include_HEADERS = $(pio_fortran_mods)
 # Test programs
 #
 
-noinst_PROGRAMS = \
-  test_fortran \
-  test_fortran_error
+pio_f90_basic_tests = \
+  test_fortran
+
+check_PROGRAMS = $(pio_f90_basic_tests)
+TESTS = $(pio_f90_basic_tests)
 
 test_fortran_SOURCES = test_fortran.F90
 test_fortran_LDADD = -lpspio_fortran -L$(builddir)/../.libs -lpspio
 test_fortran_CPPFLAGS = -I$(srcdir)/..
 test_fortran_DEPENDENCIES = ../libpspio.la libpspio_fortran.la $(pio_fortran_f_objs)
-
-test_fortran_error_SOURCES = test_fortran_error.F90
-test_fortran_error_LDADD = -lpspio_fortran -L$(builddir)/../.libs -lpspio
-test_fortran_error_CPPFLAGS = -I$(srcdir)/..
-test_fortran_error_DEPENDENCIES = ../libpspio.la libpspio_fortran.la $(pio_fortran_f_objs)
 
                     # ------------------------------------ #
 
@@ -93,7 +88,12 @@ test_fortran_error_DEPENDENCIES = ../libpspio.la libpspio_fortran.la $(pio_fortr
 # Explicit dependencies
 #
 
-pspio_f90_lib.$(LTOBJEXT): pspio_f90_types.$(LTOBJEXT)
+pspio_f90_lib.$(LTOBJEXT) pspio_f90_lib.$(OBJEXT): \
+  pspio_f90_types.$(LTOBJEXT) pspio_f90_types.$(OBJEXT)
+
+pspio_f90_lib_m.mod: pspio_f90_lib.$(LTOBJEXT)
+
+pspio_f90_types_m.mod: pspio_f90_types.$(LTOBJEXT)
 
                     # ------------------------------------ #
 
@@ -102,5 +102,7 @@ pspio_f90_lib.$(LTOBJEXT): pspio_f90_types.$(LTOBJEXT)
 #
 
 # Fortran modules have to be cleaned explicitely
-clean-local:
-	rm -f $(pio_fortran_mods)
+CLEANFILES = $(pio_fortran_mods)
+
+# Temporary test data has to be wiped out explicitely
+DISTCLEANFILES = test_*.tmp

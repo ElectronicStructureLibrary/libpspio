@@ -15,7 +15,6 @@
  along with this program; if not, write to the Free Software
  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
- $Id$
 */
 
 /**
@@ -38,7 +37,6 @@ int main(void) {
   const double b = 2.0;
   const int np = sizeof(r) / sizeof(double);
 
-  int eid = PSPIO_SUCCESS;
   pspio_mesh_t *m1 = NULL, *m2 = NULL;
 
   /* Display basic information */
@@ -48,36 +46,29 @@ int main(void) {
 
   /* Check creation and destruction of meshes */
   DEBUG_PRINT("test_mesh: creating m1\n");
-  eid = pspio_mesh_alloc(&m1, np);
-  eid = pspio_error_flush();
+  CHECK_STAT(pspio_mesh_alloc(&m1, np), PSPIO_SUCCESS);
   DEBUG_PRINT("test_mesh: creating m2\n");
-  eid = pspio_mesh_alloc(&m2, np);
-  eid = pspio_error_flush();
+  CHECK_STAT(pspio_mesh_alloc(&m2, np), PSPIO_SUCCESS);
   DEBUG_PRINT("test_mesh: destroying m2\n");
   pspio_mesh_free(&m2);
   DEBUG_PRINT("\n");
 
   /* Check setting of meshes */
   DEBUG_PRINT("test_mesh: setting m1\n");
-  eid = pspio_mesh_set(&m1, PSPIO_MESH_LOG1, a, b, r, rab);
-  eid = pspio_error_flush();
+  CHECK_STAT(pspio_mesh_set(&m1, PSPIO_MESH_LOG1, a, b, r, rab), PSPIO_SUCCESS);
   DEBUG_PRINT("test_mesh: initializing m1 from parameters\n");
   pspio_mesh_init_from_parameters(&m1, PSPIO_MESH_LOG1, a, b);
   DEBUG_PRINT("test_mesh: initializing m1 from points\n");
-  eid = pspio_mesh_init_from_points(&m1, r, rab);
-  eid = pspio_error_flush();
+  pspio_mesh_init_from_points(&m1, r, rab);
   DEBUG_PRINT("\n");
 
   /* Check copy of meshes */
   DEBUG_PRINT("test_mesh: copying m1 to a NULL m2\n");
-  eid = pspio_mesh_copy(&m2, m1);
-  eid = pspio_error_flush();
+  CHECK_STAT(pspio_mesh_copy(&m2, m1), PSPIO_SUCCESS);
   DEBUG_PRINT("test_mesh: copying m1 to a non-empty m2\n");
-  eid = pspio_mesh_copy(&m2, m1);
-  eid = pspio_error_flush();
+  CHECK_STAT(pspio_mesh_copy(&m2, m1), PSPIO_SUCCESS);
   DEBUG_PRINT("test_mesh: setting m2\n");
-  eid = pspio_mesh_set(&m2, PSPIO_MESH_LINEAR, a, b, r, rab);
-  eid = pspio_error_flush();
+  CHECK_STAT(pspio_mesh_set(&m2, PSPIO_MESH_LINEAR, a, b, r, rab), PSPIO_SUCCESS);
   DEBUG_PRINT("\n");
 
   /* Destroy meshes */

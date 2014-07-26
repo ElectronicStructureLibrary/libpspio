@@ -15,7 +15,6 @@
  along with this program; if not, write to the Free Software
  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
- $Id$
 */
 
 /**
@@ -65,15 +64,15 @@ int pspio_projector_alloc(pspio_projector_t **projector, const int np);
  * Sets the projector data.
  * @param[in,out] projector: projector structure to set
  * @param[in] qn: pointer to quantum numbers
- * @param[in] e: energy
+ * @param[in] energy: energy
  * @param[in] mesh: pointer to mesh structure
- * @param[in] p: values of the projector on the mesh
+ * @param[in] pofr: values of the projector on the mesh
  * @return error code
  * @note The projector pointer has to be allocated first with the 
  *       pspio_projector_alloc method.
  */
 int pspio_projector_set(pspio_projector_t **projector, const pspio_qn_t *qn, 
-			const double e, const pspio_mesh_t *mesh, const double *p);
+      const double energy, const pspio_mesh_t *mesh, const double *pofr);
 
 
 /**
@@ -95,38 +94,38 @@ void pspio_projector_free(pspio_projector_t **projector);
  * 
  * @param[in] projector: projector structure
  * @param[in] np: number of points
- * @param[in] *r: positions were we want to evaluate the projector
- * @param[out] *p: values of the projector at r
+ * @param[in] *radii: positions were we want to evaluate the projector
+ * @param[out] *pofr: values of the projector at r
  * @note The projector pointer has to be fully set.
  */
 void pspio_projector_eval(const pspio_projector_t *projector, const int np, 
-			 const double *r, double *p);
+			 const double *radii, double *pofr);
 
 /**
  * Returns the energy of the projector
  * 
  * @param[in] projector: projector structure
- * @param[out] *e: value of the projector energy
+ * @return value of the projector energy
  * @note The projector pointer has to be fully set.
  */
-void pspio_projector_get_energy(const pspio_projector_t *projector, double *e);
+double pspio_projector_get_energy(const pspio_projector_t *projector);
 
 /**
  * Returns the angular momentum of the projector
  * 
  * @param[in] projector: projector structure
- * @param[out] *l: value of the projector angular momentum
+ * @return value of the projector angular momentum
  * @note The projector pointer has to be fully set.
  */
-void pspio_projector_get_l(const pspio_projector_t *projector, int *l);
+int pspio_projector_get_l(const pspio_projector_t *projector);
 
 /**
  * Returns the total angular momentum of the projector
  * 
  * @param[in] projector: projector structure
- * @param[out] *j: value of the projector total angular momentum
+ * @return value of the projector total angular momentum
  * @note The projector pointer has to be fully set.
  */
-void pspio_projector_get_j(const pspio_projector_t *projector, double *j);
+double pspio_projector_get_j(const pspio_projector_t *projector);
 
 #endif

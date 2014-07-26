@@ -15,7 +15,6 @@
  along with this program; if not, write to the Free Software
  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
- $Id$
 */
 
 /**
@@ -32,7 +31,6 @@
 
 
 int main(void) {
-  int eid = PSPIO_SUCCESS;
   pspio_qn_t *qn1 = NULL, *qn2 = NULL;
   char label[10];
 
@@ -43,64 +41,51 @@ int main(void) {
 
   /* Check creation and destruction of quantum numbers */
   DEBUG_PRINT("test_qn: creating qn1\n");
-  eid = pspio_qn_alloc(&qn1);
-  eid = pspio_error_flush();
+  CHECK_STAT(pspio_qn_alloc(&qn1), PSPIO_SUCCESS);
   DEBUG_PRINT("test_qn: creating qn2\n");
-  eid = pspio_qn_alloc(&qn2);
-  eid = pspio_error_flush();
+  CHECK_STAT(pspio_qn_alloc(&qn2), PSPIO_SUCCESS);
   DEBUG_PRINT("test_qn: destroying qn2\n");
   pspio_qn_free(&qn2);
   DEBUG_PRINT("\n");
 
   /* Check setting of quantum numbers */
   DEBUG_PRINT("test_qn: setting qn1 to (1, 2, 3.0) = wrong\n");
-  eid = pspio_qn_set(&qn1, 1, 2, 3.0);
-  eid = pspio_error_flush();
+  CHECK_STAT(pspio_qn_set(&qn1, 1, 2, 3.0), PSPIO_EVALUE);
   DEBUG_PRINT("test_qn: setting qn1 to (1, 2, 0.0) = correct\n");
-  eid = pspio_qn_set(&qn1, 1, 2, 0.0);
-  eid = pspio_error_flush();
+  CHECK_STAT(pspio_qn_set(&qn1, 1, 2, 0.0), PSPIO_SUCCESS);
   DEBUG_PRINT("test_qn: setting qn1 to (1, 2, 1.5) = correct\n");
-  eid = pspio_qn_set(&qn1, 1, 2, 1.5);
-  eid = pspio_error_flush();
+  CHECK_STAT(pspio_qn_set(&qn1, 1, 2, 1.5), PSPIO_SUCCESS);
   DEBUG_PRINT("test_qn: setting qn1 to (1, 2, 2.5) = correct\n");
-  eid = pspio_qn_set(&qn1, 1, 2, 2.5);
-  eid = pspio_error_flush();
+  CHECK_STAT(pspio_qn_set(&qn1, 1, 2, 2.5), PSPIO_SUCCESS);
   DEBUG_PRINT("\n");
 
   /* Check copy of quantum numbers */
   DEBUG_PRINT("test_qn: copying qn1 to a NULL qn2\n");
-  eid = pspio_qn_copy(&qn2, qn1);
-  eid = pspio_error_flush();
+  CHECK_STAT(pspio_qn_copy(&qn2, qn1), PSPIO_SUCCESS);
   DEBUG_PRINT("test_qn: copying qn1 to a non-empty qn2\n");
-  eid = pspio_qn_copy(&qn2, qn1);
-  eid = pspio_error_flush();
+  CHECK_STAT(pspio_qn_copy(&qn2, qn1), PSPIO_SUCCESS);
   DEBUG_PRINT("\n");
 
   /* Check comparison of quantum numbers */
   DEBUG_PRINT("test_qn: comparing identical qn1 and qn2\n");
   CHECK_STAT(pspio_qn_cmp(qn2, qn1), PSPIO_QN_EQUAL);
   DEBUG_PRINT("test_qn: comparing qn1 and qn2 with identical momenta\n");
-  eid = pspio_qn_set(&qn2, 2, 2, 2.5);
-  eid = pspio_error_flush();
+  CHECK_STAT(pspio_qn_set(&qn2, 2, 2, 2.5), PSPIO_SUCCESS);
   CHECK_STAT(pspio_qn_cmp(qn2, qn1), PSPIO_QN_MTEQUAL);
   DEBUG_PRINT("test_qn: comparing different qn1 and qn2\n");
-  eid = pspio_qn_set(&qn2, 2, 3, 2.5);
-  eid = pspio_error_flush();
+  CHECK_STAT(pspio_qn_set(&qn2, 2, 3, 2.5), PSPIO_SUCCESS);
   CHECK_STAT(pspio_qn_cmp(qn1, qn2), PSPIO_QN_DIFF);
-  eid = pspio_qn_set(&qn2, 1, 2, 1.5);
-  eid = pspio_error_flush();
+  CHECK_STAT(pspio_qn_set(&qn2, 1, 2, 1.5), PSPIO_SUCCESS);
   CHECK_STAT(pspio_qn_cmp(qn2, qn1), PSPIO_QN_DIFF);
   DEBUG_PRINT("\n");
 
   /* Check quantum numbers labels */
   DEBUG_PRINT("test_qn: printing quantum number label\n");
-  eid = pspio_qn_set(&qn1, 1, 0, 0.0);
+  CHECK_STAT(pspio_qn_set(&qn1, 1, 0, 0.0), PSPIO_SUCCESS);
   pspio_qn_label(qn1, label);
-  eid = pspio_error_flush();
   DEBUG_PRINT("test_qn:  label 1 = '%s' (should be '1s')\n", label);
-  eid = pspio_qn_set(&qn1, 2, 1, 1.5);
+  CHECK_STAT(pspio_qn_set(&qn1, 2, 1, 1.5), PSPIO_SUCCESS);
   pspio_qn_label(qn1, label);
-  eid = pspio_error_flush();
   DEBUG_PRINT("test_qn:  label 2 = '%s' (should be '2p1.5')\n", label);
   DEBUG_PRINT("\n");
 

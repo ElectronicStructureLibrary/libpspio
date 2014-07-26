@@ -15,7 +15,6 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #
-# $Id$
 #
 
 # ---------------------------------------------------------------------------- #
@@ -36,8 +35,8 @@
 
 # Initialize Autoconf
 AC_PREREQ(2.62)
-AC_INIT([Libpspio],[0.1],
-  [https://www.tddft.org/trac/libpspio/],[libpspio])
+AC_INIT([Libpspio],[0.0.0],
+  [https://bugs.launchpad.net/libpspio/],[libpspio])
 AC_REVISION([Autotools support for Libpspio])
 AC_CONFIG_AUX_DIR([config/gnu])
 AC_CONFIG_MACRO_DIR([config/m4])
@@ -140,6 +139,9 @@ AM_PROG_CC_C_O
 # Required headers
 AC_CHECK_HEADERS([time.h])
 
+# Required functions
+AC_CHECK_FUNCS([strndup])
+
                     # ------------------------------------ #
 
 # Look for the Fortran compiler
@@ -197,7 +199,7 @@ AM_CONDITIONAL([F90_MOD_UPPERCASE],
 
 # Initialize Libtool
 LT_INIT
-LT_PREREQ([2.4.2])
+LT_PREREQ([2.4])
 LTOBJEXT="lo"
 AC_SUBST(LTOBJEXT)
 
@@ -251,6 +253,16 @@ fi
 # ---------------------------------------------------------------------------- #
 
 #
+# Prepare data for the test suite
+#
+
+${MKDIR_P} src/fortran
+cp ${ac_top_srcdir}/psp_references/UPF/F.UPF src/fortran/test_fortran_input.tmp
+rm -f src/fortran/test_fortran_output.tmp
+
+# ---------------------------------------------------------------------------- #
+
+#
 # Output configuration
 #
 
@@ -268,4 +280,6 @@ fi
 AC_MSG_NOTICE([LDFLAGS  = ${LDFLAGS}])
 AC_MSG_NOTICE([LIBS     = ${LIBS}])
 
-AC_OUTPUT([Makefile src/Makefile src/fortran/Makefile])
+AC_CONFIG_COMMANDS([script-perms],[chmod u+x src/test_io_multiple.sh])
+
+AC_OUTPUT([Makefile src/Makefile src/fortran/Makefile src/test_io_multiple.sh])

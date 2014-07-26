@@ -15,7 +15,6 @@
  along with this program; if not, write to the Free Software
  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
- $Id$
 */
 
 /**
@@ -36,7 +35,6 @@ int main(void) {
   const double p[] = {1.0, 0.95, 0.90, 0.80, 0.50, 0.20, 0.10, 0.05, 0.00};
   const int np = sizeof(r) / sizeof(double);
 
-  int eid;
   int l;
   double pr, e, j;
   pspio_mesh_t *mesh = NULL;
@@ -50,37 +48,30 @@ int main(void) {
 
   /* Check creation and setting of mesh */
   DEBUG_PRINT("test_projector: creating mesh\n");
-  eid = pspio_mesh_alloc(&mesh, np);
-  eid = pspio_error_flush();
+  CHECK_STAT(pspio_mesh_alloc(&mesh, np), PSPIO_SUCCESS);
   DEBUG_PRINT("test_projector: setting mesh\n");
-  eid = pspio_mesh_init_from_points(&mesh, r, NULL);
-  eid = pspio_error_flush();
+  pspio_mesh_init_from_points(&mesh, r, NULL);
   DEBUG_PRINT("\n");
 
   /* Check creation and setting of quantum numbers */
   DEBUG_PRINT("test_projector: creating quantum numbers\n");
-  eid = pspio_qn_alloc(&qn);
-  eid = pspio_error_flush();
+  CHECK_STAT(pspio_qn_alloc(&qn), PSPIO_SUCCESS);
   DEBUG_PRINT("test_projector: setting quantum numbers to (1, 2, 0.0)\n");
-  eid = pspio_qn_set(&qn, 1, 2, 0.0);
-  eid = pspio_error_flush();
+  CHECK_STAT(pspio_qn_set(&qn, 1, 2, 0.0), PSPIO_SUCCESS);
   DEBUG_PRINT("\n");
 
   /* Check creation and destruction of projector */
   DEBUG_PRINT("test_projector: creating proj1\n");
-  eid = pspio_projector_alloc(&proj1, np);
-  eid = pspio_error_flush();
+  CHECK_STAT(pspio_projector_alloc(&proj1, np), PSPIO_SUCCESS);
   DEBUG_PRINT("test_projector: creating proj2\n");
-  eid = pspio_projector_alloc(&proj2, np);
-  eid = pspio_error_flush();
+  CHECK_STAT(pspio_projector_alloc(&proj2, np), PSPIO_SUCCESS);
   DEBUG_PRINT("test_projector: destroying proj2\n");
   pspio_projector_free(&proj2);
   DEBUG_PRINT("\n");
 
   /* Check setting of the projectors */
   DEBUG_PRINT("test_projector: setting proj1\n");
-  eid = pspio_projector_set(&proj1, qn, 2.0, mesh, p);
-  eid = pspio_error_flush();
+  CHECK_STAT(pspio_projector_set(&proj1, qn, 2.0, mesh, p), PSPIO_SUCCESS);
   DEBUG_PRINT("\n");
 
   /* Check evaluation of the projector */
@@ -88,13 +79,13 @@ int main(void) {
   pspio_projector_eval(proj1, 1, &r[6], &pr);
   DEBUG_PRINT("test_projector: result=%f\n", pr);
   DEBUG_PRINT("test_projector: evaluating energy of proj1 (should be 2.0)\n");
-  pspio_projector_get_energy(proj1, &e);
+  e = pspio_projector_get_energy(proj1);
   DEBUG_PRINT("test_projector: result=%f\n", e);
   DEBUG_PRINT("test_projector: evaluating angular momentum of proj1 (should be 2)\n");
-  pspio_projector_get_l(proj1, &l);
+  l = pspio_projector_get_l(proj1);
   DEBUG_PRINT("test_projector: result=%d\n", l);
   DEBUG_PRINT("test_projector: evaluating angular momentum of proj1 (should be 0.0)\n");
-  pspio_projector_get_j(proj1, &j);
+  j = pspio_projector_get_j(proj1);
   DEBUG_PRINT("test_projector: result=%3.1f\n", j);
   DEBUG_PRINT("\n");
 

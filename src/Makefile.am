@@ -15,7 +15,6 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #
-# $Id$
 #
 
 #
@@ -30,10 +29,9 @@
 
 # C source - keep this in alphabetical order
 pio_core_srcs = \
-  abinit_fhi.c \
-  abinit_format6.c \
   abinit_util.c \
   abinit_xc.c \
+  interpolation.c \
   pspio_abinit.c \
   pspio_error.c \
   pspio_fhi.c \
@@ -77,6 +75,7 @@ pio_core_hdrs = \
 # Internal C headers - keep this in alphabetical order
 pio_hidden_hdrs = \
   abinit.h \
+  interpolation.h \
   string_f.h \
   test_common.h \
   upf.h \
@@ -89,7 +88,7 @@ pio_hidden_hdrs = \
 #
 
 # Essential build parameters
-INCLUDES = @pio_core_incs@
+AM_CPPFLAGS = @pio_core_incs@
 
 # Libraries
 lib_LTLIBRARIES = libpspio.la
@@ -112,9 +111,8 @@ endif
 # Test programs
 #
 
-noinst_PROGRAMS = \
+pio_basic_tests = \
   test_error \
-  test_io \
   test_mesh \
   test_meshfunc \
   test_qn \
@@ -122,6 +120,15 @@ noinst_PROGRAMS = \
   test_projector \
   test_state \
   test_xc
+pio_xfail_tests = \
+  test_io
+pio_wrapped_tests = \
+  test_io_multiple.sh
+
+check_PROGRAMS = $(pio_basic_tests) $(pio_xfail_tests)
+nodist_check_SCRIPTS = $(pio_wrapped_tests)
+TESTS = $(pio_basic_tests) $(pio_xfail_tests) $(pio_wrapped_tests)
+XFAIL_TESTS = $(pio_xfail_tests)
 
 test_error_SOURCES = test_error.c
 test_error_LDADD = -lpspio
@@ -167,3 +174,5 @@ test_xc_SOURCES = test_xc.c
 test_xc_LDADD = -lpspio
 test_xc_CPPFLAGS = -I$(srcdir)/../src
 test_xc_DEPENDENCIES = libpspio.la
+
+MOSTLYCLEANFILES = test_*.tmp

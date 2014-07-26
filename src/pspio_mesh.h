@@ -15,7 +15,6 @@
  along with this program; if not, write to the Free Software
  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
- $Id$
 */
 
 /**
@@ -75,7 +74,7 @@ int pspio_mesh_alloc(pspio_mesh_t **mesh, const int np);
  * @note r and rab should be of size mesh->np.
  */
 int pspio_mesh_set(pspio_mesh_t **mesh, const int type, const double a, 
-		   const double b, const double *r, const double *rab);
+       const double b, const double *r, const double *rab);
 
 
 /**
@@ -94,18 +93,19 @@ int pspio_mesh_copy(pspio_mesh_t **dst, const pspio_mesh_t *src);
 
 /**
  * Sets the mesh data from a list of points. The function will try to determine
- * the type of mesh. If it is not able to do it it will set it to PSPIO_MESH_UNKNOWN.
+ * the type of mesh. If it is not able to do it it will set it to
+ * PSPIO_MESH_UNKNOWN. It uses a hard-coded tolerance of 5.0e-10 to
+ * identify the mesh types.
  * @param[in,out] mesh: mesh structure to set
  * @param[in] r: pointer to mesh radial points
  * @param[in] rab: pointer to discrete integration factors.
- * @return error code
  * @note The mesh pointer has to be allocated first with the pspio_mesh_alloc
  *       method.
  * @note r and rab should be of size mesh->np.
  * @note If rab is null it will be determined automatically, otherwise 
  *       consistency will be checked between r and rab.
  */
-int pspio_mesh_init_from_points(pspio_mesh_t **mesh, const double *r, 
+void pspio_mesh_init_from_points(pspio_mesh_t **mesh, const double *r, 
 				const double *rab);
 
 
@@ -141,9 +141,9 @@ void pspio_mesh_free(pspio_mesh_t **mesh);
  * Returns the number of points in the mesh
  * 
  * @param[in] mesh: mesh structure
- * @param[out] np: the number of points
+ * @return np: the number of points
  */
-void pspio_mesh_get_np(const pspio_mesh_t *mesh, int *np);
+int pspio_mesh_get_np(const pspio_mesh_t *mesh);
 
 
 /**
@@ -153,5 +153,13 @@ void pspio_mesh_get_np(const pspio_mesh_t *mesh, int *np);
  * @param[out] r: pointer to array of points
  */
 void pspio_mesh_get_r(const pspio_mesh_t *mesh, double *r);
+
+/**
+ * Returns the di/dr of the mesh
+ * 
+ * @param[in] mesh: mesh structure
+ * @param[out] rab: pointer to array of di/dr points
+ */
+void pspio_mesh_get_rab(const pspio_mesh_t *mesh, double *rab);
 
 #endif

@@ -15,7 +15,6 @@
  along with this program; if not, write to the Free Software
  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
- $Id$
 */
 
 /**
@@ -92,7 +91,7 @@ int pspio_state_set(pspio_state_t **state, const double eigenval,
  * table[state->qn->n][state->qn->l + (int)states->qn->j]
  * @note The table is allocated inside this function.
  */
-int pspio_states_lookup_table(const int n_states, const pspio_state_t **states,
+int pspio_states_lookup_table(const int n_states, pspio_state_t **states,
 			      int ***table);
 
 
@@ -128,30 +127,30 @@ void pspio_state_get_label(const pspio_state_t *state, char *label);
 /**
  * Returns the main quantum number
  * @param[in] state: state structure
- * @param[out] n: the main  quantum number
+ * @return the main  quantum number
  */
-void pspio_state_get_n(const pspio_state_t *state, int *n);
+int pspio_state_get_n(const pspio_state_t *state);
 
 /**
  * Returns the angular momentum quantum number
  * @param[in] state: state structure
- * @param[out] l: the angular momentum quantum number
+ * @return the angular momentum quantum number
  */
-void pspio_state_get_l(const pspio_state_t *state, int *l);
+int pspio_state_get_l(const pspio_state_t *state);
 
 /**
  * Returns the total angular momentum quantum number
  * @param[in] state: state structure
- * @param[out] j: the total angular momentum quantum number
+ * @return the total angular momentum quantum number
  */
-void pspio_state_get_j(const pspio_state_t *state, double *j);
+double pspio_state_get_j(const pspio_state_t *state);
 
 /**
  * Returns the state occupancies
  * @param[in] state: state structure
- * @param[out] occ: the occupancies
+ * @return the occupancies
  */
-void pspio_state_get_occ(const pspio_state_t *state, double *occ);
+double pspio_state_get_occ(const pspio_state_t *state);
 
 
 #endif

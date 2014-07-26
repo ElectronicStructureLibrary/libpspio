@@ -15,7 +15,6 @@
  along with this program; if not, write to the Free Software
  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
- $Id$
 */
 
 #ifndef PSPIO_H
@@ -28,23 +27,5 @@
 
 #include "pspio_error.h"
 #include "pspio_pspdata.h"
-
-
-/**********************************************************************
- * Global routines                                                    *
- **********************************************************************/
-
-/**
- * Initialize the library.
- * @return error code
- */
-int psp_init();
-
-
-/**
- * Free all memory.
- * @return error code
- */
-int psp_end();
 
 #endif

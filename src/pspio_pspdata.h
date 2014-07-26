@@ -16,7 +16,6 @@
  along with this program; if not, write to the Free Software
  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
- $Id$
 */
 
 #ifndef PSPIO_PSPDATA_H
@@ -44,7 +43,8 @@
  */
 typedef struct{
   // general data
-  char *info;       /**< descriptive string for content of file read in. Nothing should ever be assumed about its content. */
+  int format;        /**< Format of the file. */
+  char *info;        /**< descriptive string for content of file read in. Nothing should ever be assumed about its content. */
   char *symbol;      /**< Atomic symbol */
   double z;          /**< Atomic number */
   double zvalence;   /**< charge of pseudopotential ion - valence electrons */
@@ -102,7 +102,7 @@ int pspio_pspdata_init(pspio_pspdata_t **pspdata);
  * @note The file format might be UNKNOWN. In that case all the other
  *       formats are tried until the correct one is found.
  */
-int pspio_pspdata_read(pspio_pspdata_t **pspdata, int *file_format, 
+int pspio_pspdata_read(pspio_pspdata_t **pspdata, const int *file_format, 
       const char *file_name);
 
 /**
@@ -116,6 +116,13 @@ int pspio_pspdata_read(pspio_pspdata_t **pspdata, int *file_format,
  */
 int pspio_pspdata_write(const pspio_pspdata_t *pspdata, const int file_format,
       const char *file_name);
+
+/**
+ * Reset all the pspdata structure data
+ * @param[in,out] pspdata: pointer to pspdata structure to be
+ */
+void pspio_pspdata_reset(pspio_pspdata_t **pspdata);
+
 
 /**
  * Frees all memory associated with pspdata structure

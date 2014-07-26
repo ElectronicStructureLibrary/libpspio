@@ -15,7 +15,6 @@
  along with this program; if not, write to the Free Software
  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
- $Id$
 */
 
 #ifndef PSPIO_COMMON_H
@@ -117,6 +116,13 @@
 #define PSPIO_QN_DIFF    -1
 #define PSPIO_QN_EQUAL   -2
 #define PSPIO_QN_MTEQUAL -3
+
+
+/**
+ * Interpolation methods
+ */
+#define PSPIO_INTERP_GSL_CSPLINE 1
+#define PSPIO_INTERP_JB_CSPLINE 2
 
 
 /** 

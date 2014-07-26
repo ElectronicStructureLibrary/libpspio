@@ -15,15 +15,17 @@
  along with this program; if not, write to the Free Software
  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
- $Id$
 */
 
 /** 
  * @file pspio_upf.c
  * @brief implementation to read and write in PSPIO_FMT_UPF files 
  */
+#include <stdlib.h>
 #include <string.h>
+#include <assert.h>
 #include <ctype.h>
+
 #include "upf.h"
 #include "util.h"
 
@@ -32,10 +34,10 @@
 #endif
 
 
-int pspio_upf_read(FILE *fp, pspio_pspdata_t **pspdata){
-  int np, has_nlcc;
+int pspio_upf_read(FILE *fp, pspio_pspdata_t **pspdata) {
+  int np;
 
-  HANDLE_FUNC_ERROR(upf_read_info(fp, pspdata));
+  SUCCEED_OR_RETURN( upf_read_info(fp, pspdata) );
 
   //At the moment the wave equation type is not defined in the header,
   //so we set it to 0 if the ADDINFO tag is not present, and to PSPIO_EQN_DIRAC if it is
@@ -45,37 +47,33 @@ int pspio_upf_read(FILE *fp, pspio_pspdata_t **pspdata){
     (*pspdata)->wave_eq = 0;
   }
 
-  HANDLE_FUNC_ERROR(upf_read_header(fp, &np, pspdata));
-  HANDLE_FUNC_ERROR(upf_read_mesh(fp, np, pspdata));
-  pspio_xc_has_nlcc((*pspdata)->xc, &has_nlcc);
-  if (has_nlcc) {
-    HANDLE_FUNC_ERROR(upf_read_nlcc(fp, np, pspdata));
+  SUCCEED_OR_RETURN( upf_read_header(fp, &np, pspdata) );
+  SUCCEED_OR_RETURN( upf_read_mesh(fp, np, pspdata) );
+  if ( pspio_xc_has_nlcc((*pspdata)->xc) ) {
+    SUCCEED_OR_RETURN( upf_read_nlcc(fp, np, pspdata) );
   }
-  HANDLE_FUNC_ERROR(upf_read_nonlocal(fp, np, pspdata));
-  HANDLE_FUNC_ERROR(upf_read_pswfc(fp, np, pspdata));
-  HANDLE_FUNC_ERROR(upf_read_local(fp, np, pspdata));
-  HANDLE_FUNC_ERROR(upf_read_rhoatom(fp, np, pspdata));
+  SUCCEED_OR_RETURN( upf_read_nonlocal(fp, np, pspdata) );
+  SUCCEED_OR_RETURN( upf_read_pswfc(fp, np, pspdata) );
+  SUCCEED_OR_RETURN( upf_read_local(fp, np, pspdata) );
+  SUCCEED_OR_RETURN( upf_read_rhoatom(fp, np, pspdata) );
 
   return PSPIO_SUCCESS;
 }
 
-int pspio_upf_write(FILE *fp, const pspio_pspdata_t *pspdata){
-  int has_nlcc;
-
-  ASSERT (pspdata != NULL, PSPIO_ERROR);
+int pspio_upf_write(FILE *fp, const pspio_pspdata_t *pspdata) {
+  assert(pspdata != NULL);
 
   upf_write_info(fp, pspdata);
-  HANDLE_FUNC_ERROR(upf_write_header(fp, pspdata));
+  SUCCEED_OR_RETURN( upf_write_header(fp, pspdata) );
   upf_write_mesh(fp, pspdata);
-  pspio_xc_has_nlcc(pspdata->xc, &has_nlcc);
-  if (has_nlcc) {
+  if (pspio_xc_has_nlcc(pspdata->xc)) {
     upf_write_nlcc(fp, pspdata);
   }
   upf_write_local(fp, pspdata);
   upf_write_nonlocal(fp, pspdata);
   upf_write_pswfc(fp, pspdata);
   upf_write_rhoatom(fp, pspdata);
-  if (pspdata->wave_eq == PSPIO_EQN_DIRAC) {
+  if ( pspdata->wave_eq == PSPIO_EQN_DIRAC ) {
     upf_write_addinfo(fp, pspdata);
   }
 

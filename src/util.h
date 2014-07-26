@@ -15,7 +15,6 @@
  along with this program; if not, write to the Free Software
  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
- $Id$
 */
 
 #ifndef UTIL_H
@@ -53,8 +52,9 @@
  * @param[in] z: atomic number
  * @param[out] symbol: the symbol
  * @note z should be larger than 0 and smaller than 113.
+ * @return error code
  */
-void z_to_symbol(const double z, char *symbol);
+int z_to_symbol(const double z, char *symbol);
 
 
 /**
@@ -64,7 +64,7 @@ void z_to_symbol(const double z, char *symbol);
  * @param[out] z: atomic number
  * @return error code
  */
-int symbol_to_z(const char *symbol, double z);
+int symbol_to_z(const char *symbol, double *z);
 
 
 /**

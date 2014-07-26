@@ -15,13 +15,13 @@
  along with this program; if not, write to the Free Software
  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
- $Id$
 */
+
+#include <string.h>
+#include <assert.h>
 
 #include "util.h"
 #include "pspio_error.h"
-
-#include <string.h>
 
 #if defined HAVE_CONFIG_H
 #include "config.h"
@@ -41,14 +41,14 @@ const char *symbols[] = {"H  ","He ","Li ","Be ","B  ","C  ","N  ","O  ","F  ","
 			"Uuu","Uub"};
 
 
-int symbol_to_z(const char *symbol, double z){
+int symbol_to_z(const char *symbol, double *z) {
   int i;
 
-  ASSERT(symbol != NULL, PSPIO_EVALUE);
+  assert(symbol != NULL);
 
   for (i=0; i<112; i++) {
     if (strncmp(symbol, symbols[i], 2)) {
-      z = i + 1.0;
+      *z = i + 1.0;
       return PSPIO_SUCCESS;
     }
   }
@@ -57,18 +57,21 @@ int symbol_to_z(const char *symbol, double z){
 }
 
 
-void z_to_symbol(const double z, char *symbol){
-  ASSERT( (z < 113.0 && z > 0.0), PSPIO_EVALUE);
+int z_to_symbol(const double z, char *symbol) {
+  FULFILL_OR_RETURN(z < 113.0 && z > 0.0, PSPIO_EVALUE);
 
   strncpy(symbol, symbols[(int)z-1], 3);
+
+  return PSPIO_SUCCESS;
 }
   
 
-double linear_extrapolation(const double x1, const double x2, const double f1, const double f2, const double x) {
+double linear_extrapolation(const double x1, const double x2,
+         const double f1, const double f2, const double x) {
   double mm, f;
 
-  mm = (f2 - f1)/(x2 - x1);
-  f = f1 + mm*(x - x1);
+  mm = (f2 - f1) / (x2 - x1);
+  f = f1 + mm * (x - x1);
 
   return f;
 }
