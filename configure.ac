@@ -386,12 +386,12 @@ if test "${enable_gcov}" = "yes"; then
   for src in ${ac_top_srcdir}/src/fortran/test_*.F90; do
     exe=`basename "${src}" | sed -e 's/\.F90//'`
     echo "" >>src/fortran/gcov-fortran-tests-deps.mf
-    echo "${exe}.log: gcov_clean.log" >>src/fortran/gcov-fortran-tests-deps.mf
+    echo "${exe}.log: gcov_fortran_clean.log" >>src/fortran/gcov-fortran-tests-deps.mf
   done
   for src in ${ac_top_srcdir}/src/fortran/test_*.in; do
     exe=`basename "${src}" | sed -e 's/\.in//'`
     echo "" >>src/fortran/gcov-fortran-tests-deps.mf
-    echo "${exe}.log: gcov_clean.log" >>src/fortran/gcov-fortran-tests-deps.mf
+    echo "${exe}.log: gcov_fortran_clean.log" >>src/fortran/gcov-fortran-tests-deps.mf
   done
   echo "" >>src/fortran/gcov-fortran-tests-deps.mf
   echo "gcov_report.log: gcov_clean.log" >>src/fortran/gcov-fortran-tests-deps.mf

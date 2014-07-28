@@ -25,10 +25,9 @@
 #ifndef PSPIO_MESHFUNC_H
 #define PSPIO_MESHFUNC_H
 
-#include <gsl/gsl_spline.h>
-
 #include "pspio_error.h"
 #include "pspio_mesh.h"
+#include "interpolation.h"
 
 
 /**********************************************************************
@@ -40,21 +39,20 @@
 */
 typedef struct{
   pspio_mesh_t *mesh;    /**< Pointer to mesh */
+  int interp_method;
 
   // Function
-  double *f;               /**< values on the mesh */
-  gsl_spline *f_spl;       /**< gsl spline structure */
-  gsl_interp_accel *f_acc; /**< accelerator for interpolation lookups */
+  double *f;                  /**< function values on the mesh */
+  interpolation_t *f_interp;  /**< function interpolation object */
 
   // Function first derivative
-  double *fp;               /**< values on the mesh */
-  gsl_spline *fp_spl;       /**< gsl spline structure */
-  gsl_interp_accel *fp_acc; /**< accelerator for interpolation lookups */
+  double *fp;                 /**< first derivative values on the mesh */
+  interpolation_t *fp_interp; /**< first derivative interpolation object */
 
   // Function second derivative
-  double *fpp;               /**< values on the mesh */
-  gsl_spline *fpp_spl;       /**< gsl spline structure */
-  gsl_interp_accel *fpp_acc; /**< accelerator for interpolation lookups */
+  double *fpp;                 /**< second derivative on the mesh */
+  interpolation_t *fpp_interp; /**< second derivative interpolation object */
+
 } pspio_meshfunc_t;
 
 
@@ -66,11 +64,12 @@ typedef struct{
  * Allocates memory and preset function structure
  * 
  * @param[in,out] func: function structure
+ * @param[in] interp_method: method used for interpolation
  * @param[in] np: number of points
  * @return error code
  * @note np should be larger than 1.
  */
-int pspio_meshfunc_alloc(pspio_meshfunc_t **func, const int np);
+int pspio_meshfunc_alloc(pspio_meshfunc_t **func, const int interp_method, const int np);
 
 
 /**

@@ -24,6 +24,7 @@
 #include <string.h>
 #include <ctype.h>
 
+#include "pspio_common.h"
 #include "pspio_error.h"
 #include "upf.h"
 #include "util.h"
@@ -37,7 +38,7 @@ int upf_read_info(FILE *fp, pspio_pspdata_t **pspdata){
   int il, nlines = 0;
 
   //Find init tag
-  SUCCEED_OR_RETURN( upf_tag_init(fp,"PP_INFO", GO_BACK) );
+  SUCCEED_OR_RETURN( upf_tag_init(fp, "PP_INFO", GO_BACK) );
 
   //Count how many lines we have
   while ( upf_tag_check_end(fp, "PP_INFO") != PSPIO_SUCCESS ) {
@@ -230,7 +231,7 @@ int upf_read_nlcc(FILE *fp, const int np, pspio_pspdata_t **pspdata) {
   }
 
   //Store the non-linear core corrections in the pspdata structure
-  SKIP_FUNC_ON_ERROR( pspio_xc_set_core_density(&(*pspdata)->xc,
+  SKIP_FUNC_ON_ERROR( pspio_xc_set_nlcc_density(&(*pspdata)->xc,
     (*pspdata)->mesh, rho, NULL, NULL) );
 
   //Free memory
@@ -548,7 +549,7 @@ int upf_read_rhoatom(FILE *fp, const int np, pspio_pspdata_t **pspdata) {
   }
 
   // Store the density in the pspdata structure
-  SKIP_FUNC_ON_ERROR( pspio_meshfunc_alloc(&(*pspdata)->rho_valence, np) );
+  SKIP_FUNC_ON_ERROR( pspio_meshfunc_alloc(&(*pspdata)->rho_valence, PSPIO_INTERP_GSL_CSPLINE, np) );
   SKIP_FUNC_ON_ERROR( pspio_meshfunc_set(&(*pspdata)->rho_valence,
     (*pspdata)->mesh, rho_read, NULL, NULL) );
 

@@ -153,7 +153,7 @@ int pspio_fhi_read(FILE *fp, pspio_pspdata_t **pspdata) {
     }
 
     // Store the non-linear core corrections in the pspdata structure
-    SKIP_FUNC_ON_ERROR(pspio_xc_set_core_density(&(*pspdata)->xc,
+    SKIP_FUNC_ON_ERROR(pspio_xc_set_nlcc_density(&(*pspdata)->xc,
       (*pspdata)->mesh, cd, cdp, cdpp));
 
     // Free temporary variables
@@ -222,17 +222,17 @@ int pspio_fhi_write(FILE *fp, const pspio_pspdata_t *pspdata){
   }
 
   // Write non-linear core corrections
-  if ( pspio_xc_has_nlcc(pspdata->xc) ) {
-    pspio_meshfunc_t *core_dens = NULL;
+  if (pspio_xc_has_nlcc(pspdata->xc)) {
+    pspio_meshfunc_t *nlcc_dens = NULL;
     double cd, cdp, cdpp;
 
-    pspio_xc_get_core_density(pspdata->xc, &core_dens);
+    pspio_xc_get_nlcc_density(pspdata->xc, &nlcc_dens);
 
     for (ir=0; ir<pspdata->mesh->np; ir++) {
       r = pspdata->mesh->r[ir];
-      pspio_meshfunc_eval(core_dens, 1, &r, &cd);
-      pspio_meshfunc_eval_deriv(core_dens, 1, &r, &cdp);
-      pspio_meshfunc_eval_deriv2(core_dens, 1, &r, &cdpp);
+      pspio_meshfunc_eval(nlcc_dens, 1, &r, &cd);
+      pspio_meshfunc_eval_deriv(nlcc_dens, 1, &r, &cdp);
+      pspio_meshfunc_eval_deriv2(nlcc_dens, 1, &r, &cdpp);
       cd *= M_PI*4.0; cdp *= M_PI*4.0; cdpp *= M_PI*4.0;
 
       FULFILL_OR_RETURN( fprintf(fp, " %18.12E %18.12E %18.12E %18.12E\n",

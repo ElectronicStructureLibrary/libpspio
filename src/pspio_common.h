@@ -118,6 +118,13 @@
 #define PSPIO_QN_MTEQUAL -3
 
 
+/**
+ * Interpolation methods
+ */
+#define PSPIO_INTERP_GSL_CSPLINE 1
+#define PSPIO_INTERP_JB_CSPLINE 2
+
+
 /** 
  * values for NLCC scheme - could add possibilities for different schemes
  */

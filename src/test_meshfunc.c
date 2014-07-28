@@ -61,11 +61,11 @@ int main(void) {
 
   /* Check creation and destruction of mesh functions */
   DEBUG_PRINT("test_meshfunc: creating f1\n");
-  CHECK_STAT(pspio_meshfunc_alloc(&f1, np), PSPIO_SUCCESS);
+  CHECK_STAT(pspio_meshfunc_alloc(&f1, PSPIO_INTERP_GSL_CSPLINE, np), PSPIO_SUCCESS);
   DEBUG_PRINT("test_meshfunc: creating f2\n");
-  CHECK_STAT(pspio_meshfunc_alloc(&f2, np), PSPIO_SUCCESS);
+  CHECK_STAT(pspio_meshfunc_alloc(&f2, PSPIO_INTERP_GSL_CSPLINE, np), PSPIO_SUCCESS);
   DEBUG_PRINT("test_meshfunc: creating f3\n");
-  CHECK_STAT(pspio_meshfunc_alloc(&f3, np), PSPIO_SUCCESS);
+  CHECK_STAT(pspio_meshfunc_alloc(&f3, PSPIO_INTERP_GSL_CSPLINE, np), PSPIO_SUCCESS);
   DEBUG_PRINT("test_meshfunc: destroying f3\n");
   pspio_meshfunc_free(&f3);
   DEBUG_PRINT("\n");
@@ -74,14 +74,7 @@ int main(void) {
   DEBUG_PRINT("test_meshfunc: setting f1\n");
   CHECK_STAT(pspio_meshfunc_set(&f1, m1, f, NULL, NULL), PSPIO_SUCCESS);
   DEBUG_PRINT("test_meshfunc: setting f2 with explicit derivative\n");
-  CHECK_STAT(pspio_meshfunc_set(&f1, m1, f, fp, NULL), PSPIO_SUCCESS);
-  DEBUG_PRINT("\n");
-
-  /* Check copy of mesh functions */
-  DEBUG_PRINT("test_meshfunc: copying f1 to a NULL f3\n");
-  CHECK_STAT(pspio_meshfunc_copy(&f2, f1), PSPIO_SUCCESS);
-  DEBUG_PRINT("test_meshfunc: copying f1 to a non-empty f3\n");
-  CHECK_STAT(pspio_meshfunc_copy(&f2, f1), PSPIO_SUCCESS);
+  CHECK_STAT(pspio_meshfunc_set(&f2, m1, f, fp, NULL), PSPIO_SUCCESS);
   DEBUG_PRINT("\n");
 
   /* Check evaluation of mesh functions */
@@ -105,6 +98,43 @@ int main(void) {
   DEBUG_PRINT("test_meshfunc: result=%f\n", feval);
   DEBUG_PRINT("\n");
 
+
+  /* Check copy of mesh functions */
+  DEBUG_PRINT("test_meshfunc: copying f1 to a non-empty f2\n");
+  CHECK_STAT(pspio_meshfunc_copy(&f2, f1), PSPIO_SUCCESS);
+  DEBUG_PRINT("test_meshfunc: copying f1 to a NULL f3\n");
+  CHECK_STAT(pspio_meshfunc_copy(&f3, f1), PSPIO_SUCCESS);
+
+
+  DEBUG_PRINT("test_meshfunc: evaluating f1 at r=%f\n", r[6]);
+  pspio_meshfunc_eval(f1, 1, &r[6], &feval);
+  DEBUG_PRINT("test_meshfunc: result=%f\n", feval);
+  DEBUG_PRINT("test_meshfunc: evaluating f2 at r=%f\n", r[6]);
+  pspio_meshfunc_eval(f2, 1, &r[6], &feval);
+  DEBUG_PRINT("test_meshfunc: result=%f\n", feval);
+  DEBUG_PRINT("test_meshfunc: evaluating f3 at r=%f\n", r[6]);
+  pspio_meshfunc_eval(f3, 1, &r[6], &feval);
+  DEBUG_PRINT("test_meshfunc: result=%f\n", feval);
+  DEBUG_PRINT("test_meshfunc: evaluating first derivative of f1 at r=%f\n", r[6]);
+  pspio_meshfunc_eval_deriv(f1, 1, &r[6], &feval);
+  DEBUG_PRINT("test_meshfunc: result=%f\n", feval);
+  DEBUG_PRINT("test_meshfunc: evaluating first derivative of f2 at r=%f\n", r[6]);
+  pspio_meshfunc_eval_deriv(f2, 1, &r[6], &feval);
+  DEBUG_PRINT("test_meshfunc: result=%f\n", feval);
+  DEBUG_PRINT("test_meshfunc: evaluating first derivative of f3 at r=%f\n", r[6]);
+  pspio_meshfunc_eval_deriv(f3, 1, &r[6], &feval);
+  DEBUG_PRINT("test_meshfunc: result=%f\n", feval);
+  DEBUG_PRINT("test_meshfunc: evaluating second derivative of f1 at r=%f\n", r[6]);
+  pspio_meshfunc_eval_deriv2(f1, 1, &r[6], &feval);
+  DEBUG_PRINT("test_meshfunc: result=%f\n", feval);
+  DEBUG_PRINT("test_meshfunc: evaluating second derivative of f2 at r=%f\n", r[6]);
+  pspio_meshfunc_eval_deriv2(f2, 1, &r[6], &feval);
+  DEBUG_PRINT("test_meshfunc: result=%f\n", feval);
+  DEBUG_PRINT("test_meshfunc: evaluating second derivative of f3 at r=%f\n", r[6]);
+  pspio_meshfunc_eval_deriv2(f3, 1, &r[6], &feval);
+  DEBUG_PRINT("test_meshfunc: result=%f\n", feval);
+  DEBUG_PRINT("\n");
+
   /* Destroy mesh functions */
   DEBUG_PRINT("test_meshfunc: destroying f1\n");
   PTR_STAT_SHOW(f1);
@@ -112,6 +142,9 @@ int main(void) {
   DEBUG_PRINT("test_meshfunc: destroying f2\n");
   PTR_STAT_SHOW(f2);
   pspio_meshfunc_free(&f2);
+  DEBUG_PRINT("test_meshfunc: destroying f3\n");
+  PTR_STAT_SHOW(f3);
+  pspio_meshfunc_free(&f3);
   DEBUG_PRINT("\n");
 
   DEBUG_PRINT("=== END test_meshfunc ===\n");

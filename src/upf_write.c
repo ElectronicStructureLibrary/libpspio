@@ -145,7 +145,7 @@ void upf_write_nlcc(FILE *fp, const pspio_pspdata_t *pspdata) {
 
   // Print density
   for (i=0; i<pspdata->mesh->np; i++) {
-    pspio_xc_core_density_eval(pspdata->xc, 1, &(pspdata->mesh->r[i]), &rho);
+    pspio_xc_nlcc_density_eval(pspdata->xc, 1, &(pspdata->mesh->r[i]), &rho);
     if (i != 0 && i % 4 == 0) fprintf(fp, "\n");
     fprintf(fp, " %18.11E", rho);
   }

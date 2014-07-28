@@ -141,7 +141,7 @@ int pspio_pspdata_read(pspio_pspdata_t **pspdata, const int *file_format,
   FULFILL_OR_RETURN( fclose(fp) == 0, PSPIO_EIO );
 
   // Make sure ierr is not silently ignored
-  RETURN_WITH_ERROR(ierr);
+  FULFILL_OR_RETURN(ierr == PSPIO_SUCCESS, ierr);
 
   // Create states lookup table
   SUCCEED_OR_RETURN( pspio_states_lookup_table((*pspdata)->n_states,
@@ -157,6 +157,7 @@ int pspio_pspdata_write(const pspio_pspdata_t *pspdata, const int file_format,
   int ierr;
 
   assert(pspdata != NULL);
+  assert(pspdata->qn_to_istate != NULL);
   
   // Open file
   fp = fopen(file_name, "w");
@@ -182,7 +183,7 @@ int pspio_pspdata_write(const pspio_pspdata_t *pspdata, const int file_format,
   FULFILL_OR_RETURN( fclose(fp) == 0, PSPIO_EIO );
 
   // Make sure ierr is not silently ignored
-  RETURN_WITH_ERROR(ierr);
+  RETURN_WITH_ERROR( ierr );
 
   return PSPIO_SUCCESS;
 }

@@ -21,7 +21,6 @@
 #include <assert.h>
 #include <string.h>
 
-#include "pspio_error.h"
 #include "pspio_state.h"
 #include "util.h"
 
@@ -45,15 +44,15 @@ int pspio_state_alloc(pspio_state_t **state, const int np) {
   FULFILL_OR_EXIT( *state != NULL, PSPIO_ENOMEM );
 
   (*state)->wf = NULL;
-  ierr = pspio_meshfunc_alloc(&(*state)->wf, np);
-  if (ierr) {
+  ierr = pspio_meshfunc_alloc(&(*state)->wf, PSPIO_INTERP_GSL_CSPLINE, np);
+  if ( ierr != PSPIO_SUCCESS ) {
     pspio_state_free(state);
     RETURN_WITH_ERROR( ierr );
   }
 
   (*state)->qn = NULL;
   ierr = pspio_qn_alloc(&(*state)->qn);
-  if (ierr) {
+  if ( ierr != PSPIO_SUCCESS ) {
     pspio_state_free(state);
     RETURN_WITH_ERROR( ierr );
   }

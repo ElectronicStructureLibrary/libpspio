@@ -83,6 +83,8 @@ module pspio_f90_types_m
   integer(pspio_cint), parameter, public :: PSPIO_QN_DIFF = -1
   integer(pspio_cint), parameter, public :: PSPIO_QN_EQUAL = -2
   integer(pspio_cint), parameter, public :: PSPIO_QN_MTEQUAL = -3
+  integer(pspio_cint), parameter, public :: PSPIO_INTERP_GSL_CSPLINE = 1
+  integer(pspio_cint), parameter, public :: PSPIO_INTERP_JB_CSPLINE = 2
   integer(pspio_cint), parameter, public :: PSPIO_NLCC_UNKNOWN = -1
   integer(pspio_cint), parameter, public :: PSPIO_NLCC_NONE = 0
   integer(pspio_cint), parameter, public :: PSPIO_NLCC_FHI = 1
