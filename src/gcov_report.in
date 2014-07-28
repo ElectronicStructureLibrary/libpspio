@@ -2,14 +2,14 @@
 
 GCOV="@GCOV@"
 enable_gcov="@enable_gcov@"
-srcdir="@ac_abs_top_srcdir@"
+srcdir="@top_srcdir@/src"
 
 if test "${enable_gcov}" = "yes"; then
   for src in ${srcdir}/*.c; do
     (${GCOV} -r ${src} || ${GCOV} ${src}) > /dev/null 2> /dev/null
   done
 
-  if ./gcov/check-coverage *.gcov
+  if ./gcov_check_coverage *.gcov
   then
     exit 0
   else

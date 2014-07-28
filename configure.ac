@@ -60,6 +60,7 @@ AC_ARG_ENABLE([debug],
     [Enable debug mode (default: enabled)]),
   [],
   [enable_debug="yes"])
+AC_SUBST(enable_debug)
 
 # Fortran - Optional support
 AC_ARG_ENABLE([fortran],
@@ -67,6 +68,7 @@ AC_ARG_ENABLE([fortran],
     [Enable Fortran bindings (default: disabled)]),
   [],
   [enable_fortran="no"])
+AC_SUBST(enable_fortran)
 
 # GCOV - Optional support
 AC_ARG_ENABLE([gcov],
@@ -74,6 +76,7 @@ AC_ARG_ENABLE([gcov],
     [Enable code coverage (default: disabled)]),
   [],
   [enable_gcov="no"])
+AC_SUBST(enable_gcov)
 
 # GSL - Optional support (because of licensing issues)
 AC_ARG_ENABLE([gsl],
@@ -87,6 +90,7 @@ AC_ARG_WITH([gsl-incs],
 AC_ARG_WITH([gsl-libs],
   AC_HELP_STRING([--with-gsl-libs],
     [Link flags for the GSL library]))
+AC_SUBST(enable_gsl)
 
 # Memory profiling - Optional support
 AC_ARG_ENABLE([memprof],
@@ -94,6 +98,7 @@ AC_ARG_ENABLE([memprof],
     [Enable memory profiling (default: disabled)]),
   [],
   [enable_memprof="no"])
+AC_SUBST(enable_memprof)
 
 # XML - Optional support
 AC_ARG_ENABLE([xml],
@@ -107,6 +112,7 @@ AC_ARG_WITH([xml-incs],
 AC_ARG_WITH([xml-libs],
   AC_HELP_STRING([--with-xml-libs],
     [Link flags for the XML library]))
+AC_SUBST(enable_xml)
 
 # ---------------------------------------------------------------------------- #
 
@@ -209,8 +215,8 @@ fi
                     # ------------------------------------ #
 
 # Perl and Python
-AC_CHECK_PROGS([PERL], [perl perl6])
-AC_CHECK_PROGS([PYTHON], [python python2.7])
+AC_PATH_PROGS([PERL], [perl perl6])
+AC_PATH_PROGS([PYTHON], [python python2.7])
 
                     # ------------------------------------ #
 
@@ -352,46 +358,46 @@ AC_SUBST(LIBS_COVERAGE)
 ${MKDIR_P} src/fortran
 
 # Generate explicit dependencies for GCOV tests
-pio_test_programs=""
-pio_f90_test_progams=""
 if test "${enable_gcov}" = "yes"; then
   echo "# Script-generated makefile targets for GCOV tests" \
     >src/gcov-tests-deps.mf
-  for src in ${ac_top_srcdir}/src/test_*.c; do
+  for src in ${top_srcdir}/src/test_*.c; do
     exe=`basename "${src}" | sed -e 's/\.c//'`
-    pio_test_programs="${pio_test_programs} ${exe}"
     echo "" >>src/gcov-tests-deps.mf
-    echo "${exe}.log: rmgcda.log" >>src/gcov-tests-deps.mf
+    echo "${exe}.log: gcov_rmgcda.log" >>src/gcov-tests-deps.mf
   done
-  for src in ${ac_top_srcdir}/src/test_*.in; do
+  for src in ${top_srcdir}/src/test_*.in; do
     exe=`basename "${src}" | sed -e 's/\.in//'`
-    pio_test_programs="${pio_test_programs} ${exe}"
     echo "" >>src/gcov-tests-deps.mf
-    echo "${exe}.log: rmgcda.log" >>src/gcov-tests-deps.mf
+    echo "${exe}.log: gcov_rmgcda.log" >>src/gcov-tests-deps.mf
   done
+  echo "" >>src/gcov-tests-deps.mf
+  echo "gcov_report.log: gcov_rmgcda.log" >>src/gcov-tests-deps.mf
   echo "# Script-generated makefile targets for GCOV tests" \
     >src/fortran/gcov-fortran-tests-deps.mf
-  for src in ${ac_top_srcdir}/src/fortran/test_*.F90; do
+  for src in ${top_srcdir}/src/fortran/test_*.F90; do
     exe=`basename "${src}" | sed -e 's/\.F90//'`
-    pio_f90_test_programs="${pio_f90_test_programs} ${exe}"
     echo "" >>src/fortran/gcov-fortran-tests-deps.mf
-    echo "${exe}.log: rmgcda.log" >>src/fortran/gcov-fortran-tests-deps.mf
+    echo "${exe}.log: gcov_rmgcda.log" >>src/fortran/gcov-fortran-tests-deps.mf
   done
-  for src in ${ac_top_srcdir}/src/fortran/test_*.in; do
+  for src in ${top_srcdir}/src/fortran/test_*.in; do
     exe=`basename "${src}" | sed -e 's/\.in//'`
-    pio_f90_test_programs="${pio_f90_test_programs} ${exe}"
     echo "" >>src/fortran/gcov-fortran-tests-deps.mf
-    echo "${exe}.log: rmgcda.log" >>src/fortran/gcov-fortran-tests-deps.mf
+    echo "${exe}.log: gcov_rmgcda.log" >>src/fortran/gcov-fortran-tests-deps.mf
   done
+  echo "" >>src/fortran/gcov-fortran-tests-deps.mf
+  echo "gcov_report.log: gcov_rmgcda.log" >>src/fortran/gcov-fortran-tests-deps.mf
 fi
 
 # Copy required test input files
-cp ${ac_top_srcdir}/psp_references/UPF/F.UPF src/fortran/test_fortran_input.tmp
+pio_test_fortran_input="${ac_top_srcdir}/psp_references/UPF/F.UPF"
+if test -s "${pio_test_fortran_input}"; then
+  cp -f "${pio_test_fortran_input}" "src/fortran/test_fortran_input.tmp"
+else
+  AC_MSG_ERROR([input file for Fortran test not found:
+      '${pio_test_fortran_input}'])
+fi
 rm -f src/fortran/test_fortran_output.tmp
-
-# Substitute test variables
-AC_SUBST(pio_test_programs)
-AC_SUBST(pio_f90_test_programs)
 
 # ---------------------------------------------------------------------------- #
 
@@ -418,16 +424,24 @@ fi
 AC_MSG_NOTICE([LDFLAGS  = ${LDFLAGS}])
 AC_MSG_NOTICE([LIBS     = ${LIBS}])
 
-AC_CONFIG_COMMANDS([script-perms], [chmod u+x src/test_io_multiple])
+AC_CONFIG_COMMANDS([script-perms],
+  [chmod u+x \
+    src/fortran/test_fortran_memory \
+    src/gcov_check_coverage \
+    src/gcov_report \
+    src/gcov_rmgcda \
+    src/test_io_multiple \
+    src/test_memory
+  ])
 
 AC_CONFIG_FILES([
   Makefile
   src/Makefile
   src/fortran/Makefile
   src/fortran/test_fortran_memory
-  src/gcov/analyze
-  src/gcov/check-coverage
-  src/gcov/rmgcda
+  src/gcov_check_coverage
+  src/gcov_report
+  src/gcov_rmgcda
   src/test_io_multiple
   src/test_memory])
 

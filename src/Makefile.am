@@ -122,19 +122,13 @@ pio_basic_tests = \
 pio_xfail_tests = \
   test_io
 pio_wrapped_tests = \
+  gcov_report \
+  gcov_rmgcda \
   test_io_multiple \
   test_memory
 
-if DO_COVERAGE
-  pio_gcov_pre_tests = gcov/rmgcda
-  pio_gcov_post_tests = gcov/analyze
-else
-  pio_gcov_pre_tests =
-  pio_gcov_post_tests =
-endif
-
 check_PROGRAMS = $(pio_basic_tests) $(pio_xfail_tests)
-nodist_check_SCRIPTS = $(pio_wrapped_tests) $(pio_memory_tests)
+nodist_check_SCRIPTS = $(pio_wrapped_tests)
 
 test_error_SOURCES = test_error.c
 test_error_LDADD = -lpspio $(LIBS_COVERAGE)
@@ -203,4 +197,8 @@ XFAIL_TESTS = $(pio_xfail_tests)
 # Clean targets
 #
 
-MOSTLYCLEANFILES = *.gcda *.gcno *.gcov test_*.tmp
+# Temporary test outputs
+MOSTLYCLEANFILES = *.gcda *.gcno *.gcov
+
+# Temporary test data has to be wiped out explicitely
+DISTCLEANFILES = test_*.tmp
