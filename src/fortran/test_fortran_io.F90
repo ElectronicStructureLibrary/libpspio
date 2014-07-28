@@ -22,8 +22,8 @@ program test_fortran
 
   implicit none
 
-  character(len=*), parameter :: file_inp = "test_fortran_input.tmp"
-  character(len=*), parameter :: file_out = "test_fortran_output.tmp"
+  character(len=*), parameter :: file_inp = "test_fortran_io_input.tmp"
+  character(len=*), parameter :: file_out = "test_fortran_io_output.tmp"
 
   integer :: pio_fmt, ierr, np
   type(pspio_f90_mesh_t) :: pspmesh

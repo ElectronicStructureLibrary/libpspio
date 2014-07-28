@@ -1,0 +1,47 @@
+#!/bin/sh
+
+# Init
+pspdir="@top_srcdir@/psp_references"
+test_program="./test_fortran_io"
+
+# Check environment
+test -d "${pspdir}" || exit 1
+test -x "${test_program}" || exit 2
+
+# Stop at first error
+set -e
+
+# Header
+echo "### BEGIN test_fortran_io_multiple ###"
+echo ""
+
+# Run Abinit 6 test
+rm -f test_fortran_io_input.tmp
+cp "${pspdir}/abinit6/03-Li.LDA.fhi" "test_fortran_io_6_inp.tmp"
+cp "test_fortran_io_6_inp.tmp" "test_fortran_io_input.tmp"
+${test_program}
+mv "test_fortran_io_output.tmp" "test_fortran_io_6_out.tmp"
+rm -f test_fortran_io_input.tmp
+echo ""
+
+# Run FHI test
+rm -f test_fortran_io_input.tmp
+cp "${pspdir}/fhi/Li.cpi" "test_fortran_io_14_inp.tmp"
+cp "test_fortran_io_14_inp.tmp" "test_fortran_io_input.tmp"
+${test_program}
+mv "test_fortran_io_output.tmp" "test_fortran_io_14_out.tmp"
+rm -f test_fortran_io_input.tmp
+echo ""
+
+# Run UPF 1 test
+rm -f test_fortran_io_input.tmp
+cp "${pspdir}/UPF/Li.UPF" "test_fortran_io_17_inp.tmp"
+cp "test_fortran_io_17_inp.tmp" "test_fortran_io_input.tmp"
+${test_program}
+mv "test_fortran_io_output.tmp" "test_fortran_io_17_out.tmp"
+rm -f test_fortran_io_input.tmp
+echo ""
+
+echo "### END test_fortran_io_multiple ###"
+
+exit 0

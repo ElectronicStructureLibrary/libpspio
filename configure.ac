@@ -44,7 +44,7 @@ AC_CONFIG_SRCDIR([.])
 
 # Initialize Automake
 AC_CANONICAL_TARGET
-AM_INIT_AUTOMAKE(1.10)
+AM_INIT_AUTOMAKE([1.10 parallel-tests color-tests])
 AM_CONFIG_HEADER([config.h])
 
 # ---------------------------------------------------------------------------- #
@@ -57,54 +57,62 @@ AM_CONFIG_HEADER([config.h])
 # FIXME: disable debug by default when releasing
 AC_ARG_ENABLE([debug],
   AC_HELP_STRING([--enable-debug],
-    [Enable debug mode (default: enabled)]))
-if test "${enable_debug}" = ""; then
-  enable_debug="yes"
-fi
+    [Enable debug mode (default: enabled)]),
+  [],
+  [enable_debug="yes"])
+AC_SUBST(enable_debug)
 
 # Fortran - Optional support
 AC_ARG_ENABLE([fortran],
   AC_HELP_STRING([--enable-fortran],
-    [Enable Fortran bindings (default: disabled)]))
-if test "${enable_fortran}" = ""; then
-  enable_fortran="no"
-fi
+    [Enable Fortran bindings (default: disabled)]),
+  [],
+  [enable_fortran="no"])
+AC_SUBST(enable_fortran)
 
 # GCOV - Optional support
 AC_ARG_ENABLE([gcov],
   AC_HELP_STRING([--enable-gcov],
-    [Enable code coverage (default: disabled)]))
-if test "${enable_gcov}" = ""; then
-  enable_gcov="no"
-fi
+    [Enable code coverage (default: disabled)]),
+  [],
+  [enable_gcov="no"])
+AC_SUBST(enable_gcov)
 
 # GSL - Optional support (because of licensing issues)
 AC_ARG_ENABLE([gsl],
   AC_HELP_STRING([--enable-gsl],
-    [Enable support for GSL (default: enabled)]))
+    [Enable support for GSL (default: enabled)]),
+  [],
+  [enable_gsl="yes"])
 AC_ARG_WITH([gsl-incs],
   AC_HELP_STRING([--with-gsl-incs],
     [Includes for the GSL library]))
 AC_ARG_WITH([gsl-libs],
   AC_HELP_STRING([--with-gsl-libs],
     [Link flags for the GSL library]))
-if test "${enable_gsl}" = ""; then
-  enable_gsl="yes"
-fi
+AC_SUBST(enable_gsl)
+
+# Memory profiling - Optional support
+AC_ARG_ENABLE([memprof],
+  AC_HELP_STRING([--enable-memprof],
+    [Enable memory profiling (default: disabled)]),
+  [],
+  [enable_memprof="no"])
+AC_SUBST(enable_memprof)
 
 # XML - Optional support
 AC_ARG_ENABLE([xml],
   AC_HELP_STRING([--enable-xml],
-    [Enable support for XML (default: disabled)]))
+    [Enable support for XML (default: disabled)]),
+  [],
+  [enable_xml="no"])
 AC_ARG_WITH([xml-incs],
   AC_HELP_STRING([--with-xml-incs],
     [Includes for the XML library]))
 AC_ARG_WITH([xml-libs],
   AC_HELP_STRING([--with-xml-libs],
     [Link flags for the XML library]))
-if test "${enable_xml}" = ""; then
-  enable_xml="no"
-fi
+AC_SUBST(enable_xml)
 
 # ---------------------------------------------------------------------------- #
 
@@ -133,7 +141,7 @@ AC_SUBST(pio_core_incs)
 # ---------------------------------------------------------------------------- #
 
 #
-# Languages: C and Fortran
+# Languages
 #
 
 # Look for useful utilities
@@ -206,6 +214,12 @@ fi
 
                     # ------------------------------------ #
 
+# Perl and Python
+AC_PATH_PROGS([PERL], [perl perl6])
+AC_PATH_PROGS([PYTHON], [python python2.7])
+
+                    # ------------------------------------ #
+
 # Inform Automake
 AM_CONDITIONAL([DO_BUILD_FORTRAN],
   [test "${enable_fortran}" = "yes"])
@@ -215,7 +229,7 @@ AM_CONDITIONAL([F90_MOD_UPPERCASE],
 # ---------------------------------------------------------------------------- #
 
 #
-# Libtool
+# Libtool (must be set once languages are known)
 #
 
 # Initialize Libtool
@@ -223,22 +237,6 @@ LT_INIT
 LT_PREREQ([2.4])
 LTOBJEXT="lo"
 AC_SUBST(LTOBJEXT)
-
-# ---------------------------------------------------------------------------- #
-
-#
-# Debugging
-#
-
-if test "${enable_debug}" = "yes"; then
-  AC_DEFINE([DEBUG_MODE], 1,
-    [Define to 1 if you want to enable debug mode])
-  AC_DEFINE([DEBUG_LEVEL], 1,
-    [Set to 1 or above if you want to enable debug messages])
-else
-  AC_DEFINE([DEBUG_LEVEL], 0,
-    [Set to 1 or above if you want to enable debug messages])
-fi
 
 # ---------------------------------------------------------------------------- #
 
@@ -275,15 +273,129 @@ if test "${enable_xml}" = "yes"; then
   fi
 fi
 
+# Required basic libraries
+AC_SEARCH_LIBS([exp], [m], [pio_math_ok="yes"], [pio_math_ok="no"], [])
+if test "${pio_math_ok}" = "no"; then
+  AC_MSG_ERROR([no mathematical library found
+    please set the LIBS environment variable adequately when configuring])
+fi
+
+# ---------------------------------------------------------------------------- #
+
+#
+# Debugging
+#
+
+# Adjust verbosity
+if test "${enable_debug}" = "yes"; then
+  AC_DEFINE([DEBUG_MODE], 1,
+    [Define to 1 if you want to enable debug mode])
+  AC_DEFINE([DEBUG_LEVEL], 1,
+    [Set to 1 or above if you want to enable debug messages])
+else
+  AC_DEFINE([DEBUG_LEVEL], 0,
+    [Set to 1 or above if you want to enable debug messages])
+fi
+
+# ---------------------------------------------------------------------------- #
+
+#
+# Profiling
+#
+
+# Memory profiling
+if test "${enable_memprof}" = "yes"; then
+  AC_CHECK_PROGS([VALGRIND], [valgrind])
+  if test "${VALGRIND}" = ""; then
+    AC_MSG_ERROR([memory profiling tool not found
+      please install valgrind first to perform memory profiling])
+  fi
+fi
+
+AM_CONDITIONAL([DO_CHECKMEM], [test "${enable_memprof}" = "yes"])
+
+                    # ------------------------------------ #
+
+# Code coverage
+AC_MSG_CHECKING([whether to enable code coverage (GCC only)])
+AC_MSG_RESULT([${enable_gcov}])
+
+CFLAGS_COVERAGE=""
+FCFLAGS_COVERAGE=""
+LDFLAGS_COVERAGE=""
+LIBS_COVERAGE=""
+
+if test "${enable_gcov}" = "yes"; then
+  if test "${ac_cv_c_compiler_gnu}" != "yes" -o \
+          \( "${enable_fortran}" = "yes" -a \
+             "${ac_cv_fc_compiler_gnu}" != "yes" \) -o \
+          "${lt_cv_prog_gnu_ld}" != "yes"; then
+    AC_MSG_ERROR([code coverage requires GNU compilers
+      please reconfigure using GCC compilers for both C and Fortran])
+  fi
+
+  AC_CHECK_PROGS([GCOV], [gcov])
+  if test "${GCOV}" = ""; then
+    AC_MSG_ERROR([gcov not found
+      please make sure that the gcov executable is in PATH])
+  fi
+
+  CFLAGS_COVERAGE="--coverage --no-inline"
+  if test "${enable_fortran}" = "yes"; then
+    FCFLAGS_COVERAGE="--coverage --no-inline"
+  fi
+  LDFLAGS_COVERAGE="--coverage"
+  LIBS_COVERAGE="-lgcov"
+fi
+
+AM_CONDITIONAL([DO_COVERAGE], [test "${enable_gcov}" = "yes"])
+
+AC_SUBST(GCOV)
+AC_SUBST(CFLAGS_COVERAGE)
+AC_SUBST(FCFLAGS_COVERAGE)
+AC_SUBST(LDFLAGS_COVERAGE)
+AC_SUBST(LIBS_COVERAGE)
+
 # ---------------------------------------------------------------------------- #
 
 #
 # Prepare data for the test suite
 #
 
+# Make sure the required build directories exist
 ${MKDIR_P} src/fortran
-cp ${ac_top_srcdir}/psp_references/UPF/F.UPF src/fortran/test_fortran_input.tmp
-rm -f src/fortran/test_fortran_output.tmp
+
+# Generate explicit dependencies for GCOV tests
+if test "${enable_gcov}" = "yes"; then
+  echo "# Script-generated makefile targets for GCOV tests" \
+    >src/gcov-tests-deps.mf
+  for src in ${ac_top_srcdir}/src/test_*.c; do
+    exe=`basename "${src}" | sed -e 's/\.c//'`
+    echo "" >>src/gcov-tests-deps.mf
+    echo "${exe}.log: gcov_clean.log" >>src/gcov-tests-deps.mf
+  done
+  for src in ${ac_top_srcdir}/src/test_*.in; do
+    exe=`basename "${src}" | sed -e 's/\.in//'`
+    echo "" >>src/gcov-tests-deps.mf
+    echo "${exe}.log: gcov_clean.log" >>src/gcov-tests-deps.mf
+  done
+  echo "" >>src/gcov-tests-deps.mf
+  echo "gcov_report.log: gcov_clean.log" >>src/gcov-tests-deps.mf
+  echo "# Script-generated makefile targets for GCOV tests" \
+    >src/fortran/gcov-fortran-tests-deps.mf
+  for src in ${ac_top_srcdir}/src/fortran/test_*.F90; do
+    exe=`basename "${src}" | sed -e 's/\.F90//'`
+    echo "" >>src/fortran/gcov-fortran-tests-deps.mf
+    echo "${exe}.log: gcov_clean.log" >>src/fortran/gcov-fortran-tests-deps.mf
+  done
+  for src in ${ac_top_srcdir}/src/fortran/test_*.in; do
+    exe=`basename "${src}" | sed -e 's/\.in//'`
+    echo "" >>src/fortran/gcov-fortran-tests-deps.mf
+    echo "${exe}.log: gcov_clean.log" >>src/fortran/gcov-fortran-tests-deps.mf
+  done
+  echo "" >>src/fortran/gcov-fortran-tests-deps.mf
+  echo "gcov_report.log: gcov_clean.log" >>src/fortran/gcov-fortran-tests-deps.mf
+fi
 
 # ---------------------------------------------------------------------------- #
 
@@ -291,9 +403,13 @@ rm -f src/fortran/test_fortran_output.tmp
 # Output configuration
 #
 
-AC_MSG_NOTICE([Fortran  : ${enable_fortran}])
-AC_MSG_NOTICE([GSL      : ${enable_gsl}])
-AC_MSG_NOTICE([XML      : ${enable_xml}])
+AC_MSG_NOTICE([Fortran   : ${enable_fortran}])
+AC_MSG_NOTICE([GSL       : ${enable_gsl}])
+AC_MSG_NOTICE([XML       : ${enable_xml}])
+AC_MSG_NOTICE([])
+AC_MSG_NOTICE([Debugging : ${enable_debug}])
+AC_MSG_NOTICE([Profiling : ${enable_memprof}])
+AC_MSG_NOTICE([Coverage  : ${enable_gcov}])
 AC_MSG_NOTICE([])
 AC_MSG_NOTICE([CPP      = ${CPP}])
 AC_MSG_NOTICE([CPPFLAGS = ${CPPFLAGS}])
@@ -306,6 +422,31 @@ fi
 AC_MSG_NOTICE([LDFLAGS  = ${LDFLAGS}])
 AC_MSG_NOTICE([LIBS     = ${LIBS}])
 
-AC_CONFIG_COMMANDS([script-perms], [chmod u+x src/test_io_multiple.sh])
+AC_CONFIG_COMMANDS([script-perms],
+  [chmod u+x \
+    src/fortran/gcov_fortran_clean \
+    src/fortran/gcov_fortran_report \
+    src/fortran/test_fortran_memory \
+    src/fortran/test_fortran_io_multiple \
+    src/gcov_check_coverage \
+    src/gcov_clean \
+    src/gcov_report \
+    src/test_io_multiple \
+    src/test_memory
+  ])
 
-AC_OUTPUT([Makefile src/Makefile src/fortran/Makefile src/test_io_multiple.sh])
+AC_CONFIG_FILES([
+  Makefile
+  src/Makefile
+  src/fortran/Makefile
+  src/fortran/gcov_fortran_clean
+  src/fortran/gcov_fortran_report
+  src/fortran/test_fortran_memory
+  src/fortran/test_fortran_io_multiple
+  src/gcov_check_coverage
+  src/gcov_clean
+  src/gcov_report
+  src/test_io_multiple
+  src/test_memory])
+
+AC_OUTPUT

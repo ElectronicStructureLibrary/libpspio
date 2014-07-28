@@ -8,6 +8,9 @@ test_program="./test_io"
 test -d "${pspdir}" || exit 1
 test -x "${test_program}" || exit 2
 
+# Stop at first error
+set -e
+
 # Header
 echo "### BEGIN test_io_multiple ###"
 echo ""
