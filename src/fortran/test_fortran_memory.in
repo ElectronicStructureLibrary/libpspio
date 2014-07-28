@@ -9,7 +9,9 @@ if test "${enable_memprof}" = "yes" -a "${enable_gcov}" = "no"; then
   for src in test_fortran_*; do
     exe=`basename "${src}" | cut -d. -f1`
     if test "${exe}" != "test_fortran_memory"; then
-      test_programs="${test_programs} ${exe}"
+      if test "${exe}" = "${src}"; then
+        test_programs="${test_programs} ${exe}"
+      fi
     fi
   done
   test_programs=`echo "${test_programs}" | sort -u`
