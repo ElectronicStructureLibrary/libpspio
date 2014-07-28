@@ -1,0 +1,22 @@
+#!/bin/sh
+
+GCOV="@GCOV@"
+enable_gcov="@enable_gcov@"
+srcdir="@ac_abs_top_srcdir@"
+
+if test "${enable_gcov}" = "yes"; then
+  for src in ${srcdir}/*.c; do
+    (${GCOV} -r ${src} || ${GCOV} ${src}) > /dev/null 2> /dev/null
+  done
+
+  if ./gcov/check-coverage *.gcov
+  then
+    exit 0
+  else
+    grep -E -A3 -B3 '(#####)|(SNH)' *.gcov
+    exit 1
+  fi
+else
+  echo "Code coverage disabled - skipping test"
+  exit 77
+fi

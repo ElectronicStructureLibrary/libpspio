@@ -85,14 +85,9 @@ pio_hidden_hdrs = \
 # Build targets
 #
 
-# Code coverage parameters
-if DO_COVERAGE
-  CFLAGS_COVERAGE = -fprofile-arcs -ftest-coverage -fno-inline
-endif
-
 # Essential build parameters
 AM_CPPFLAGS = @pio_core_incs@
-AM_CFLAGS = $(CFLAGS_COVERAGE)
+AM_CFLAGS = @CFLAGS_COVERAGE@
 
 # Libraries
 lib_LTLIBRARIES = libpspio.la
@@ -127,69 +122,81 @@ pio_basic_tests = \
 pio_xfail_tests = \
   test_io
 pio_wrapped_tests = \
-  test_io_multiple.sh
+  test_io_multiple \
+  test_memory
+
+if DO_COVERAGE
+  pio_gcov_pre_tests = gcov/rmgcda
+  pio_gcov_post_tests = gcov/analyze
+else
+  pio_gcov_pre_tests =
+  pio_gcov_post_tests =
+endif
 
 check_PROGRAMS = $(pio_basic_tests) $(pio_xfail_tests)
-nodist_check_SCRIPTS = $(pio_wrapped_tests)
+nodist_check_SCRIPTS = $(pio_wrapped_tests) $(pio_memory_tests)
 
 test_error_SOURCES = test_error.c
-test_error_LDADD = -lpspio
+test_error_LDADD = -lpspio $(LIBS_COVERAGE)
 test_error_CPPFLAGS = -I$(srcdir)/../src
 test_error_DEPENDENCIES = libpspio.la
 
 test_io_SOURCES = test_io.c
-test_io_LDADD = -lpspio
+test_io_LDADD = -lpspio $(LIBS_COVERAGE)
 test_io_CPPFLAGS = -I$(srcdir)/../src
 test_io_DEPENDENCIES = libpspio.la
 
 test_mesh_SOURCES = test_mesh.c
-test_mesh_LDADD = -lpspio
+test_mesh_LDADD = -lpspio $(LIBS_COVERAGE)
 test_mesh_CPPFLAGS = -I$(srcdir)/../src
 test_mesh_DEPENDENCIES = libpspio.la
 
 test_meshfunc_SOURCES = test_meshfunc.c
-test_meshfunc_LDADD = -lpspio
+test_meshfunc_LDADD = -lpspio $(LIBS_COVERAGE)
 test_meshfunc_CPPFLAGS = -I$(srcdir)/../src
 test_meshfunc_DEPENDENCIES = libpspio.la
 
 test_potential_SOURCES = test_potential.c
-test_potential_LDADD = -lpspio
+test_potential_LDADD = -lpspio $(LIBS_COVERAGE)
 test_potential_CPPFLAGS = -I$(srcdir)/../src
 test_potential_DEPENDENCIES = libpspio.la
 
 test_projector_SOURCES = test_projector.c
-test_projector_LDADD = -lpspio
+test_projector_LDADD = -lpspio $(LIBS_COVERAGE)
 test_projector_CPPFLAGS = -I$(srcdir)/../src
 test_projector_DEPENDENCIES = libpspio.la
 
 test_qn_SOURCES = test_qn.c
-test_qn_LDADD = -lpspio
+test_qn_LDADD = -lpspio $(LIBS_COVERAGE)
 test_qn_CPPFLAGS = -I$(srcdir)/../src
 test_qn_DEPENDENCIES = libpspio.la
 
 test_state_SOURCES = test_state.c
-test_state_LDADD = -lpspio
+test_state_LDADD = -lpspio $(LIBS_COVERAGE)
 test_state_CPPFLAGS = -I$(srcdir)/../src
 test_state_DEPENDENCIES = libpspio.la
 
 test_xc_SOURCES = test_xc.c
-test_xc_LDADD = -lpspio
+test_xc_LDADD = -lpspio $(LIBS_COVERAGE)
 test_xc_CPPFLAGS = -I$(srcdir)/../src
 test_xc_DEPENDENCIES = libpspio.la
 
-PSPIO_TESTS = $(pio_basic_tests) $(pio_xfail_tests) $(pio_wrapped_tests)
-
-define GCDEP_RECIPE
-$1.log: test/rmgcda.log
-
-if DO_COVERAGE
-TESTS = gcov/rmgcda $(PSPIO_TESTS) gcov/analyze
-$(foreach test,$(PSPIO_TESTS),$(eval $(call GCDEP_RECIPE,$(test))))
-test/gcov.log: $(foreach test,$(PSPIO_TESTS),$(test).log)
-else
-TESTS = $(PSPIO_TESTS)
+TESTS = \
+  $(pio_gcov_pre_tests) \
+  $(pio_basic_tests) \
+  $(pio_xfail_tests) \
+  $(pio_wrapped_tests) \
+  $(pio_gcov_post_tests)
 XFAIL_TESTS = $(pio_xfail_tests)
-endif
+
+                    # ------------------------------------ #
+
+#
+# Explicit dependencies
+#
+
+-include gcov-tests-deps.mf
+
                     # ------------------------------------ #
 
 #

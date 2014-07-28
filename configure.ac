@@ -88,6 +88,13 @@ AC_ARG_WITH([gsl-libs],
   AC_HELP_STRING([--with-gsl-libs],
     [Link flags for the GSL library]))
 
+# Memory profiling - Optional support
+AC_ARG_ENABLE([memprof],
+  AC_HELP_STRING([--enable-memprof],
+    [Enable memory profiling (default: disabled)]),
+  [],
+  [enable_memprof="no"])
+
 # XML - Optional support
 AC_ARG_ENABLE([xml],
   AC_HELP_STRING([--enable-xml],
@@ -128,7 +135,7 @@ AC_SUBST(pio_core_incs)
 # ---------------------------------------------------------------------------- #
 
 #
-# Languages: C and Fortran
+# Languages
 #
 
 # Look for useful utilities
@@ -157,11 +164,6 @@ AC_CHECK_HEADERS([time.h])
 
 # Required functions
 AC_CHECK_FUNCS([strndup])
-
-# Code coverage
-AC_MSG_CHECKING([whether to enable code coverage (GCC only)])
-AC_MSG_RESULT([${enable_gcov}])
-AM_CONDITIONAL([DO_COVERAGE], [test "${enable_gcov}" = "yes"])
 
                     # ------------------------------------ #
 
@@ -206,6 +208,12 @@ fi
 
                     # ------------------------------------ #
 
+# Perl and Python
+AC_CHECK_PROGS([PERL], [perl perl6])
+AC_CHECK_PROGS([PYTHON], [python python2.7])
+
+                    # ------------------------------------ #
+
 # Inform Automake
 AM_CONDITIONAL([DO_BUILD_FORTRAN],
   [test "${enable_fortran}" = "yes"])
@@ -215,7 +223,7 @@ AM_CONDITIONAL([F90_MOD_UPPERCASE],
 # ---------------------------------------------------------------------------- #
 
 #
-# Libtool
+# Libtool (must be set once languages are known)
 #
 
 # Initialize Libtool
@@ -223,22 +231,6 @@ LT_INIT
 LT_PREREQ([2.4])
 LTOBJEXT="lo"
 AC_SUBST(LTOBJEXT)
-
-# ---------------------------------------------------------------------------- #
-
-#
-# Debugging
-#
-
-if test "${enable_debug}" = "yes"; then
-  AC_DEFINE([DEBUG_MODE], 1,
-    [Define to 1 if you want to enable debug mode])
-  AC_DEFINE([DEBUG_LEVEL], 1,
-    [Set to 1 or above if you want to enable debug messages])
-else
-  AC_DEFINE([DEBUG_LEVEL], 0,
-    [Set to 1 or above if you want to enable debug messages])
-fi
 
 # ---------------------------------------------------------------------------- #
 
@@ -275,15 +267,131 @@ if test "${enable_xml}" = "yes"; then
   fi
 fi
 
+# Required basic libraries
+AC_SEARCH_LIBS([exp], [m], [pio_math_ok="yes"], [pio_math_ok="no"], [])
+if test "${pio_math_ok}" = "no"; then
+  AC_MSG_ERROR([no mathematical library found
+    please set the LIBS environment variable adequately when configuring])
+fi
+
+# ---------------------------------------------------------------------------- #
+
+#
+# Debugging
+#
+
+# Adjust verbosity
+if test "${enable_debug}" = "yes"; then
+  AC_DEFINE([DEBUG_MODE], 1,
+    [Define to 1 if you want to enable debug mode])
+  AC_DEFINE([DEBUG_LEVEL], 1,
+    [Set to 1 or above if you want to enable debug messages])
+else
+  AC_DEFINE([DEBUG_LEVEL], 0,
+    [Set to 1 or above if you want to enable debug messages])
+fi
+
+# ---------------------------------------------------------------------------- #
+
+#
+# Profiling
+#
+
+# Memory profiling
+if test "${enable_memprof}" = "yes"; then
+  AC_CHECK_PROGS([VALGRIND], [valgrind])
+  if test "${VALGRIND}" = ""; then
+    AC_MSG_ERROR([memory profiling tool not found
+      please install valgrind first to perform memory profiling])
+  fi
+fi
+
+AM_CONDITIONAL([DO_CHECKMEM], [test "${enable_memprof}" = "yes"])
+
+                    # ------------------------------------ #
+
+# Code coverage
+AC_MSG_CHECKING([whether to enable code coverage (GCC only)])
+AC_MSG_RESULT([${enable_gcov}])
+if test "${enable_gcov}" = "yes"; then
+  if test "${ac_cv_c_compiler_gnu}" != "yes" -o \
+          \( "${enable_fortran}" = "yes" -a \
+             "${ac_cv_fc_compiler_gnu}" != "yes" \) -o \
+          "${lt_cv_prog_gnu_ld}" != "yes"; then
+    AC_MSG_ERROR([code coverage requires GNU compilers
+      please reconfigure using GCC compilers for both C and Fortran])
+  fi
+
+  CFLAGS_COVERAGE="--coverage --no-inline"
+  if test "${enable_fortran}" = "yes"; then
+    FCFLAGS_COVERAGE="--coverage --no-inline"
+  fi
+  LIBS_COVERAGE="-lgcov"
+
+  AC_CHECK_PROGS([GCOV], [gcov])
+  if test "${GCOV}" = ""; then
+    AC_MSG_ERROR([gcov not found
+      please make sure that the gcov executable is in PATH])
+  fi
+fi
+
+AM_CONDITIONAL([DO_COVERAGE], [test "${enable_gcov}" = "yes"])
+
+AC_SUBST(GCOV)
+AC_SUBST(CFLAGS_COVERAGE)
+AC_SUBST(FCFLAGS_COVERAGE)
+AC_SUBST(LIBS_COVERAGE)
+
 # ---------------------------------------------------------------------------- #
 
 #
 # Prepare data for the test suite
 #
 
+# Make sure the required build directories exist
 ${MKDIR_P} src/fortran
+
+# Generate explicit dependencies for GCOV tests
+pio_test_programs=""
+pio_f90_test_progams=""
+if test "${enable_gcov}" = "yes"; then
+  echo "# Script-generated makefile targets for GCOV tests" \
+    >src/gcov-tests-deps.mf
+  for src in ${ac_top_srcdir}/src/test_*.c; do
+    exe=`basename "${src}" | sed -e 's/\.c//'`
+    pio_test_programs="${pio_test_programs} ${exe}"
+    echo "" >>src/gcov-tests-deps.mf
+    echo "${exe}.log: rmgcda.log" >>src/gcov-tests-deps.mf
+  done
+  for src in ${ac_top_srcdir}/src/test_*.in; do
+    exe=`basename "${src}" | sed -e 's/\.in//'`
+    pio_test_programs="${pio_test_programs} ${exe}"
+    echo "" >>src/gcov-tests-deps.mf
+    echo "${exe}.log: rmgcda.log" >>src/gcov-tests-deps.mf
+  done
+  echo "# Script-generated makefile targets for GCOV tests" \
+    >src/fortran/gcov-fortran-tests-deps.mf
+  for src in ${ac_top_srcdir}/src/fortran/test_*.F90; do
+    exe=`basename "${src}" | sed -e 's/\.F90//'`
+    pio_f90_test_programs="${pio_f90_test_programs} ${exe}"
+    echo "" >>src/fortran/gcov-fortran-tests-deps.mf
+    echo "${exe}.log: rmgcda.log" >>src/fortran/gcov-fortran-tests-deps.mf
+  done
+  for src in ${ac_top_srcdir}/src/fortran/test_*.in; do
+    exe=`basename "${src}" | sed -e 's/\.in//'`
+    pio_f90_test_programs="${pio_f90_test_programs} ${exe}"
+    echo "" >>src/fortran/gcov-fortran-tests-deps.mf
+    echo "${exe}.log: rmgcda.log" >>src/fortran/gcov-fortran-tests-deps.mf
+  done
+fi
+
+# Copy required test input files
 cp ${ac_top_srcdir}/psp_references/UPF/F.UPF src/fortran/test_fortran_input.tmp
 rm -f src/fortran/test_fortran_output.tmp
+
+# Substitute test variables
+AC_SUBST(pio_test_programs)
+AC_SUBST(pio_f90_test_programs)
 
 # ---------------------------------------------------------------------------- #
 
@@ -291,9 +399,13 @@ rm -f src/fortran/test_fortran_output.tmp
 # Output configuration
 #
 
-AC_MSG_NOTICE([Fortran  : ${enable_fortran}])
-AC_MSG_NOTICE([GSL      : ${enable_gsl}])
-AC_MSG_NOTICE([XML      : ${enable_xml}])
+AC_MSG_NOTICE([Fortran   : ${enable_fortran}])
+AC_MSG_NOTICE([GSL       : ${enable_gsl}])
+AC_MSG_NOTICE([XML       : ${enable_xml}])
+AC_MSG_NOTICE([])
+AC_MSG_NOTICE([Debugging : ${enable_debug}])
+AC_MSG_NOTICE([Profiling : ${enable_memprof}])
+AC_MSG_NOTICE([Coverage  : ${enable_gcov}])
 AC_MSG_NOTICE([])
 AC_MSG_NOTICE([CPP      = ${CPP}])
 AC_MSG_NOTICE([CPPFLAGS = ${CPPFLAGS}])
@@ -306,6 +418,17 @@ fi
 AC_MSG_NOTICE([LDFLAGS  = ${LDFLAGS}])
 AC_MSG_NOTICE([LIBS     = ${LIBS}])
 
-AC_CONFIG_COMMANDS([script-perms], [chmod u+x src/test_io_multiple.sh])
+AC_CONFIG_COMMANDS([script-perms], [chmod u+x src/test_io_multiple])
 
-AC_OUTPUT([Makefile src/Makefile src/fortran/Makefile src/test_io_multiple.sh])
+AC_CONFIG_FILES([
+  Makefile
+  src/Makefile
+  src/fortran/Makefile
+  src/fortran/test_fortran_memory
+  src/gcov/analyze
+  src/gcov/check-coverage
+  src/gcov/rmgcda
+  src/test_io_multiple
+  src/test_memory])
+
+AC_OUTPUT
