@@ -88,6 +88,7 @@ pio_hidden_hdrs = \
 # Essential build parameters
 AM_CPPFLAGS = @pio_core_incs@
 AM_CFLAGS = @CFLAGS_COVERAGE@
+AM_LDFLAGS = @LDFLAGS_COVERAGE@
 
 # Libraries
 lib_LTLIBRARIES = libpspio.la
@@ -122,13 +123,20 @@ pio_basic_tests = \
 pio_xfail_tests = \
   test_io
 pio_wrapped_tests = \
-  gcov_report \
-  gcov_rmgcda \
-  test_io_multiple \
+  test_io_multiple
+pio_gcov_pre_tests = \
+  gcov_clean
+pio_gcov_post_tests = \
+  gcov_report
+pio_memprof_tests = \
   test_memory
 
 check_PROGRAMS = $(pio_basic_tests) $(pio_xfail_tests)
-nodist_check_SCRIPTS = $(pio_wrapped_tests)
+nodist_check_SCRIPTS = \
+  $(pio_gcov_pre_tests) \
+  $(pio_wrapped_tests) \
+  $(pio_gcov_post_tests) \
+  $(pio_memprof_tests)
 
 test_error_SOURCES = test_error.c
 test_error_LDADD = -lpspio $(LIBS_COVERAGE)
@@ -180,8 +188,10 @@ TESTS = \
   $(pio_basic_tests) \
   $(pio_xfail_tests) \
   $(pio_wrapped_tests) \
-  $(pio_gcov_post_tests)
-XFAIL_TESTS = $(pio_xfail_tests)
+  $(pio_gcov_post_tests) \
+  $(pio_memprof_tests)
+XFAIL_TESTS = \
+  $(pio_xfail_tests)
 
                     # ------------------------------------ #
 
@@ -198,7 +208,4 @@ XFAIL_TESTS = $(pio_xfail_tests)
 #
 
 # Temporary test outputs
-MOSTLYCLEANFILES = *.gcda *.gcno *.gcov
-
-# Temporary test data has to be wiped out explicitely
-DISTCLEANFILES = test_*.tmp
+MOSTLYCLEANFILES = *.gcda *.gcno *.gcov test_*.tmp

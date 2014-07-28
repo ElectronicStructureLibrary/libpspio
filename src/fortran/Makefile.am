@@ -73,25 +73,43 @@ nodist_include_HEADERS = $(pio_fortran_mods)
 # Test programs
 #
 
-pio_f90_basic_tests = \
-  test_fortran
-
+pio_f90_xfail_tests = \
+  test_fortran_io
 pio_f90_wrapped_tests = \
-  ../gcov_rmgcda \
-  ../gcov_report \
+  test_fortran_io_multiple
+pio_f90_gcov_pre_tests = \
+  gcov_fortran_clean
+pio_f90_gcov_post_tests = \
+  gcov_fortran_report
+pio_f90_memprof_tests = \
   test_fortran_memory
 
-check_PROGRAMS = $(pio_f90_basic_tests)
-nodist_check_SCRIPTS = $(pio_f90_wrapped_tests)
+check_PROGRAMS = $(pio_f90_xfail_tests)
+nodist_check_SCRIPTS = \
+  $(pio_f90_gcov_pre_tests) \
+  $(pio_f90_wrapped_tests) \
+  $(pio_f90_gcov_post_tests) \
+  $(pio_f90_memprof_tests)
 
-test_fortran_SOURCES = test_fortran.F90
-test_fortran_LDADD = -lpspio_fortran -L$(builddir)/../.libs -lpspio
-test_fortran_CPPFLAGS = -I$(srcdir)/..
-test_fortran_DEPENDENCIES = ../libpspio.la libpspio_fortran.la $(pio_fortran_f_objs)
+test_fortran_io_SOURCES = test_fortran_io.F90
+test_fortran_io_LDADD = \
+  -lpspio_fortran \
+  -L$(builddir)/../.libs -lpspio \
+  $(LIBS_COVERAGE)
+test_fortran_io_CPPFLAGS = -I$(srcdir)/..
+test_fortran_io_DEPENDENCIES = \
+  ../libpspio.la \
+  libpspio_fortran.la \
+  $(pio_fortran_f_objs)
 
 TESTS = \
-  $(pio_f90_basic_tests) \
-  $(pio_f90_wrapped_tests)
+  $(pio_f90_gcov_pre_tests) \
+  $(pio_f90_xfail_tests) \
+  $(pio_f90_wrapped_tests) \
+  $(pio_f90_gcov_post_tests) \
+  $(pio_f90_memprof_tests)
+XFAIL_TESTS = \
+  $(pio_f90_xfail_tests)
 
                     # ------------------------------------ #
 
@@ -115,10 +133,7 @@ pspio_f90_types_m.mod: pspio_f90_types.$(LTOBJEXT)
 #
 
 # Temporary test outputs
-MOSTLYCLEANFILES = *.gcda *.gcno *.gcov
+MOSTLYCLEANFILES = *.gcda *.gcno *.gcov test_*.tmp
 
 # Fortran modules have to be cleaned explicitely
 CLEANFILES = $(pio_fortran_mods)
-
-# Temporary test data has to be wiped out explicitely
-DISTCLEANFILES = test_*.tmp

@@ -319,6 +319,12 @@ AM_CONDITIONAL([DO_CHECKMEM], [test "${enable_memprof}" = "yes"])
 # Code coverage
 AC_MSG_CHECKING([whether to enable code coverage (GCC only)])
 AC_MSG_RESULT([${enable_gcov}])
+
+CFLAGS_COVERAGE=""
+FCFLAGS_COVERAGE=""
+LDFLAGS_COVERAGE=""
+LIBS_COVERAGE=""
+
 if test "${enable_gcov}" = "yes"; then
   if test "${ac_cv_c_compiler_gnu}" != "yes" -o \
           \( "${enable_fortran}" = "yes" -a \
@@ -328,17 +334,18 @@ if test "${enable_gcov}" = "yes"; then
       please reconfigure using GCC compilers for both C and Fortran])
   fi
 
-  CFLAGS_COVERAGE="--coverage --no-inline"
-  if test "${enable_fortran}" = "yes"; then
-    FCFLAGS_COVERAGE="--coverage --no-inline"
-  fi
-  LIBS_COVERAGE="-lgcov"
-
   AC_CHECK_PROGS([GCOV], [gcov])
   if test "${GCOV}" = ""; then
     AC_MSG_ERROR([gcov not found
       please make sure that the gcov executable is in PATH])
   fi
+
+  CFLAGS_COVERAGE="--coverage --no-inline"
+  if test "${enable_fortran}" = "yes"; then
+    FCFLAGS_COVERAGE="--coverage --no-inline"
+  fi
+  LDFLAGS_COVERAGE="--coverage"
+  LIBS_COVERAGE="-lgcov"
 fi
 
 AM_CONDITIONAL([DO_COVERAGE], [test "${enable_gcov}" = "yes"])
@@ -346,6 +353,7 @@ AM_CONDITIONAL([DO_COVERAGE], [test "${enable_gcov}" = "yes"])
 AC_SUBST(GCOV)
 AC_SUBST(CFLAGS_COVERAGE)
 AC_SUBST(FCFLAGS_COVERAGE)
+AC_SUBST(LDFLAGS_COVERAGE)
 AC_SUBST(LIBS_COVERAGE)
 
 # ---------------------------------------------------------------------------- #
@@ -361,43 +369,33 @@ ${MKDIR_P} src/fortran
 if test "${enable_gcov}" = "yes"; then
   echo "# Script-generated makefile targets for GCOV tests" \
     >src/gcov-tests-deps.mf
-  for src in ${top_srcdir}/src/test_*.c; do
+  for src in ${ac_top_srcdir}/src/test_*.c; do
     exe=`basename "${src}" | sed -e 's/\.c//'`
     echo "" >>src/gcov-tests-deps.mf
-    echo "${exe}.log: gcov_rmgcda.log" >>src/gcov-tests-deps.mf
+    echo "${exe}.log: gcov_clean.log" >>src/gcov-tests-deps.mf
   done
-  for src in ${top_srcdir}/src/test_*.in; do
+  for src in ${ac_top_srcdir}/src/test_*.in; do
     exe=`basename "${src}" | sed -e 's/\.in//'`
     echo "" >>src/gcov-tests-deps.mf
-    echo "${exe}.log: gcov_rmgcda.log" >>src/gcov-tests-deps.mf
+    echo "${exe}.log: gcov_clean.log" >>src/gcov-tests-deps.mf
   done
   echo "" >>src/gcov-tests-deps.mf
-  echo "gcov_report.log: gcov_rmgcda.log" >>src/gcov-tests-deps.mf
+  echo "gcov_report.log: gcov_clean.log" >>src/gcov-tests-deps.mf
   echo "# Script-generated makefile targets for GCOV tests" \
     >src/fortran/gcov-fortran-tests-deps.mf
-  for src in ${top_srcdir}/src/fortran/test_*.F90; do
+  for src in ${ac_top_srcdir}/src/fortran/test_*.F90; do
     exe=`basename "${src}" | sed -e 's/\.F90//'`
     echo "" >>src/fortran/gcov-fortran-tests-deps.mf
-    echo "${exe}.log: gcov_rmgcda.log" >>src/fortran/gcov-fortran-tests-deps.mf
+    echo "${exe}.log: gcov_clean.log" >>src/fortran/gcov-fortran-tests-deps.mf
   done
-  for src in ${top_srcdir}/src/fortran/test_*.in; do
+  for src in ${ac_top_srcdir}/src/fortran/test_*.in; do
     exe=`basename "${src}" | sed -e 's/\.in//'`
     echo "" >>src/fortran/gcov-fortran-tests-deps.mf
-    echo "${exe}.log: gcov_rmgcda.log" >>src/fortran/gcov-fortran-tests-deps.mf
+    echo "${exe}.log: gcov_clean.log" >>src/fortran/gcov-fortran-tests-deps.mf
   done
   echo "" >>src/fortran/gcov-fortran-tests-deps.mf
-  echo "gcov_report.log: gcov_rmgcda.log" >>src/fortran/gcov-fortran-tests-deps.mf
+  echo "gcov_report.log: gcov_clean.log" >>src/fortran/gcov-fortran-tests-deps.mf
 fi
-
-# Copy required test input files
-pio_test_fortran_input="${ac_top_srcdir}/psp_references/UPF/F.UPF"
-if test -s "${pio_test_fortran_input}"; then
-  cp -f "${pio_test_fortran_input}" "src/fortran/test_fortran_input.tmp"
-else
-  AC_MSG_ERROR([input file for Fortran test not found:
-      '${pio_test_fortran_input}'])
-fi
-rm -f src/fortran/test_fortran_output.tmp
 
 # ---------------------------------------------------------------------------- #
 
@@ -426,10 +424,13 @@ AC_MSG_NOTICE([LIBS     = ${LIBS}])
 
 AC_CONFIG_COMMANDS([script-perms],
   [chmod u+x \
+    src/fortran/gcov_fortran_clean \
+    src/fortran/gcov_fortran_report \
     src/fortran/test_fortran_memory \
+    src/fortran/test_fortran_io_multiple \
     src/gcov_check_coverage \
+    src/gcov_clean \
     src/gcov_report \
-    src/gcov_rmgcda \
     src/test_io_multiple \
     src/test_memory
   ])
@@ -438,10 +439,13 @@ AC_CONFIG_FILES([
   Makefile
   src/Makefile
   src/fortran/Makefile
+  src/fortran/gcov_fortran_clean
+  src/fortran/gcov_fortran_report
   src/fortran/test_fortran_memory
+  src/fortran/test_fortran_io_multiple
   src/gcov_check_coverage
+  src/gcov_clean
   src/gcov_report
-  src/gcov_rmgcda
   src/test_io_multiple
   src/test_memory])
 
