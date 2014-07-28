@@ -47,7 +47,7 @@ int pspio_meshfunc_alloc(pspio_meshfunc_t **func, const int interp_method, const
   ierr = pspio_mesh_alloc(&(*func)->mesh, np);
   if ( ierr != PSPIO_SUCCESS ) {
     pspio_meshfunc_free(func);
-    RETURN_WITH_ERROR(ierr);
+    RETURN_WITH_ERROR( ierr );
   }
 
   (*func)->interp_method = interp_method;

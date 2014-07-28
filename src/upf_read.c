@@ -38,7 +38,7 @@ int upf_read_info(FILE *fp, pspio_pspdata_t **pspdata){
   int il, nlines = 0;
 
   //Find init tag
-  SUCCEED_OR_RETURN( upf_tag_init(fp,"PP_INFO", GO_BACK) );
+  SUCCEED_OR_RETURN( upf_tag_init(fp, "PP_INFO", GO_BACK) );
 
   //Count how many lines we have
   while ( upf_tag_check_end(fp, "PP_INFO") != PSPIO_SUCCESS ) {
