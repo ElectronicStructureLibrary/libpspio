@@ -43,7 +43,7 @@
  */
 typedef struct{
   // general data
-  int format;        /**< Format of the file. */
+  int format_guessed;/**< Format of the file guessed by pspio_pspdata_read. */
   char *info;        /**< descriptive string for content of file read in. Nothing should ever be assumed about its content. */
   char *symbol;      /**< Atomic symbol */
   double z;          /**< Atomic number */
@@ -102,7 +102,7 @@ int pspio_pspdata_init(pspio_pspdata_t **pspdata);
  * @note The file format might be UNKNOWN. In that case all the other
  *       formats are tried until the correct one is found.
  */
-int pspio_pspdata_read(pspio_pspdata_t **pspdata, const int *file_format, 
+int pspio_pspdata_read(pspio_pspdata_t **pspdata, const int file_format, 
       const char *file_name);
 
 /**

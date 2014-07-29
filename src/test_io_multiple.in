@@ -27,6 +27,10 @@ echo ""
 ${test_program} "${pspdir}/UPF/Li.UPF" "test_io_17.tmp" 17
 echo ""
 
+# Detect FHI format
+${test_program} "${pspdir}/fhi/Li.cpi" "test_io_detect.tmp"
+echo ""
+
 echo "### END test_io_multiple ###"
 
 exit 0

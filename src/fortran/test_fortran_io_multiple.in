@@ -16,30 +16,19 @@ echo "### BEGIN test_fortran_io_multiple ###"
 echo ""
 
 # Run Abinit 6 test
-rm -f test_fortran_io_input.tmp
-cp "${pspdir}/abinit6/03-Li.LDA.fhi" "test_fortran_io_6_inp.tmp"
-cp "test_fortran_io_6_inp.tmp" "test_fortran_io_input.tmp"
-${test_program}
-mv "test_fortran_io_output.tmp" "test_fortran_io_6_out.tmp"
-rm -f test_fortran_io_input.tmp
+${test_program} "${pspdir}/abinit6/03-Li.LDA.fhi" "test_fortran_io_6.tmp" 6
 echo ""
 
 # Run FHI test
-rm -f test_fortran_io_input.tmp
-cp "${pspdir}/fhi/Li.cpi" "test_fortran_io_14_inp.tmp"
-cp "test_fortran_io_14_inp.tmp" "test_fortran_io_input.tmp"
-${test_program}
-mv "test_fortran_io_output.tmp" "test_fortran_io_14_out.tmp"
-rm -f test_fortran_io_input.tmp
+${test_program} "${pspdir}/fhi/Li.cpi" "test_fortran_io_14.tmp" 14
 echo ""
 
 # Run UPF 1 test
-rm -f test_fortran_io_input.tmp
-cp "${pspdir}/UPF/Li.UPF" "test_fortran_io_17_inp.tmp"
-cp "test_fortran_io_17_inp.tmp" "test_fortran_io_input.tmp"
-${test_program}
-mv "test_fortran_io_output.tmp" "test_fortran_io_17_out.tmp"
-rm -f test_fortran_io_input.tmp
+${test_program} "${pspdir}/UPF/Li.UPF" "test_fortran_io_17.tmp" 17
+echo ""
+
+# Detect FHI format
+${test_program} "${pspdir}/fhi/Li.cpi" "test_fortran_io_detect.tmp"
 echo ""
 
 echo "### END test_fortran_io_multiple ###"
