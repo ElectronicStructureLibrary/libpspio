@@ -39,8 +39,9 @@ int pspio_upf_read(FILE *fp, pspio_pspdata_t **pspdata) {
 
   SUCCEED_OR_RETURN( upf_read_info(fp, pspdata) );
 
-  //At the moment the wave equation type is not defined in the header,
-  //so we set it to 0 if the ADDINFO tag is not present, and to PSPIO_EQN_DIRAC if it is
+  // At the moment the wave equation type is not defined in the header,
+  // so we set it to 0 if the ADDINFO tag is not present, and to
+  // PSPIO_EQN_DIRAC if it is
   if (upf_tag_isdef(fp,"PP_ADDINFO")){
     (*pspdata)->wave_eq = PSPIO_EQN_DIRAC;
   } else {

@@ -102,7 +102,7 @@ int pspio_xc_set_nlcc_density(pspio_xc_t **xc, const pspio_mesh_t *mesh,
   ierr = pspio_meshfunc_alloc(&(*xc)->nlcc_dens, PSPIO_INTERP_GSL_CSPLINE, pspio_mesh_get_np(mesh));
   if ( ierr != PSPIO_SUCCESS ) {
     pspio_meshfunc_free(&(*xc)->nlcc_dens);
-    RETURN_WITH_ERROR(ierr);
+    RETURN_WITH_ERROR( ierr );
   }
 
   SUCCEED_OR_RETURN( pspio_meshfunc_set(&(*xc)->nlcc_dens, mesh, cd, cdp,

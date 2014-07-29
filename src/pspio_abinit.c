@@ -70,7 +70,7 @@ int pspio_abinit_read(FILE *fp, pspio_pspdata_t **pspdata, const int format) {
       ierr = PSPIO_EVALUE;
   }
 
-  RETURN_WITH_ERROR(ierr);
+  RETURN_WITH_ERROR( ierr );
 }
 
 
@@ -106,5 +106,5 @@ int pspio_abinit_write(FILE *fp, const pspio_pspdata_t *pspdata,
       ierr = PSPIO_EVALUE;
   }
 
-  RETURN_WITH_ERROR(ierr);
+  RETURN_WITH_ERROR( ierr );
 }

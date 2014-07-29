@@ -126,7 +126,7 @@ void pspio_error_show(const int error_id, const char *filename,
  * @param[in] pspio_errorid: integer identifying the error.
  * @return string with error message.
  */
-const char *pspio_error_str(const int pspio_errorid);
+const char *pspio_error_string(const int error_id);
 
 
 /**********************************************************************
@@ -215,7 +215,7 @@ const char *pspio_error_str(const int pspio_errorid);
  * @param[in] error_id: error code
  */
 #define RETURN_WITH_ERROR(error_id) \
-  return pspio_error_add(error_id, __FILE__, __LINE__, __func__);
+    return pspio_error_add(error_id, __FILE__, __LINE__, __func__);
 
 
 /**

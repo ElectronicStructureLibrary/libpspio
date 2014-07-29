@@ -51,6 +51,12 @@ module pspio_f90_lib_m
       implicit none
       type(pspio_f90_pspdata_t), intent(inout) :: pspdata
     end subroutine pspio_f90_pspdata_free
+
+    integer(pspio_cint) function pspio_f90_format_guessed(pspdata)
+      use pspio_f90_types_m
+      implicit none
+      type(pspio_f90_pspdata_t), intent(in) :: pspdata
+    end function pspio_f90_format_guessed
   end interface
 
   interface ! symbol
@@ -179,6 +185,14 @@ module pspio_f90_lib_m
       type(pspio_f90_pspdata_t), intent(in)  :: pspdata
       type(pspio_f90_state_t),   intent(out) :: states(*)
     end subroutine pspio_f90_pspdata_get_states
+
+    subroutine pspio_f90_pspdata_get_state(pspdata, i, state)
+      use pspio_f90_types_m
+      implicit none
+      type(pspio_f90_pspdata_t), intent(in)  :: pspdata
+      integer(pspio_cint), intent(in) :: i
+      type(pspio_f90_state_t),   intent(out) :: state
+    end subroutine pspio_f90_pspdata_get_state
   end interface
 
   interface ! n_potentials
@@ -210,6 +224,14 @@ module pspio_f90_lib_m
       type(pspio_f90_pspdata_t),   intent(in)  :: pspdata
       type(pspio_f90_potential_t), intent(out) :: potentials(*)
     end subroutine pspio_f90_pspdata_get_potentials
+
+    subroutine pspio_f90_pspdata_get_potential(pspdata, i, potential)
+      use pspio_f90_types_m
+      implicit none
+      type(pspio_f90_pspdata_t),   intent(in)  :: pspdata
+      integer(pspio_cint), intent(in) :: i
+      type(pspio_f90_potential_t), intent(out) :: potential
+    end subroutine pspio_f90_pspdata_get_potential
   end interface
 
   interface ! n_kbproj
@@ -242,6 +264,14 @@ module pspio_f90_lib_m
       type(pspio_f90_pspdata_t),   intent(in)  :: pspdata
       type(pspio_f90_projector_t), intent(out) :: kb_projectors(*)
     end subroutine pspio_f90_pspdata_get_kb_projectors
+
+    subroutine pspio_f90_pspdata_get_kb_projector(pspdata, i, kb_projector)
+      use pspio_f90_types_m
+      implicit none
+      type(pspio_f90_pspdata_t),   intent(in)  :: pspdata
+      integer(pspio_cint),intent(in) :: i
+      type(pspio_f90_projector_t), intent(out) :: kb_projector
+    end subroutine pspio_f90_pspdata_get_kb_projector
   end interface
 
   interface ! l_local
@@ -530,21 +560,34 @@ module pspio_f90_lib_m
 
   ! pspio_error
   interface
-    integer(pspio_cint) function pspio_f90_error_fetchall(err_msg)
+    subroutine pspio_f90_error_fetchall(err_msg)
       use pspio_f90_types_m, only:PSPIO_STRLEN_ERROR, pspio_cint
       implicit none
       character(len=PSPIO_STRLEN_ERROR), intent(out) :: err_msg
-    end function pspio_f90_error_fetchall
+    end subroutine pspio_f90_error_fetchall
 
-    integer(pspio_cint) function pspio_f90_error_flush()
+    subroutine pspio_f90_error_flush()
       use pspio_f90_types_m
       implicit none
-    end function pspio_f90_error_flush
+    end subroutine pspio_f90_error_flush
 
-    integer(pspio_cint) function pspio_f90_error_free()
+    subroutine pspio_f90_error_free()
       use pspio_f90_types_m
       implicit none
-    end function pspio_f90_error_free
+    end subroutine pspio_f90_error_free
+
+    integer(pspio_cint) function pspio_f90_error_get_last(routine)
+      use pspio_f90_types_m
+      implicit none
+      character(len=*), intent(in) :: routine
+    end function pspio_f90_error_get_last
+
+    subroutine pspio_f90_error_str(error_id, error_msg)
+      use pspio_f90_types_m
+      implicit none
+      integer, intent(in) :: error_id
+      character(len=PSPIO_STRLEN_ERROR), intent(out) :: error_msg
+    end subroutine pspio_f90_error_str
   end interface
 
   ! pspio_info

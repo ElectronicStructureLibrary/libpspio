@@ -130,7 +130,7 @@ void pspio_error_fetchall(char **err_str) {
     assert(cursor->routine != NULL);
 
     err_len  = 18;
-    err_len += strlen(pspio_error_str(cursor->id));
+    err_len += strlen(pspio_error_string(cursor->id));
     err_len += strlen(cursor->filename);
     err_len += strlen(cursor->routine);
     sprintf(buf, "%d", cursor->line);
@@ -140,7 +140,7 @@ void pspio_error_fetchall(char **err_str) {
     assert(tmp_str != NULL);
     sprintf(tmp_str, "  * in %s(%s):%d:\n      %s\n",
       cursor->filename, cursor->routine, cursor->line,
-      pspio_error_str(cursor->id));
+      pspio_error_string(cursor->id));
     *err_str = realloc(*err_str, strlen(*err_str)+err_len+1);
     if ( *err_str == NULL ) {
       fprintf(stderr,
@@ -233,12 +233,12 @@ void pspio_error_show(const int error_id, const char *filename,
   if ( (filename != NULL) && (routine != NULL) ) {
     fprintf(stderr, "  * in %s(%s):%d:\n", filename, routine, line);
   }
-  fprintf(stderr, "      %s\n", pspio_error_str(error_id));
+  fprintf(stderr, "      %s\n", pspio_error_string(error_id));
 }
 
 
-const char *pspio_error_str(const int pspio_errorid) {
-  switch (pspio_errorid)
+const char *pspio_error_string(const int error_id) {
+  switch (error_id)
     {
     case PSPIO_SUCCESS:
       return "success (PSPIO_SUCCESS)" ;

@@ -55,7 +55,7 @@ int interpolation_alloc(interpolation_t **interp, const int method, const int np
   case PSPIO_INTERP_JB_CSPLINE:
     //Not yet implemented
   default:
-    RETURN_WITH_ERROR(PSPIO_ENOSUPPORT);
+    RETURN_WITH_ERROR( PSPIO_ENOSUPPORT );
   }
 
   return PSPIO_SUCCESS;
@@ -63,6 +63,10 @@ int interpolation_alloc(interpolation_t **interp, const int method, const int np
 
 
 int interpolation_set(interpolation_t **interp, const pspio_mesh_t *mesh, const double *f) {
+#ifdef HAVE_GSL
+  int ierr;
+#endif
+
   assert(interp != NULL);
   assert(*interp != NULL);
   assert(mesh != NULL);
@@ -71,9 +75,8 @@ int interpolation_set(interpolation_t **interp, const pspio_mesh_t *mesh, const 
   switch ((*interp)->method) {
 #ifdef HAVE_GSL
   case PSPIO_INTERP_GSL_CSPLINE:
-    int ierr;
     ierr = gsl_spline_init((*interp)->gsl_spl, mesh->r, f, mesh->np);
-    if ( ierr ) {
+    if ( ierr != PSPIO_SUCCESS ) {
       RETURN_WITH_ERROR( PSPIO_EGSL );
     }
     break;
@@ -81,7 +84,7 @@ int interpolation_set(interpolation_t **interp, const pspio_mesh_t *mesh, const 
   case PSPIO_INTERP_JB_CSPLINE:
     //Not yet implemented
   default:
-    RETURN_WITH_ERROR(PSPIO_ENOSUPPORT);
+    RETURN_WITH_ERROR( PSPIO_ENOSUPPORT );
   }
   
   return PSPIO_SUCCESS;

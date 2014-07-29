@@ -8,6 +8,9 @@ test_program="./test_io"
 test -d "${pspdir}" || exit 1
 test -x "${test_program}" || exit 2
 
+# Stop at first error
+set -e
+
 # Header
 echo "### BEGIN test_io_multiple ###"
 echo ""
@@ -22,6 +25,10 @@ echo ""
 
 # Run UPF 1 test
 ${test_program} "${pspdir}/UPF/Li.UPF" "test_io_17.tmp" 17
+echo ""
+
+# Detect FHI format
+${test_program} "${pspdir}/fhi/Li.cpi" "test_io_detect.tmp"
 echo ""
 
 echo "### END test_io_multiple ###"

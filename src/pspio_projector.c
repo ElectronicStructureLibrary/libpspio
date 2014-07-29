@@ -45,14 +45,14 @@ int pspio_projector_alloc(pspio_projector_t **projector, const int np) {
   ierr = pspio_meshfunc_alloc(&(*projector)->proj, PSPIO_INTERP_GSL_CSPLINE, np);
   if ( ierr != PSPIO_SUCCESS ) {
     pspio_projector_free(projector);
-    RETURN_WITH_ERROR(ierr);
+    RETURN_WITH_ERROR( ierr );
   }
 
   (*projector)->qn = NULL;
   ierr = pspio_qn_alloc(&(*projector)->qn);
   if ( ierr != PSPIO_SUCCESS ) {
     pspio_projector_free(projector);
-    RETURN_WITH_ERROR(ierr);
+    RETURN_WITH_ERROR( ierr );
   }
 
   return PSPIO_SUCCESS;

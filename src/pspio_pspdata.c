@@ -48,7 +48,7 @@ int pspio_pspdata_init(pspio_pspdata_t **pspdata) {
   FULFILL_OR_EXIT(*pspdata != NULL, PSPIO_ENOMEM);
 
   // Nullify pointers and initialize all values to 0
-  (*pspdata)->format = PSPIO_FMT_UNKNOWN;
+  (*pspdata)->format_guessed = PSPIO_FMT_UNKNOWN;
   (*pspdata)->info = NULL;
   (*pspdata)->symbol = NULL;
   (*pspdata)->z = 0.0;
@@ -82,16 +82,13 @@ int pspio_pspdata_init(pspio_pspdata_t **pspdata) {
 }
 
 
-int pspio_pspdata_read(pspio_pspdata_t **pspdata, const int *file_format, 
+int pspio_pspdata_read(pspio_pspdata_t **pspdata, const int file_format, 
       const char *file_name) {
-  int ierr, fmt, psp_fmt;
+  int ierr, fmt;
   FILE * fp;
 
-  assert(file_format != NULL);
   assert(pspdata != NULL);
   assert(*pspdata != NULL);
-
-  psp_fmt = PSPIO_FMT_UNKNOWN;
 
   // Open file
   fp = fopen(file_name, "r");
@@ -100,7 +97,7 @@ int pspio_pspdata_read(pspio_pspdata_t **pspdata, const int *file_format,
   // Read from file
   ierr = PSPIO_ERROR;
   for (fmt=0; fmt<PSPIO_FMT_NFORMATS; fmt++) {
-    if ( (*file_format != PSPIO_FMT_UNKNOWN) && (fmt != *file_format) ) {
+    if ( (file_format != PSPIO_FMT_UNKNOWN) && (fmt != file_format) ) {
       continue;
     }
     
@@ -112,18 +109,16 @@ int pspio_pspdata_read(pspio_pspdata_t **pspdata, const int *file_format,
     FULFILL_OR_RETURN(fp != NULL, PSPIO_ENOFILE);
     rewind(fp);
 
+    fflush(stdout);
     switch (fmt) {
     case PSPIO_FMT_ABINIT_6:
       ierr = pspio_abinit_read(fp, pspdata, fmt);
-      psp_fmt = PSPIO_FMT_ABINIT_6;
       break;
     case PSPIO_FMT_FHI98PP:
       ierr = pspio_fhi_read(fp, pspdata);
-      psp_fmt = PSPIO_FMT_FHI98PP;
       break;
     case PSPIO_FMT_UPF:
       ierr = pspio_upf_read(fp, pspdata);
-      psp_fmt = PSPIO_FMT_UPF;
       break;
 
     default:
@@ -131,17 +126,22 @@ int pspio_pspdata_read(pspio_pspdata_t **pspdata, const int *file_format,
     }
 
     if (ierr != PSPIO_SUCCESS) pspio_pspdata_reset(pspdata);
-    if ( (ierr == PSPIO_SUCCESS) || (*file_format != PSPIO_FMT_UNKNOWN) ) break;
+
+    // Store the format
+    if ( (ierr == PSPIO_SUCCESS) || (file_format != PSPIO_FMT_UNKNOWN) ) {
+      (*pspdata)->format_guessed = fmt;
+      break;
+    }
   }
 
-  // Store the format
-  (*pspdata)->format = psp_fmt;
+  if ( ierr == PSPIO_SUCCESS ) {
+  }
 
   // Close file
   FULFILL_OR_RETURN( fclose(fp) == 0, PSPIO_EIO );
 
   // Make sure ierr is not silently ignored
-  RETURN_WITH_ERROR(ierr);
+  FULFILL_OR_RETURN(ierr == PSPIO_SUCCESS, ierr);
 
   // Create states lookup table
   SUCCEED_OR_RETURN( pspio_states_lookup_table((*pspdata)->n_states,
@@ -157,6 +157,7 @@ int pspio_pspdata_write(const pspio_pspdata_t *pspdata, const int file_format,
   int ierr;
 
   assert(pspdata != NULL);
+  assert(pspdata->qn_to_istate != NULL);
   
   // Open file
   fp = fopen(file_name, "w");
@@ -182,7 +183,7 @@ int pspio_pspdata_write(const pspio_pspdata_t *pspdata, const int file_format,
   FULFILL_OR_RETURN( fclose(fp) == 0, PSPIO_EIO );
 
   // Make sure ierr is not silently ignored
-  RETURN_WITH_ERROR(ierr);
+  RETURN_WITH_ERROR( ierr );
 
   return PSPIO_SUCCESS;
 }
