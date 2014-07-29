@@ -185,6 +185,12 @@ void FC_FUNC_(pspio_f90_pspdata_set_states, PSPIO_F90_PSPDATA_SET_STATES)
   ((pspio_pspdata_t *)(*pspdata))->states = ((pspio_state_t **) (*states));
 }
 
+void FC_FUNC_(pspio_f90_pspdata_get_state, PSPIO_F90_PSPDATA_GET_STATE)
+     (void ** pspdata, int *i, void ** state)
+{
+  *state = (void *) ((pspio_pspdata_t *)(*pspdata))->states[*i-1];
+}
+
 void FC_FUNC_(pspio_f90_pspdata_get_states, PSPIO_F90_PSPDATA_GET_STATES)
      (void ** pspdata, void *** states)
 {
@@ -217,6 +223,12 @@ void FC_FUNC_(pspio_f90_pspdata_get_potentials, PSPIO_F90_PSPDATA_GET_POTENTIALS
   *potentials = (void *) ((pspio_pspdata_t *)(*pspdata))->potentials;
 }
 
+void FC_FUNC_(pspio_f90_pspdata_get_potential, PSPIO_F90_PSPDATA_GET_POTENTIAL)
+     (void ** pspdata, int *i, void *** potential)
+{
+  *potential = (void *) ((pspio_pspdata_t *)(*pspdata))->potentials[*i-1];
+}
+
 // n_kbproj
 void FC_FUNC_(pspio_f90_pspdata_set_n_kbproj, PSPIO_F90_PSPDATA_SET_N_KBPROJ)
      (void ** pspdata, int *n_kbproj)
@@ -235,6 +247,13 @@ void FC_FUNC_(pspio_f90_pspdata_set_kb_projectors, PSPIO_F90_PSPDATA_SET_KB_PROJ
      (void ** pspdata, void *** kb_projectors)
 {
   ((pspio_pspdata_t *)(*pspdata))->kb_projectors = ((pspio_projector_t **) (*kb_projectors));
+}
+
+void FC_FUNC_(pspio_f90_pspdata_get_kb_projector, PSPIO_F90_PSPDATA_GET_KB_PROJECTOR)
+     (void ** pspdata, int *i, void ** kb_projector)
+{
+
+  *kb_projector = (void *) ((pspio_pspdata_t *)(*pspdata))->kb_projectors[*i-1];
 }
 
 void FC_FUNC_(pspio_f90_pspdata_get_kb_projectors, PSPIO_F90_PSPDATA_GET_KB_PROJECTORS)

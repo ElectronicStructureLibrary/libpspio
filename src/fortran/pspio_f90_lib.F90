@@ -179,6 +179,14 @@ module pspio_f90_lib_m
       type(pspio_f90_pspdata_t), intent(in)  :: pspdata
       type(pspio_f90_state_t),   intent(out) :: states(*)
     end subroutine pspio_f90_pspdata_get_states
+
+    subroutine pspio_f90_pspdata_get_state(pspdata, i, state)
+      use pspio_f90_types_m
+      implicit none
+      type(pspio_f90_pspdata_t), intent(in)  :: pspdata
+      integer(pspio_cint), intent(in) :: i
+      type(pspio_f90_state_t),   intent(out) :: state
+    end subroutine pspio_f90_pspdata_get_state
   end interface
 
   interface ! n_potentials
@@ -210,6 +218,14 @@ module pspio_f90_lib_m
       type(pspio_f90_pspdata_t),   intent(in)  :: pspdata
       type(pspio_f90_potential_t), intent(out) :: potentials(*)
     end subroutine pspio_f90_pspdata_get_potentials
+
+    subroutine pspio_f90_pspdata_get_potential(pspdata, i, potential)
+      use pspio_f90_types_m
+      implicit none
+      type(pspio_f90_pspdata_t),   intent(in)  :: pspdata
+      integer(pspio_cint), intent(in) :: i
+      type(pspio_f90_potential_t), intent(out) :: potential
+    end subroutine pspio_f90_pspdata_get_potential
   end interface
 
   interface ! n_kbproj
@@ -242,6 +258,14 @@ module pspio_f90_lib_m
       type(pspio_f90_pspdata_t),   intent(in)  :: pspdata
       type(pspio_f90_projector_t), intent(out) :: kb_projectors(*)
     end subroutine pspio_f90_pspdata_get_kb_projectors
+
+    subroutine pspio_f90_pspdata_get_kb_projector(pspdata, i, kb_projector)
+      use pspio_f90_types_m
+      implicit none
+      type(pspio_f90_pspdata_t),   intent(in)  :: pspdata
+      integer(pspio_cint),intent(in) :: i
+      type(pspio_f90_projector_t), intent(out) :: kb_projector
+    end subroutine pspio_f90_pspdata_get_kb_projector
   end interface
 
   interface ! l_local
