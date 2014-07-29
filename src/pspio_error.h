@@ -126,7 +126,7 @@ void pspio_error_show(const int error_id, const char *filename,
  * @param[in] pspio_errorid: integer identifying the error.
  * @return string with error message.
  */
-const char *pspio_error_str(const int pspio_errorid);
+const char *pspio_error_string(const int error_id);
 
 
 /**********************************************************************

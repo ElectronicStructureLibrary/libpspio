@@ -30,41 +30,56 @@
 
 
 int main(int argc, char *argv[]) {
-  int format;
+  int pio_fmt, np;
   pspio_pspdata_t *pspdata = NULL;
 
-  if(argc != 4){
-    printf("Usage:\n%s input_file output_file format\n", argv[0]);
+  if(argc < 3){
+    printf("Usage:\n%s input_file output_file [format]\n", argv[0]);
     return 1;
   }
-  format = atoi(argv[3]);
+  if ( argc < 4 ) {
+    pio_fmt = PSPIO_FMT_UNKNOWN;
+  } else {
+    pio_fmt = atoi(argv[3]);
+  }
 
   /* Display basic information */
   DEBUG_PRINT("%s - test_io\nReport bugs to %s\n\n", PACKAGE_STRING,
     PACKAGE_BUGREPORT);
   DEBUG_PRINT("=== BEGIN test_io ===\n\n");
 
-  /* init pspdata */
+  /* Init pspdata */
   DEBUG_PRINT("test_io: initializing pspdata\n");
   CHECK_STAT(pspio_pspdata_init(&pspdata), PSPIO_SUCCESS);
   DEBUG_PRINT("\n");
 
-  /* check parsing of file */
+  /* Check parsing of file */
   DEBUG_PRINT("test_io: parsing file %s\n", argv[1]);
-  CHECK_STAT(pspio_pspdata_read(&pspdata, &format, argv[1]), PSPIO_SUCCESS);
+  DEBUG_PRINT(
+    "test_io: before pspio_pspdata_read, status = %d, format = %d\n",
+    PSPIO_SUCCESS, pio_fmt);
+  CHECK_STAT(pspio_pspdata_read(&pspdata, pio_fmt, argv[1]), PSPIO_SUCCESS);
+  pio_fmt = pspdata->format_guessed;
   if ( pspio_error_get_last(NULL) == PSPIO_SUCCESS ) {
-    DEBUG_PRINT("test_io: after pspio_pspdata_read, status = %d, format = %d\n",
-      PSPIO_SUCCESS, format);
+    DEBUG_PRINT(
+      "test_io: after  pspio_pspdata_read, status = %d, format = %d\n",
+      PSPIO_SUCCESS, pio_fmt);
     DEBUG_PRINT("test_io: file parsing successful\n");
   }
   DEBUG_PRINT("\n");
 
-  /* check writing of file */
-  DEBUG_PRINT("test_io: writing file %s with format %d\n", argv[2], format);
-  CHECK_STAT(pspio_pspdata_write(pspdata, format, argv[2]), PSPIO_SUCCESS);
+  /* Extract some random data */
+  DEBUG_PRINT("test_io: extracting some data\n");
+  np = pspio_mesh_get_np(pspdata->mesh);
+  DEBUG_PRINT("test_io: number of points in the mesh = %d\n\n", np);
+
+  /* Check writing of file */
+  DEBUG_PRINT("test_io: writing file %s with format %d\n", argv[2], pio_fmt);
+  CHECK_STAT(pspio_pspdata_write(pspdata, pio_fmt, argv[2]), PSPIO_SUCCESS);
   if ( pspio_error_get_last(NULL) == PSPIO_SUCCESS ) {
-    DEBUG_PRINT("test_io: after pspio_pspdata_read, status = %d, format = %d\n",
-      PSPIO_SUCCESS, format);
+    DEBUG_PRINT(
+      "test_io: after pspio_pspdata_write, status = %d, format = %d\n",
+      PSPIO_SUCCESS, pio_fmt);
     DEBUG_PRINT("test_io: file writing successful\n");
   }
   DEBUG_PRINT("\n");
