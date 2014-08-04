@@ -65,6 +65,7 @@ module pspio_f90_types_m
   integer(pspio_cint), parameter, public :: PSPIO_EQN_DIRAC = 1
   integer(pspio_cint), parameter, public :: PSPIO_EQN_SCALAR_REL = 2
   integer(pspio_cint), parameter, public :: PSPIO_EQN_SCHRODINGER = 3
+  integer(pspio_cint), parameter, public :: PSPIO_SCM_UNKNOWN = 0
   integer(pspio_cint), parameter, public :: PSPIO_SCM_BHS = 1
   integer(pspio_cint), parameter, public :: PSPIO_SCM_GTH = 2
   integer(pspio_cint), parameter, public :: PSPIO_SCM_HAMANN = 3
@@ -75,6 +76,7 @@ module pspio_f90_types_m
   integer(pspio_cint), parameter, public :: PSPIO_SCM_RRKJ = 8
   integer(pspio_cint), parameter, public :: PSPIO_SCM_TM = 9
   integer(pspio_cint), parameter, public :: PSPIO_SCM_TM2 = 10
+  integer(pspio_cint), parameter, public :: PSPIO_SCM_RTM = 11
   integer(pspio_cint), parameter, public :: PSPIO_MESH_UNKNOWN = -1
   integer(pspio_cint), parameter, public :: PSPIO_MESH_NONE = 0
   integer(pspio_cint), parameter, public :: PSPIO_MESH_LOG1 = 1
@@ -123,5 +125,10 @@ module pspio_f90_types_m
     private
     integer, pointer :: buffer
   end type pspio_f90_xc_t
+
+  type pspio_f90_qn_t
+    private
+    integer, pointer :: buffer
+  end type pspio_f90_qn_t
 
 end module pspio_f90_types_m

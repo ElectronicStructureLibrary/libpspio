@@ -22,7 +22,11 @@ module pspio_f90_lib_m
 
   implicit none
 
-  ! pspio_pspdata
+
+  !----------------------------------------------------------------------------!
+  ! pspio_pspdata                                                              !
+  !----------------------------------------------------------------------------!
+
   interface ! Global routines
     integer(pspio_cint) function pspio_f90_pspdata_init(pspdata)
       use pspio_f90_types_m
@@ -190,9 +194,25 @@ module pspio_f90_lib_m
       use pspio_f90_types_m
       implicit none
       type(pspio_f90_pspdata_t), intent(in)  :: pspdata
-      integer(pspio_cint), intent(in) :: i
+      integer(pspio_cint),       intent(in)  :: i
       type(pspio_f90_state_t),   intent(out) :: state
     end subroutine pspio_f90_pspdata_get_state
+  end interface
+
+  interface ! scheme
+    subroutine pspio_f90_pspdata_set_scheme(pspdata, scheme)
+      use pspio_f90_types_m
+      implicit none
+      type(pspio_f90_pspdata_t), intent(inout) :: pspdata
+      integer(pspio_cint),       intent(in)    :: scheme
+    end subroutine pspio_f90_pspdata_set_scheme
+
+    subroutine pspio_f90_pspdata_get_scheme(pspdata, scheme)
+      use pspio_f90_types_m
+      implicit none
+      type(pspio_f90_pspdata_t), intent(in)  :: pspdata
+      integer(pspio_cint),       intent(out) :: scheme
+    end subroutine pspio_f90_pspdata_get_scheme
   end interface
 
   interface ! n_potentials
@@ -203,11 +223,12 @@ module pspio_f90_lib_m
       integer(pspio_cint),       intent(in)    :: n_potentials
     end subroutine pspio_f90_pspdata_set_n_potentials
 
-    integer(pspio_cint) function pspio_f90_pspdata_get_n_potentials(pspdata)
+    subroutine pspio_f90_pspdata_get_n_potentials(pspdata, n_potentials)
       use pspio_f90_types_m
       implicit none
       type(pspio_f90_pspdata_t), intent(in)  :: pspdata
-    end function pspio_f90_pspdata_get_n_potentials
+      integer(pspio_cint),       intent(out) :: n_potentials
+    end subroutine pspio_f90_pspdata_get_n_potentials
   end interface
 
   interface ! potentials
@@ -229,7 +250,7 @@ module pspio_f90_lib_m
       use pspio_f90_types_m
       implicit none
       type(pspio_f90_pspdata_t),   intent(in)  :: pspdata
-      integer(pspio_cint), intent(in) :: i
+      integer(pspio_cint),         intent(in) :: i
       type(pspio_f90_potential_t), intent(out) :: potential
     end subroutine pspio_f90_pspdata_get_potential
   end interface
@@ -269,7 +290,7 @@ module pspio_f90_lib_m
       use pspio_f90_types_m
       implicit none
       type(pspio_f90_pspdata_t),   intent(in)  :: pspdata
-      integer(pspio_cint),intent(in) :: i
+      integer(pspio_cint),         intent(in) :: i
       type(pspio_f90_projector_t), intent(out) :: kb_projector
     end subroutine pspio_f90_pspdata_get_kb_projector
   end interface
@@ -364,8 +385,63 @@ module pspio_f90_lib_m
     end subroutine pspio_f90_pspdata_rho_valence_eval_v
   end interface
 
-  ! pspio_mesh
-  interface
+
+  !----------------------------------------------------------------------------!
+  ! pspio_mesh                                                                 !
+  !----------------------------------------------------------------------------!
+
+  interface ! alloc
+    integer(pspio_cint) function pspio_f90_mesh_alloc(mesh, np)
+      use pspio_f90_types_m
+      implicit none
+      type(pspio_f90_mesh_t), intent(inout) :: mesh
+      integer(pspio_cint),    intent(in)    :: np
+    end function pspio_f90_mesh_alloc
+  end interface
+
+  interface ! set
+    integer(pspio_cint) function pspio_f90_mesh_set(mesh, type, a, b, r, rab)
+      use pspio_f90_types_m
+      implicit none
+      type(pspio_f90_mesh_t), intent(inout) :: mesh
+      integer(pspio_cint),    intent(in)    :: type
+      real(pspio_cdouble),    intent(in)    :: a
+      real(pspio_cdouble),    intent(in)    :: b
+      real(pspio_cdouble),    intent(in)    :: r(*)
+      real(pspio_cdouble),    intent(in)    :: rab(*)
+    end function pspio_f90_mesh_set
+  end interface
+
+  interface ! init_from_points
+    subroutine pspio_f90_mesh_init_from_points(mesh, r, rab)
+      use pspio_f90_types_m
+      implicit none
+      type(pspio_f90_mesh_t), intent(inout) :: mesh
+      real(pspio_cdouble),    intent(in)    :: r(*)
+      real(pspio_cdouble),    intent(in)    :: rab(*)
+    end subroutine pspio_f90_mesh_init_from_points
+  end interface
+
+  interface ! init_from_parameters
+    subroutine pspio_f90_mesh_init_from_parameters(mesh, type, a, b)
+      use pspio_f90_types_m
+      implicit none
+      type(pspio_f90_mesh_t), intent(inout) :: mesh
+      integer(pspio_cint),    intent(in)    :: type
+      real(pspio_cdouble),    intent(in)    :: a
+      real(pspio_cdouble),    intent(in)    :: b
+    end subroutine pspio_f90_mesh_init_from_parameters
+  end interface
+
+  interface ! free
+    subroutine pspio_f90_mesh_free(mesh)
+      use pspio_f90_types_m
+      implicit none
+      type(pspio_f90_mesh_t), intent(inout) :: mesh
+    end subroutine pspio_f90_mesh_free
+  end interface
+
+  interface ! get_info
     subroutine pspio_f90_mesh_get_info(mesh, mesh_type, np, a, b)
       use pspio_f90_types_m
       implicit none
@@ -377,7 +453,7 @@ module pspio_f90_lib_m
     end subroutine pspio_f90_mesh_get_info
   end interface
 
-  interface ! 
+  interface ! Np
     subroutine pspio_f90_mesh_get_np(mesh, np)
       use pspio_f90_types_m
       implicit none
@@ -386,25 +462,60 @@ module pspio_f90_lib_m
     end subroutine pspio_f90_mesh_get_np
   end interface
 
-  interface ! 
+  interface ! R
     subroutine pspio_f90_mesh_get_r(mesh, r)
       use pspio_f90_types_m
       implicit none
-      type(pspio_f90_mesh_t), intent(in)    :: mesh
+      type(pspio_f90_mesh_t), intent(in) :: mesh
       real(pspio_cdouble),   intent(out) :: r(*)
     end subroutine pspio_f90_mesh_get_r
   end interface
 
-  interface ! 
+  interface ! rab
     subroutine pspio_f90_mesh_get_rab(mesh, rab)
       use pspio_f90_types_m
       implicit none
-      type(pspio_f90_mesh_t), intent(in)    :: mesh
+      type(pspio_f90_mesh_t), intent(in)  :: mesh
       real(pspio_cdouble),    intent(out) :: rab(*)
     end subroutine pspio_f90_mesh_get_rab
   end interface
 
-  ! pspio_state
+
+  !----------------------------------------------------------------------------!
+  ! pspio_state                                                                !
+  !----------------------------------------------------------------------------!
+
+  interface ! alloc
+    integer(pspio_cint) function pspio_f90_state_alloc(state, np)
+      use pspio_f90_types_m
+      implicit none
+      type(pspio_f90_state_t), intent(inout) :: state
+      integer(pspio_cint),     intent(in)    :: np
+    end function pspio_f90_state_alloc
+  end interface
+
+  interface ! set
+    integer(pspio_cint) function pspio_f90_state_set(state, eigenval, qn, occ, rc, mesh, wf)
+      use pspio_f90_types_m
+      implicit none
+      type(pspio_f90_state_t), intent(inout) :: state
+      real(pspio_cdouble),     intent(in)    :: eigenval
+      type(pspio_f90_qn_t),    intent(in)    :: qn
+      real(pspio_cdouble),     intent(in)    :: occ
+      real(pspio_cdouble),     intent(in)    :: rc
+      type(pspio_f90_mesh_t),  intent(in)    :: mesh
+      real(pspio_cdouble),     intent(in)    :: wf(*)
+    end function pspio_f90_state_set
+  end interface
+
+  interface ! free
+    subroutine pspio_f90_state_free(state)
+      use pspio_f90_types_m
+      implicit none
+      type(pspio_f90_state_t), intent(inout) :: state
+    end subroutine pspio_f90_state_free
+  end interface
+
   interface pspio_f90_state_wf_eval
     subroutine pspio_f90_state_wf_eval_s(state, r, wf)
       use pspio_f90_types_m
@@ -444,7 +555,39 @@ module pspio_f90_lib_m
     end subroutine pspio_f90_state_get_occ
   end interface
 
-  ! pspio_potential
+
+  !----------------------------------------------------------------------------!
+  ! pspio_potential                                                            !
+  !----------------------------------------------------------------------------!
+
+  interface ! alloc
+    integer(pspio_cint) function pspio_f90_potential_alloc(potential, np)
+      use pspio_f90_types_m
+      implicit none
+      type(pspio_f90_potential_t), intent(inout) :: potential
+      integer(pspio_cint),         intent(in)    :: np
+    end function pspio_f90_potential_alloc
+  end interface
+
+  interface ! set
+    integer(pspio_cint) function pspio_f90_potential_set(potential, qn, mesh, v)
+      use pspio_f90_types_m
+      implicit none
+      type(pspio_f90_potential_t), intent(inout) :: potential
+      type(pspio_f90_qn_t),        intent(in)    :: qn
+      type(pspio_f90_mesh_t),      intent(in)    :: mesh
+      real(pspio_cdouble),         intent(in)    :: v(*)
+    end function pspio_f90_potential_set
+  end interface
+
+  interface ! free
+    subroutine pspio_f90_potential_free(potential)
+      use pspio_f90_types_m
+      implicit none
+      type(pspio_f90_potential_t), intent(inout) :: potential
+    end subroutine pspio_f90_potential_free
+  end interface
+
   interface pspio_f90_potential_eval
     subroutine pspio_f90_potential_eval_s(potential, r, v)
       use pspio_f90_types_m
@@ -464,7 +607,40 @@ module pspio_f90_lib_m
     end subroutine pspio_f90_potential_eval_v
   end interface pspio_f90_potential_eval
 
-  ! pspio_projector
+
+  !----------------------------------------------------------------------------!
+  ! pspio_projector                                                            !
+  !----------------------------------------------------------------------------!
+
+  interface ! alloc
+    integer(pspio_cint) function pspio_f90_projector_alloc(projector, np)
+      use pspio_f90_types_m
+      implicit none
+      type(pspio_f90_projector_t), intent(inout) :: projector
+      integer(pspio_cint),         intent(in)    :: np
+    end function pspio_f90_projector_alloc
+  end interface
+
+  interface ! set
+    integer(pspio_cint) function pspio_f90_projector_set(projector, qn, energy, mesh, proj)
+      use pspio_f90_types_m
+      implicit none
+      type(pspio_f90_projector_t), intent(inout) :: projector
+      type(pspio_f90_qn_t),        intent(in)    :: qn
+      real(pspio_cdouble),         intent(in)    :: energy
+      type(pspio_f90_mesh_t),      intent(in)    :: mesh
+      real(pspio_cdouble),         intent(in)    :: proj(*)
+    end function pspio_f90_projector_set
+  end interface
+
+  interface ! free
+    subroutine pspio_f90_projector_free(projector)
+      use pspio_f90_types_m
+      implicit none
+      type(pspio_f90_projector_t), intent(inout) :: projector
+    end subroutine pspio_f90_projector_free
+  end interface
+
   interface pspio_f90_projector_eval
     subroutine pspio_f90_projector_eval_s(projector, r, p)
       use pspio_f90_types_m
@@ -511,8 +687,76 @@ module pspio_f90_lib_m
     end subroutine pspio_f90_projector_get_j
   end interface
 
-  ! pspio_xc
-  interface !
+
+  !----------------------------------------------------------------------------!
+  ! pspio_xc                                                                   !
+  !----------------------------------------------------------------------------!
+
+  interface ! alloc
+    integer(pspio_cint) function pspio_f90_xc_alloc(xc)
+      use pspio_f90_types_m
+      implicit none
+      type(pspio_f90_xc_t), intent(inout) :: xc
+    end function pspio_f90_xc_alloc
+  end interface
+
+  interface ! free
+    subroutine pspio_f90_xc_free(xc)
+      use pspio_f90_types_m
+      implicit none
+      type(pspio_f90_xc_t), intent(inout) :: xc
+    end subroutine pspio_f90_xc_free
+  end interface
+
+  interface ! set_id
+    subroutine pspio_f90_xc_set_id(xc, exchange, correlation)
+      use pspio_f90_types_m
+      implicit none
+      type(pspio_f90_xc_t), intent(inout) :: xc
+      integer(pspio_cint),  intent(in)    :: exchange
+      integer(pspio_cint),  intent(in)    :: correlation
+    end subroutine pspio_f90_xc_set_id
+  end interface
+
+  interface
+    integer(pspio_cint) function pspio_f90_xc_set_nlcc_scheme(xc, nlcc_scheme)
+      use pspio_f90_types_m
+      implicit none
+      type(pspio_f90_xc_t), intent(inout) :: xc
+      integer(pspio_cint),  intent(in)    :: nlcc_scheme
+    end function pspio_f90_xc_set_nlcc_scheme
+  end interface
+
+  interface pspio_f90_xc_set_nlcc_density
+    integer(pspio_cint) function pspio_f90_xc_set_nlcc_density1(xc, mesh, cd)
+      use pspio_f90_types_m
+      implicit none
+      type(pspio_f90_xc_t),   intent(inout) :: xc
+      type(pspio_f90_mesh_t), intent(in)    :: mesh
+      real(pspio_cdouble),    intent(in)    :: cd(*)
+    end function pspio_f90_xc_set_nlcc_density1
+
+    integer(pspio_cint) function pspio_f90_xc_set_nlcc_density2(xc, mesh, cd, cdp)
+      use pspio_f90_types_m
+      implicit none
+      type(pspio_f90_xc_t),   intent(inout) :: xc
+      type(pspio_f90_mesh_t), intent(in)    :: mesh
+      real(pspio_cdouble),    intent(in)    :: cd(*)
+      real(pspio_cdouble),    intent(in)    :: cdp(*)
+    end function pspio_f90_xc_set_nlcc_density2
+
+    integer(pspio_cint) function pspio_f90_xc_set_nlcc_density3(xc, mesh, cd, cdp, cdpp)
+      use pspio_f90_types_m
+      implicit none
+      type(pspio_f90_xc_t),   intent(inout) :: xc
+      type(pspio_f90_mesh_t), intent(in)    :: mesh
+      real(pspio_cdouble),    intent(in)    :: cd(*)
+      real(pspio_cdouble),    intent(in)    :: cdp(*)
+      real(pspio_cdouble),    intent(in)    :: cdpp(*)
+    end function pspio_f90_xc_set_nlcc_density3
+  end interface
+
+  interface ! get_correlation
     subroutine pspio_f90_xc_get_correlation(xc, correlation)
       use pspio_f90_types_m
       implicit none
@@ -521,7 +765,7 @@ module pspio_f90_lib_m
     end subroutine pspio_f90_xc_get_correlation
   end interface
 
-  interface !
+  interface ! get_exchange
     subroutine pspio_f90_xc_get_exchange(xc, exchange)
       use pspio_f90_types_m
       implicit none
@@ -558,7 +802,54 @@ module pspio_f90_lib_m
     end subroutine pspio_f90_xc_nlcc_density_eval_v
   end interface
 
-  ! pspio_error
+
+  !----------------------------------------------------------------------------!
+  ! pspio_qn                                                                   !
+  !----------------------------------------------------------------------------!
+
+  interface ! alloc
+    integer(pspio_cint) function pspio_f90_qn_alloc(qn)
+      use pspio_f90_types_m
+      implicit none
+      type(pspio_f90_qn_t), intent(inout) :: qn
+    end function pspio_f90_qn_alloc
+  end interface
+
+  interface ! free
+    subroutine pspio_f90_qn_free(qn)
+      use pspio_f90_types_m
+      implicit none
+      type(pspio_f90_qn_t), intent(inout) :: qn
+    end subroutine pspio_f90_qn_free
+  end interface
+
+  interface ! get
+    subroutine pspio_f90_qn_get(qn, n, l, j)
+      use pspio_f90_types_m
+      implicit none
+      type(pspio_f90_qn_t), intent(in)  :: qn
+      real(pspio_cint),     intent(out) :: n
+      real(pspio_cint),     intent(out) :: l
+      real(pspio_cdouble),  intent(out) :: j
+    end subroutine pspio_f90_qn_get
+  end interface
+
+  interface ! set
+    integer(pspio_cint) function pspio_f90_qn_set(qn, n, l, j)
+      use pspio_f90_types_m
+      implicit none
+      type(pspio_f90_qn_t), intent(inout) :: qn
+      integer(pspio_cint),  intent(in)    :: n
+      integer(pspio_cint),  intent(in)    :: l
+      real(pspio_cdouble),  intent(in)    :: j
+    end function pspio_f90_qn_set
+  end interface
+
+
+  !----------------------------------------------------------------------------!
+  ! pspio_error                                                                !
+  !----------------------------------------------------------------------------!
+
   interface
     subroutine pspio_f90_error_fetchall(err_msg)
       use pspio_f90_types_m, only:PSPIO_STRLEN_ERROR, pspio_cint
