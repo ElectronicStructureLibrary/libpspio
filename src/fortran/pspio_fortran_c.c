@@ -676,7 +676,7 @@ void FC_FUNC_(pspio_f90_state_get_qn, PSPIO_F90_STATE_GET_QN)
 
 // state_get_occ
 void FC_FUNC_(pspio_f90_state_get_occ, PSPIO_F90_STATE_GET_OCC)
-     (void ** state, int * occ)
+     (void ** state, double * occ)
 {
   *occ = pspio_state_get_occ((pspio_state_t *)(*state));
 }
