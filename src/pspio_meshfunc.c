@@ -33,7 +33,7 @@
  * Global routines                                                    *
  **********************************************************************/
 
-int pspio_meshfunc_alloc(pspio_meshfunc_t **func, const int interp_method, const int np) {
+int pspio_meshfunc_alloc(pspio_meshfunc_t **func, const int np) {
   int ierr;
 
   assert(func != NULL);
@@ -50,22 +50,26 @@ int pspio_meshfunc_alloc(pspio_meshfunc_t **func, const int interp_method, const
     RETURN_WITH_ERROR( ierr );
   }
 
-  (*func)->interp_method = interp_method;
+#ifdef HAVE_GSL
+  (*func)->interp_method = PSPIO_INTERP_GSL_CSPLINE;
+#else
+  (*func)->interp_method = PSPIO_INTERP_JB_CSPLINE;
+#endif
 
   (*func)->f = (double *) malloc (np * sizeof(double));
   FULFILL_OR_EXIT( (*func)->f != NULL, PSPIO_ENOMEM );
   memset((*func)->f, 0, np*sizeof(double));
-  SUCCEED_OR_RETURN( interpolation_alloc(&(*func)->f_interp, interp_method, np) );
+  SUCCEED_OR_RETURN( interpolation_alloc(&(*func)->f_interp, (*func)->interp_method, np) );
 
   (*func)->fp = (double *) malloc (np * sizeof(double));
   FULFILL_OR_EXIT( (*func)->fp != NULL, PSPIO_ENOMEM );
   memset((*func)->fp, 0, np*sizeof(double));
-  SUCCEED_OR_RETURN( interpolation_alloc(&(*func)->fp_interp, interp_method, np) );
+  SUCCEED_OR_RETURN( interpolation_alloc(&(*func)->fp_interp, (*func)->interp_method, np) );
 
   (*func)->fpp = (double *) malloc (np * sizeof(double));
   FULFILL_OR_EXIT( (*func)->fpp != NULL, PSPIO_ENOMEM );
   memset((*func)->fpp, 0, np*sizeof(double));
-  SUCCEED_OR_RETURN( interpolation_alloc(&(*func)->fpp_interp, interp_method, np) );
+  SUCCEED_OR_RETURN( interpolation_alloc(&(*func)->fpp_interp, (*func)->interp_method, np) );
 
   return PSPIO_SUCCESS;
 }
@@ -112,7 +116,7 @@ int pspio_meshfunc_copy(pspio_meshfunc_t **dst, const pspio_meshfunc_t *src) {
   assert(src != NULL);
 
   if ( *dst == NULL ) {
-    SUCCEED_OR_RETURN( pspio_meshfunc_alloc(dst, src->interp_method, src->mesh->np) );
+    SUCCEED_OR_RETURN( pspio_meshfunc_alloc(dst, src->mesh->np) );
 
   } else {
     /* All the interpolation objects of dst must be free, otherwise we might have 

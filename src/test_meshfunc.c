@@ -61,11 +61,11 @@ int main(void) {
 
   /* Check creation and destruction of mesh functions */
   DEBUG_PRINT("test_meshfunc: creating f1\n");
-  CHECK_STAT(pspio_meshfunc_alloc(&f1, PSPIO_INTERP_GSL_CSPLINE, np), PSPIO_SUCCESS);
+  CHECK_STAT(pspio_meshfunc_alloc(&f1, np), PSPIO_SUCCESS);
   DEBUG_PRINT("test_meshfunc: creating f2\n");
-  CHECK_STAT(pspio_meshfunc_alloc(&f2, PSPIO_INTERP_GSL_CSPLINE, np), PSPIO_SUCCESS);
+  CHECK_STAT(pspio_meshfunc_alloc(&f2, np), PSPIO_SUCCESS);
   DEBUG_PRINT("test_meshfunc: creating f3\n");
-  CHECK_STAT(pspio_meshfunc_alloc(&f3, PSPIO_INTERP_GSL_CSPLINE, np), PSPIO_SUCCESS);
+  CHECK_STAT(pspio_meshfunc_alloc(&f3, np), PSPIO_SUCCESS);
   DEBUG_PRINT("test_meshfunc: destroying f3\n");
   pspio_meshfunc_free(&f3);
   DEBUG_PRINT("\n");

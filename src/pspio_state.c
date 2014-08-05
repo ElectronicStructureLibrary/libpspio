@@ -44,7 +44,7 @@ int pspio_state_alloc(pspio_state_t **state, const int np) {
   FULFILL_OR_EXIT( *state != NULL, PSPIO_ENOMEM );
 
   (*state)->wf = NULL;
-  ierr = pspio_meshfunc_alloc(&(*state)->wf, PSPIO_INTERP_GSL_CSPLINE, np);
+  ierr = pspio_meshfunc_alloc(&(*state)->wf, np);
   if ( ierr != PSPIO_SUCCESS ) {
     pspio_state_free(state);
     RETURN_WITH_ERROR( ierr );
