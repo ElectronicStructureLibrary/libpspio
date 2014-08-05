@@ -83,7 +83,7 @@ int interpolation_alloc(interpolation_t **interp, const int method, const int np
  * @param[in] f: values of the function on the mesh.
  * @return error code
  */
-int interpolation_set(interpolation_t **interp, const pspio_mesh_t *mesh, const double *f);
+int interpolation_set(interpolation_t *interp, const pspio_mesh_t *mesh, const double *f);
 
 
 /**

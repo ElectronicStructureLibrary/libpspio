@@ -83,7 +83,7 @@ int pspio_meshfunc_alloc(pspio_meshfunc_t **func, const int interp_method, const
  * @note The func pointer has to be allocated first with the 
  *       pspio_meshfunc_alloc method.
  */
-int pspio_meshfunc_set(pspio_meshfunc_t **func, const pspio_mesh_t *mesh, 
+int pspio_meshfunc_set(pspio_meshfunc_t *func, const pspio_mesh_t *mesh, 
 		       const double *f, const double *fp, const double *fpp);
 
 

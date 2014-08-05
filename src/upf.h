@@ -49,7 +49,7 @@
  * @param[inout] pspdata the data structure
  * @return error code
  */
-int upf_read_info(FILE *fp, pspio_pspdata_t **pspdata);
+int upf_read_info(FILE *fp, pspio_pspdata_t *pspdata);
 
 /**
  * Read the UPF header
@@ -57,7 +57,7 @@ int upf_read_info(FILE *fp, pspio_pspdata_t **pspdata);
  * @param[inout] pspdata the data structure
  * @return error code
  */
-int upf_read_header(FILE *fp, int *np, pspio_pspdata_t **pspdata);
+int upf_read_header(FILE *fp, int *np, pspio_pspdata_t *pspdata);
 
 /**
  * Read the mesh
@@ -65,7 +65,7 @@ int upf_read_header(FILE *fp, int *np, pspio_pspdata_t **pspdata);
  * @param[inout] pspdata the data structure
  * @return error code
  */
-int upf_read_mesh(FILE *fp, const int np, pspio_pspdata_t **pspdata);
+int upf_read_mesh(FILE *fp, const int np, pspio_pspdata_t *pspdata);
 
 /**
  * Read the non-linear core-corrections
@@ -73,7 +73,7 @@ int upf_read_mesh(FILE *fp, const int np, pspio_pspdata_t **pspdata);
  * @param[inout] pspdata the data structure
  * @return error code
  */
-int upf_read_nlcc(FILE *fp, const int np, pspio_pspdata_t **pspdata);
+int upf_read_nlcc(FILE *fp, const int np, pspio_pspdata_t *pspdata);
 
 /**
  * Read the non-local projectors
@@ -81,7 +81,7 @@ int upf_read_nlcc(FILE *fp, const int np, pspio_pspdata_t **pspdata);
  * @param[inout] pspdata the data structure
  * @return error code
  */
-int upf_read_nonlocal(FILE *fp, const int np, pspio_pspdata_t **pspdata);
+int upf_read_nonlocal(FILE *fp, const int np, pspio_pspdata_t *pspdata);
 
 /**
  * Read the local part of the pseudos
@@ -89,7 +89,7 @@ int upf_read_nonlocal(FILE *fp, const int np, pspio_pspdata_t **pspdata);
  * @param[inout] pspdata the data structure
  * @return error code
  */
-int upf_read_local(FILE *fp, const int np, pspio_pspdata_t **pspdata);
+int upf_read_local(FILE *fp, const int np, pspio_pspdata_t *pspdata);
 
 /**
  * Read the pseudo-wavefunctions
@@ -97,7 +97,7 @@ int upf_read_local(FILE *fp, const int np, pspio_pspdata_t **pspdata);
  * @param[inout] pspdata the data structure
  * @return error code
  */
-int upf_read_pswfc(FILE *fp, const int np, pspio_pspdata_t **pspdata);
+int upf_read_pswfc(FILE *fp, const int np, pspio_pspdata_t *pspdata);
 
 /**
  * Read the valence electronic charge
@@ -105,7 +105,7 @@ int upf_read_pswfc(FILE *fp, const int np, pspio_pspdata_t **pspdata);
  * @param[inout] pspdata the data structure
  * @return error code
  */
-int upf_read_rhoatom(FILE *fp, const int np, pspio_pspdata_t **pspdata);
+int upf_read_rhoatom(FILE *fp, const int np, pspio_pspdata_t *pspdata);
 
 
 

@@ -65,17 +65,17 @@ int pspio_mesh_alloc(pspio_mesh_t **mesh, const int np) {
 }
 
 
-int pspio_mesh_set(pspio_mesh_t **mesh, const int type, const double a, 
+int pspio_mesh_set(pspio_mesh_t *mesh, const int type, const double a, 
        const double b, const double *r, const double *rab) {
-  assert((*mesh) != NULL);
-  assert((*mesh)->r != NULL);
-  assert((*mesh)->rab != NULL);
+  assert(mesh != NULL);
+  assert(mesh->r != NULL);
+  assert(mesh->rab != NULL);
 
-  (*mesh)->type = type;
-  (*mesh)->a = a;
-  (*mesh)->a = b;
-  memcpy((*mesh)->r, r, (*mesh)->np * sizeof(double));
-  memcpy((*mesh)->rab, rab, (*mesh)->np * sizeof(double));
+  mesh->type = type;
+  mesh->a = a;
+  mesh->a = b;
+  memcpy(mesh->r, r, mesh->np * sizeof(double));
+  memcpy(mesh->rab, rab, mesh->np * sizeof(double));
 
   return PSPIO_SUCCESS;
 }
@@ -98,119 +98,119 @@ int pspio_mesh_copy(pspio_mesh_t **dst, const pspio_mesh_t *src) {
 }
 
 
-void pspio_mesh_init_from_points(pspio_mesh_t **mesh, const double *r, 
+void pspio_mesh_init_from_points(pspio_mesh_t *mesh, const double *r, 
       const double *rab) {
   int i;
   double tol = 5.0e-10;
 
-  assert(*mesh != NULL);
-  assert((*mesh)->r != NULL);
-  assert((*mesh)->rab != NULL);
+  assert(mesh != NULL);
+  assert(mesh->r != NULL);
+  assert(mesh->rab != NULL);
 
   // Init mesh
-  memcpy((*mesh)->r, r, (*mesh)->np * sizeof(double));
+  memcpy(mesh->r, r, mesh->np * sizeof(double));
   if ( rab != NULL ) {
-    memcpy((*mesh)->rab, rab, (*mesh)->np * sizeof(double));
+    memcpy(mesh->rab, rab, mesh->np * sizeof(double));
   }
-  (*mesh)->type = PSPIO_MESH_UNKNOWN;
+  mesh->type = PSPIO_MESH_UNKNOWN;
 
   // Try linear mesh
-  if ( (*mesh)->type == PSPIO_MESH_UNKNOWN ) {
-    (*mesh)->a = r[1] - r[2];
-    (*mesh)->b = r[0];
-    if ( fabs(r[2] - (3.0*(*mesh)->a + (*mesh)->b)) < tol ) {
-      (*mesh)->type = PSPIO_MESH_LINEAR;
+  if ( mesh->type == PSPIO_MESH_UNKNOWN ) {
+    mesh->a = r[1] - r[2];
+    mesh->b = r[0];
+    if ( fabs(r[2] - (3.0*mesh->a + mesh->b)) < tol ) {
+      mesh->type = PSPIO_MESH_LINEAR;
       if ( rab != NULL ) {
-        for (i=0; i<(*mesh)->np; i++) {
-          if ( fabs(rab[i] - (*mesh)->a) > tol ) {
-            (*mesh)->type = PSPIO_MESH_UNKNOWN;
+        for (i=0; i<mesh->np; i++) {
+          if ( fabs(rab[i] - mesh->a) > tol ) {
+            mesh->type = PSPIO_MESH_UNKNOWN;
             break;
           }
         }
       } else {
-        for (i=0; i<(*mesh)->np; i++) {
-          (*mesh)->rab[i] = (*mesh)->a;
+        for (i=0; i<mesh->np; i++) {
+          mesh->rab[i] = mesh->a;
         }
       }
     }
   }
 
   // Try log1 mesh
-  if ( (*mesh)->type == PSPIO_MESH_UNKNOWN ) {
-    (*mesh)->a = log(r[1]/r[0]);
-    (*mesh)->b = r[0]/exp((*mesh)->a);
-    if ( fabs(r[2] - ((*mesh)->b*exp((*mesh)->a*3.0))) < tol ) {
-      (*mesh)->type = PSPIO_MESH_LOG1;
+  if ( mesh->type == PSPIO_MESH_UNKNOWN ) {
+    mesh->a = log(r[1]/r[0]);
+    mesh->b = r[0]/exp(mesh->a);
+    if ( fabs(r[2] - (mesh->b*exp(mesh->a*3.0))) < tol ) {
+      mesh->type = PSPIO_MESH_LOG1;
       if ( rab != NULL ) {
-        for (i=0; i<(*mesh)->np; i++) {
-          if ( fabs(rab[i] - (*mesh)->a) > tol ) {
-            (*mesh)->type = PSPIO_MESH_UNKNOWN;
+        for (i=0; i<mesh->np; i++) {
+          if ( fabs(rab[i] - mesh->a) > tol ) {
+            mesh->type = PSPIO_MESH_UNKNOWN;
             break;
           }
         }
       } else {
-        for (i=0; i<(*mesh)->np; i++) {
-          (*mesh)->rab[i] = (*mesh)->a;
+        for (i=0; i<mesh->np; i++) {
+          mesh->rab[i] = mesh->a;
         }
       }
     }
   }
 
   // Try log2 mesh
-  if ( (*mesh)->type == PSPIO_MESH_UNKNOWN ) {
-    (*mesh)->a = log(r[1]/r[0] - 1.0);
-    (*mesh)->b = r[0]/(exp((*mesh)->a) - 1.0);
-    if ( fabs(r[2] - (*mesh)->b*(exp((*mesh)->a*3.0 - 1.0))) < tol ) {
-      (*mesh)->type = PSPIO_MESH_LOG2;
+  if ( mesh->type == PSPIO_MESH_UNKNOWN ) {
+    mesh->a = log(r[1]/r[0] - 1.0);
+    mesh->b = r[0]/(exp(mesh->a) - 1.0);
+    if ( fabs(r[2] - mesh->b*(exp(mesh->a*3.0 - 1.0))) < tol ) {
+      mesh->type = PSPIO_MESH_LOG2;
       if ( rab != NULL ) {
-        for (i=0; i<(*mesh)->np; i++) {
-          if ( fabs(rab[i] - (*mesh)->a) > tol ) {
-            (*mesh)->type = PSPIO_MESH_UNKNOWN;
+        for (i=0; i<mesh->np; i++) {
+          if ( fabs(rab[i] - mesh->a) > tol ) {
+            mesh->type = PSPIO_MESH_UNKNOWN;
             break;
           }
         }
       } else {
-        for (i=0; i<(*mesh)->np; i++) {
-          (*mesh)->rab[i] = (*mesh)->a;
+        for (i=0; i<mesh->np; i++) {
+          mesh->rab[i] = mesh->a;
         }
       }
     }
   }
 
   // Unable to determine mesh type
-  if ( (*mesh)->type == PSPIO_MESH_UNKNOWN ) {
-    (*mesh)->a = 0.0;
-    (*mesh)->b = 0.0;
+  if ( mesh->type == PSPIO_MESH_UNKNOWN ) {
+    mesh->a = 0.0;
+    mesh->b = 0.0;
   }
 }
 
 
-void pspio_mesh_init_from_parameters(pspio_mesh_t **mesh, const int type, 
+void pspio_mesh_init_from_parameters(pspio_mesh_t *mesh, const int type, 
        const double a, const double b) {
   int i;
 
-  assert(*mesh != NULL);
-  assert((*mesh)->r != NULL);
-  assert((*mesh)->rab != NULL);
+  assert(mesh != NULL);
+  assert(mesh->r != NULL);
+  assert(mesh->rab != NULL);
   assert(type == PSPIO_MESH_LINEAR || type == PSPIO_MESH_LOG1 || type == PSPIO_MESH_LOG2);
 
-  (*mesh)->type = type;
-  (*mesh)->a = a;
-  (*mesh)->b = b;
+  mesh->type = type;
+  mesh->a = a;
+  mesh->b = b;
 
-  for (i=0; i<(*mesh)->np; i++) {
+  for (i=0; i<mesh->np; i++) {
     switch (type) {
     case PSPIO_MESH_LINEAR:
-      (*mesh)->r[i] = a*(i+1) + b;
-      (*mesh)->rab[i] = a;
+      mesh->r[i] = a*(i+1) + b;
+      mesh->rab[i] = a;
       break;
     case PSPIO_MESH_LOG1:
-      (*mesh)->r[i] = b*exp(a*(i+1));
-      (*mesh)->rab[i] = a*(*mesh)->r[i];
+      mesh->r[i] = b*exp(a*(i+1));
+      mesh->rab[i] = a*mesh->r[i];
       break;
     case PSPIO_MESH_LOG2:
-      (*mesh)->r[i] = b*exp(a*(i+1) - 1.0);
-      (*mesh)->rab[i] = a*(*mesh)->r[i];
+      mesh->r[i] = b*exp(a*(i+1) - 1.0);
+      mesh->rab[i] = a*mesh->r[i];
       break;
     }
   }

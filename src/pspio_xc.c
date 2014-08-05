@@ -48,6 +48,25 @@ int pspio_xc_alloc(pspio_xc_t **xc) {
 }
 
 
+int pspio_xc_copy(pspio_xc_t **dst, const pspio_xc_t *src) {
+  assert(src != NULL);
+
+  if ( *dst == NULL ) {
+    SUCCEED_OR_RETURN( pspio_xc_alloc(dst) );
+  }
+
+  (*dst)->exchange = src->exchange;
+  (*dst)->correlation = src->correlation;
+  (*dst)->nlcc_scheme = src->nlcc_scheme;
+
+  if (src->nlcc_scheme != PSPIO_NLCC_NONE) {
+    SUCCEED_OR_RETURN( pspio_meshfunc_copy(&(*dst)->nlcc_dens, src->nlcc_dens) );
+  }
+
+  return PSPIO_SUCCESS;
+}
+
+
 void pspio_xc_free(pspio_xc_t **xc){
 
   if (*xc != NULL) {
@@ -64,16 +83,16 @@ void pspio_xc_free(pspio_xc_t **xc){
  * Atomic routines                                                    *
  **********************************************************************/
 
-void pspio_xc_set_id(pspio_xc_t **xc, const int exchange,
+void pspio_xc_set_id(pspio_xc_t *xc, const int exchange,
        const int correlation) {
-  assert(*xc != NULL);
+  assert(xc != NULL);
 
-  (*xc)->exchange = exchange;
-  (*xc)->correlation = correlation;
+  xc->exchange = exchange;
+  xc->correlation = correlation;
 }
 
-int pspio_xc_set_nlcc_scheme(pspio_xc_t **xc, const int nlcc_scheme) {
-  assert(*xc != NULL);
+int pspio_xc_set_nlcc_scheme(pspio_xc_t *xc, const int nlcc_scheme) {
+  assert(xc != NULL);
 
   switch (nlcc_scheme) {
     case PSPIO_NLCC_NONE:
@@ -87,26 +106,25 @@ int pspio_xc_set_nlcc_scheme(pspio_xc_t **xc, const int nlcc_scheme) {
     default:
       return PSPIO_EVALUE;
   }
-  (*xc)->nlcc_scheme = nlcc_scheme;
+  xc->nlcc_scheme = nlcc_scheme;
 
   return PSPIO_SUCCESS;
 }
 
-int pspio_xc_set_nlcc_density(pspio_xc_t **xc, const pspio_mesh_t *mesh,
+int pspio_xc_set_nlcc_density(pspio_xc_t *xc, const pspio_mesh_t *mesh,
       const double *cd, const double *cdp, const double *cdpp) {
   int ierr;
 
-  assert(*xc != NULL);  
-  assert(&(*xc)->nlcc_scheme != PSPIO_NLCC_NONE);
+  assert(xc != NULL);  
+  assert(xc->nlcc_scheme != PSPIO_NLCC_NONE);
 
-  ierr = pspio_meshfunc_alloc(&(*xc)->nlcc_dens, PSPIO_INTERP_GSL_CSPLINE, pspio_mesh_get_np(mesh));
+  ierr = pspio_meshfunc_alloc(&xc->nlcc_dens, PSPIO_INTERP_GSL_CSPLINE, pspio_mesh_get_np(mesh));
   if ( ierr != PSPIO_SUCCESS ) {
-    pspio_meshfunc_free(&(*xc)->nlcc_dens);
+    pspio_meshfunc_free(&xc->nlcc_dens);
     RETURN_WITH_ERROR( ierr );
   }
 
-  SUCCEED_OR_RETURN( pspio_meshfunc_set(&(*xc)->nlcc_dens, mesh, cd, cdp,
-    cdpp) );
+  SUCCEED_OR_RETURN( pspio_meshfunc_set(xc->nlcc_dens, mesh, cd, cdp, cdpp) );
 
   return PSPIO_SUCCESS;
 }

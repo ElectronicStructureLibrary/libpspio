@@ -82,15 +82,15 @@ void pspio_qn_get(const pspio_qn_t *qn, int *n, int *l, double *j) {
 }
 
 
-int pspio_qn_set(pspio_qn_t **qn, const int n, const int l, const double j) {
-  assert((qn != NULL) && (*qn != NULL));
+int pspio_qn_set(pspio_qn_t *qn, const int n, const int l, const double j) {
+  assert(qn != NULL);
 
-  FULFILL_OR_RETURN( l >= 0, PSPIO_EVALUE );
+  FULFILL_OR_RETURN( l >= -1, PSPIO_EVALUE );
   FULFILL_OR_RETURN( (j == 0.0) || (fabs(j - (double)l) - 0.5 < 1.0e-8), PSPIO_EVALUE);
 
-  (*qn)->n = n;
-  (*qn)->l = l;
-  (*qn)->j = j;
+  qn->n = n;
+  qn->l = l;
+  qn->j = j;
 
   return PSPIO_SUCCESS;
 }

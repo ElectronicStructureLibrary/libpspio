@@ -59,17 +59,30 @@ int pspio_potential_alloc(pspio_potential_t **potential, const int np) {
 }
 
 
-int pspio_potential_set(pspio_potential_t **potential, const pspio_qn_t *qn,
+int pspio_potential_set(pspio_potential_t *potential, const pspio_qn_t *qn,
       const pspio_mesh_t *mesh, const double *vofr) {
 
-  assert((*potential) != NULL);
+  assert(potential != NULL);
   assert(qn != NULL);
   assert(mesh != NULL);
   assert(vofr != NULL);
 
-  SUCCEED_OR_RETURN( pspio_qn_copy(&(*potential)->qn, qn) );
-  SUCCEED_OR_RETURN( pspio_meshfunc_set(&(*potential)->v, mesh, vofr,
-    NULL, NULL) );
+  SUCCEED_OR_RETURN( pspio_qn_copy(&potential->qn, qn) );
+  SUCCEED_OR_RETURN( pspio_meshfunc_set(potential->v, mesh, vofr, NULL, NULL) );
+
+  return PSPIO_SUCCESS;
+}
+
+
+int pspio_potential_copy(pspio_potential_t **dst, const pspio_potential_t *src) {
+  assert(src != NULL);
+
+  if ( *dst == NULL ) {
+    SUCCEED_OR_RETURN( pspio_potential_alloc(dst, src->v->mesh->np) );
+  }
+
+  SUCCEED_OR_RETURN( pspio_meshfunc_copy(&(*dst)->v, src->v) );
+  SUCCEED_OR_RETURN( pspio_qn_copy(&(*dst)->qn, src->qn) );
 
   return PSPIO_SUCCESS;
 }

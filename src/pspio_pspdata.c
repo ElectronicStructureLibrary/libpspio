@@ -20,6 +20,7 @@
 
 #include <stdio.h>
 #include <assert.h>
+#include <string.h>
 
 #include "pspio_common.h"
 #include "pspio_error.h"
@@ -50,7 +51,9 @@ int pspio_pspdata_init(pspio_pspdata_t **pspdata) {
   // Nullify pointers and initialize all values to 0
   (*pspdata)->format_guessed = PSPIO_FMT_UNKNOWN;
   (*pspdata)->info = NULL;
-  (*pspdata)->symbol = NULL;
+  (*pspdata)->symbol = (char *) malloc (3*sizeof(char)); //This string has a fixed lenght, so we allocate the memory here
+  FULFILL_OR_EXIT((*pspdata)->symbol != NULL, PSPIO_ENOMEM);
+  sprintf((*pspdata)->symbol, "   ");
   (*pspdata)->z = 0.0;
   (*pspdata)->zvalence = 0.0;
   (*pspdata)->nelvalence = 0.0;
@@ -82,13 +85,12 @@ int pspio_pspdata_init(pspio_pspdata_t **pspdata) {
 }
 
 
-int pspio_pspdata_read(pspio_pspdata_t **pspdata, const int file_format, 
+int pspio_pspdata_read(pspio_pspdata_t *pspdata, const int file_format, 
       const char *file_name) {
   int ierr, fmt;
   FILE * fp;
 
   assert(pspdata != NULL);
-  assert(*pspdata != NULL);
 
   // Open file
   fp = fopen(file_name, "r");
@@ -129,7 +131,7 @@ int pspio_pspdata_read(pspio_pspdata_t **pspdata, const int file_format,
 
     // Store the format
     if ( (ierr == PSPIO_SUCCESS) || (file_format != PSPIO_FMT_UNKNOWN) ) {
-      (*pspdata)->format_guessed = fmt;
+      pspdata->format_guessed = fmt;
       break;
     }
   }
@@ -144,21 +146,20 @@ int pspio_pspdata_read(pspio_pspdata_t **pspdata, const int file_format,
   FULFILL_OR_RETURN(ierr == PSPIO_SUCCESS, ierr);
 
   // Create states lookup table
-  SUCCEED_OR_RETURN( pspio_states_lookup_table((*pspdata)->n_states,
-    (*pspdata)->states, &(*pspdata)->qn_to_istate) );
+  SUCCEED_OR_RETURN( pspio_states_lookup_table(pspdata->n_states, pspdata->states, &pspdata->qn_to_istate) );
 
   return PSPIO_SUCCESS;
 }
 
 
-int pspio_pspdata_write(const pspio_pspdata_t *pspdata, const int file_format, 
+int pspio_pspdata_write(pspio_pspdata_t *pspdata, const int file_format, 
       const char *file_name) {
   FILE * fp;
   int ierr;
 
   assert(pspdata != NULL);
   assert(pspdata->qn_to_istate != NULL);
-  
+
   // Open file
   fp = fopen(file_name, "w");
   FULFILL_OR_RETURN(fp != NULL, PSPIO_ENOFILE);
@@ -189,78 +190,77 @@ int pspio_pspdata_write(const pspio_pspdata_t *pspdata, const int file_format,
 }
 
 
-void pspio_pspdata_reset(pspio_pspdata_t **pspdata) {
+void pspio_pspdata_reset(pspio_pspdata_t *pspdata) {
   int i;
 
-  assert(*pspdata != NULL);
+  assert(pspdata != NULL);
 
   // General data
-  free((*pspdata)->info);
-  (*pspdata)->info = NULL;
-  free((*pspdata)->symbol);
-  (*pspdata)->symbol = NULL;
-  (*pspdata)->z = 0.0;
-  (*pspdata)->zvalence = 0.0;
-  (*pspdata)->nelvalence = 0.0;
-  (*pspdata)->l_max = 0;
-  (*pspdata)->wave_eq = 0;
-  (*pspdata)->total_energy = 0.0;
+  free(pspdata->info);
+  pspdata->info = NULL;
+  sprintf(pspdata->symbol, "   ");
+  pspdata->z = 0.0;
+  pspdata->zvalence = 0.0;
+  pspdata->nelvalence = 0.0;
+  pspdata->l_max = 0;
+  pspdata->wave_eq = 0;
+  pspdata->total_energy = 0.0;
 
   // Mesh
-  pspio_mesh_free(&(*pspdata)->mesh);
+  pspio_mesh_free(&pspdata->mesh);
 
   // States
-  if ((*pspdata)->qn_to_istate != NULL) {
-    for (i=0; (*pspdata)->qn_to_istate[i]!=NULL; i++) {
-      free((*pspdata)->qn_to_istate[i]);
+  if (pspdata->qn_to_istate != NULL) {
+    for (i=0; pspdata->qn_to_istate[i]!=NULL; i++) {
+      free(pspdata->qn_to_istate[i]);
     }
-    free((*pspdata)->qn_to_istate);
+    free(pspdata->qn_to_istate);
   }
-  if ((*pspdata)->states != NULL) {
-    for (i=0; i<(*pspdata)->n_states; i++) {
-      pspio_state_free(&(*pspdata)->states[i]);
+  if (pspdata->states != NULL) {
+    for (i=0; i<pspdata->n_states; i++) {
+      pspio_state_free(&pspdata->states[i]);
     }
-    free((*pspdata)->states);
+    free(pspdata->states);
   }
-  (*pspdata)->n_states = 0;
+  pspdata->n_states = 0;
 
   // Potentials
-  if ((*pspdata)->potentials != NULL) {
-    for (i=0; i<(*pspdata)->n_potentials; i++) {
-      pspio_potential_free(&(*pspdata)->potentials[i]);
+  if (pspdata->potentials != NULL) {
+    for (i=0; i<pspdata->n_potentials; i++) {
+      pspio_potential_free(&pspdata->potentials[i]);
     }
-    free((*pspdata)->potentials);
+    free(pspdata->potentials);
   }
-  (*pspdata)->n_potentials = 0;
-  (*pspdata)->scheme = 0;
+  pspdata->n_potentials = 0;
+  pspdata->scheme = 0;
   
   // KB projectors
-  if ((*pspdata)->kb_projectors != NULL) {
-    for (i=0; i<(*pspdata)->n_kbproj; i++) {
-      pspio_projector_free(&(*pspdata)->kb_projectors[i]);
+  if (pspdata->kb_projectors != NULL) {
+    for (i=0; i<pspdata->n_kbproj; i++) {
+      pspio_projector_free(&pspdata->kb_projectors[i]);
     }
-    free((*pspdata)->kb_projectors);
+    free(pspdata->kb_projectors);
   }
-  (*pspdata)->l_local = 0;
-  (*pspdata)->kb_l_max = 0;
-  if ((*pspdata)->vlocal != NULL) {
-    pspio_potential_free(&(*pspdata)->vlocal);
+  pspdata->l_local = 0;
+  pspdata->kb_l_max = 0;
+  if (pspdata->vlocal != NULL) {
+    pspio_potential_free(&pspdata->vlocal);
   }
 
   // XC
-  if ((*pspdata)->xc != NULL) {
-    pspio_xc_free(&(*pspdata)->xc);
+  if (pspdata->xc != NULL) {
+    pspio_xc_free(&pspdata->xc);
   }
 
   // Valence density
-  if ((*pspdata)->rho_valence != NULL) {
-    pspio_meshfunc_free(&(*pspdata)->rho_valence);
+  if (pspdata->rho_valence != NULL) {
+    pspio_meshfunc_free(&pspdata->rho_valence);
   }
 }
 
 void pspio_pspdata_free(pspio_pspdata_t **pspdata) {
   if (*pspdata != NULL) {
-    pspio_pspdata_reset(pspdata);
+    pspio_pspdata_reset(*pspdata);
     free(*pspdata);
     *pspdata = NULL;
   }

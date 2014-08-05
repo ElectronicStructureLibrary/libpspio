@@ -66,24 +66,24 @@ int pspio_state_alloc(pspio_state_t **state, const int np) {
 }
 
 
-int pspio_state_set(pspio_state_t **state, const double eigenval, 
+int pspio_state_set(pspio_state_t *state, const double eigenval, 
       const char *label, const pspio_qn_t *qn, const double occ, 
       const double rc, const pspio_mesh_t *mesh, const double *wf) {
   int s;
 
-  assert(*state != NULL);
-  assert((label != NULL) && ((*state)->label == NULL));
+  assert(state != NULL);
+  assert((label != NULL) && (state->label == NULL));
 
-  (*state)->eigenval = eigenval;
-  (*state)->occ = occ;
-  (*state)->rc = rc;
+  state->eigenval = eigenval;
+  state->occ = occ;
+  state->rc = rc;
   s = strlen(label);
-  (*state)->label = (char *) malloc (s + 1);
-  memcpy((*state)->label,label,s);
-  (*state)->label[s] = '\0';
+  state->label = (char *) malloc (s + 1);
+  memcpy(state->label,label,s);
+  state->label[s] = '\0';
 
-  SUCCEED_OR_RETURN( pspio_qn_copy(&(*state)->qn, qn) );
-  SUCCEED_OR_RETURN( pspio_meshfunc_set(&(*state)->wf, mesh, wf, NULL, NULL) );
+  SUCCEED_OR_RETURN( pspio_qn_copy(&state->qn, qn) );
+  SUCCEED_OR_RETURN( pspio_meshfunc_set(state->wf, mesh, wf, NULL, NULL) );
 
   return PSPIO_SUCCESS;
 }
@@ -93,7 +93,7 @@ int pspio_state_copy(pspio_state_t **dst, const pspio_state_t *src) {
   int s;
 
   assert(src != NULL);
-  assert((src->label != NULL) && ((*dst)->label == NULL));
+  assert((src->label != NULL));
 
   if ( *dst == NULL ) {
     SUCCEED_OR_RETURN( pspio_state_alloc(dst, src->wf->mesh->np) );

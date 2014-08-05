@@ -70,7 +70,7 @@ int libxc_to_abinit(const int exchange, const int correlation, int *pspxc);
  * @param[out] pspdata: pseudopotential data structure
  * @return error code
  */
-int abinit_read_header(FILE *fp, const int format, pspio_pspdata_t **pspdata);
+int abinit_read_header(FILE *fp, const int format, pspio_pspdata_t *pspdata);
 
 
 /**

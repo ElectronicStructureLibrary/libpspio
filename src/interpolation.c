@@ -62,20 +62,19 @@ int interpolation_alloc(interpolation_t **interp, const int method, const int np
 }
 
 
-int interpolation_set(interpolation_t **interp, const pspio_mesh_t *mesh, const double *f) {
+int interpolation_set(interpolation_t *interp, const pspio_mesh_t *mesh, const double *f) {
 #ifdef HAVE_GSL
   int ierr;
 #endif
 
   assert(interp != NULL);
-  assert(*interp != NULL);
   assert(mesh != NULL);
   assert(f != NULL);
 
-  switch ((*interp)->method) {
+  switch (interp->method) {
 #ifdef HAVE_GSL
   case PSPIO_INTERP_GSL_CSPLINE:
-    ierr = gsl_spline_init((*interp)->gsl_spl, mesh->r, f, mesh->np);
+    ierr = gsl_spline_init(interp->gsl_spl, mesh->r, f, mesh->np);
     if ( ierr != PSPIO_SUCCESS ) {
       RETURN_WITH_ERROR( PSPIO_EGSL );
     }

@@ -59,17 +59,31 @@ int pspio_projector_alloc(pspio_projector_t **projector, const int np) {
 }
 
 
-int pspio_projector_set(pspio_projector_t **projector, const pspio_qn_t *qn, 
+int pspio_projector_set(pspio_projector_t *projector, const pspio_qn_t *qn, 
       const double energy, const pspio_mesh_t *mesh, const double *pofr) {
   assert(projector != NULL);
-  assert((*projector) != NULL);
   assert(qn != NULL);
   assert(mesh != NULL);
   assert(pofr != NULL);
 
-  SUCCEED_OR_RETURN(pspio_qn_copy(&(*projector)->qn, qn));
-  (*projector)->energy = energy;
-  SUCCEED_OR_RETURN(pspio_meshfunc_set(&(*projector)->proj, mesh, pofr, NULL, NULL));
+  SUCCEED_OR_RETURN(pspio_qn_copy(&projector->qn, qn));
+  projector->energy = energy;
+  SUCCEED_OR_RETURN(pspio_meshfunc_set(projector->proj, mesh, pofr, NULL, NULL));
+
+  return PSPIO_SUCCESS;
+}
+
+
+int pspio_projector_copy(pspio_projector_t **dst, const pspio_projector_t *src) {
+  assert(src != NULL);
+
+  if ( *dst == NULL ) {
+    SUCCEED_OR_RETURN( pspio_projector_alloc(dst, src->proj->mesh->np) );
+  }
+
+  SUCCEED_OR_RETURN( pspio_meshfunc_copy(&(*dst)->proj, src->proj) );
+  SUCCEED_OR_RETURN( pspio_qn_copy(&(*dst)->qn, src->qn) );
+  (*dst)->energy = src->energy;
 
   return PSPIO_SUCCESS;
 }

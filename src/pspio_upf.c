@@ -34,7 +34,7 @@
 #endif
 
 
-int pspio_upf_read(FILE *fp, pspio_pspdata_t **pspdata) {
+int pspio_upf_read(FILE *fp, pspio_pspdata_t *pspdata) {
   int np;
 
   SUCCEED_OR_RETURN( upf_read_info(fp, pspdata) );
@@ -43,14 +43,14 @@ int pspio_upf_read(FILE *fp, pspio_pspdata_t **pspdata) {
   // so we set it to 0 if the ADDINFO tag is not present, and to
   // PSPIO_EQN_DIRAC if it is
   if (upf_tag_isdef(fp,"PP_ADDINFO")){
-    (*pspdata)->wave_eq = PSPIO_EQN_DIRAC;
+    pspdata->wave_eq = PSPIO_EQN_DIRAC;
   } else {
-    (*pspdata)->wave_eq = 0;
+    pspdata->wave_eq = 0;
   }
 
   SUCCEED_OR_RETURN( upf_read_header(fp, &np, pspdata) );
   SUCCEED_OR_RETURN( upf_read_mesh(fp, np, pspdata) );
-  if ( pspio_xc_has_nlcc((*pspdata)->xc) ) {
+  if ( pspio_xc_has_nlcc(pspdata->xc) ) {
     SUCCEED_OR_RETURN( upf_read_nlcc(fp, np, pspdata) );
   }
   SUCCEED_OR_RETURN( upf_read_nonlocal(fp, np, pspdata) );
