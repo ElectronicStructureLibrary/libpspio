@@ -38,7 +38,7 @@
 #endif
 
 
-int pspio_abinit_read(FILE *fp, pspio_pspdata_t **pspdata, const int format) {
+int pspio_abinit_read(FILE *fp, pspio_pspdata_t *pspdata, const int format) {
   int ierr;
 
   assert(fp != NULL);

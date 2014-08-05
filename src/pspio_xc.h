@@ -61,6 +61,19 @@ int pspio_xc_alloc(pspio_xc_t **xc);
 
 
 /**
+ * Duplicates a xc structure.
+ * @param[out] dst: destination xc structure pointer
+ * @param[in] src: source xc structure pointer 
+ * @return error code
+ * @note The src pointer has to be allocated first with the pspio_xc_alloc 
+ *       method.
+ * @note The dst pointer might or might not be allocated first. If it is not,
+ *        then it is allocated here.
+ */
+int pspio_xc_copy(pspio_xc_t **dst, const pspio_xc_t *src);
+
+
+/**
  * Frees all memory associated with xc structure
  * 
  * @param[in,out] xc: xc structure
@@ -80,7 +93,7 @@ void pspio_xc_free(pspio_xc_t **xc);
  * @param[in] exchange: identifier
  * @param[in] correlation: identifier
  */
-void pspio_xc_set_id(pspio_xc_t **xc, const int exchange, const int correlation);
+void pspio_xc_set_id(pspio_xc_t *xc, const int exchange, const int correlation);
 
 
 /**
@@ -89,7 +102,7 @@ void pspio_xc_set_id(pspio_xc_t **xc, const int exchange, const int correlation)
  * @param[in] nlcc_scheme: scheme used to obtain core density
  * @return error code
  */
-int pspio_xc_set_nlcc_scheme(pspio_xc_t **xc, const int nlcc_scheme);
+int pspio_xc_set_nlcc_scheme(pspio_xc_t *xc, const int nlcc_scheme);
 
 
 /**
@@ -102,7 +115,7 @@ int pspio_xc_set_nlcc_scheme(pspio_xc_t **xc, const int nlcc_scheme);
  * @return error code
  *      
  */
-int pspio_xc_set_nlcc_density(pspio_xc_t **xc, const pspio_mesh_t *mesh,
+int pspio_xc_set_nlcc_density(pspio_xc_t *xc, const pspio_mesh_t *mesh,
 			      const double *cd, const double *cdp, const double *cdpp);
 
 

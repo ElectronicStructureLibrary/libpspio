@@ -46,7 +46,7 @@ int main(void) {
   DEBUG_PRINT("test_xc: creating mesh\n");
   CHECK_STAT(pspio_mesh_alloc(&mesh, np), PSPIO_SUCCESS);
   DEBUG_PRINT("test_xc: setting mesh\n");
-  pspio_mesh_init_from_points(&mesh, r, NULL);
+  pspio_mesh_init_from_points(mesh, r, NULL);
   DEBUG_PRINT("\n");
 
   /* Check creation and destruction of xc */
@@ -56,11 +56,11 @@ int main(void) {
 
   /* Check setting of the xc */
   DEBUG_PRINT("test_xc: setting xc with PW92 LDA\n");
-  pspio_xc_set_id(&xc, XC_LDA_X, XC_LDA_C_PW);
+  pspio_xc_set_id(xc, XC_LDA_X, XC_LDA_C_PW);
   DEBUG_PRINT("test_xc: setting of NLCC scheme of xc\n");
-  CHECK_STAT(pspio_xc_set_nlcc_scheme(&xc, PSPIO_NLCC_UNKNOWN), PSPIO_SUCCESS);
+  CHECK_STAT(pspio_xc_set_nlcc_scheme(xc, PSPIO_NLCC_UNKNOWN), PSPIO_SUCCESS);
   DEBUG_PRINT("test_xc: setting of core density of xc\n");
-  CHECK_STAT(pspio_xc_set_nlcc_density(&xc, mesh, cd, NULL, NULL), PSPIO_SUCCESS);
+  CHECK_STAT(pspio_xc_set_nlcc_density(xc, mesh, cd, NULL, NULL), PSPIO_SUCCESS);
   DEBUG_PRINT("\n");
 
   /* Destroy xc */

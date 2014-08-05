@@ -69,8 +69,21 @@ int pspio_potential_alloc(pspio_potential_t **potential, const int np);
  * @note The potential pointer has to be allocated first with the
  *       pspio_potential_alloc method.
  */
-int pspio_potential_set(pspio_potential_t **potential, const pspio_qn_t *qn, 
+int pspio_potential_set(pspio_potential_t *potential, const pspio_qn_t *qn, 
 			const pspio_mesh_t *mesh, const double *vofr);
+
+
+/**
+ * Duplicates a potential structure.
+ * @param[out] dst: destination potential structure pointer
+ * @param[in] src: source potential structure pointer 
+ * @return error code
+ * @note The src pointer has to be allocated first with the pspio_potential_alloc 
+ *       method.
+ * @note The dst pointer might or might not be allocated first. If it is not,
+ *        then it is allocated here.
+ */
+int pspio_potential_copy(pspio_potential_t **dst, const pspio_potential_t *src);
 
 
 /**

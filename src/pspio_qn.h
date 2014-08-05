@@ -98,7 +98,7 @@ void pspio_qn_get(const pspio_qn_t *qn, int *n, int *l, double *j);
  * @note The qn pointer has to be allocated first with the pspio_qn_alloc
  *       method.
  */
-int pspio_qn_set(pspio_qn_t **qn, const int n, const int l, const double j);
+int pspio_qn_set(pspio_qn_t *qn, const int n, const int l, const double j);
 
 
 /**********************************************************************

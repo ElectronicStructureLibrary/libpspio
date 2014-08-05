@@ -75,9 +75,22 @@ int pspio_state_alloc(pspio_state_t **state, const int np);
  * @note The state pointer is supposed to have been already allocated
  *       with pspio_state_alloc.
  */
-int pspio_state_set(pspio_state_t **state, const double eigenval,
+int pspio_state_set(pspio_state_t *state, const double eigenval,
 		    const char *label, const pspio_qn_t *qn, const double occ, 
 		    const double rc, const pspio_mesh_t *mesh, const double *wf);
+
+
+/**
+ * Duplicates a state structure.
+ * @param[out] dst: destination state structure pointer
+ * @param[in] src: source state structure pointer 
+ * @return error code
+ * @note The src pointer has to be allocated first with the pspio_state_alloc 
+ *       method.
+ * @note The dst pointer might or might not be allocated first. If it is not,
+ *        then it is allocated here.
+ */
+int pspio_state_copy(pspio_state_t **dst, const pspio_state_t *src);
 
 
 /**

@@ -64,12 +64,11 @@ typedef struct{
  * Allocates memory and preset function structure
  * 
  * @param[in,out] func: function structure
- * @param[in] interp_method: method used for interpolation
  * @param[in] np: number of points
  * @return error code
  * @note np should be larger than 1.
  */
-int pspio_meshfunc_alloc(pspio_meshfunc_t **func, const int interp_method, const int np);
+int pspio_meshfunc_alloc(pspio_meshfunc_t **func, const int np);
 
 
 /**
@@ -83,7 +82,7 @@ int pspio_meshfunc_alloc(pspio_meshfunc_t **func, const int interp_method, const
  * @note The func pointer has to be allocated first with the 
  *       pspio_meshfunc_alloc method.
  */
-int pspio_meshfunc_set(pspio_meshfunc_t **func, const pspio_mesh_t *mesh, 
+int pspio_meshfunc_set(pspio_meshfunc_t *func, const pspio_mesh_t *mesh, 
 		       const double *f, const double *fp, const double *fpp);
 
 

@@ -38,19 +38,19 @@
 /**
  * Read the data contained in a FHI file and store it in the psp_data structure
  * @param[in] fp a stream of the input file
- * @param[in,out] psp_data the data structure
+ * @param[in,out] pspdata the data structure
  * @return error code
  */
-int pspio_fhi_read(FILE * fp, pspio_pspdata_t **psp_data);
+int pspio_fhi_read(FILE * fp, pspio_pspdata_t *pspdata);
 
 
 /**
  * Write the data contained in the psp_data structure to a file using the FHI format
  * @param[in] fp a stream of the input file
- * @param[in] psp_data the data structure
+ * @param[in] pspdata the data structure
  * @return error code
  */
-int pspio_fhi_write(FILE * fp, const pspio_pspdata_t *psp_data);
+int pspio_fhi_write(FILE * fp, const pspio_pspdata_t *pspdata);
 
 
 #endif

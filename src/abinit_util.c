@@ -40,8 +40,7 @@
 static char *my_strndup (char const *s, size_t n);
 
 
-int abinit_read_header(FILE *fp, const int format,
-      pspio_pspdata_t **pspdata) {
+int abinit_read_header(FILE *fp, const int format, pspio_pspdata_t *pspdata) {
   char line[PSPIO_STRLEN_LINE];
   char *line4;
   int format_read, pspcod, pspxc, lmax, lloc, mmax;
@@ -54,27 +53,27 @@ int abinit_read_header(FILE *fp, const int format,
   // Line 1: read title
   FULFILL_OR_RETURN( fgets(line, PSPIO_STRLEN_LINE, fp) != NULL, PSPIO_EIO );
   s = strlen(line);
-  (*pspdata)->info = (char *) malloc ((s+1)*sizeof(char));
-  FULFILL_OR_EXIT((*pspdata)->info != NULL, PSPIO_ENOMEM);
-  strncpy((*pspdata)->info, line, s);
-  (*pspdata)->info[s] = '\0';
+  pspdata->info = (char *) malloc ((s+1)*sizeof(char));
+  FULFILL_OR_EXIT(pspdata->info != NULL, PSPIO_ENOMEM);
+  strncpy(pspdata->info, line, s);
+  pspdata->info[s] = '\0';
 
   // Line 2: read atomic number, Z valence
   // Note: ignoring psp date
   FULFILL_OR_RETURN( fgets(line, PSPIO_STRLEN_LINE, fp) != NULL, PSPIO_EIO );
   FULFILL_OR_RETURN( sscanf(line, "%lf %lf", &zatom, &zval) == 2, PSPIO_EFILE_CORRUPT );
-  (*pspdata)->z = zatom;
-  (*pspdata)->zvalence = zval;
-  (*pspdata)->symbol = (char *) malloc (3*sizeof(char));
-  FULFILL_OR_EXIT( (*pspdata)->symbol != NULL, PSPIO_ENOMEM );
-  SUCCEED_OR_RETURN( z_to_symbol((*pspdata)->z, (*pspdata)->symbol) );
+  pspdata->z = zatom;
+  pspdata->zvalence = zval;
+  pspdata->symbol = (char *) malloc (3*sizeof(char));
+  FULFILL_OR_EXIT( pspdata->symbol != NULL, PSPIO_ENOMEM );
+  SUCCEED_OR_RETURN( z_to_symbol(pspdata->z, pspdata->symbol) );
 
   // Line 3: read pspcod, pspxc, lmax, lloc, mmax, r2well
   FULFILL_OR_RETURN( fgets(line, PSPIO_STRLEN_LINE, fp) != NULL, PSPIO_EIO );
   FULFILL_OR_RETURN( sscanf(line, "%d %d %d %d %d %lf",
     &pspcod, &pspxc, &lmax, &lloc, &mmax, &r2well) == 6, PSPIO_EFILE_CORRUPT );
-  (*pspdata)->l_max = lmax;
-  (*pspdata)->l_local = lloc;
+  pspdata->l_max = lmax;
+  pspdata->l_local = lloc;
 
   // Following APE conventions: pspxc = -(exchange + correlation * 1000)
   if ( pspxc < 0 ) {
@@ -83,8 +82,8 @@ int abinit_read_header(FILE *fp, const int format,
   } else {
     SUCCEED_OR_RETURN( abinit_to_libxc(pspxc, &exchange, &correlation) );
   }
-  SUCCEED_OR_RETURN( pspio_xc_alloc(&(*pspdata)->xc) );
-  pspio_xc_set_id(&(*pspdata)->xc, exchange, correlation);
+  SUCCEED_OR_RETURN( pspio_xc_alloc(&pspdata->xc) );
+  pspio_xc_set_id(pspdata->xc, exchange, correlation);
 
 
   // Line 4: read rchrg, fchrg, qchrg if NLCC
@@ -96,7 +95,7 @@ int abinit_read_header(FILE *fp, const int format,
     DEFER_TEST_ERROR( sscanf(line, "%lf %lf %lf",
       &rchrg, &fchrg, &qchrg) == 3, PSPIO_EFILE_CORRUPT );
     if ( abs(fchrg) >= 1.0e-14 ) {
-      pspio_xc_set_nlcc_scheme( &(*pspdata)->xc, PSPIO_NLCC_FHI );
+      pspio_xc_set_nlcc_scheme(pspdata->xc, PSPIO_NLCC_FHI);
     }
   }
   free(line4);

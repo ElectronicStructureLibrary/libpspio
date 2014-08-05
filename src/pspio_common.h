@@ -89,6 +89,7 @@
 /**
  * Pseudopotential generation schemes
  */
+#define PSPIO_SCM_UNKNOWN 0
 #define PSPIO_SCM_BHS 1
 #define PSPIO_SCM_GTH 2
 #define PSPIO_SCM_HAMANN 3
@@ -99,6 +100,7 @@
 #define PSPIO_SCM_RRKJ 8
 #define PSPIO_SCM_TM 9
 #define PSPIO_SCM_TM2 10
+#define PSPIO_SCM_RTM 11
 
 /**
  * Mesh types

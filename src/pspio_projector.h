@@ -71,8 +71,21 @@ int pspio_projector_alloc(pspio_projector_t **projector, const int np);
  * @note The projector pointer has to be allocated first with the 
  *       pspio_projector_alloc method.
  */
-int pspio_projector_set(pspio_projector_t **projector, const pspio_qn_t *qn, 
+int pspio_projector_set(pspio_projector_t *projector, const pspio_qn_t *qn, 
       const double energy, const pspio_mesh_t *mesh, const double *pofr);
+
+
+/**
+ * Duplicates a projector structure.
+ * @param[out] dst: destination projector structure pointer
+ * @param[in] src: source projector structure pointer 
+ * @return error code
+ * @note The src pointer has to be allocated first with the pspio_projector_alloc 
+ *       method.
+ * @note The dst pointer might or might not be allocated first. If it is not,
+ *        then it is allocated here.
+ */
+int pspio_projector_copy(pspio_projector_t **dst, const pspio_projector_t *src);
 
 
 /**

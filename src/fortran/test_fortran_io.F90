@@ -69,7 +69,7 @@ program test_fortran
 &   I3, ", format = ", I3)') ierr, pio_fmt
   ierr = pspio_f90_pspdata_read(pspdata, pio_fmt, trim(pio_file_inp))
   if ( ierr == 0 ) then
-    pio_fmt = pspio_f90_format_guessed(pspdata)
+    call pspio_f90_pspdata_get_format_guessed(pspdata, pio_fmt)
     write(*,'("test_fortran_io: after  pspio_f90_pspdata_read, status = ", &
 &     I3, ", format = ", I3,A)') ierr, pio_fmt, achar(10)
   else
@@ -79,10 +79,15 @@ program test_fortran
 
   ! Extract some random information
   write(*,'(A)') "test_fortran_io: extracting some data"
-  call pspio_f90_pspdata_get_mesh(pspdata, pspmesh)
-  call pspio_f90_mesh_get_np(pspmesh, np)
-  write(*,'("test_fortran_io: number of points in the mesh = ", I6,A)') np, &
-&   achar(10)
+  ierr = pspio_f90_pspdata_get_mesh(pspdata, pspmesh)
+  if ( ierr == 0 ) then
+    call pspio_f90_mesh_get_np(pspmesh, np)
+    write(*,'("test_fortran_io: number of points in the mesh = ", I6,A)') np, &
+         &   achar(10)
+  else
+    call pspio_f90_error_flush()
+    stop 1
+  end if
 
   ! Check writing of file
   write(*,'(A)') "test_fortran_io: writing file"

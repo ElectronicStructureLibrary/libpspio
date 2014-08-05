@@ -28,6 +28,7 @@
 #include "pspio_common.h"
 #include "pspio_error.h"
 #include "pspio_mesh.h"
+#include "jb_spline.h"
 
 #if defined HAVE_CONFIG_H
 #include "config.h"
@@ -54,8 +55,8 @@ typedef struct{
   gsl_interp_accel *gsl_acc; /**< gsl accelerator for interpolation lookups */
 #endif
 
-  // Objects to be used with ...
-
+  // Objects to be used with jb_spline
+  jb_spline_t *jb_spl;       /**< JB spline structure */
 
 } interpolation_t;
 
@@ -83,7 +84,7 @@ int interpolation_alloc(interpolation_t **interp, const int method, const int np
  * @param[in] f: values of the function on the mesh.
  * @return error code
  */
-int interpolation_set(interpolation_t **interp, const pspio_mesh_t *mesh, const double *f);
+int interpolation_set(interpolation_t *interp, const pspio_mesh_t *mesh, const double *f);
 
 
 /**

@@ -73,7 +73,7 @@ int pspio_mesh_alloc(pspio_mesh_t **mesh, const int np);
  *       method.
  * @note r and rab should be of size mesh->np.
  */
-int pspio_mesh_set(pspio_mesh_t **mesh, const int type, const double a, 
+int pspio_mesh_set(pspio_mesh_t *mesh, const int type, const double a, 
        const double b, const double *r, const double *rab);
 
 
@@ -105,7 +105,7 @@ int pspio_mesh_copy(pspio_mesh_t **dst, const pspio_mesh_t *src);
  * @note If rab is null it will be determined automatically, otherwise 
  *       consistency will be checked between r and rab.
  */
-void pspio_mesh_init_from_points(pspio_mesh_t **mesh, const double *r, 
+void pspio_mesh_init_from_points(pspio_mesh_t *mesh, const double *r, 
 				const double *rab);
 
 
@@ -118,7 +118,7 @@ void pspio_mesh_init_from_points(pspio_mesh_t **mesh, const double *r,
  * @note The mesh pointer has to be allocated first with the pspio_mesh_alloc
  *       method.
  */
-void pspio_mesh_init_from_parameters(pspio_mesh_t **mesh, const int type, 
+void pspio_mesh_init_from_parameters(pspio_mesh_t *mesh, const int type, 
 				    const double a, const double b);
 
 

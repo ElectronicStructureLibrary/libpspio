@@ -58,7 +58,7 @@ int main(int argc, char *argv[]) {
   DEBUG_PRINT(
     "test_io: before pspio_pspdata_read, status = %d, format = %d\n",
     PSPIO_SUCCESS, pio_fmt);
-  CHECK_STAT(pspio_pspdata_read(&pspdata, pio_fmt, argv[1]), PSPIO_SUCCESS);
+  CHECK_STAT(pspio_pspdata_read(pspdata, pio_fmt, argv[1]), PSPIO_SUCCESS);
   pio_fmt = pspdata->format_guessed;
   if ( pspio_error_get_last(NULL) == PSPIO_SUCCESS ) {
     DEBUG_PRINT(
