@@ -32,6 +32,7 @@ pio_core_srcs = \
   abinit_util.c \
   abinit_xc.c \
   interpolation.c \
+  jb_spline.c \
   pspio_abinit.c \
   pspio_error.c \
   pspio_fhi.c \
@@ -76,6 +77,7 @@ pio_core_hdrs = \
 pio_hidden_hdrs = \
   abinit.h \
   interpolation.h \
+  jb_spline.h \
   string_f.h \
   test_common.h \
   upf.h \

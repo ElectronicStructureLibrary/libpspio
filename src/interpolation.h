@@ -28,6 +28,7 @@
 #include "pspio_common.h"
 #include "pspio_error.h"
 #include "pspio_mesh.h"
+#include "jb_spline.h"
 
 #if defined HAVE_CONFIG_H
 #include "config.h"
@@ -54,8 +55,8 @@ typedef struct{
   gsl_interp_accel *gsl_acc; /**< gsl accelerator for interpolation lookups */
 #endif
 
-  // Objects to be used with ...
-
+  // Objects to be used with jb_spline
+  jb_spline_t *jb_spl;       /**< JB spline structure */
 
 } interpolation_t;
 

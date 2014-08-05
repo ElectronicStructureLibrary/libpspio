@@ -53,7 +53,8 @@ int interpolation_alloc(interpolation_t **interp, const int method, const int np
     break;
 #endif
   case PSPIO_INTERP_JB_CSPLINE:
-    //Not yet implemented
+    (*interp)->jb_spl = jb_spline_alloc(np);
+    break;
   default:
     RETURN_WITH_ERROR( PSPIO_ENOSUPPORT );
   }
@@ -81,7 +82,8 @@ int interpolation_set(interpolation_t *interp, const pspio_mesh_t *mesh, const d
     break;
 #endif
   case PSPIO_INTERP_JB_CSPLINE:
-    //Not yet implemented
+    SUCCEED_OR_RETURN( jb_spline_init(&interp->jb_spl, mesh->r, f, mesh->np) );
+    break;
   default:
     RETURN_WITH_ERROR( PSPIO_ENOSUPPORT );
   }
@@ -99,6 +101,9 @@ void interpolation_free(interpolation_t **interp) {
     case PSPIO_INTERP_GSL_CSPLINE:
       gsl_spline_free((*interp)->gsl_spl);
       gsl_interp_accel_free((*interp)->gsl_acc);
+      break;
+    case PSPIO_INTERP_JB_CSPLINE:
+      jb_spline_free(&(*interp)->jb_spl);
       break;
 #endif
     }
@@ -123,6 +128,9 @@ void interpolation_eval(const interpolation_t *interp, const double r, double *f
     *f = gsl_spline_eval(interp->gsl_spl, r, interp->gsl_acc);
     break;
 #endif
+  case PSPIO_INTERP_JB_CSPLINE:
+    *f = jb_spline_eval(interp->jb_spl, r);
+    break;
   }
 
 }
@@ -138,6 +146,9 @@ void interpolation_eval_deriv(const interpolation_t *interp, const double r, dou
     *fp = gsl_spline_eval_deriv(interp->gsl_spl, r, interp->gsl_acc);
     break;
 #endif
+  case PSPIO_INTERP_JB_CSPLINE:
+    *fp = jb_spline_eval_deriv(interp->jb_spl, r);
+    break;
   }
 
 }
@@ -153,6 +164,9 @@ void interpolation_eval_deriv2(const interpolation_t *interp, const double r, do
     *fpp = gsl_spline_eval_deriv2(interp->gsl_spl, r, interp->gsl_acc);
     break;
 #endif
+  case PSPIO_INTERP_JB_CSPLINE:
+    *fpp = jb_spline_eval_deriv2(interp->jb_spl, r);
+    break;
   }
 
 }
