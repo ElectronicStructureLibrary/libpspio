@@ -50,12 +50,12 @@ int main(void) {
   DEBUG_PRINT("test_mesh: creating m2\n");
   CHECK_STAT(pspio_mesh_alloc(&m2, np), PSPIO_SUCCESS);
   DEBUG_PRINT("test_mesh: destroying m2\n");
-  pspio_mesh_free(&m2);
+  pspio_mesh_free(m2);
   DEBUG_PRINT("\n");
 
   /* Check setting of meshes */
   DEBUG_PRINT("test_mesh: setting m1\n");
-  CHECK_STAT(pspio_mesh_set(m1, PSPIO_MESH_LOG1, a, b, r, rab), PSPIO_SUCCESS);
+  CHECK_STAT(pspio_mesh_init(m1, PSPIO_MESH_LOG1, a, b, r, rab), PSPIO_SUCCESS);
   DEBUG_PRINT("test_mesh: initializing m1 from parameters\n");
   pspio_mesh_init_from_parameters(m1, PSPIO_MESH_LOG1, a, b);
   DEBUG_PRINT("test_mesh: initializing m1 from points\n");
@@ -68,16 +68,16 @@ int main(void) {
   DEBUG_PRINT("test_mesh: copying m1 to a non-empty m2\n");
   CHECK_STAT(pspio_mesh_copy(&m2, m1), PSPIO_SUCCESS);
   DEBUG_PRINT("test_mesh: setting m2\n");
-  CHECK_STAT(pspio_mesh_set(m2, PSPIO_MESH_LINEAR, a, b, r, rab), PSPIO_SUCCESS);
+  CHECK_STAT(pspio_mesh_init(m2, PSPIO_MESH_LINEAR, a, b, r, rab), PSPIO_SUCCESS);
   DEBUG_PRINT("\n");
 
   /* Destroy meshes */
   DEBUG_PRINT("test_mesh: destroying m1\n");
   PTR_STAT_SHOW(m1);
-  pspio_mesh_free(&m1);
+  pspio_mesh_free(m1);
   DEBUG_PRINT("test_mesh: destroying m2\n");
   PTR_STAT_SHOW(m2);
-  pspio_mesh_free(&m2);
+  pspio_mesh_free(m2);
   DEBUG_PRINT("\n");
 
   DEBUG_PRINT("=== END test_mesh ===\n");

@@ -137,6 +137,9 @@ int libxc_to_upf (const int exchange, const int correlation,
   } else if (exchange == XC_MGGA_X_TPSS) {
     strcpy(exch, "SLA ");
     strcpy(gradx,"TPSS");
+  } else {
+    strcpy(exch, "");
+    strcpy(gradx,"");
   }
 
   // Correlation:
@@ -182,6 +185,9 @@ int libxc_to_upf (const int exchange, const int correlation,
   } else if (correlation == XC_MGGA_C_TPSS) {
     strcpy(corr, "PW  ");
     strcpy(gradc,"TPSS");
+  } else {
+    strcpy(corr, "");
+    strcpy(gradc,"");
   }
   
   // Create longname

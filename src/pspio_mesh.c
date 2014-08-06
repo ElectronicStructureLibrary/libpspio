@@ -65,7 +65,7 @@ int pspio_mesh_alloc(pspio_mesh_t **mesh, const int np) {
 }
 
 
-int pspio_mesh_set(pspio_mesh_t *mesh, const int type, const double a, 
+int pspio_mesh_init(pspio_mesh_t *mesh, const int type, const double a, 
        const double b, const double *r, const double *rab) {
   assert(mesh != NULL);
   assert(mesh->r != NULL);
@@ -76,23 +76,6 @@ int pspio_mesh_set(pspio_mesh_t *mesh, const int type, const double a,
   mesh->a = b;
   memcpy(mesh->r, r, mesh->np * sizeof(double));
   memcpy(mesh->rab, rab, mesh->np * sizeof(double));
-
-  return PSPIO_SUCCESS;
-}
-
-
-int pspio_mesh_copy(pspio_mesh_t **dst, const pspio_mesh_t *src) {
-  assert(src != NULL);
-
-  if ( *dst == NULL ) {
-    SUCCEED_OR_RETURN(pspio_mesh_alloc(dst, src->np));
-  }
-
-  (*dst)->type = src->type;
-  (*dst)->a = src->a;
-  (*dst)->a = src->b;
-  memcpy((*dst)->r, src->r, src->np * sizeof(double));
-  memcpy((*dst)->rab, src->rab, src->np * sizeof(double));
 
   return PSPIO_SUCCESS;
 }
@@ -217,13 +200,29 @@ void pspio_mesh_init_from_parameters(pspio_mesh_t *mesh, const int type,
 }
 
 
-void pspio_mesh_free(pspio_mesh_t **mesh) {
+int pspio_mesh_copy(pspio_mesh_t **dst, const pspio_mesh_t *src) {
+  assert(src != NULL);
 
-  if (*mesh != NULL) {
-    free ((*mesh)->r);
-    free ((*mesh)->rab);
-    free (*mesh);
-    *mesh = NULL;
+  if ( *dst == NULL ) {
+    SUCCEED_OR_RETURN(pspio_mesh_alloc(dst, src->np));
+  }
+
+  (*dst)->type = src->type;
+  (*dst)->a = src->a;
+  (*dst)->a = src->b;
+  memcpy((*dst)->r, src->r, src->np * sizeof(double));
+  memcpy((*dst)->rab, src->rab, src->np * sizeof(double));
+
+  return PSPIO_SUCCESS;
+}
+
+
+void pspio_mesh_free(pspio_mesh_t *mesh) {
+
+  if (mesh != NULL) {
+    free (mesh->r);
+    free (mesh->rab);
+    free (mesh);
   }
 }
 

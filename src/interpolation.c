@@ -63,7 +63,7 @@ int interpolation_alloc(interpolation_t **interp, const int method, const int np
 }
 
 
-int interpolation_set(interpolation_t *interp, const pspio_mesh_t *mesh, const double *f) {
+int interpolation_init(interpolation_t *interp, const pspio_mesh_t *mesh, const double *f) {
 #ifdef HAVE_GSL
   int ierr;
 #endif
@@ -92,24 +92,23 @@ int interpolation_set(interpolation_t *interp, const pspio_mesh_t *mesh, const d
 }
 
 
-void interpolation_free(interpolation_t **interp) {
+void interpolation_free(interpolation_t *interp) {
 
-  if (*interp != NULL) {
+  if (interp != NULL) {
 
-    switch ((*interp)->method) {
+    switch (interp->method) {
 #ifdef HAVE_GSL
     case PSPIO_INTERP_GSL_CSPLINE:
-      gsl_spline_free((*interp)->gsl_spl);
-      gsl_interp_accel_free((*interp)->gsl_acc);
+      gsl_spline_free(interp->gsl_spl);
+      gsl_interp_accel_free(interp->gsl_acc);
       break;
     case PSPIO_INTERP_JB_CSPLINE:
-      jb_spline_free(&(*interp)->jb_spl);
+      jb_spline_free(interp->jb_spl);
       break;
 #endif
     }
 
-    free(*interp);
-    *interp = NULL;
+    free(interp);
   }
 }
 

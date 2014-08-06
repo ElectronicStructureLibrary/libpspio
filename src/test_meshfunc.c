@@ -52,11 +52,11 @@ int main(void) {
   DEBUG_PRINT("test_meshfunc: creating m1\n");
   CHECK_STAT(pspio_mesh_alloc(&m1, np), PSPIO_SUCCESS);
   DEBUG_PRINT("test_meshfunc: setting m1\n");
-  CHECK_STAT(pspio_mesh_set(m1, PSPIO_MESH_LOG1, a, b, r, rab), PSPIO_SUCCESS);
+  CHECK_STAT(pspio_mesh_init(m1, PSPIO_MESH_LOG1, a, b, r, rab), PSPIO_SUCCESS);
   DEBUG_PRINT("test_meshfunc: creating m2\n");
   CHECK_STAT(pspio_mesh_alloc(&m2, np), PSPIO_SUCCESS);
   DEBUG_PRINT("test_meshfunc: setting m2\n");
-  CHECK_STAT(pspio_mesh_set(m2, PSPIO_MESH_LINEAR, a, b, r, rab), PSPIO_SUCCESS);
+  CHECK_STAT(pspio_mesh_init(m2, PSPIO_MESH_LINEAR, a, b, r, rab), PSPIO_SUCCESS);
   DEBUG_PRINT("\n");
 
   /* Check creation and destruction of mesh functions */
@@ -67,14 +67,15 @@ int main(void) {
   DEBUG_PRINT("test_meshfunc: creating f3\n");
   CHECK_STAT(pspio_meshfunc_alloc(&f3, np), PSPIO_SUCCESS);
   DEBUG_PRINT("test_meshfunc: destroying f3\n");
-  pspio_meshfunc_free(&f3);
+  pspio_meshfunc_free(f3);
+  f3 = NULL;
   DEBUG_PRINT("\n");
 
   /* Check setting of mesh functions */
   DEBUG_PRINT("test_meshfunc: setting f1\n");
-  CHECK_STAT(pspio_meshfunc_set(f1, m1, f, NULL, NULL), PSPIO_SUCCESS);
+  CHECK_STAT(pspio_meshfunc_init(f1, m1, f, NULL, NULL), PSPIO_SUCCESS);
   DEBUG_PRINT("test_meshfunc: setting f2 with explicit derivative\n");
-  CHECK_STAT(pspio_meshfunc_set(f2, m1, f, fp, NULL), PSPIO_SUCCESS);
+  CHECK_STAT(pspio_meshfunc_init(f2, m1, f, fp, NULL), PSPIO_SUCCESS);
   DEBUG_PRINT("\n");
 
   /* Check evaluation of mesh functions */
@@ -138,13 +139,13 @@ int main(void) {
   /* Destroy mesh functions */
   DEBUG_PRINT("test_meshfunc: destroying f1\n");
   PTR_STAT_SHOW(f1);
-  pspio_meshfunc_free(&f1);
+  pspio_meshfunc_free(f1);
   DEBUG_PRINT("test_meshfunc: destroying f2\n");
   PTR_STAT_SHOW(f2);
-  pspio_meshfunc_free(&f2);
+  pspio_meshfunc_free(f2);
   DEBUG_PRINT("test_meshfunc: destroying f3\n");
   PTR_STAT_SHOW(f3);
-  pspio_meshfunc_free(&f3);
+  pspio_meshfunc_free(f3);
   DEBUG_PRINT("\n");
 
   DEBUG_PRINT("=== END test_meshfunc ===\n");

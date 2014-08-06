@@ -128,6 +128,6 @@ void pspio_pspdata_reset(pspio_pspdata_t *pspdata);
  * Frees all memory associated with pspdata structure
  * @param[in,out] pspdata: pointer to pspdata structure to be
  */
-void pspio_pspdata_free(pspio_pspdata_t **pspdata);
+void pspio_pspdata_free(pspio_pspdata_t *pspdata);
 
 #endif

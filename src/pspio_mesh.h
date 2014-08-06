@@ -61,8 +61,8 @@ int pspio_mesh_alloc(pspio_mesh_t **mesh, const int np);
 
 
 /**
- * Sets the mesh data.
- * @param[in,out] mesh: mesh structure to set
+ * Initializes the mesh data.
+ * @param[in,out] mesh: mesh structure to be initialized
  * @param[in] type: type of mesh. Can be LOG1, LOG2, or LINEAR.
  * @param[in] a: parameter a. The meaning depends on the type of mesh.
  * @param[in] b: parameter b. The meaning depends on the type of mesh.
@@ -73,22 +73,8 @@ int pspio_mesh_alloc(pspio_mesh_t **mesh, const int np);
  *       method.
  * @note r and rab should be of size mesh->np.
  */
-int pspio_mesh_set(pspio_mesh_t *mesh, const int type, const double a, 
+int pspio_mesh_init(pspio_mesh_t *mesh, const int type, const double a, 
        const double b, const double *r, const double *rab);
-
-
-/**
- * Duplicates a mesh structure
- * 
- * @param[out] dst: destination mesh structure pointer
- * @param[in] src: source mesh structure pointer
- * @return error code
- * @note The src pointer has to be allocated first with the pspio_mesh_alloc 
- *       method.
- * @note The dst pointer might or might not be allocated. If it is not, then it
- *       is allocate here.
- */
-int pspio_mesh_copy(pspio_mesh_t **dst, const pspio_mesh_t *src);
 
 
 /**
@@ -123,13 +109,27 @@ void pspio_mesh_init_from_parameters(pspio_mesh_t *mesh, const int type,
 
 
 /**
+ * Duplicates a mesh structure
+ * 
+ * @param[out] dst: destination mesh structure pointer
+ * @param[in] src: source mesh structure pointer
+ * @return error code
+ * @note The src pointer has to be allocated first with the pspio_mesh_alloc 
+ *       method.
+ * @note The dst pointer might or might not be allocated. If it is not, then it
+ *       is allocate here.
+ */
+int pspio_mesh_copy(pspio_mesh_t **dst, const pspio_mesh_t *src);
+
+
+/**
  * Frees all memory associated with mesh structure
  * 
  * @param[in,out] mesh: mesh structure
  * @note This function can be safelly called even if some or all of the mesh 
  *       compoments have not been allocated.
  */
-void pspio_mesh_free(pspio_mesh_t **mesh);
+void pspio_mesh_free(pspio_mesh_t *mesh);
 
 
 

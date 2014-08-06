@@ -49,6 +49,20 @@ int pspio_qn_alloc(pspio_qn_t **qn) {
 }
 
 
+int pspio_qn_init(pspio_qn_t *qn, const int n, const int l, const double j) {
+  assert(qn != NULL);
+
+  FULFILL_OR_RETURN( l >= -1, PSPIO_EVALUE );
+  FULFILL_OR_RETURN( (j == 0.0) || (fabs(j - (double)l) - 0.5 < 1.0e-8), PSPIO_EVALUE);
+
+  qn->n = n;
+  qn->l = l;
+  qn->j = j;
+
+  return PSPIO_SUCCESS;
+}
+
+
 int pspio_qn_copy(pspio_qn_t **dst, const pspio_qn_t *src) {
   assert(src != NULL);
 
@@ -64,35 +78,11 @@ int pspio_qn_copy(pspio_qn_t **dst, const pspio_qn_t *src) {
 }
 
 
-void pspio_qn_free(pspio_qn_t **qn) {
+void pspio_qn_free(pspio_qn_t *qn) {
 
   if ( qn != NULL ) {
-    free(*qn);
-    *qn = NULL;
+    free(qn);
   }
-}
-
-
-void pspio_qn_get(const pspio_qn_t *qn, int *n, int *l, double *j) {
-  assert(qn != NULL);
-
-  *n = qn->n;
-  *l = qn->l;
-  *j = qn->j;
-}
-
-
-int pspio_qn_set(pspio_qn_t *qn, const int n, const int l, const double j) {
-  assert(qn != NULL);
-
-  FULFILL_OR_RETURN( l >= -1, PSPIO_EVALUE );
-  FULFILL_OR_RETURN( (j == 0.0) || (fabs(j - (double)l) - 0.5 < 1.0e-8), PSPIO_EVALUE);
-
-  qn->n = n;
-  qn->l = l;
-  qn->j = j;
-
-  return PSPIO_SUCCESS;
 }
 
 

@@ -45,18 +45,18 @@ int main(void) {
   DEBUG_PRINT("test_qn: creating qn2\n");
   CHECK_STAT(pspio_qn_alloc(&qn2), PSPIO_SUCCESS);
   DEBUG_PRINT("test_qn: destroying qn2\n");
-  pspio_qn_free(&qn2);
+  pspio_qn_free(qn2);
   DEBUG_PRINT("\n");
 
   /* Check setting of quantum numbers */
   DEBUG_PRINT("test_qn: setting qn1 to (1, 2, 3.0) = wrong\n");
-  CHECK_STAT(pspio_qn_set(qn1, 1, 2, 3.0), PSPIO_EVALUE);
+  CHECK_STAT(pspio_qn_init(qn1, 1, 2, 3.0), PSPIO_EVALUE);
   DEBUG_PRINT("test_qn: setting qn1 to (1, 2, 0.0) = correct\n");
-  CHECK_STAT(pspio_qn_set(qn1, 1, 2, 0.0), PSPIO_SUCCESS);
+  CHECK_STAT(pspio_qn_init(qn1, 1, 2, 0.0), PSPIO_SUCCESS);
   DEBUG_PRINT("test_qn: setting qn1 to (1, 2, 1.5) = correct\n");
-  CHECK_STAT(pspio_qn_set(qn1, 1, 2, 1.5), PSPIO_SUCCESS);
+  CHECK_STAT(pspio_qn_init(qn1, 1, 2, 1.5), PSPIO_SUCCESS);
   DEBUG_PRINT("test_qn: setting qn1 to (1, 2, 2.5) = correct\n");
-  CHECK_STAT(pspio_qn_set(qn1, 1, 2, 2.5), PSPIO_SUCCESS);
+  CHECK_STAT(pspio_qn_init(qn1, 1, 2, 2.5), PSPIO_SUCCESS);
   DEBUG_PRINT("\n");
 
   /* Check copy of quantum numbers */
@@ -70,30 +70,30 @@ int main(void) {
   DEBUG_PRINT("test_qn: comparing identical qn1 and qn2\n");
   CHECK_STAT(pspio_qn_cmp(qn2, qn1), PSPIO_QN_EQUAL);
   DEBUG_PRINT("test_qn: comparing qn1 and qn2 with identical momenta\n");
-  CHECK_STAT(pspio_qn_set(qn2, 2, 2, 2.5), PSPIO_SUCCESS);
+  CHECK_STAT(pspio_qn_init(qn2, 2, 2, 2.5), PSPIO_SUCCESS);
   CHECK_STAT(pspio_qn_cmp(qn2, qn1), PSPIO_QN_MTEQUAL);
   DEBUG_PRINT("test_qn: comparing different qn1 and qn2\n");
-  CHECK_STAT(pspio_qn_set(qn2, 2, 3, 2.5), PSPIO_SUCCESS);
+  CHECK_STAT(pspio_qn_init(qn2, 2, 3, 2.5), PSPIO_SUCCESS);
   CHECK_STAT(pspio_qn_cmp(qn1, qn2), PSPIO_QN_DIFF);
-  CHECK_STAT(pspio_qn_set(qn2, 1, 2, 1.5), PSPIO_SUCCESS);
+  CHECK_STAT(pspio_qn_init(qn2, 1, 2, 1.5), PSPIO_SUCCESS);
   CHECK_STAT(pspio_qn_cmp(qn2, qn1), PSPIO_QN_DIFF);
   DEBUG_PRINT("\n");
 
   /* Check quantum numbers labels */
   DEBUG_PRINT("test_qn: printing quantum number label\n");
-  CHECK_STAT(pspio_qn_set(qn1, 1, 0, 0.0), PSPIO_SUCCESS);
+  CHECK_STAT(pspio_qn_init(qn1, 1, 0, 0.0), PSPIO_SUCCESS);
   pspio_qn_label(qn1, label);
   DEBUG_PRINT("test_qn:  label 1 = '%s' (should be '1s')\n", label);
-  CHECK_STAT(pspio_qn_set(qn1, 2, 1, 1.5), PSPIO_SUCCESS);
+  CHECK_STAT(pspio_qn_init(qn1, 2, 1, 1.5), PSPIO_SUCCESS);
   pspio_qn_label(qn1, label);
   DEBUG_PRINT("test_qn:  label 2 = '%s' (should be '2p1.5')\n", label);
   DEBUG_PRINT("\n");
 
   /* Destroy quantum numbers */
   DEBUG_PRINT("test_qn: destroying qn1\n");
-  pspio_qn_free(&qn1);
+  pspio_qn_free(qn1);
   DEBUG_PRINT("test_qn: destroying qn2\n");
-  pspio_qn_free(&qn2);
+  pspio_qn_free(qn2);
   DEBUG_PRINT("\n");
 
   DEBUG_PRINT("=== END test_qn ===\n");

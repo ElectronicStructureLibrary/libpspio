@@ -46,28 +46,29 @@ int jb_spline_init(jb_spline_t **spline, const double *r, const double *f,
 {
   memcpy((*spline)->t, r, np * sizeof(double));
   memcpy((*spline)->y, f, np * sizeof(double));
-  (*spline)->ypp = jb_natural_spline_cubic_set(np, r, f);
+  (*spline)->ypp = jb_natural_spline_cubic_init(np, r, f);
   //printf("here1: %f\n", (*spline)->ypp[1]);
 
   return 0;
 }
 
-void jb_spline_free(jb_spline_t **spline)
+void jb_spline_free(jb_spline_t *spline)
 {
-  free((*spline)->t);
-  free((*spline)->y);
-  free((*spline)->ypp);
+  if (spline != NULL) {
+    free(spline->t);
+    free(spline->y);
+    free(spline->ypp);
 
-  free(*spline);
-  *spline = NULL;
+    free(spline);
+  }
 }
 
 double jb_spline_eval(const jb_spline_t *spline, const double r)
 {
-  double ret, dummy1, dummy2;
+  double ret;
 
-  ret = jb_spline_cubic_val( spline->np, spline->t, spline->y, spline->ypp,
-    r, &dummy1, &dummy2 );
+  jb_spline_cubic_val( spline->np, spline->t, spline->y, spline->ypp,
+			     r, &ret, NULL, NULL);
   
   //printf("jb_spline_eval at %f: %f\n", r, ret);
 
@@ -76,10 +77,10 @@ double jb_spline_eval(const jb_spline_t *spline, const double r)
 
 double jb_spline_eval_deriv(const jb_spline_t *spline, const double r)
 {
-  double ret, dummy1, dummy2;
+  double ret;
 
-  dummy1 = jb_spline_cubic_val( spline->np, spline->t, spline->y, spline->ypp,
-    r, &ret, &dummy2 );
+  jb_spline_cubic_val( spline->np, spline->t, spline->y, spline->ypp,
+		       r, NULL, &ret, NULL );
 
   //printf("jb_spline_eval_deriv: %f \n", ret);
 
@@ -88,18 +89,18 @@ double jb_spline_eval_deriv(const jb_spline_t *spline, const double r)
 
 double jb_spline_eval_deriv2(const jb_spline_t *spline, const double r)
 {
-  double ret, dummy1, dummy2;
+  double ret;
 
-  dummy1 = jb_spline_cubic_val( spline->np, spline->t, spline->y, spline->ypp,
-    r, &dummy2, &ret );
+  jb_spline_cubic_val( spline->np, spline->t, spline->y, spline->ypp,
+		       r, NULL, &ret, NULL );
 
   //printf("jb_spline_eval_deriv2: %f \n", ret);
 
   return ret;
 }
 
-double jb_spline_cubic_val ( int n, const double *t, const double *y,
-  const double *ypp, double tval, double *ypval, double *yppval )
+void jb_spline_cubic_val ( int n, const double *t, const double *y,
+      const double *ypp, double tval, double *yval, double *ypval, double *yppval )
 
 /******************************************************************************/
 /*
@@ -109,7 +110,7 @@ double jb_spline_cubic_val ( int n, const double *t, const double *y,
 
   Discussion:
 
-    SPLINE_CUBIC_SET must have already been called to define the values of YPP.
+    SPLINE_CUBIC_INIT must have already been called to define the values of YPP.
 
     For any point T in the interval T(IVAL), T(IVAL+1), the form of
     the spline is
@@ -153,18 +154,20 @@ double jb_spline_cubic_val ( int n, const double *t, const double *y,
     which the spline is to be evalulated.  If TVAL lies outside
     this range, extrapolation is used.
 
-    Output, double *YPVAL, the derivative of the spline at TVAL.
+    Output, double *YVAL, the value of the spline at TVAL. If YVAL is
+    NULL, the value of the spline is not computed.
 
-    Output, double *YPPVAL, the second derivative of the spline at TVAL.
+    Output, double *YPVAL, the derivative of the spline at TVAL. If
+    YPVAL is NULL, the derivative is not computed.
 
-    Output, double SPLINE_VAL, the value of the spline at TVAL.
+    Output, double *YPPVAL, the second derivative of the spline at
+    TVAL. If YPPVAL is NULL, the second derivative is not computed.
 */
 {
   double dt;
   double h;
   int i;
   int ival;
-  double yval;
 /*
   Determine the interval [ T(I), T(I+1) ] that contains TVAL.
   Values below T[0] or above T[N-1] use extrapolation.
@@ -186,23 +189,28 @@ double jb_spline_cubic_val ( int n, const double *t, const double *y,
   dt = tval - t[ival];
   h = t[ival+1] - t[ival];
 
-  yval = y[ival]
+  if (yval != NULL) {
+    *yval = y[ival]
     + dt * ( ( y[ival+1] - y[ival] ) / h
            - ( ypp[ival+1] / 6.0 + ypp[ival] / 3.0 ) * h
     + dt * ( 0.5 * ypp[ival]
     + dt * ( ( ypp[ival+1] - ypp[ival] ) / ( 6.0 * h ) ) ) );
+  }
 
-  *ypval = ( y[ival+1] - y[ival] ) / h
+  if (ypval != NULL) {
+    *ypval = ( y[ival+1] - y[ival] ) / h
     - ( ypp[ival+1] / 6.0 + ypp[ival] / 3.0 ) * h
     + dt * ( ypp[ival]
     + dt * ( 0.5 * ( ypp[ival+1] - ypp[ival] ) / h ) );
+  }
 
-  *yppval = ypp[ival] + dt * ( ypp[ival+1] - ypp[ival] ) / h;
+  if (yppval != NULL) {
+    *yppval = ypp[ival] + dt * ( ypp[ival+1] - ypp[ival] ) / h;
+  }
 
-  return yval;
 }
 
-double *jb_natural_spline_cubic_set(int n, const double *t, const double *y)
+double *jb_natural_spline_cubic_init(int n, const double *t, const double *y)
 {
   int ibcbeg, ibcend;
   double ybcbeg, ybcend;
@@ -213,25 +221,25 @@ double *jb_natural_spline_cubic_set(int n, const double *t, const double *y)
   ybcbeg = 0.0;
   ybcend = 0.0;
 
-  return jb_spline_cubic_set( n, t, y, ibcbeg, ybcbeg, ibcend, ybcend );
+  return jb_spline_cubic_init( n, t, y, ibcbeg, ybcbeg, ibcend, ybcend );
 }
 
-double *jb_spline_cubic_set ( int n, const double *t, const double *y,
+double *jb_spline_cubic_init ( int n, const double *t, const double *y,
   int ibcbeg, double ybcbeg, int ibcend, double ybcend )
 
 /******************************************************************************/
 /*
   Purpose:
 
-    SPLINE_CUBIC_SET computes the second derivatives of a piecewise cubic spline.
+    SPLINE_CUBIC_INIT computes the second derivatives of a piecewise cubic spline.
 
   Discussion:
 
-    For data interpolation, the user must call SPLINE_SET to determine
+    For data interpolation, the user must call SPLINE_INIT to determine
     the second derivative data, passing in the data to be interpolated,
     and the desired boundary conditions.
 
-    The data to be interpolated, plus the SPLINE_SET output, defines
+    The data to be interpolated, plus the SPLINE_INIT output, defines
     the spline.  The user may then call SPLINE_VAL to evaluate the
     spline at any point.
 
@@ -339,7 +347,7 @@ double *jb_spline_cubic_set ( int n, const double *t, const double *y,
     Input, double YBCEND, the values to be used in the boundary
     conditions if IBCEND is equal to 1 or 2.
 
-    Output, double SPLINE_CUBIC_SET[N], the second derivatives 
+    Output, double SPLINE_CUBIC_INIT[N], the second derivatives 
     of the cubic spline.
 */
 {
@@ -357,7 +365,7 @@ double *jb_spline_cubic_set ( int n, const double *t, const double *y,
   if ( n <= 1 )
   {
     fprintf ( stderr, "\n" );
-    fprintf ( stderr, "SPLINE_CUBIC_SET - Fatal error!\n" );
+    fprintf ( stderr, "SPLINE_CUBIC_INIT - Fatal error!\n" );
     fprintf ( stderr, "  The number of data points N must be at least 2.\n" );
     fprintf ( stderr, "  The input value is %d.\n", n );
     exit ( 1 );
@@ -368,7 +376,7 @@ double *jb_spline_cubic_set ( int n, const double *t, const double *y,
     if ( t[i+1] <= t[i] )
     {
       fprintf ( stderr, "\n" );
-      fprintf ( stderr, "SPLINE_CUBIC_SET - Fatal error!\n" );
+      fprintf ( stderr, "SPLINE_CUBIC_INIT - Fatal error!\n" );
       fprintf ( stderr, "  The knots must be strictly increasing, but\n" );
       fprintf ( stderr, "  T(%d) = %g\n", i, t[i] );
       fprintf ( stderr, "  T(%d) = %g\n", i+1, t[i+1] );
@@ -421,7 +429,7 @@ double *jb_spline_cubic_set ( int n, const double *t, const double *y,
   else
   {
     fprintf ( stderr, "\n" );
-    fprintf ( stderr, "SPLINE_CUBIC_SET - Fatal error!\n" );
+    fprintf ( stderr, "SPLINE_CUBIC_INIT - Fatal error!\n" );
     fprintf ( stderr, "  IBCBEG must be 0, 1 or 2.\n" );
     fprintf ( stderr, "  The input value is %d.\n", ibcbeg );
     exit ( 1 );
@@ -468,7 +476,7 @@ double *jb_spline_cubic_set ( int n, const double *t, const double *y,
   else
   {
     fprintf ( stderr, "\n" );
-    fprintf ( stderr, "SPLINE_CUBIC_SET - Fatal error!\n" );
+    fprintf ( stderr, "SPLINE_CUBIC_INIT - Fatal error!\n" );
     fprintf ( stderr, "  IBCEND must be 0, 1 or 2.\n" );
     fprintf ( stderr, "  The input value is %d.\n", ibcend );
     exit ( 1 );

@@ -78,13 +78,13 @@ int interpolation_alloc(interpolation_t **interp, const int method, const int np
 
 
 /**
- * Sets the interpolation object.
- * @param[in,out] interp: interpolation structure to set.
+ * Initializes the interpolation object.
+ * @param[in,out] interp: interpolation structure to be initialized.
  * @param[in] mesh: mesh structure.
  * @param[in] f: values of the function on the mesh.
  * @return error code
  */
-int interpolation_set(interpolation_t *interp, const pspio_mesh_t *mesh, const double *f);
+int interpolation_init(interpolation_t *interp, const pspio_mesh_t *mesh, const double *f);
 
 
 /**
@@ -94,7 +94,7 @@ int interpolation_set(interpolation_t *interp, const pspio_mesh_t *mesh, const d
  * @note This function can be safelly called even if some or all of the interp
  *       compoments have not been allocated.
  */
-void interpolation_free(interpolation_t **interp);
+void interpolation_free(interpolation_t *interp);
 
 
 /**********************************************************************
