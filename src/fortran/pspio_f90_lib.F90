@@ -495,19 +495,7 @@ module pspio_f90_lib_m
     end function pspio_f90_state_alloc
   end interface
 
-  interface ! set
-    integer(pspio_cint) function pspio_f90_state_init(state, eigenval, qn, occ, rc, mesh, wf)
-      use pspio_f90_types_m
-      implicit none
-      type(pspio_f90_state_t), intent(inout) :: state
-      real(pspio_cdouble),     intent(in)    :: eigenval
-      type(pspio_f90_qn_t),    intent(in)    :: qn
-      real(pspio_cdouble),     intent(in)    :: occ
-      real(pspio_cdouble),     intent(in)    :: rc
-      type(pspio_f90_mesh_t),  intent(in)    :: mesh
-      real(pspio_cdouble),     intent(in)    :: wf(*)
-    end function pspio_f90_state_init
-  end interface
+  ! init (this function is defined at the end of this file)
 
   interface ! free
     subroutine pspio_f90_state_free(state)
@@ -939,5 +927,50 @@ contains
 
   end function pspio_f90_xc_has_nlcc
 
+  integer(pspio_cint) function pspio_f90_state_init(state, eigenval, qn, occ, rc, mesh, wf, label) result(ierr)
+    use pspio_f90_types_m
+    implicit none
+    interface
+      integer(pspio_cint) function pspio_f90_state_init_with_label(state, eigenval, qn, occ, rc, mesh, wf, label)
+        use pspio_f90_types_m
+        implicit none
+        type(pspio_f90_state_t), intent(inout) :: state
+        real(pspio_cdouble),     intent(in)    :: eigenval
+        type(pspio_f90_qn_t),    intent(in)    :: qn
+        real(pspio_cdouble),     intent(in)    :: occ
+        real(pspio_cdouble),     intent(in)    :: rc
+        type(pspio_f90_mesh_t),  intent(in)    :: mesh
+        real(pspio_cdouble),     intent(in)    :: wf(*)
+        character(len=*),        intent(in)    :: label
+      end function pspio_f90_state_init_with_label
+
+      integer(pspio_cint) function pspio_f90_state_init_without_label(state, eigenval, qn, occ, rc, mesh, wf)
+        use pspio_f90_types_m
+        implicit none
+        type(pspio_f90_state_t), intent(inout) :: state
+        real(pspio_cdouble),     intent(in)    :: eigenval
+        type(pspio_f90_qn_t),    intent(in)    :: qn
+        real(pspio_cdouble),     intent(in)    :: occ
+        real(pspio_cdouble),     intent(in)    :: rc
+        type(pspio_f90_mesh_t),  intent(in)    :: mesh
+        real(pspio_cdouble),     intent(in)    :: wf(*)
+      end function pspio_f90_state_init_without_label
+    end interface
+    type(pspio_f90_state_t),          intent(inout) :: state
+    real(pspio_cdouble),              intent(in)    :: eigenval
+    type(pspio_f90_qn_t),             intent(in)    :: qn
+    real(pspio_cdouble),              intent(in)    :: occ
+    real(pspio_cdouble),              intent(in)    :: rc
+    type(pspio_f90_mesh_t),           intent(in)    :: mesh
+    real(pspio_cdouble),              intent(in)    :: wf(*)
+    character(len=*),       optional, intent(in)    :: label
+
+    if (present(label)) then
+      ierr = pspio_f90_state_init_with_label(state, eigenval, qn, occ, rc, mesh, wf, label)
+    else
+      ierr = pspio_f90_state_init_without_label(state, eigenval, qn, occ, rc, mesh, wf)
+    end if
+
+  end function pspio_f90_state_init
 
 end module pspio_f90_lib_m

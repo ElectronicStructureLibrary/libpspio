@@ -108,8 +108,8 @@ int pspio_fhi_read(FILE *fp, pspio_pspdata_t *pspdata) {
     SKIP_FUNC_ON_ERROR( pspio_potential_init(pspdata->potentials[LJ_TO_I(l,0.0)],
       qn, pspdata->mesh, v) );
     SKIP_FUNC_ON_ERROR( pspio_state_alloc(&pspdata->states[l], np) );
-    SKIP_FUNC_ON_ERROR( pspio_state_init(pspdata->states[l], 0.0, "", qn,
-      0.0, 0.0, pspdata->mesh, wf) );
+    SKIP_FUNC_ON_ERROR( pspio_state_init(pspdata->states[l], 0.0, qn,
+      0.0, 0.0, pspdata->mesh, wf, NULL) );
 
     // Free temporary data
     free(r);

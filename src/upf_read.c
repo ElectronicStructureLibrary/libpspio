@@ -504,7 +504,7 @@ int upf_read_pswfc(FILE *fp, const int np, pspio_pspdata_t *pspdata) {
     // Store the state in the pspdata structure
     SUCCEED_OR_BREAK( pspio_state_alloc(&pspdata->states[is], np) );
     SUCCEED_OR_BREAK( pspio_state_init(pspdata->states[is], 0.0,
-      label, qn, occ, 0.0, pspdata->mesh, wf) );
+      qn, occ, 0.0, pspdata->mesh, wf, label) );
   }
   pspdata->l_max = lmax;
 

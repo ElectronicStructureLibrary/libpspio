@@ -555,7 +555,7 @@ int FC_FUNC_(pspio_f90_mesh_alloc, PSPIO_F90_MESH_ALLOC)
 }
 
 // mesh_init
-int FC_FUNC_(pspio_f90_mesh_init, PSPIO_F90_MESH_SET)
+int FC_FUNC_(pspio_f90_mesh_init, PSPIO_F90_MESH_INIT)
      (void ** mesh, int *type, double *a, double *b, double *r, double *rab)
 {
   return pspio_mesh_init(((pspio_mesh_t *)(*mesh)), *type, *a, *b, r, rab);
@@ -635,10 +635,23 @@ int FC_FUNC_(pspio_f90_state_alloc, PSPIO_F90_STATE_ALLOC)
 }
 
 // state_init
-int FC_FUNC_(pspio_f90_state_init, PSPIO_F90_STATE_SET)
+int FC_FUNC_(pspio_f90_state_init_with_label, PSPIO_F90_STATE_INIT_WITH_LABEL)
+     (void ** state, double * eigenval, void ** qn, double * occ, double * rc, void ** mesh, double *wf, STR_F_TYPE label STR_ARG1)
+{
+  char *label_c;
+
+  TO_C_STR1(label, label_c);
+  DEFER_FUNC_ERROR( pspio_state_init(((pspio_state_t *)(*state)), *eigenval, ((pspio_qn_t *)(*qn)), *occ, *rc, ((pspio_mesh_t*)(*mesh)), wf, NULL) );
+  free(label_c);
+
+  RETURN_ON_DEFERRED_ERROR;
+  return PSPIO_SUCCESS;
+}
+
+int FC_FUNC_(pspio_f90_state_init_without_label, PSPIO_F90_STATE_INIT_WITHOUT_LABEL)
      (void ** state, double * eigenval, void ** qn, double * occ, double * rc, void ** mesh, double *wf)
 {
-  return pspio_state_init(((pspio_state_t *)(*state)), *eigenval, "", ((pspio_qn_t *)(*qn)), *occ, *rc, ((pspio_mesh_t*)(*mesh)), wf);
+  return pspio_state_init(((pspio_state_t *)(*state)), *eigenval, ((pspio_qn_t *)(*qn)), *occ, *rc, ((pspio_mesh_t*)(*mesh)), wf, NULL);
 }
 
 // state_free
@@ -714,7 +727,7 @@ int FC_FUNC_(pspio_f90_potential_alloc, PSPIO_F90_POTENTIAL_ALLOC)
 }
 
 // potential_init
-int FC_FUNC_(pspio_f90_potential_init, PSPIO_F90_POTENTIAL_SET)
+int FC_FUNC_(pspio_f90_potential_init, PSPIO_F90_POTENTIAL_INIT)
      (void ** potential, void ** qn, void ** mesh, double * v)
 {
   return pspio_potential_init(((pspio_potential_t *)(*potential)), ((pspio_qn_t *)(*qn)), ((pspio_mesh_t *)(*mesh)), v);
@@ -763,7 +776,7 @@ int FC_FUNC_(pspio_f90_projector_alloc, PSPIO_F90_PROJECTOR_ALLOC)
 }
 
 // projector_init
-int FC_FUNC_(pspio_f90_projector_init, PSPIO_F90_PROJECTOR_SET)
+int FC_FUNC_(pspio_f90_projector_init, PSPIO_F90_PROJECTOR_INIT)
      (void ** projector, void ** qn, double * energy, void ** mesh, double * proj)
 {
   return pspio_projector_init(((pspio_projector_t *)(*projector)), ((pspio_qn_t *)(*qn)), *energy, ((pspio_mesh_t *)(*mesh)), proj);
@@ -931,7 +944,7 @@ int FC_FUNC_(pspio_f90_qn_alloc, PSPIO_F90_QN_ALLOC)
 }
 
 // qn_init
-int FC_FUNC_(pspio_f90_qn_init, PSPIO_F90_QN_SET)
+int FC_FUNC_(pspio_f90_qn_init, PSPIO_F90_QN_INIT)
      (void ** qn, int *n, int *l, double *j)
 {
   return pspio_qn_init(((pspio_qn_t *)(*qn)), *n, *l, *j);

@@ -79,8 +79,8 @@ int main(void) {
   DEBUG_PRINT("\n");
 
   /* Check setting of states */
-  DEBUG_PRINT("test_state: setting s1 to (-1.0, '2s', qn1, 2.0, 1.0, ...)\n");
-  CHECK_STAT(pspio_state_init(s1, -1.0, "1s2", qn1, 2.0, 1.0, mesh, wf), PSPIO_SUCCESS);
+  DEBUG_PRINT("test_state: setting s1 to (-1.0, qn1, 2.0, 1.0, ...)\n");
+  CHECK_STAT(pspio_state_init(s1, -1.0, qn1, 2.0, 1.0, mesh, wf, "1s2"), PSPIO_SUCCESS);
   DEBUG_PRINT("\n");
 
   /* Check creation of lookup table */
@@ -94,12 +94,12 @@ int main(void) {
   CHECK_STAT(pspio_state_alloc(&st[1], np), PSPIO_SUCCESS);
   DEBUG_PRINT("test_state: creating st[2]\n");
   CHECK_STAT(pspio_state_alloc(&st[2], np), PSPIO_SUCCESS);
-  DEBUG_PRINT("test_state: setting st[0] to (-1.00, '2s0.5', qn1, 2.0, 1.0, ...)\n");
-  CHECK_STAT(pspio_state_init(st[0], -1.0, "2s0.5", qn1, 2.0, 1.0, mesh, wf), PSPIO_SUCCESS);
-  DEBUG_PRINT("test_state: setting st[1] to (-0.50, '3p0.5', qn2, 2.0, 1.0, ...)\n");
-  CHECK_STAT(pspio_state_init(st[1], -1.0, "2s0.5", qn2, 2.0, 1.0, mesh, wf), PSPIO_SUCCESS);
-  DEBUG_PRINT("test_state: setting st[2] to (-0.25, '3p1.5', qn3, 4.0, 1.0, ...)\n");
-  CHECK_STAT(pspio_state_init(st[2], -1.0, "2s0.5", qn3, 4.0, 1.0, mesh, wf), PSPIO_SUCCESS);
+  DEBUG_PRINT("test_state: setting st[0] to (-1.00, qn1, 2.0, 1.0, ...)\n");
+  CHECK_STAT(pspio_state_init(st[0], -1.0, qn1, 2.0, 1.0, mesh, wf, "2s0.5"), PSPIO_SUCCESS);
+  DEBUG_PRINT("test_state: setting st[1] to (-0.50, qn2, 2.0, 1.0, ...)\n");
+  CHECK_STAT(pspio_state_init(st[1], -1.0, qn2, 2.0, 1.0, mesh, wf, "2s0.5"), PSPIO_SUCCESS);
+  DEBUG_PRINT("test_state: setting st[2] to (-0.25, qn3, 4.0, 1.0, ...)\n");
+  CHECK_STAT(pspio_state_init(st[2], -1.0, qn3, 4.0, 1.0, mesh, wf, NULL), PSPIO_SUCCESS);
   DEBUG_PRINT("test_state: Creating lookup table\n");
   CHECK_STAT(pspio_states_lookup_table(3, st, &table), PSPIO_SUCCESS);
   lsize = 3;

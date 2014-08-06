@@ -65,19 +65,20 @@ int pspio_state_alloc(pspio_state_t **state, const int np);
  * Initializes all the parameters of a state.
  * @param[in,out] state: state structure pointer to be initialized
  * @param[in] eigenval: eigenvalue
- * @param[in] label: string describing the state
  * @param[in] qn: pointer to quatum numbers
  * @param[in] occ: occupation number
  * @param[in] rc: cutoff radius
  * @param[in] mesh: the radial mesh
  * @param[in] wf: pointer to the wavefunction values
+ * @param[in] label: string describing the state (optional)
  * @return error code
  * @note The state pointer is supposed to have been already allocated
  *       with pspio_state_alloc.
+ * @note If label is set to NULL, then the quantum numbers are used to construct the state label.
  */
 int pspio_state_init(pspio_state_t *state, const double eigenval,
-		    const char *label, const pspio_qn_t *qn, const double occ, 
-		    const double rc, const pspio_mesh_t *mesh, const double *wf);
+		    const pspio_qn_t *qn, const double occ, const double rc, 
+		    const pspio_mesh_t *mesh, const double *wf, const char *label);
 
 
 /**
