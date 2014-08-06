@@ -93,6 +93,7 @@ module pspio_f90_types_m
   integer(pspio_cint), parameter, public :: PSPIO_NLCC_LOUIE = 2
   integer(pspio_cint), parameter, public :: PSPIO_NLCC_TETER1 = 3
   integer(pspio_cint), parameter, public :: PSPIO_NLCC_TETER2 = 4
+  integer(pspio_cint), parameter, public :: PSPIO_NLCC_ATOM = 5
   !%%% END PSPIO CONSTANTS
 
   ! All the following types are just pointers to the actual data structures

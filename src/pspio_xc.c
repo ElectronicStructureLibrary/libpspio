@@ -100,6 +100,7 @@ int pspio_xc_set_nlcc_scheme(pspio_xc_t *xc, const int nlcc_scheme) {
     case PSPIO_NLCC_FHI:
     case PSPIO_NLCC_TETER1:
     case PSPIO_NLCC_TETER2:
+    case PSPIO_NLCC_ATOM:
       break;
 
     default:
