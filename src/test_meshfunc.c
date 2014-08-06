@@ -67,7 +67,8 @@ int main(void) {
   DEBUG_PRINT("test_meshfunc: creating f3\n");
   CHECK_STAT(pspio_meshfunc_alloc(&f3, np), PSPIO_SUCCESS);
   DEBUG_PRINT("test_meshfunc: destroying f3\n");
-  pspio_meshfunc_free(&f3);
+  pspio_meshfunc_free(f3);
+  f3 = NULL;
   DEBUG_PRINT("\n");
 
   /* Check setting of mesh functions */
@@ -138,13 +139,13 @@ int main(void) {
   /* Destroy mesh functions */
   DEBUG_PRINT("test_meshfunc: destroying f1\n");
   PTR_STAT_SHOW(f1);
-  pspio_meshfunc_free(&f1);
+  pspio_meshfunc_free(f1);
   DEBUG_PRINT("test_meshfunc: destroying f2\n");
   PTR_STAT_SHOW(f2);
-  pspio_meshfunc_free(&f2);
+  pspio_meshfunc_free(f2);
   DEBUG_PRINT("test_meshfunc: destroying f3\n");
   PTR_STAT_SHOW(f3);
-  pspio_meshfunc_free(&f3);
+  pspio_meshfunc_free(f3);
   DEBUG_PRINT("\n");
 
   DEBUG_PRINT("=== END test_meshfunc ===\n");

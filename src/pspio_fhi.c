@@ -115,7 +115,8 @@ int pspio_fhi_read(FILE *fp, pspio_pspdata_t *pspdata) {
     free(r);
     free(v);
     free(wf);
-    pspio_qn_free(&qn);
+    pspio_qn_free(qn);
+    qn = NULL;
 
     // Return on error after making sure internal variables are freed
     RETURN_ON_DEFERRED_ERROR;

@@ -87,7 +87,7 @@ int pspio_qn_copy(pspio_qn_t **dst, const pspio_qn_t *src);
  * @note This function can be safely called even if some or all of the qn
  *       components have not been allocated.
  */
-void pspio_qn_free(pspio_qn_t **qn);
+void pspio_qn_free(pspio_qn_t *qn);
 
 
 /**********************************************************************

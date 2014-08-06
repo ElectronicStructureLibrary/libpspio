@@ -52,14 +52,15 @@ int jb_spline_init(jb_spline_t **spline, const double *r, const double *f,
   return 0;
 }
 
-void jb_spline_free(jb_spline_t **spline)
+void jb_spline_free(jb_spline_t *spline)
 {
-  free((*spline)->t);
-  free((*spline)->y);
-  free((*spline)->ypp);
+  if (spline != NULL) {
+    free(spline->t);
+    free(spline->y);
+    free(spline->ypp);
 
-  free(*spline);
-  *spline = NULL;
+    free(spline);
+  }
 }
 
 double jb_spline_eval(const jb_spline_t *spline, const double r)

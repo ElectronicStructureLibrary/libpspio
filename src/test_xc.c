@@ -65,7 +65,7 @@ int main(void) {
 
   /* Destroy xc */
   DEBUG_PRINT("test_xc: destroying xc\n");
-  pspio_xc_free(&xc);
+  pspio_xc_free(xc);
   DEBUG_PRINT("\n");
 
   DEBUG_PRINT("=== END test_xc ===\n");

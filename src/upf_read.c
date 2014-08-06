@@ -369,7 +369,7 @@ int upf_read_nonlocal(FILE *fp, const int np, pspio_pspdata_t *pspdata) {
   free(projector_read);
   free(ekb);
   free(proj_j);
-  pspio_qn_free(&qn);
+  pspio_qn_free(qn);
 
   // Make sure no error is left unhandled
   RETURN_ON_DEFERRED_ERROR;
@@ -424,7 +424,7 @@ int upf_read_local(FILE *fp, const int np, pspio_pspdata_t *pspdata) {
 
   // Free memory
   free(vlocal);
-  pspio_qn_free(&qn);
+  pspio_qn_free(qn);
 
   // Make sure no error is left unhandled
   RETURN_ON_DEFERRED_ERROR;
@@ -511,7 +511,7 @@ int upf_read_pswfc(FILE *fp, const int np, pspio_pspdata_t *pspdata) {
   // Free memory
   free(wf);
   free(j);
-  pspio_qn_free(&qn);
+  pspio_qn_free(qn);
 
   // Make sure no error is left unhandled
   RETURN_ON_DEFERRED_ERROR;

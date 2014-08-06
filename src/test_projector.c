@@ -66,7 +66,7 @@ int main(void) {
   DEBUG_PRINT("test_projector: creating proj2\n");
   CHECK_STAT(pspio_projector_alloc(&proj2, np), PSPIO_SUCCESS);
   DEBUG_PRINT("test_projector: destroying proj2\n");
-  pspio_projector_free(&proj2);
+  pspio_projector_free(proj2);
   DEBUG_PRINT("\n");
 
   /* Check setting of the projectors */
@@ -91,7 +91,7 @@ int main(void) {
 
   /* Destroy projector */
   DEBUG_PRINT("test_projector: destroying proj1\n");
-  pspio_projector_free(&proj1);
+  pspio_projector_free(proj1);
   DEBUG_PRINT("\n");
 
   DEBUG_PRINT("=== END test_projector ===\n");

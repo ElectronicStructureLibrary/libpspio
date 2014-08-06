@@ -75,7 +75,7 @@ int main(void) {
   DEBUG_PRINT("test_state: creating s2\n");
   CHECK_STAT(pspio_state_alloc(&s2, np), PSPIO_SUCCESS);
   DEBUG_PRINT("test_state: destroying s2\n");
-  pspio_state_free(&s2);
+  pspio_state_free(s2);
   DEBUG_PRINT("\n");
 
   /* Check setting of states */
@@ -112,10 +112,10 @@ int main(void) {
 
   /* Destroy states */
   DEBUG_PRINT("test_state: destroying s1\n");
-  pspio_state_free(&s1);
+  pspio_state_free(s1);
   for (i=0; i<3; i++) {
     DEBUG_PRINT("test_state: destroying st[%d]\n", i);
-    pspio_state_free(&st[i]);
+    pspio_state_free(st[i]);
   }
   DEBUG_PRINT("\n");
 

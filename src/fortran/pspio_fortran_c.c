@@ -102,10 +102,7 @@ int FC_FUNC_(pspio_f90_pspdata_write, PSPIO_F90_PSPDATA_WRITE)
 void FC_FUNC_(pspio_f90_pspdata_free, PSPIO_F90_PSPDATA_FREE)
      (void ** pspdata)
 {
-  pspio_pspdata_t *pspdata_p = NULL;
-
-  pspdata_p = ((pspio_pspdata_t *)(*pspdata));
-  pspio_pspdata_free(&pspdata_p);
+  pspio_pspdata_free(((pspio_pspdata_t *)(*pspdata)));
 }
 
 // pspdata_get_format_guessed
@@ -579,10 +576,7 @@ void FC_FUNC_(pspio_f90_mesh_init_from_parameters, PSPIO_F90_MESH_INIT_FROM_PARA
 void FC_FUNC_(pspio_f90_mesh_free, PSPIO_F90_MESH_FREE)
      (pspio_mesh_t **mesh)
 {
-  pspio_mesh_t *mesh_p = NULL;
-
-  mesh_p = ((pspio_mesh_t *)(*mesh));
-  pspio_mesh_free(&mesh_p);
+  pspio_mesh_free(((pspio_mesh_t *)(*mesh)));
 }
 
 // mesh_get_np
@@ -658,10 +652,7 @@ int FC_FUNC_(pspio_f90_state_init_without_label, PSPIO_F90_STATE_INIT_WITHOUT_LA
 void FC_FUNC_(pspio_f90_state_free, PSPIO_F90_STATE_FREE)
      (pspio_state_t **state)
 {
-  pspio_state_t *state_p;
-
-  state_p = ((pspio_state_t *)(*state));
-  pspio_state_free(&state_p);
+  pspio_state_free(((pspio_state_t *)(*state)));
 }
 
 // state_wf_eval_s
@@ -737,10 +728,7 @@ int FC_FUNC_(pspio_f90_potential_init, PSPIO_F90_POTENTIAL_INIT)
 void FC_FUNC_(pspio_f90_potential_free, PSPIO_F90_POTENTIAL_FREE)
      (pspio_potential_t **potential)
 {
-  pspio_potential_t *potential_p;
-
-  potential_p = ((pspio_potential_t *)(*potential));
-  pspio_potential_free(&potential_p);
+  pspio_potential_free(((pspio_potential_t *)(*potential)));
 }
 
 // potential_eval_s
@@ -786,11 +774,7 @@ int FC_FUNC_(pspio_f90_projector_init, PSPIO_F90_PROJECTOR_INIT)
 void FC_FUNC_(pspio_f90_projector_free, PSPIO_F90_PROJECTOR_FREE)
      (pspio_projector_t **projector)
 {
-  pspio_projector_t *projector_p;
-
-  projector_p = ((pspio_projector_t *)(*projector));
-
-  pspio_projector_free(&projector_p);
+  pspio_projector_free(((pspio_projector_t *)(*projector)));
 }
 
 // projector_eval_s
@@ -850,11 +834,7 @@ int FC_FUNC_(pspio_f90_xc_alloc, PSPIO_F90_XC_ALLOC)
 void FC_FUNC_(pspio_f90_xc_free, PSPIO_F90_XC_FREE)
      (void ** xc)
 {
-  pspio_xc_t *xc_p;
-
-  xc_p = ((pspio_xc_t *)(*xc));
-
-  pspio_xc_free(&xc_p);
+  pspio_xc_free(((pspio_xc_t *)(*xc)));
 }
 
 // xc_set_id
@@ -954,11 +934,7 @@ int FC_FUNC_(pspio_f90_qn_init, PSPIO_F90_QN_INIT)
 void FC_FUNC_(pspio_f90_qn_free, PSPIO_F90_QN_FREE)
      (void ** qn)
 {
-  pspio_qn_t *qn_p;
-
-  qn_p = ((pspio_qn_t *)(*qn));
-
-  pspio_qn_free(&qn_p);
+  pspio_qn_free(((pspio_qn_t *)(*qn)));
 }
 
 // qn_get_n

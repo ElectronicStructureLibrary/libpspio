@@ -44,14 +44,16 @@ int pspio_projector_alloc(pspio_projector_t **projector, const int np) {
   (*projector)->proj = NULL;
   ierr = pspio_meshfunc_alloc(&(*projector)->proj, np);
   if ( ierr != PSPIO_SUCCESS ) {
-    pspio_projector_free(projector);
+    pspio_projector_free(*projector);
+    *projector = NULL;
     RETURN_WITH_ERROR( ierr );
   }
 
   (*projector)->qn = NULL;
   ierr = pspio_qn_alloc(&(*projector)->qn);
   if ( ierr != PSPIO_SUCCESS ) {
-    pspio_projector_free(projector);
+    pspio_projector_free(*projector);
+    *projector = NULL;
     RETURN_WITH_ERROR( ierr );
   }
 
@@ -89,12 +91,12 @@ int pspio_projector_copy(pspio_projector_t **dst, const pspio_projector_t *src) 
 }
 
 
-void pspio_projector_free(pspio_projector_t **projector) {
-  if (*projector != NULL) {
-    pspio_meshfunc_free(&(*projector)->proj);
-    pspio_qn_free(&(*projector)->qn);
-    free(*projector);
-    *projector = NULL;
+void pspio_projector_free(pspio_projector_t *projector) {
+
+  if (projector != NULL) {
+    pspio_meshfunc_free(projector->proj);
+    pspio_qn_free(projector->qn);
+    free(projector);
   }
 }
 

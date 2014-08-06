@@ -129,7 +129,7 @@ int pspio_mesh_copy(pspio_mesh_t **dst, const pspio_mesh_t *src);
  * @note This function can be safelly called even if some or all of the mesh 
  *       compoments have not been allocated.
  */
-void pspio_mesh_free(pspio_mesh_t **mesh);
+void pspio_mesh_free(pspio_mesh_t *mesh);
 
 
 

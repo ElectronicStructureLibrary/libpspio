@@ -107,7 +107,7 @@ int pspio_meshfunc_copy(pspio_meshfunc_t **dst, const pspio_meshfunc_t *src);
  * @note This function can be safelly called even if some or all of the func 
  *       compoments have not been allocated.
  */
-void pspio_meshfunc_free(pspio_meshfunc_t **func);
+void pspio_meshfunc_free(pspio_meshfunc_t *func);
 
 
 /**********************************************************************

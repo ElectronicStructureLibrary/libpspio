@@ -94,7 +94,7 @@ int interpolation_init(interpolation_t *interp, const pspio_mesh_t *mesh, const 
  * @note This function can be safelly called even if some or all of the interp
  *       compoments have not been allocated.
  */
-void interpolation_free(interpolation_t **interp);
+void interpolation_free(interpolation_t *interp);
 
 
 /**********************************************************************

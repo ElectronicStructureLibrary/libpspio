@@ -93,7 +93,7 @@ int pspio_potential_copy(pspio_potential_t **dst, const pspio_potential_t *src);
  * @note This function can be safelly called even if some or all of the 
  *       potential components have not been allocated.
  */
-void pspio_potential_free(pspio_potential_t **potential);
+void pspio_potential_free(pspio_potential_t *potential);
 
 
 /**********************************************************************

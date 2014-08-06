@@ -115,7 +115,7 @@ int pspio_states_lookup_table(const int n_states, pspio_state_t **states,
  * @note This function can be safelly called even if some or all of the state 
  *       compoments have not been allocated.
  */
-void pspio_state_free(pspio_state_t **state);
+void pspio_state_free(pspio_state_t *state);
 
 
 /**********************************************************************

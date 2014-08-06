@@ -95,7 +95,7 @@ int pspio_projector_copy(pspio_projector_t **dst, const pspio_projector_t *src);
  * @note This function can be safelly called even if some or all of the
  *       projector components have not been allocated.
  */
-void pspio_projector_free(pspio_projector_t **projector);
+void pspio_projector_free(pspio_projector_t *projector);
 
 
 /**********************************************************************

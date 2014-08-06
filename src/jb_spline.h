@@ -48,7 +48,7 @@ jb_spline_t *jb_spline_alloc(const int np);
 
 int jb_spline_init(jb_spline_t **spline, const double *f, const double *r, const int np);
 
-void jb_spline_free(jb_spline_t **spline);
+void jb_spline_free(jb_spline_t *spline);
 
 double jb_spline_eval(const jb_spline_t *spline, const double r);
 

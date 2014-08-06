@@ -80,7 +80,7 @@ int pspio_xc_copy(pspio_xc_t **dst, const pspio_xc_t *src);
  * @note This function can be safelly called even if some or all of the xc 
  *       compoments have not been allocated.
  */
-void pspio_xc_free(pspio_xc_t **xc);
+void pspio_xc_free(pspio_xc_t *xc);
 
 
 /**********************************************************************

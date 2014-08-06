@@ -45,7 +45,7 @@ int main(void) {
   DEBUG_PRINT("test_qn: creating qn2\n");
   CHECK_STAT(pspio_qn_alloc(&qn2), PSPIO_SUCCESS);
   DEBUG_PRINT("test_qn: destroying qn2\n");
-  pspio_qn_free(&qn2);
+  pspio_qn_free(qn2);
   DEBUG_PRINT("\n");
 
   /* Check setting of quantum numbers */
@@ -91,9 +91,9 @@ int main(void) {
 
   /* Destroy quantum numbers */
   DEBUG_PRINT("test_qn: destroying qn1\n");
-  pspio_qn_free(&qn1);
+  pspio_qn_free(qn1);
   DEBUG_PRINT("test_qn: destroying qn2\n");
-  pspio_qn_free(&qn2);
+  pspio_qn_free(qn2);
   DEBUG_PRINT("\n");
 
   DEBUG_PRINT("=== END test_qn ===\n");

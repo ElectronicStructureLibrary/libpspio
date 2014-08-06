@@ -67,14 +67,13 @@ int pspio_xc_copy(pspio_xc_t **dst, const pspio_xc_t *src) {
 }
 
 
-void pspio_xc_free(pspio_xc_t **xc){
+void pspio_xc_free(pspio_xc_t *xc){
 
-  if (*xc != NULL) {
-    if ( (*xc)->nlcc_dens != NULL) {
-      pspio_meshfunc_free(&(*xc)->nlcc_dens);
+  if (xc != NULL) {
+    if ( xc->nlcc_dens != NULL) {
+      pspio_meshfunc_free(xc->nlcc_dens);
     }
-    free(*xc);
-    *xc = NULL;
+    free(xc);
   }
 }
 
@@ -120,7 +119,8 @@ int pspio_xc_set_nlcc_density(pspio_xc_t *xc, const pspio_mesh_t *mesh,
 
   ierr = pspio_meshfunc_alloc(&xc->nlcc_dens, pspio_mesh_get_np(mesh));
   if ( ierr != PSPIO_SUCCESS ) {
-    pspio_meshfunc_free(&xc->nlcc_dens);
+    pspio_meshfunc_free(xc->nlcc_dens);
+    xc->nlcc_dens = NULL;
     RETURN_WITH_ERROR( ierr );
   }
 

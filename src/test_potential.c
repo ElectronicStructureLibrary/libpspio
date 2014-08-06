@@ -65,7 +65,7 @@ int main(void) {
   DEBUG_PRINT("test_potential: creating pot2\n");
   CHECK_STAT(pspio_potential_alloc(&pot2, np), PSPIO_SUCCESS);
   DEBUG_PRINT("test_potential: destroying pot2\n");
-  pspio_potential_free(&pot2);
+  pspio_potential_free(pot2);
   DEBUG_PRINT("\n");
 
   /* Check setting of the potentials */
@@ -81,7 +81,7 @@ int main(void) {
 
   /* Destroy potential */
   DEBUG_PRINT("test_potential: destroying pot1\n");
-  pspio_potential_free(&pot1);
+  pspio_potential_free(pot1);
   DEBUG_PRINT("\n");
 
   DEBUG_PRINT("=== END test_potential ===\n");

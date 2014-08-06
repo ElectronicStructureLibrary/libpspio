@@ -217,13 +217,12 @@ int pspio_mesh_copy(pspio_mesh_t **dst, const pspio_mesh_t *src) {
 }
 
 
-void pspio_mesh_free(pspio_mesh_t **mesh) {
+void pspio_mesh_free(pspio_mesh_t *mesh) {
 
-  if (*mesh != NULL) {
-    free ((*mesh)->r);
-    free ((*mesh)->rab);
-    free (*mesh);
-    *mesh = NULL;
+  if (mesh != NULL) {
+    free (mesh->r);
+    free (mesh->rab);
+    free (mesh);
   }
 }
 

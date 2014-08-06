@@ -78,11 +78,10 @@ int pspio_qn_copy(pspio_qn_t **dst, const pspio_qn_t *src) {
 }
 
 
-void pspio_qn_free(pspio_qn_t **qn) {
+void pspio_qn_free(pspio_qn_t *qn) {
 
   if ( qn != NULL ) {
-    free(*qn);
-    *qn = NULL;
+    free(qn);
   }
 }
 

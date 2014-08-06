@@ -46,14 +46,16 @@ int pspio_state_alloc(pspio_state_t **state, const int np) {
   (*state)->wf = NULL;
   ierr = pspio_meshfunc_alloc(&(*state)->wf, np);
   if ( ierr != PSPIO_SUCCESS ) {
-    pspio_state_free(state);
+    pspio_state_free(*state);
+    *state = NULL;
     RETURN_WITH_ERROR( ierr );
   }
 
   (*state)->qn = NULL;
   ierr = pspio_qn_alloc(&(*state)->qn);
   if ( ierr != PSPIO_SUCCESS ) {
-    pspio_state_free(state);
+    pspio_state_free(*state);
+    *state = NULL;
     RETURN_WITH_ERROR( ierr );
   }
 
@@ -163,13 +165,13 @@ int pspio_states_lookup_table(const int n_states, pspio_state_t **states,
 }
 
 
-void pspio_state_free(pspio_state_t **state) {
-  if ( *state != NULL ) {
-    pspio_meshfunc_free(&(*state)->wf);
-    pspio_qn_free(&(*state)->qn);
-    free((*state)->label);
-    free(*state);
-    *state = NULL;
+void pspio_state_free(pspio_state_t *state) {
+
+  if ( state != NULL ) {
+    pspio_meshfunc_free(state->wf);
+    pspio_qn_free(state->qn);
+    free(state->label);
+    free(state);
   }
 }
 
