@@ -56,7 +56,7 @@ int main(void) {
   DEBUG_PRINT("test_potential: creating quantum numbers\n");
   CHECK_STAT(pspio_qn_alloc(&qn), PSPIO_SUCCESS);
   DEBUG_PRINT("test_potential: setting quantum numbers to (1, 2, 0.0)\n");
-  CHECK_STAT(pspio_qn_set(qn, 1, 2, 0.0), PSPIO_SUCCESS);
+  CHECK_STAT(pspio_qn_init(qn, 1, 2, 0.0), PSPIO_SUCCESS);
   DEBUG_PRINT("\n");
 
   /* Check creation and destruction of potential */
@@ -70,7 +70,7 @@ int main(void) {
 
   /* Check setting of the potentials */
   DEBUG_PRINT("test_potential: setting pot1\n");
-  CHECK_STAT(pspio_potential_set(pot1, qn, mesh, v), PSPIO_SUCCESS);
+  CHECK_STAT(pspio_potential_init(pot1, qn, mesh, v), PSPIO_SUCCESS);
   DEBUG_PRINT("\n");
 
   /* Check evaluation of the potential */

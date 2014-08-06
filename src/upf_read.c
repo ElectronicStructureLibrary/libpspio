@@ -347,10 +347,10 @@ int upf_read_nonlocal(FILE *fp, const int np, pspio_pspdata_t *pspdata) {
     for (j=0; j<np; j++) projector_read[j] /= 2.0*pspdata->mesh->r[j];
 
     // Store the projectors in the pspdata structure
-    SUCCEED_OR_BREAK( pspio_qn_set(qn, 0, l, proj_j[i]) );
+    SUCCEED_OR_BREAK( pspio_qn_init(qn, 0, l, proj_j[i]) );
     SUCCEED_OR_BREAK(
       pspio_projector_alloc( &(pspdata->kb_projectors[i]), np) );
-    SUCCEED_OR_BREAK( pspio_projector_set(pspdata->kb_projectors[i], qn, ekb[i], pspdata->mesh, projector_read) );
+    SUCCEED_OR_BREAK( pspio_projector_init(pspdata->kb_projectors[i], qn, ekb[i], pspdata->mesh, projector_read) );
 
     // Check end tag
     if ( pspio_error_get_last(__func__) == PSPIO_SUCCESS ) {
@@ -418,9 +418,9 @@ int upf_read_local(FILE *fp, const int np, pspio_pspdata_t *pspdata) {
   for (i=0; i<np; i++) vlocal[i] /= 2.0;
 
   // Store the local potential in the pspdata structure
-  SKIP_FUNC_ON_ERROR( pspio_qn_set(qn, 0, pspdata->l_local, 0.0) );
+  SKIP_FUNC_ON_ERROR( pspio_qn_init(qn, 0, pspdata->l_local, 0.0) );
   SKIP_FUNC_ON_ERROR( pspio_potential_alloc(&pspdata->vlocal, np) );
-  SKIP_FUNC_ON_ERROR( pspio_potential_set(pspdata->vlocal, qn, pspdata->mesh, vlocal) );
+  SKIP_FUNC_ON_ERROR( pspio_potential_init(pspdata->vlocal, qn, pspdata->mesh, vlocal) );
 
   // Free memory
   free(vlocal);
@@ -485,7 +485,7 @@ int upf_read_pswfc(FILE *fp, const int np, pspio_pspdata_t *pspdata) {
     FULFILL_OR_BREAK( fgets(line, PSPIO_STRLEN_LINE, fp) != NULL, PSPIO_EIO );
     FULFILL_OR_BREAK( sscanf(line, "%1d%1c %d %lf", &n, &ll, &l, &occ) == 4, PSPIO_EFILE_CORRUPT );
     FULFILL_OR_BREAK( sprintf(label, "%1d%1c", n, ll) > 0, PSPIO_EIO );
-    SUCCEED_OR_BREAK( pspio_qn_set(qn, n, l, j[is]) );
+    SUCCEED_OR_BREAK( pspio_qn_init(qn, n, l, j[is]) );
     lmax = max(l, lmax);
 
     // Read wavefunction
@@ -503,7 +503,7 @@ int upf_read_pswfc(FILE *fp, const int np, pspio_pspdata_t *pspdata) {
 
     // Store the state in the pspdata structure
     SUCCEED_OR_BREAK( pspio_state_alloc(&pspdata->states[is], np) );
-    SUCCEED_OR_BREAK( pspio_state_set(pspdata->states[is], 0.0,
+    SUCCEED_OR_BREAK( pspio_state_init(pspdata->states[is], 0.0,
       label, qn, occ, 0.0, pspdata->mesh, wf) );
   }
   pspdata->l_max = lmax;
@@ -551,7 +551,7 @@ int upf_read_rhoatom(FILE *fp, const int np, pspio_pspdata_t *pspdata) {
 
   // Store the density in the pspdata structure
   SKIP_FUNC_ON_ERROR( pspio_meshfunc_alloc(&pspdata->rho_valence, np) );
-  SKIP_FUNC_ON_ERROR( pspio_meshfunc_set(pspdata->rho_valence,
+  SKIP_FUNC_ON_ERROR( pspio_meshfunc_init(pspdata->rho_valence,
     pspdata->mesh, rho_read, NULL, NULL) );
 
   // Free memory

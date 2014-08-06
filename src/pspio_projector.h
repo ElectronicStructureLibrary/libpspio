@@ -61,8 +61,8 @@ int pspio_projector_alloc(pspio_projector_t **projector, const int np);
 
 
 /**
- * Sets the projector data.
- * @param[in,out] projector: projector structure to set
+ * Initializes the projector data.
+ * @param[in,out] projector: projector structure to be initialized
  * @param[in] qn: pointer to quantum numbers
  * @param[in] energy: energy
  * @param[in] mesh: pointer to mesh structure
@@ -71,7 +71,7 @@ int pspio_projector_alloc(pspio_projector_t **projector, const int np);
  * @note The projector pointer has to be allocated first with the 
  *       pspio_projector_alloc method.
  */
-int pspio_projector_set(pspio_projector_t *projector, const pspio_qn_t *qn, 
+int pspio_projector_init(pspio_projector_t *projector, const pspio_qn_t *qn, 
       const double energy, const pspio_mesh_t *mesh, const double *pofr);
 
 

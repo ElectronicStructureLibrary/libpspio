@@ -63,7 +63,7 @@ int interpolation_alloc(interpolation_t **interp, const int method, const int np
 }
 
 
-int interpolation_set(interpolation_t *interp, const pspio_mesh_t *mesh, const double *f) {
+int interpolation_init(interpolation_t *interp, const pspio_mesh_t *mesh, const double *f) {
 #ifdef HAVE_GSL
   int ierr;
 #endif

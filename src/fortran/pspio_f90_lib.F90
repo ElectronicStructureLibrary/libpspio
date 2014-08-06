@@ -401,7 +401,7 @@ module pspio_f90_lib_m
   end interface
 
   interface ! set
-    integer(pspio_cint) function pspio_f90_mesh_set(mesh, type, a, b, r, rab)
+    integer(pspio_cint) function pspio_f90_mesh_init(mesh, type, a, b, r, rab)
       use pspio_f90_types_m
       implicit none
       type(pspio_f90_mesh_t), intent(inout) :: mesh
@@ -410,7 +410,7 @@ module pspio_f90_lib_m
       real(pspio_cdouble),    intent(in)    :: b
       real(pspio_cdouble),    intent(in)    :: r(*)
       real(pspio_cdouble),    intent(in)    :: rab(*)
-    end function pspio_f90_mesh_set
+    end function pspio_f90_mesh_init
   end interface
 
   interface ! init_from_points
@@ -496,7 +496,7 @@ module pspio_f90_lib_m
   end interface
 
   interface ! set
-    integer(pspio_cint) function pspio_f90_state_set(state, eigenval, qn, occ, rc, mesh, wf)
+    integer(pspio_cint) function pspio_f90_state_init(state, eigenval, qn, occ, rc, mesh, wf)
       use pspio_f90_types_m
       implicit none
       type(pspio_f90_state_t), intent(inout) :: state
@@ -506,7 +506,7 @@ module pspio_f90_lib_m
       real(pspio_cdouble),     intent(in)    :: rc
       type(pspio_f90_mesh_t),  intent(in)    :: mesh
       real(pspio_cdouble),     intent(in)    :: wf(*)
-    end function pspio_f90_state_set
+    end function pspio_f90_state_init
   end interface
 
   interface ! free
@@ -571,14 +571,14 @@ module pspio_f90_lib_m
   end interface
 
   interface ! set
-    integer(pspio_cint) function pspio_f90_potential_set(potential, qn, mesh, v)
+    integer(pspio_cint) function pspio_f90_potential_init(potential, qn, mesh, v)
       use pspio_f90_types_m
       implicit none
       type(pspio_f90_potential_t), intent(inout) :: potential
       type(pspio_f90_qn_t),        intent(in)    :: qn
       type(pspio_f90_mesh_t),      intent(in)    :: mesh
       real(pspio_cdouble),         intent(in)    :: v(*)
-    end function pspio_f90_potential_set
+    end function pspio_f90_potential_init
   end interface
 
   interface ! free
@@ -623,7 +623,7 @@ module pspio_f90_lib_m
   end interface
 
   interface ! set
-    integer(pspio_cint) function pspio_f90_projector_set(projector, qn, energy, mesh, proj)
+    integer(pspio_cint) function pspio_f90_projector_init(projector, qn, energy, mesh, proj)
       use pspio_f90_types_m
       implicit none
       type(pspio_f90_projector_t), intent(inout) :: projector
@@ -631,7 +631,7 @@ module pspio_f90_lib_m
       real(pspio_cdouble),         intent(in)    :: energy
       type(pspio_f90_mesh_t),      intent(in)    :: mesh
       real(pspio_cdouble),         intent(in)    :: proj(*)
-    end function pspio_f90_projector_set
+    end function pspio_f90_projector_init
   end interface
 
   interface ! free
@@ -816,6 +816,17 @@ module pspio_f90_lib_m
     end function pspio_f90_qn_alloc
   end interface
 
+  interface ! init
+    integer(pspio_cint) function pspio_f90_qn_init(qn, n, l, j)
+      use pspio_f90_types_m
+      implicit none
+      type(pspio_f90_qn_t), intent(inout) :: qn
+      integer(pspio_cint),  intent(in)    :: n
+      integer(pspio_cint),  intent(in)    :: l
+      real(pspio_cdouble),  intent(in)    :: j
+    end function pspio_f90_qn_init
+  end interface
+
   interface ! free
     subroutine pspio_f90_qn_free(qn)
       use pspio_f90_types_m
@@ -824,26 +835,31 @@ module pspio_f90_lib_m
     end subroutine pspio_f90_qn_free
   end interface
 
-  interface ! get
-    subroutine pspio_f90_qn_get(qn, n, l, j)
+  interface ! get_n
+    subroutine pspio_f90_qn_get_n(qn, n)
       use pspio_f90_types_m
       implicit none
       type(pspio_f90_qn_t), intent(in)  :: qn
       real(pspio_cint),     intent(out) :: n
-      real(pspio_cint),     intent(out) :: l
-      real(pspio_cdouble),  intent(out) :: j
-    end subroutine pspio_f90_qn_get
+    end subroutine pspio_f90_qn_get_n
   end interface
 
-  interface ! set
-    integer(pspio_cint) function pspio_f90_qn_set(qn, n, l, j)
+  interface ! get_l
+    subroutine pspio_f90_qn_get_l(qn, l)
       use pspio_f90_types_m
       implicit none
-      type(pspio_f90_qn_t), intent(inout) :: qn
-      integer(pspio_cint),  intent(in)    :: n
-      integer(pspio_cint),  intent(in)    :: l
-      real(pspio_cdouble),  intent(in)    :: j
-    end function pspio_f90_qn_set
+      type(pspio_f90_qn_t), intent(in)  :: qn
+      real(pspio_cint),     intent(out) :: l
+    end subroutine pspio_f90_qn_get_l
+  end interface
+
+  interface ! get_j
+    subroutine pspio_f90_qn_get_j(qn, j)
+      use pspio_f90_types_m
+      implicit none
+      type(pspio_f90_qn_t), intent(in)  :: qn
+      real(pspio_cdouble),  intent(out) :: j
+    end subroutine pspio_f90_qn_get_j
   end interface
 
 

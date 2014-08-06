@@ -72,8 +72,8 @@ int pspio_meshfunc_alloc(pspio_meshfunc_t **func, const int np);
 
 
 /**
- * Sets the function data.
- * @param[in,out] func: function structure to set.
+ * Initializes the function data.
+ * @param[in,out] func: function structure to be initialized.
  * @param[in] mesh: mesh structure.
  * @param[in] f: values of the function on the mesh.
  * @param[in] fp: values of the functions first derivative on the mesh (optional)
@@ -82,7 +82,7 @@ int pspio_meshfunc_alloc(pspio_meshfunc_t **func, const int np);
  * @note The func pointer has to be allocated first with the 
  *       pspio_meshfunc_alloc method.
  */
-int pspio_meshfunc_set(pspio_meshfunc_t *func, const pspio_mesh_t *mesh, 
+int pspio_meshfunc_init(pspio_meshfunc_t *func, const pspio_mesh_t *mesh, 
 		       const double *f, const double *fp, const double *fpp);
 
 

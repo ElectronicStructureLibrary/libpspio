@@ -57,7 +57,7 @@ int main(void) {
   DEBUG_PRINT("test_projector: creating quantum numbers\n");
   CHECK_STAT(pspio_qn_alloc(&qn), PSPIO_SUCCESS);
   DEBUG_PRINT("test_projector: setting quantum numbers to (1, 2, 0.0)\n");
-  CHECK_STAT(pspio_qn_set(qn, 1, 2, 0.0), PSPIO_SUCCESS);
+  CHECK_STAT(pspio_qn_init(qn, 1, 2, 0.0), PSPIO_SUCCESS);
   DEBUG_PRINT("\n");
 
   /* Check creation and destruction of projector */
@@ -71,7 +71,7 @@ int main(void) {
 
   /* Check setting of the projectors */
   DEBUG_PRINT("test_projector: setting proj1\n");
-  CHECK_STAT(pspio_projector_set(proj1, qn, 2.0, mesh, p), PSPIO_SUCCESS);
+  CHECK_STAT(pspio_projector_init(proj1, qn, 2.0, mesh, p), PSPIO_SUCCESS);
   DEBUG_PRINT("\n");
 
   /* Check evaluation of the projector */

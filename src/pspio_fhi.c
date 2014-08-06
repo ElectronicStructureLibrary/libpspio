@@ -102,13 +102,13 @@ int pspio_fhi_read(FILE *fp, pspio_pspdata_t *pspdata) {
     }
 
     // Set pseudopotential and wavefunction
-    SKIP_FUNC_ON_ERROR( pspio_qn_set(qn, 0, l, 0.0) );
+    SKIP_FUNC_ON_ERROR( pspio_qn_init(qn, 0, l, 0.0) );
     SKIP_FUNC_ON_ERROR(
       pspio_potential_alloc(&pspdata->potentials[LJ_TO_I(l,0.0)], np) );
-    SKIP_FUNC_ON_ERROR( pspio_potential_set(pspdata->potentials[LJ_TO_I(l,0.0)],
+    SKIP_FUNC_ON_ERROR( pspio_potential_init(pspdata->potentials[LJ_TO_I(l,0.0)],
       qn, pspdata->mesh, v) );
     SKIP_FUNC_ON_ERROR( pspio_state_alloc(&pspdata->states[l], np) );
-    SKIP_FUNC_ON_ERROR( pspio_state_set(pspdata->states[l], 0.0, "", qn,
+    SKIP_FUNC_ON_ERROR( pspio_state_init(pspdata->states[l], 0.0, "", qn,
       0.0, 0.0, pspdata->mesh, wf) );
 
     // Free temporary data

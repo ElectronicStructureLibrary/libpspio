@@ -56,6 +56,19 @@ int pspio_qn_alloc(pspio_qn_t **qn);
 
 
 /**
+ * Sets the quantum numbers of a state.
+ * @param[in,out] qn: quantum number structure pointer to set
+ * @param[in] n: main quantum number
+ * @param[in] l: angular momentum
+ * @param[in] j: total angular momentum
+ * @return error code
+ * @note The qn pointer has to be allocated first with the pspio_qn_alloc
+ *       method.
+ */
+int pspio_qn_init(pspio_qn_t *qn, const int n, const int l, const double j);
+
+
+/**
  * Duplicates a quantum number structure.
  * @param[out] dst: destination quantum number structure pointer
  * @param[in] src: source quantum number structure pointer 
@@ -75,30 +88,6 @@ int pspio_qn_copy(pspio_qn_t **dst, const pspio_qn_t *src);
  *       components have not been allocated.
  */
 void pspio_qn_free(pspio_qn_t **qn);
-
-
-/**
- * Gets the components of a specified quantum number structure.
- * @param[in] qn: quantum number structure pointer to probe
- * @param[out] n: quantum number
- * @param[out] l: angular momentum
- * @param[out] j: total angular momentum
- * @note The qn pointer has to be fully set before probing it.
- */
-void pspio_qn_get(const pspio_qn_t *qn, int *n, int *l, double *j);
-
-
-/**
- * Sets the quantum numbers of a state.
- * @param[in,out] qn: quantum number structure pointer to set
- * @param[in] n: main quantum number
- * @param[in] l: angular momentum
- * @param[in] j: total angular momentum
- * @return error code
- * @note The qn pointer has to be allocated first with the pspio_qn_alloc
- *       method.
- */
-int pspio_qn_set(pspio_qn_t *qn, const int n, const int l, const double j);
 
 
 /**********************************************************************

@@ -66,7 +66,7 @@ int pspio_state_alloc(pspio_state_t **state, const int np) {
 }
 
 
-int pspio_state_set(pspio_state_t *state, const double eigenval, 
+int pspio_state_init(pspio_state_t *state, const double eigenval, 
       const char *label, const pspio_qn_t *qn, const double occ, 
       const double rc, const pspio_mesh_t *mesh, const double *wf) {
   int s;
@@ -83,7 +83,7 @@ int pspio_state_set(pspio_state_t *state, const double eigenval,
   state->label[s] = '\0';
 
   SUCCEED_OR_RETURN( pspio_qn_copy(&state->qn, qn) );
-  SUCCEED_OR_RETURN( pspio_meshfunc_set(state->wf, mesh, wf, NULL, NULL) );
+  SUCCEED_OR_RETURN( pspio_meshfunc_init(state->wf, mesh, wf, NULL, NULL) );
 
   return PSPIO_SUCCESS;
 }

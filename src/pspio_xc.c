@@ -124,7 +124,7 @@ int pspio_xc_set_nlcc_density(pspio_xc_t *xc, const pspio_mesh_t *mesh,
     RETURN_WITH_ERROR( ierr );
   }
 
-  SUCCEED_OR_RETURN( pspio_meshfunc_set(xc->nlcc_dens, mesh, cd, cdp, cdpp) );
+  SUCCEED_OR_RETURN( pspio_meshfunc_init(xc->nlcc_dens, mesh, cd, cdp, cdpp) );
 
   return PSPIO_SUCCESS;
 }
