@@ -35,7 +35,9 @@
 
 void upf_write_info(FILE *fp, const pspio_pspdata_t *pspdata) {
   fprintf(fp, "<PP_INFO>\n");
-  fprintf(fp, "%s", pspdata->info);
+  if (pspdata->info != NULL) {
+    fprintf(fp, "%s", pspdata->info);
+  }
   fprintf(fp, "</PP_INFO>\n");
 }
 
