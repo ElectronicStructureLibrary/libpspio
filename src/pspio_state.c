@@ -217,3 +217,15 @@ double pspio_state_get_occ(const pspio_state_t *state) {
   
   return state->occ;
 }
+
+double pspio_state_get_ev(const pspio_state_t *state) {
+  assert(state != NULL);
+
+  return state->eigenval;
+}
+
+double pspio_state_get_rc(const pspio_state_t *state) {
+  assert(state != NULL);
+
+  return state->rc;
+}

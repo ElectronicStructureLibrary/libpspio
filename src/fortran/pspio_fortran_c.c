@@ -681,6 +681,20 @@ void FC_FUNC_(pspio_f90_state_get_occ, PSPIO_F90_STATE_GET_OCC)
   *occ = pspio_state_get_occ((pspio_state_t *)(*state));
 }
 
+// state_get_ev
+void FC_FUNC_(pspio_f90_state_get_ev, PSPIO_F90_STATE_GET_EV)
+     (void ** state, double * ev)
+{
+  *ev = pspio_state_get_ev((pspio_state_t *)(*state));
+}
+
+// state_get_rc
+void FC_FUNC_(pspio_f90_state_get_rc, PSPIO_F90_STATE_GET_RC)
+     (void ** state, double * rc)
+{
+  *rc = pspio_state_get_rc((pspio_state_t *)(*state));
+}
+
 
 /**********************************************************************
  * pspio_potential                                                    *

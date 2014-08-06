@@ -165,5 +165,18 @@ double pspio_state_get_j(const pspio_state_t *state);
  */
 double pspio_state_get_occ(const pspio_state_t *state);
 
+/**
+ * Returns the state eigenvalue
+ * @param[in] state: state structure
+ * @return the eigenvalue
+ */
+double pspio_state_get_ev(const pspio_state_t *state);
+
+/**
+ * Returns the state cut-off radius
+ * @param[in] state: state structure
+ * @return the cut-off radius
+ */
+double pspio_state_get_rc(const pspio_state_t *state);
 
 #endif

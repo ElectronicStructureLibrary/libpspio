@@ -556,6 +556,24 @@ module pspio_f90_lib_m
     end subroutine pspio_f90_state_get_occ
   end interface
 
+  interface ! 
+    subroutine pspio_f90_state_get_ev(state, ev)
+      use pspio_f90_types_m
+      implicit none
+      type(pspio_f90_state_t), intent(in)  :: state
+      real(pspio_cdouble),     intent(out) :: ev
+    end subroutine pspio_f90_state_get_ev
+  end interface
+
+  interface ! 
+    subroutine pspio_f90_state_get_rc(state, rc)
+      use pspio_f90_types_m
+      implicit none
+      type(pspio_f90_state_t), intent(in)  :: state
+      real(pspio_cdouble),     intent(out) :: rc
+    end subroutine pspio_f90_state_get_rc
+  end interface
+
 
   !----------------------------------------------------------------------------!
   ! pspio_potential                                                            !
