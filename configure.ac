@@ -1,5 +1,6 @@
 #
-# Copyright (C) 2011 J. Alberdi, M. Oliveira, Y. Pouillon, and M. Verstraete
+# Copyright (C) 2011-2015 J. Alberdi, M. Oliveira, Y. Pouillon,
+#                         and M. Verstraete
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as published by
@@ -144,11 +145,6 @@ AC_SUBST(pio_core_incs)
 # Languages
 #
 
-# Look for useful utilities
-AC_CHECK_PROGS([PKG_CONFIG], [pkg-config])
-
-                    # ------------------------------------ #
-
 # Look for the C compiler
 if test "${CC}" != "" -a ! -x "${CC}"; then
   pio_cc_probe=`echo "${CC}" | sed -e 's/ .*//'`
@@ -279,6 +275,15 @@ if test "${enable_gsl}" = "yes"; then
   fi
 fi
 
+# Math libraries (if GSL is disabled)
+if test "${enable_gsl}" = "no"; then
+  AC_SEARCH_LIBS([exp], [m], [pio_math_ok="yes"], [pio_math_ok="no"], [])
+  if test "${pio_math_ok}" = "no"; then
+    AC_MSG_ERROR([no mathematical library found
+      please set the LIBS environment variable adequately when configuring])
+  fi
+fi
+
 # XML (optional)
 if test "${enable_xml}" = "yes"; then
   PIO_CHECK_XML
@@ -292,13 +297,6 @@ if test "${enable_xml}" = "yes"; then
   fi
 fi
 
-# Required basic libraries
-AC_SEARCH_LIBS([exp], [m], [pio_math_ok="yes"], [pio_math_ok="no"], [])
-if test "${pio_math_ok}" = "no"; then
-  AC_MSG_ERROR([no mathematical library found
-    please set the LIBS environment variable adequately when configuring])
-fi
-
 # ---------------------------------------------------------------------------- #
 
 #
@@ -308,12 +306,12 @@ fi
 # Adjust verbosity
 if test "${enable_debug}" = "yes"; then
   AC_DEFINE([DEBUG_MODE], 1,
-    [Define to 1 if you want to enable debug mode])
+    [Define to 1 if you want to enable debug mode.])
   AC_DEFINE([DEBUG_LEVEL], 1,
-    [Set to 1 or above if you want to enable debug messages])
+    [Set to 1 or above if you want to enable debug messages.])
 else
   AC_DEFINE([DEBUG_LEVEL], 0,
-    [Set to 1 or above if you want to enable debug messages])
+    [Set to 1 or above if you want to enable debug messages.])
 fi
 
 # ---------------------------------------------------------------------------- #
