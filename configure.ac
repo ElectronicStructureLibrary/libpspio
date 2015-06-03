@@ -198,6 +198,25 @@ if test "${enable_fortran}" = "yes"; then
     AC_MSG_WARN([Fortran tests may fail])
   fi
 
+  # Look for the iso_c_binding module
+  pio_fc_iso_c_binding="unknown"
+  AC_MSG_CHECKING([for the iso_c_binding Fortran module])
+  AC_LANG_PUSH([Fortran])
+  AC_COMPILE_IFELSE(
+    [AC_LANG_PROGRAM([], [[use iso_c_binding]])],
+    [pio_fc_iso_c_binding="yes"],
+    [pio_fc_iso_c_binding="no"])
+  AC_LANG_POP([Fortran])
+  AC_MSG_RESULT([${pio_fc_iso_c_binding}])
+  if test "${pio_fc_iso_c_binding}" != "yes"; then
+    AC_MSG_ERROR([the Fortran compiler does not provide
+                  the iso_c_binding module
+                  This probably happens because this compiler
+                  is an antiquity
+                  Please disable Fortran support or use a modern
+                  Fortran compiler])
+  fi
+
   # Fortran compiler peculiarities
   AX_F90_MODULE_EXTENSION
   AC_SUBST(ax_cv_f90_modext)
