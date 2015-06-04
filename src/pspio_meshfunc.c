@@ -116,23 +116,30 @@ int pspio_meshfunc_init(pspio_meshfunc_t *func, const pspio_mesh_t *mesh,
 int pspio_meshfunc_copy(pspio_meshfunc_t **dst, const pspio_meshfunc_t *src) {
   assert(src != NULL);
 
-  if ( *dst == NULL ) {
-    SUCCEED_OR_RETURN( pspio_meshfunc_alloc(dst, src->mesh->np) );
-
-  } else {
-    /* All the interpolation objects of dst must be free, otherwise we might have 
-       memory leaks if the interpolation method used previously in dst in not the
-       same as in src. */
-    interpolation_free((*dst)->f_interp);
-    interpolation_free((*dst)->fp_interp);
-    interpolation_free((*dst)->fpp_interp);
+  /* All the interpolation objects of dst must be free, otherwise
+     we might have memory leaks if the interpolation method used
+     previously in dst in not the same as in src. */
+  if ( *dst != NULL ) {
+    if ( (*dst)->f_interp != NULL ) {
+      interpolation_free((*dst)->f_interp);
+    }
+    if ( (*dst)->f_interp != NULL ) {
+      interpolation_free((*dst)->fp_interp);
+    }
+    if ( (*dst)->f_interp != NULL ) {
+      interpolation_free((*dst)->fpp_interp);
+    }
+    pspio_mesh_free(*dst);
   }
+  SUCCEED_OR_RETURN( pspio_meshfunc_alloc(dst, src->mesh->np) );
 
   SUCCEED_OR_RETURN( pspio_mesh_copy(&(*dst)->mesh, src->mesh) );
 
   memcpy((*dst)->f, src->f, src->mesh->np * sizeof(double));
-  SUCCEED_OR_RETURN( interpolation_alloc(&(*dst)->f_interp, src->interp_method, src->mesh->np) );
-  SUCCEED_OR_RETURN( interpolation_init((*dst)->f_interp, (*dst)->mesh, (*dst)->f) );
+  SUCCEED_OR_RETURN( interpolation_alloc(&(*dst)->f_interp,
+    src->interp_method, src->mesh->np) );
+  SUCCEED_OR_RETURN( interpolation_init((*dst)->f_interp,
+    (*dst)->mesh, (*dst)->f) );
 
   memcpy((*dst)->fp, src->fp, src->mesh->np * sizeof(double));
   SUCCEED_OR_RETURN( interpolation_alloc(&(*dst)->fp_interp, src->interp_method, src->mesh->np) );

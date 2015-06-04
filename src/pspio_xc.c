@@ -51,9 +51,10 @@ int pspio_xc_alloc(pspio_xc_t **xc) {
 int pspio_xc_copy(pspio_xc_t **dst, const pspio_xc_t *src) {
   assert(src != NULL);
 
-  if ( *dst == NULL ) {
-    SUCCEED_OR_RETURN( pspio_xc_alloc(dst) );
+  if ( *dst != NULL ) {
+    pspio_xc_free(*dst);
   }
+  SUCCEED_OR_RETURN( pspio_xc_alloc(dst) );
 
   (*dst)->exchange = src->exchange;
   (*dst)->correlation = src->correlation;

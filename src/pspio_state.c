@@ -105,9 +105,10 @@ int pspio_state_copy(pspio_state_t **dst, const pspio_state_t *src) {
   assert(src != NULL);
   assert((src->label != NULL));
 
-  if ( *dst == NULL ) {
-    SUCCEED_OR_RETURN( pspio_state_alloc(dst, src->wf->mesh->np) );
+  if ( *dst != NULL ) {
+    pspio_state_free(*dst);
   }
+  SUCCEED_OR_RETURN( pspio_state_alloc(dst, src->wf->mesh->np) );
 
   SUCCEED_OR_RETURN( pspio_meshfunc_copy(&(*dst)->wf, src->wf) );
   SUCCEED_OR_RETURN( pspio_qn_copy(&(*dst)->qn, src->qn) );

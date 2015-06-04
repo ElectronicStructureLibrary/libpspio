@@ -203,9 +203,10 @@ void pspio_mesh_init_from_parameters(pspio_mesh_t *mesh, const int type,
 int pspio_mesh_copy(pspio_mesh_t **dst, const pspio_mesh_t *src) {
   assert(src != NULL);
 
-  if ( *dst == NULL ) {
-    SUCCEED_OR_RETURN(pspio_mesh_alloc(dst, src->np));
+  if ( *dst != NULL ) {
+    pspio_mesh_free(*dst);
   }
+  SUCCEED_OR_RETURN(pspio_mesh_alloc(dst, src->np));
 
   (*dst)->type = src->type;
   (*dst)->a = src->a;

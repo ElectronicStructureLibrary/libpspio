@@ -66,9 +66,10 @@ int pspio_qn_init(pspio_qn_t *qn, const int n, const int l, const double j) {
 int pspio_qn_copy(pspio_qn_t **dst, const pspio_qn_t *src) {
   assert(src != NULL);
 
-  if ( *dst == NULL ) {
-    SUCCEED_OR_RETURN( pspio_qn_alloc(dst) );
+  if ( *dst != NULL ) {
+    pspio_qn_free(*dst);
   }
+  SUCCEED_OR_RETURN( pspio_qn_alloc(dst) );
 
   (*dst)->n = src->n;
   (*dst)->l = src->l;
