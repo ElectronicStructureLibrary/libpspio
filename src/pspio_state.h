@@ -136,7 +136,7 @@ void pspio_state_wf_eval(const pspio_state_t *state, const int np, const double 
  * @param[in] state: state structure
  * @param[out] label
  */
-void pspio_state_get_label(const pspio_state_t *state, char *label);
+char *pspio_state_get_label(const pspio_state_t *state);
 
 /**
  * Returns the main quantum number

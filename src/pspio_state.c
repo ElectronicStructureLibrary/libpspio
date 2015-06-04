@@ -191,14 +191,12 @@ void pspio_state_wf_eval(const pspio_state_t *state, const int np,
 }
 
 
-void pspio_state_get_label(const pspio_state_t *state, char *label) {
+char *pspio_state_get_label(const pspio_state_t *state) {
   int s;
 
   assert(state != NULL);
 
-  s = strlen(state->label);
-  memcpy(label,state->label,s);
-  label[s] = '\0';
+  return state->label;
 }
 
 

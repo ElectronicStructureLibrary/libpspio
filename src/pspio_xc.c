@@ -138,18 +138,18 @@ void pspio_xc_get_id(const pspio_xc_t *xc, int *exchange, int *correlation) {
   *correlation = xc->correlation;
 }
 
-void pspio_xc_get_nlcc_scheme(const pspio_xc_t *xc, int *nlcc_scheme) {
+int pspio_xc_get_nlcc_scheme(const pspio_xc_t *xc) {
   assert(xc != NULL);
 
-  *nlcc_scheme = xc->nlcc_scheme;
+  return xc->nlcc_scheme;
 }
 
-void pspio_xc_get_nlcc_density(const pspio_xc_t *xc,
-       pspio_meshfunc_t **cd_func) {
+pspio_meshfunc_t *pspio_xc_get_nlcc_density(const pspio_xc_t *xc) {
+
   assert(xc != NULL);
   assert(xc->nlcc_scheme != PSPIO_NLCC_NONE);
 
-  (*cd_func) = xc->nlcc_dens;
+  return xc->nlcc_dens;
 }
 
 void pspio_xc_nlcc_density_eval(const pspio_xc_t *xc, const int np,
