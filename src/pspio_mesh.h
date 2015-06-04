@@ -147,12 +147,32 @@ int pspio_mesh_get_np(const pspio_mesh_t *mesh);
 
 
 /**
+ * Returns the a and b parameters of the mesh
+ * 
+ * @param[in] mesh: mesh structure
+ * @param[out] a: the a parameter (depends on mesh type)
+ * @param[out] b: the b parameter (depends on mesh type)
+ */
+int pspio_mesh_get_params(const pspio_mesh_t *mesh, double *a, double *b);
+
+
+/**
  * Returns the points of the mesh
  * 
  * @param[in] mesh: mesh structure
  * @param[out] r: pointer to array of points
  */
 void pspio_mesh_get_r(const pspio_mesh_t *mesh, double *r);
+
+
+/**
+ * Returns a pointer to the points of the mesh
+ * 
+ * @param[in] mesh: mesh structure
+ * @return pointer to array of points
+ */
+double * pspio_mesh_get_r_ptr(const pspio_mesh_t *mesh);
+
 
 /**
  * Returns the di/dr of the mesh
@@ -161,5 +181,14 @@ void pspio_mesh_get_r(const pspio_mesh_t *mesh, double *r);
  * @param[out] rab: pointer to array of di/dr points
  */
 void pspio_mesh_get_rab(const pspio_mesh_t *mesh, double *rab);
+
+
+/**
+ * Returns a pointer to the di/dr of the mesh
+ * 
+ * @param[in] mesh: mesh structure
+ * @return pointer to array of di/dr points
+ */
+double * pspio_mesh_get_rab_ptr(const pspio_mesh_t *mesh);
 
 #endif

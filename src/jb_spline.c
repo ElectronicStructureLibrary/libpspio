@@ -23,23 +23,58 @@ This code is distributed under the GNU LGPL license.
 #endif
 
 
-jb_spline_t *jb_spline_alloc(const int np)
+/**********************************************************************
+ * Global routines                                                    *
+ **********************************************************************/
+
+int jb_spline_alloc(jb_spline **spline, const int np)
 {
-  jb_spline_t* spline;
 
-  spline = (jb_spline_t *) malloc (sizeof(jb_spline_t));
-  FULFILL_OR_EXIT(spline != NULL, PSPIO_ENOMEM);
+  *spline = (jb_spline_t *) malloc (sizeof(jb_spline_t));
+  FULFILL_OR_EXIT(*spline != NULL, PSPIO_ENOMEM);
 
-  spline->np = np;
+  (*spline)->np = np;
 
-  spline->t = (double *) malloc (np*sizeof(double));
-  FULFILL_OR_EXIT(spline->t != NULL, PSPIO_ENOMEM);
+  (*spline)->t = (double *) malloc (np*sizeof(double));
+  FULFILL_OR_EXIT((*spline)->t != NULL, PSPIO_ENOMEM);
 
-  spline->y = (double *) malloc (np*sizeof(double));
-  FULFILL_OR_EXIT(spline->y != NULL, PSPIO_ENOMEM);
+  (*spline)->y = (double *) malloc (np*sizeof(double));
+  FULFILL_OR_EXIT((*spline)->y != NULL, PSPIO_ENOMEM);
 
-  return spline;
+  (*spline)->ypp = (double *) malloc (np*sizeof(double));
+  FULFILL_OR_EXIT((*spline)->ypp != NULL, PSPIO_ENOMEM);
+
+  return PSPIO_SUCCESS;
 }
+
+
+int jb_spline_copy(jb_spline_t **dst, const jb_spline_t *src) {
+
+  assert(src != NULL);
+  assert(src->t != NULL);
+  assert(src->y != NULL);
+  assert(src->ypp != NULL);
+
+  if ( *dst != NULL ) {
+    jb_spline_free(*dst);
+  }
+  SUCCEED_OR_RETURN( jb_spline_alloc(dst, src->np) );
+
+  (*dst)->t = (double *) malloc (src->np*sizeof(double));
+  FULFILL_OR_EXIT((*dst)->t != NULL, PSPIO_ENOMEM);
+  memcpy((*dst)->y, src->y, src->np*sizeof(double));
+
+  (*dst)->y = (double *) malloc (src->np*sizeof(double));
+  FULFILL_OR_EXIT((*dst)->y != NULL, PSPIO_ENOMEM);
+  memcpy((*dst)->t, src->t, src->np*sizeof(double));
+
+  (*dst)->ypp = (double *) malloc (src->np*sizeof(double));
+  FULFILL_OR_EXIT((*dst)->ypp != NULL, PSPIO_ENOMEM);
+  memcpy((*dst)->ypp, src->ypp, src->np*sizeof(double));
+
+  return PSPIO_SUCCESS;
+}
+
 
 int jb_spline_init(jb_spline_t **spline, const double *r, const double *f,
   const int np)
@@ -52,6 +87,7 @@ int jb_spline_init(jb_spline_t **spline, const double *r, const double *f,
   return 0;
 }
 
+
 void jb_spline_free(jb_spline_t *spline)
 {
   if (spline != NULL) {
@@ -62,6 +98,11 @@ void jb_spline_free(jb_spline_t *spline)
     free(spline);
   }
 }
+
+
+/**********************************************************************
+ * Atomic routines                                                    *
+ **********************************************************************/
 
 double jb_spline_eval(const jb_spline_t *spline, const double r)
 {
@@ -75,6 +116,7 @@ double jb_spline_eval(const jb_spline_t *spline, const double r)
   return ret;
 }
 
+
 double jb_spline_eval_deriv(const jb_spline_t *spline, const double r)
 {
   double ret;
@@ -86,6 +128,7 @@ double jb_spline_eval_deriv(const jb_spline_t *spline, const double r)
 
   return ret;
 }
+
 
 double jb_spline_eval_deriv2(const jb_spline_t *spline, const double r)
 {
@@ -100,7 +143,8 @@ double jb_spline_eval_deriv2(const jb_spline_t *spline, const double r)
 }
 
 void jb_spline_cubic_val ( int n, const double *t, const double *y,
-      const double *ypp, double tval, double *yval, double *ypval, double *yppval )
+      const double *ypp, double tval, double *yval, double *ypval,
+      double *yppval )
 
 /******************************************************************************/
 /*
@@ -210,6 +254,7 @@ void jb_spline_cubic_val ( int n, const double *t, const double *y,
 
 }
 
+
 double *jb_natural_spline_cubic_init(int n, const double *t, const double *y)
 {
   int ibcbeg, ibcend;
@@ -223,6 +268,7 @@ double *jb_natural_spline_cubic_init(int n, const double *t, const double *y)
 
   return jb_spline_cubic_init( n, t, y, ibcbeg, ybcbeg, ibcend, ybcend );
 }
+
 
 double *jb_spline_cubic_init ( int n, const double *t, const double *y,
   int ibcbeg, double ybcbeg, int ibcend, double ybcend )
@@ -589,4 +635,3 @@ double *penta ( int n, double a1[], double a2[], double a3[], double a4[],
 
   return x;
 }
-

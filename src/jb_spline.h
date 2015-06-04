@@ -47,6 +47,9 @@ typedef struct{
 jb_spline_t *jb_spline_alloc(const int np);
 
 
+int jb_spline_copy(jb_spline_t **dst, const jb_spline_t *src);
+
+
 int jb_spline_init(jb_spline_t **spline, const double *f, const double *r, const int np);
 
 
@@ -73,15 +76,15 @@ double *jb_spline_cubic_init (int n, const double *t, const double *y,
   int ibcbeg, double ybcbeg, int ibcend, double ybcend);
 
 
-void jb_spline_cubic_val (int n, const double *t, const double *y, const double *ypp,
-			  double tval, double *yval, double *ypval, double *yppval);
+void jb_spline_cubic_val (int n, const double *t, const double *y,
+       const double *ypp, double tval, double *yval, double *ypval,
+       double *yppval);
 
 
 /**
  * Solves a pentadiagonal system of linear equations.
  */
-double *penta ( int n, double a1[], double a2[], double a3[], double a4[], 
-		double a5[], double b[] );
-
+double *penta(int n, double a1[], double a2[], double a3[], double a4[], 
+		double a5[], double b[]);
 
 #endif

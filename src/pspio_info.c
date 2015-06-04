@@ -55,10 +55,11 @@ void pspio_version(int *major, int *minor, int *micro) {
 
 
 void pspio_info_string(char *info) {
-  assert(info == NULL);
 #if !defined HAVE_CONFIG_H
-  return PSPIO_ERROR;
+#define PACKAGE_STRING ""
 #endif
+  assert(info == NULL);
+  assert(PACKAGE_STRING != "");
 
   const char *package_string = PACKAGE_STRING;
 
