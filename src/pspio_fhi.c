@@ -226,7 +226,7 @@ int pspio_fhi_write(FILE *fp, const pspio_pspdata_t *pspdata){
     pspio_meshfunc_t *nlcc_dens = NULL;
     double cd, cdp, cdpp;
 
-    pspio_xc_get_nlcc_density(pspdata->xc, &nlcc_dens);
+    nlcc_dens = pspio_xc_get_nlcc_density(pspdata->xc);
 
     for (ir=0; ir<pspdata->mesh->np; ir++) {
       r = pspdata->mesh->r[ir];

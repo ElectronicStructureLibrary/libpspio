@@ -105,9 +105,10 @@ int pspio_state_copy(pspio_state_t **dst, const pspio_state_t *src) {
   assert(src != NULL);
   assert((src->label != NULL));
 
-  if ( *dst == NULL ) {
-    SUCCEED_OR_RETURN( pspio_state_alloc(dst, src->wf->mesh->np) );
+  if ( *dst != NULL ) {
+    pspio_state_free(*dst);
   }
+  SUCCEED_OR_RETURN( pspio_state_alloc(dst, src->wf->mesh->np) );
 
   SUCCEED_OR_RETURN( pspio_meshfunc_copy(&(*dst)->wf, src->wf) );
   SUCCEED_OR_RETURN( pspio_qn_copy(&(*dst)->qn, src->qn) );
@@ -190,14 +191,12 @@ void pspio_state_wf_eval(const pspio_state_t *state, const int np,
 }
 
 
-void pspio_state_get_label(const pspio_state_t *state, char *label) {
+char *pspio_state_get_label(const pspio_state_t *state) {
   int s;
 
   assert(state != NULL);
 
-  s = strlen(state->label);
-  memcpy(label,state->label,s);
-  label[s] = '\0';
+  return state->label;
 }
 
 

@@ -116,23 +116,30 @@ int pspio_meshfunc_init(pspio_meshfunc_t *func, const pspio_mesh_t *mesh,
 int pspio_meshfunc_copy(pspio_meshfunc_t **dst, const pspio_meshfunc_t *src) {
   assert(src != NULL);
 
-  if ( *dst == NULL ) {
-    SUCCEED_OR_RETURN( pspio_meshfunc_alloc(dst, src->mesh->np) );
-
-  } else {
-    /* All the interpolation objects of dst must be free, otherwise we might have 
-       memory leaks if the interpolation method used previously in dst in not the
-       same as in src. */
-    interpolation_free((*dst)->f_interp);
-    interpolation_free((*dst)->fp_interp);
-    interpolation_free((*dst)->fpp_interp);
+  /* All the interpolation objects of dst must be free, otherwise
+     we might have memory leaks if the interpolation method used
+     previously in dst in not the same as in src. */
+  if ( *dst != NULL ) {
+    if ( (*dst)->f_interp != NULL ) {
+      interpolation_free((*dst)->f_interp);
+    }
+    if ( (*dst)->f_interp != NULL ) {
+      interpolation_free((*dst)->fp_interp);
+    }
+    if ( (*dst)->f_interp != NULL ) {
+      interpolation_free((*dst)->fpp_interp);
+    }
+    pspio_meshfunc_free(*dst);
   }
+  SUCCEED_OR_RETURN( pspio_meshfunc_alloc(dst, src->mesh->np) );
 
   SUCCEED_OR_RETURN( pspio_mesh_copy(&(*dst)->mesh, src->mesh) );
 
   memcpy((*dst)->f, src->f, src->mesh->np * sizeof(double));
-  SUCCEED_OR_RETURN( interpolation_alloc(&(*dst)->f_interp, src->interp_method, src->mesh->np) );
-  SUCCEED_OR_RETURN( interpolation_init((*dst)->f_interp, (*dst)->mesh, (*dst)->f) );
+  SUCCEED_OR_RETURN( interpolation_alloc(&(*dst)->f_interp,
+    src->interp_method, src->mesh->np) );
+  SUCCEED_OR_RETURN( interpolation_init((*dst)->f_interp,
+    (*dst)->mesh, (*dst)->f) );
 
   memcpy((*dst)->fp, src->fp, src->mesh->np * sizeof(double));
   SUCCEED_OR_RETURN( interpolation_alloc(&(*dst)->fp_interp, src->interp_method, src->mesh->np) );
@@ -247,26 +254,7 @@ void pspio_meshfunc_eval_deriv2(const pspio_meshfunc_t *func, const int np,
 }
 
 
-int pspio_meshfunc_get_deriv1(const pspio_meshfunc_t *func,
-       double *fp_values, interpolation *fp_interp) {
-
-  assert(func != NULL);
-  assert(fp_values == NULL);
-  assert(&fp_values != NULL);
-
-  fp_values = (double *) malloc (func->np * sizeof(double));
-  FULFILL_OR_EXIT( fp_values != NULL, PSPIO_ENOMEM);
-  memcpy(fp_values, func->fp, func->np * sizeof(double));
-
-  if ( &fp_interp != NULL ) {
-    SUCCEED_OR_RETURN(interpolation_copy(fp_interp, func->fp_interp));
-  }
-
-  return PSPIO_SUCCESS;
-}
-
-
-double * pspio_meshfunc_get_deriv1_ptr(const pspio_meshfunc_t *func) {
+double *pspio_meshfunc_get_deriv1(const pspio_meshfunc_t *func) {
 
   assert(func != NULL);
 
@@ -274,26 +262,7 @@ double * pspio_meshfunc_get_deriv1_ptr(const pspio_meshfunc_t *func) {
 }
 
 
-int pspio_meshfunc_get_deriv2(const pspio_meshfunc_t *func,
-       double *fpp_values, interpolation *fpp_interp) {
-
-  assert(func != NULL);
-  assert(fpp_values == NULL);
-  assert(&fpp_values != NULL);
-
-  fpp_values = (double *) malloc (func->np * sizeof(double));
-  FULFILL_OR_EXIT( fpp_values != NULL, PSPIO_ENOMEM);
-  memcpy(fpp_values, func->fpp, func->np * sizeof(double));
-
-  if ( &f_interp != NULL ) {
-    SUCCEED_OR_RETURN(interpolation_copy(fpp_interp, func->fpp_interp));
-  }
-
-  return PSPIO_SUCCESS;
-}
-
-
-double * pspio_meshfunc_get_deriv2_ptr(const pspio_meshfunc_t *func) {
+double *pspio_meshfunc_get_deriv2(const pspio_meshfunc_t *func) {
 
   assert(func != NULL);
 
@@ -301,26 +270,7 @@ double * pspio_meshfunc_get_deriv2_ptr(const pspio_meshfunc_t *func) {
 }
 
 
-int pspio_meshfunc_get_function(const pspio_meshfunc_t *func,
-       double *f_values, interpolation *f_interp) {
-
-  assert(func != NULL);
-  assert(f_values == NULL);
-  assert(&f_values != NULL);
-
-  f_values = (double *) malloc (func->np * sizeof(double));
-  FULFILL_OR_EXIT( f_values != NULL, PSPIO_ENOMEM);
-  memcpy(f_values, func->f, func->np * sizeof(double));
-
-  if ( &f_interp != NULL ) {
-    SUCCEED_OR_RETURN(interpolation_copy(f_interp, func->f_interp));
-  }
-
-  return PSPIO_SUCCESS;
-}
-
-
-double * pspio_meshfunc_get_function_ptr(const pspio_meshfunc_t *func) {
+double *pspio_meshfunc_get_function(const pspio_meshfunc_t *func) {
 
   assert(func != NULL);
 
@@ -328,7 +278,7 @@ double * pspio_meshfunc_get_function_ptr(const pspio_meshfunc_t *func) {
 }
 
 
-void pspio_meshfunc_get_interp_method(const pspio_meshfunc_t *func) {
+int pspio_meshfunc_get_interp_method(const pspio_meshfunc_t *func) {
 
   assert(func != NULL);
 
@@ -336,23 +286,7 @@ void pspio_meshfunc_get_interp_method(const pspio_meshfunc_t *func) {
 }
 
 
-int pspio_meshfunc_get_mesh(const pspio_meshfunc_t *func,
-       pspio_mesh_t *mesh) {
-
-  assert(func != NULL);
-  assert(func->mesh != NULL);
-  assert(mesh == NULL);
-  assert(&mesh != NULL);
-
-  mesh = (pspio_mesh_t *) malloc (sizeof(pspio_mesh_t));
-  FULFILL_OR_EXIT( mesh != NULL, PSPIO_ENOMEM );
-  memcpy(mesh, func->mesh, func->mesh->np * sizeof(double));
-
-  return PSPIO_SUCCESS;
-}
-
-
-pspio_mesh_t * pspio_meshfunc_get_mesh_ptr(const pspio_meshfunc_t *func) {
+pspio_mesh_t *pspio_meshfunc_get_mesh(const pspio_meshfunc_t *func) {
 
   assert(func != NULL);
 

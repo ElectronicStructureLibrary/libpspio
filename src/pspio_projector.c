@@ -79,9 +79,10 @@ int pspio_projector_init(pspio_projector_t *projector, const pspio_qn_t *qn,
 int pspio_projector_copy(pspio_projector_t **dst, const pspio_projector_t *src) {
   assert(src != NULL);
 
-  if ( *dst == NULL ) {
-    SUCCEED_OR_RETURN( pspio_projector_alloc(dst, src->proj->mesh->np) );
+  if ( *dst != NULL ) {
+    pspio_projector_free(*dst);
   }
+  SUCCEED_OR_RETURN( pspio_projector_alloc(dst, src->proj->mesh->np) );
 
   SUCCEED_OR_RETURN( pspio_meshfunc_copy(&(*dst)->proj, src->proj) );
   SUCCEED_OR_RETURN( pspio_qn_copy(&(*dst)->qn, src->qn) );
