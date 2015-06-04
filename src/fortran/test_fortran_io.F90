@@ -21,17 +21,14 @@
 
 
 program test_fortran
-
-  use pspio_f90_types_m
-  use pspio_f90_lib_m
-
+  use fpspio_m
   implicit none
 
   character(len=1024) :: pio_program, pio_file_inp, pio_file_out
   character(len=4) :: pio_fmt_str
   integer :: pio_fmt, ierr, np
-  type(pspio_f90_mesh_t) :: pspmesh
-  type(pspio_f90_pspdata_t) :: pspdata
+  type(fpspio_mesh_t) :: pspmesh
+  type(fpspio_pspdata_t) :: pspdata
  
   ! Get command-line arguments
   call get_command_argument(0, pio_program)
@@ -57,52 +54,47 @@ program test_fortran
 
   ! Init pspdata
   write(*,'(A)') "test_fortran_io: initializing pspdata"
-  ierr = pspio_f90_pspdata_init(pspdata)
+  ierr = fpspio_pspdata_init(pspdata)
   if ( ierr /= 0 ) then
-    call pspio_f90_error_flush()
+    call fpspio_error_flush()
     stop 1
   end if
 
   ! Check parsing of file
   write(*,'(A)') "test_fortran_io: parsing file"
-  write(*,'("test_fortran_io: before pspio_f90_pspdata_read, status = ", &
+  write(*,'("test_fortran_io: before fpspio_pspdata_read, status = ", &
 &   I3, ", format = ", I3)') ierr, pio_fmt
-  ierr = pspio_f90_pspdata_read(pspdata, pio_fmt, trim(pio_file_inp))
+  ierr = fpspio_pspdata_read(pspdata, pio_fmt, trim(pio_file_inp))
   if ( ierr == 0 ) then
-    call pspio_f90_pspdata_get_format_guessed(pspdata, pio_fmt)
-    write(*,'("test_fortran_io: after  pspio_f90_pspdata_read, status = ", &
+    pio_fmt = fpspio_pspdata_get_format_guessed(pspdata)
+    write(*,'("test_fortran_io: after  fpspio_pspdata_read, status = ", &
 &     I3, ", format = ", I3,A)') ierr, pio_fmt, achar(10)
   else
-    call pspio_f90_error_flush()
+    call fpspio_error_flush()
     stop 1
   end if
 
   ! Extract some random information
   write(*,'(A)') "test_fortran_io: extracting some data"
-  ierr = pspio_f90_pspdata_get_mesh(pspdata, pspmesh)
-  if ( ierr == 0 ) then
-    call pspio_f90_mesh_get_np(pspmesh, np)
-    write(*,'("test_fortran_io: number of points in the mesh = ", I6,A)') np, &
-         &   achar(10)
-  else
-    call pspio_f90_error_flush()
-    stop 1
-  end if
+  pspmesh = fpspio_pspdata_get_mesh(pspdata)
+  np = fpspio_mesh_get_np(pspmesh)
+  write(*,'("test_fortran_io: number of points in the mesh = ", I6,A)') np, &
+       &   achar(10)
 
   ! Check writing of file
   write(*,'(A)') "test_fortran_io: writing file"
-  ierr = pspio_f90_pspdata_write(pspdata, pio_fmt, trim(pio_file_out))
+  ierr = fpspio_pspdata_write(pspdata, pio_fmt, trim(pio_file_out))
   if ( ierr == 0 ) then
-    write(*,'("test_fortran_io: after pspio_f90_pspdata_write, status = ", &
+    write(*,'("test_fortran_io: after fpspio_pspdata_write, status = ", &
 &     I3,",format = ",I3,A)') ierr, pio_fmt, achar(10)
   else
-    call pspio_f90_error_flush()
+    call fpspio_error_flush()
     stop 1
   end if
 
   ! Destroy pspdata structures
   write(*,'(A,A)') "test_fortran_io: destroying pspdata structure", achar(10)
-  call pspio_f90_pspdata_free(pspdata)
+  call fpspio_pspdata_free(pspdata)
 
   write(*,'(A)') "=== END test_fortran_io ==="
 
