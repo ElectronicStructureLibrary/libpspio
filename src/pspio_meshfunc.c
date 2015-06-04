@@ -129,7 +129,7 @@ int pspio_meshfunc_copy(pspio_meshfunc_t **dst, const pspio_meshfunc_t *src) {
     if ( (*dst)->f_interp != NULL ) {
       interpolation_free((*dst)->fpp_interp);
     }
-    pspio_mesh_free(*dst);
+    pspio_meshfunc_free(*dst);
   }
   SUCCEED_OR_RETURN( pspio_meshfunc_alloc(dst, src->mesh->np) );
 
@@ -278,7 +278,7 @@ double *pspio_meshfunc_get_function(const pspio_meshfunc_t *func) {
 }
 
 
-void pspio_meshfunc_get_interp_method(const pspio_meshfunc_t *func) {
+int pspio_meshfunc_get_interp_method(const pspio_meshfunc_t *func) {
 
   assert(func != NULL);
 

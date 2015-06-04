@@ -17,12 +17,18 @@
 
 */
 
+#include <stdlib.h>
 #include <assert.h>
+#include <string.h>
 
 #include "interpolation.h"
 
 #if defined HAVE_CONFIG_H
 #include "config.h"
+#endif
+
+#ifdef HAVE_GSL
+#include <gsl/gsl_errno.h>
 #endif
 
 
@@ -43,6 +49,7 @@ int interpolation_alloc(interpolation_t **interp, const int method, const int np
   (*interp)->gsl_spl = NULL;
   (*interp)->gsl_acc = NULL;
 #endif
+  (*interp)->jb_spl = NULL;
 
   (*interp)->method = method;
   switch (method) {
@@ -53,7 +60,7 @@ int interpolation_alloc(interpolation_t **interp, const int method, const int np
     break;
 #endif
   case PSPIO_INTERP_JB_CSPLINE:
-    jb_spline_alloc(&((*interp)->jb_spline), np);
+    SUCCEED_OR_RETURN( jb_spline_alloc(&((*interp)->jb_spl), np) );
     break;
   default:
     RETURN_WITH_ERROR( PSPIO_ENOSUPPORT );
@@ -64,16 +71,20 @@ int interpolation_alloc(interpolation_t **interp, const int method, const int np
 
 
 int interpolation_copy(interpolation_t **dst, const interpolation_t *src) {
-#ifdef HAVE_GSL
-  int ierr;
-#endif
+  int np;
 
   assert(src != NULL);
+
+#ifdef HAVE_GSL
+  np = src->gsl_spl->size;
+#else
+  np = src->jb_spl->np;
+#endif
 
   if ( *dst != NULL ) {
     interpolation_free(*dst);
   }
-  SUCCEED_OR_RETURN(interpolation_alloc(dst, src->method, src->np));
+  SUCCEED_OR_RETURN(interpolation_alloc(dst, src->method, np));
 
   switch (src->method) {
 #ifdef HAVE_GSL
@@ -84,14 +95,6 @@ int interpolation_copy(interpolation_t **dst, const interpolation_t *src) {
       (*dst)->gsl_spl->interp->xmin = src->gsl_spl->interp->xmin;
       (*dst)->gsl_spl->interp->xmax = src->gsl_spl->interp->xmax;
       (*dst)->gsl_spl->interp->size = src->gsl_spl->interp->size;
-      (*dst)->gsl_spl->interp->type->name =
-        (char *) malloc (strlen(src->gsl_spl->interp->type->name) + 1);
-      FULFILL_OR_EXIT((*dst)->gsl_spl->interp->type->name != NULL,
-        PSPIO_ENOMEM);
-      strcpy((*dst)->gsl_spl->interp->type->name,
-        src->gsl_spl->interp->type->name);
-      (*dst)->gsl_spl->interp->type->min_size =
-        src->gsl_spl->interp->type->min_size;
       memcpy((*dst)->gsl_spl->x, src->gsl_spl->x,
         src->gsl_spl->size * sizeof(double));
       memcpy((*dst)->gsl_spl->y, src->gsl_spl->y,
@@ -99,7 +102,7 @@ int interpolation_copy(interpolation_t **dst, const interpolation_t *src) {
       break;
 #endif
     case PSPIO_INTERP_JB_CSPLINE:
-      SUCCEED_OR_RETURN( jb_spline_copy((*dst)->jb_spl, src->jb_spl) );
+      SUCCEED_OR_RETURN( jb_spline_copy(&((*dst)->jb_spl), src->jb_spl) );
       break;
     default:
       RETURN_WITH_ERROR( PSPIO_ENOSUPPORT );

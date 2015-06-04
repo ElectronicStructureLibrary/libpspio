@@ -263,7 +263,7 @@ double *pspio_mesh_get_r(const pspio_mesh_t *mesh) {
 }
 
 
-double *pspio_mesh_get_rab(const pspio_mesh_t *mesh, double *rab) {
+double *pspio_mesh_get_rab(const pspio_mesh_t *mesh) {
 
   assert(mesh != NULL);
 

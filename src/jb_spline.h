@@ -44,7 +44,7 @@ typedef struct{
  **********************************************************************/
 
 
-jb_spline_t *jb_spline_alloc(const int np);
+int jb_spline_alloc(jb_spline_t **spline, const int np);
 
 
 int jb_spline_copy(jb_spline_t **dst, const jb_spline_t *src);

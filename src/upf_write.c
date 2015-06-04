@@ -45,7 +45,7 @@ void upf_write_info(FILE *fp, const pspio_pspdata_t *pspdata) {
 int upf_write_header(FILE *fp, const pspio_pspdata_t *pspdata) {
   int is, l;
   double occ;
-  char label[5];
+  char *label;
   int exchange, correlation;
   char shortname[5], longname[21];
 
@@ -98,7 +98,7 @@ int upf_write_header(FILE *fp, const pspio_pspdata_t *pspdata) {
   // Write wavefunctions info
   fprintf(fp, " Wavefunctions         nl  l   occ\n");
   for (is=0; is<pspdata->n_states; is++) {
-    pspio_state_get_label(pspdata->states[is], &label[0]);
+    label = pspio_state_get_label(pspdata->states[is]);
     l = pspio_state_get_l(pspdata->states[is]);
     occ = pspio_state_get_occ(pspdata->states[is]);
     fprintf(fp, "                       %2s%3d%6.2f\n", label, l, occ);    
@@ -219,14 +219,14 @@ void upf_write_local(FILE *fp, const pspio_pspdata_t *pspdata) {
 void upf_write_pswfc(FILE *fp, const pspio_pspdata_t *pspdata) {
   int is, i, l;
   double occ, wf;
-  char label[5];
+  char *label;
 
   // Write init tag
   fprintf(fp, "<PP_PSWFC>\n");
 
   // Write wavefunctions
   for (is=0; is<pspdata->n_states; is++) {
-    pspio_state_get_label(pspdata->states[is], &label[0]);
+    label = pspio_state_get_label(pspdata->states[is]);
     l = pspio_state_get_l(pspdata->states[is]);
     occ = pspio_state_get_occ(pspdata->states[is]);
     fprintf(fp, "%s %4d %5.2f          Wavefunction\n", label, l, occ);
@@ -267,14 +267,14 @@ void upf_write_rhoatom(FILE *fp, const pspio_pspdata_t *pspdata) {
 void upf_write_addinfo(FILE *fp, const pspio_pspdata_t *pspdata) {
   int is, n, l;
   double occ, j;
-  char label[5];
+  char *label;
 
   // Write init tag
   fprintf(fp, "<PP_ADDINFO>\n");
 
   // Write wavefunctions data
   for (is=0; is<pspdata->n_states; is++) {
-    pspio_state_get_label(pspdata->states[is], &label[0]);
+    label = pspio_state_get_label(pspdata->states[is]);
     n = pspio_state_get_n(pspdata->states[is]);
     l = pspio_state_get_l(pspdata->states[is]);
     j = pspio_state_get_j(pspdata->states[is]);

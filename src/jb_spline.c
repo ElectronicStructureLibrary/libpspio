@@ -27,7 +27,7 @@ This code is distributed under the GNU LGPL license.
  * Global routines                                                    *
  **********************************************************************/
 
-int jb_spline_alloc(jb_spline **spline, const int np)
+int jb_spline_alloc(jb_spline_t **spline, const int np)
 {
 
   *spline = (jb_spline_t *) malloc (sizeof(jb_spline_t));
