@@ -39,7 +39,7 @@ AC_DEFUN([PIO_CHECK_GSL],[
     GSL_CPPFLAGS=""
     GSL_CFLAGS=""
     GSL_LIBS=""
-    PKG_CHECK_MODULES([GSL], [gsl >= 1.16])
+    PKG_CHECK_MODULES([GSL], [gsl >= 1.15])
     pio_gsl_incs="${GSL_CFLAGS}"
     pio_gsl_libs="${GSL_LIBS}"
     if test "${pio_gsl_incs}" = "" -a "${pio_gsl_libs}" = ""; then
