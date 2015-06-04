@@ -238,6 +238,17 @@ int pspio_mesh_get_np(const pspio_mesh_t *mesh) {
 }
 
 
+void pspio_mesh_get_params(const pspio_mesh_t *mesh, double *a, double *b) {
+
+  assert(mesh != NULL);
+  assert(a != NULL);
+  assert(b != NULL);
+
+  *a = mesh->a;
+  *b = mesh->b;
+}
+
+
 void pspio_mesh_get_r(const pspio_mesh_t *mesh, double *r) {
   int i;
 
@@ -248,6 +259,14 @@ void pspio_mesh_get_r(const pspio_mesh_t *mesh, double *r) {
 }
 
 
+double * pspio_mesh_get_r_ptr(const pspio_mesh_t *mesh) {
+
+  assert(mesh != NULL);
+
+  return mesh->r;
+}
+
+
 void pspio_mesh_get_rab(const pspio_mesh_t *mesh, double *rab) {
   int i;
 
@@ -255,4 +274,12 @@ void pspio_mesh_get_rab(const pspio_mesh_t *mesh, double *rab) {
   assert(rab != NULL);
 
   for (i=0; i<mesh->np; i++) rab[i] = mesh->rab[i];
+}
+
+
+double * pspio_mesh_get_rab_ptr(const pspio_mesh_t *mesh, double *rab) {
+
+  assert(mesh != NULL);
+
+  return mesh->rab;
 }

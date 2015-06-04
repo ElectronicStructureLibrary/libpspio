@@ -78,6 +78,20 @@ int interpolation_alloc(interpolation_t **interp, const int method, const int np
 
 
 /**
+ * Duplicates an interpolation structure
+ * 
+ * @param[out] dst: destination interpolation structure pointer
+ * @param[in] src: source interpolation structure pointer
+ * @return error code
+ * @note The src pointer has to be allocated first with the
+ *       interpolation_alloc  method.
+ * @note The dst pointer might or might not be allocated. If it is not, then it
+ *       is allocate here.
+ */
+int interpolation_copy(interpolation_t **dst, const interpolation_t *src);
+
+
+/**
  * Initializes the interpolation object.
  * @param[in,out] interp: interpolation structure to be initialized.
  * @param[in] mesh: mesh structure.

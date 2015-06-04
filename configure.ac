@@ -1,5 +1,6 @@
 #
-# Copyright (C) 2011 J. Alberdi, M. Oliveira, Y. Pouillon, and M. Verstraete
+# Copyright (C) 2011-2015 J. Alberdi, M. Oliveira, Y. Pouillon,
+#                         and M. Verstraete
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as published by
@@ -144,11 +145,6 @@ AC_SUBST(pio_core_incs)
 # Languages
 #
 
-# Look for useful utilities
-AC_CHECK_PROGS([PKG_CONFIG], [pkg-config])
-
-                    # ------------------------------------ #
-
 # Look for the C compiler
 if test "${CC}" != "" -a ! -x "${CC}"; then
   pio_cc_probe=`echo "${CC}" | sed -e 's/ .*//'`
@@ -196,6 +192,25 @@ if test "${enable_fortran}" = "yes"; then
   if test "${pio_fc_src_ok}" != "yes"; then
     AC_MSG_WARN([Fortran file extension could not be changed])
     AC_MSG_WARN([Fortran tests may fail])
+  fi
+
+  # Look for the iso_c_binding module
+  pio_fc_iso_c_binding="unknown"
+  AC_MSG_CHECKING([for the iso_c_binding Fortran module])
+  AC_LANG_PUSH([Fortran])
+  AC_COMPILE_IFELSE(
+    [AC_LANG_PROGRAM([], [[use iso_c_binding]])],
+    [pio_fc_iso_c_binding="yes"],
+    [pio_fc_iso_c_binding="no"])
+  AC_LANG_POP([Fortran])
+  AC_MSG_RESULT([${pio_fc_iso_c_binding}])
+  if test "${pio_fc_iso_c_binding}" != "yes"; then
+    AC_MSG_ERROR([the Fortran compiler does not provide
+                  the iso_c_binding module
+                  This probably happens because this compiler
+                  is an antiquity
+                  Please disable Fortran support or use a modern
+                  Fortran compiler])
   fi
 
   # Fortran compiler peculiarities
@@ -260,6 +275,15 @@ if test "${enable_gsl}" = "yes"; then
   fi
 fi
 
+# Math libraries (if GSL is disabled)
+if test "${enable_gsl}" = "no"; then
+  AC_SEARCH_LIBS([exp], [m], [pio_math_ok="yes"], [pio_math_ok="no"], [])
+  if test "${pio_math_ok}" = "no"; then
+    AC_MSG_ERROR([no mathematical library found
+      please set the LIBS environment variable adequately when configuring])
+  fi
+fi
+
 # XML (optional)
 if test "${enable_xml}" = "yes"; then
   PIO_CHECK_XML
@@ -273,13 +297,6 @@ if test "${enable_xml}" = "yes"; then
   fi
 fi
 
-# Required basic libraries
-AC_SEARCH_LIBS([exp], [m], [pio_math_ok="yes"], [pio_math_ok="no"], [])
-if test "${pio_math_ok}" = "no"; then
-  AC_MSG_ERROR([no mathematical library found
-    please set the LIBS environment variable adequately when configuring])
-fi
-
 # ---------------------------------------------------------------------------- #
 
 #
@@ -289,12 +306,12 @@ fi
 # Adjust verbosity
 if test "${enable_debug}" = "yes"; then
   AC_DEFINE([DEBUG_MODE], 1,
-    [Define to 1 if you want to enable debug mode])
+    [Define to 1 if you want to enable debug mode.])
   AC_DEFINE([DEBUG_LEVEL], 1,
-    [Set to 1 or above if you want to enable debug messages])
+    [Set to 1 or above if you want to enable debug messages.])
 else
   AC_DEFINE([DEBUG_LEVEL], 0,
-    [Set to 1 or above if you want to enable debug messages])
+    [Set to 1 or above if you want to enable debug messages.])
 fi
 
 # ---------------------------------------------------------------------------- #

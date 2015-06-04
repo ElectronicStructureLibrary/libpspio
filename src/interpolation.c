@@ -53,10 +53,56 @@ int interpolation_alloc(interpolation_t **interp, const int method, const int np
     break;
 #endif
   case PSPIO_INTERP_JB_CSPLINE:
-    (*interp)->jb_spl = jb_spline_alloc(np);
+    jb_spline_alloc(&((*interp)->jb_spline), np);
     break;
   default:
     RETURN_WITH_ERROR( PSPIO_ENOSUPPORT );
+  }
+
+  return PSPIO_SUCCESS;
+}
+
+
+int interpolation_copy(interpolation_t **dst, const interpolation_t *src) {
+#ifdef HAVE_GSL
+  int ierr;
+#endif
+
+  assert(src != NULL);
+
+  if ( *dst != NULL ) {
+    interpolation_free(*dst);
+  }
+  SUCCEED_OR_RETURN(interpolation_alloc(dst, src->method, src->np));
+
+  switch (src->method) {
+#ifdef HAVE_GSL
+    case PSPIO_INTERP_GSL_CSPLINE:
+      (*dst)->gsl_acc->cache = src->gsl_acc->cache;
+      (*dst)->gsl_acc->miss_count = src->gsl_acc->miss_count;
+      (*dst)->gsl_acc->hit_count = src->gsl_acc->hit_count;
+      (*dst)->gsl_spl->interp->xmin = src->gsl_spl->interp->xmin;
+      (*dst)->gsl_spl->interp->xmax = src->gsl_spl->interp->xmax;
+      (*dst)->gsl_spl->interp->size = src->gsl_spl->interp->size;
+      (*dst)->gsl_spl->interp->type->name =
+        (char *) malloc (strlen(src->gsl_spl->interp->type->name) + 1);
+      FULFILL_OR_EXIT((*dst)->gsl_spl->interp->type->name != NULL,
+        PSPIO_ENOMEM);
+      strcpy((*dst)->gsl_spl->interp->type->name,
+        src->gsl_spl->interp->type->name);
+      (*dst)->gsl_spl->interp->type->min_size =
+        src->gsl_spl->interp->type->min_size;
+      memcpy((*dst)->gsl_spl->x, src->gsl_spl->x,
+        src->gsl_spl->size * sizeof(double));
+      memcpy((*dst)->gsl_spl->y, src->gsl_spl->y,
+        src->gsl_spl->size * sizeof(double));
+      break;
+#endif
+    case PSPIO_INTERP_JB_CSPLINE:
+      SUCCEED_OR_RETURN( jb_spline_copy((*dst)->jb_spl, src->jb_spl) );
+      break;
+    default:
+      RETURN_WITH_ERROR( PSPIO_ENOSUPPORT );
   }
 
   return PSPIO_SUCCESS;
@@ -74,20 +120,20 @@ int interpolation_init(interpolation_t *interp, const pspio_mesh_t *mesh, const 
 
   switch (interp->method) {
 #ifdef HAVE_GSL
-  case PSPIO_INTERP_GSL_CSPLINE:
-    ierr = gsl_spline_init(interp->gsl_spl, mesh->r, f, mesh->np);
-    if ( ierr != PSPIO_SUCCESS ) {
-      RETURN_WITH_ERROR( PSPIO_EGSL );
-    }
-    break;
+    case PSPIO_INTERP_GSL_CSPLINE:
+      ierr = gsl_spline_init(interp->gsl_spl, mesh->r, f, mesh->np);
+      if ( ierr != GSL_SUCCESS ) {
+        RETURN_WITH_ERROR( PSPIO_EGSL );
+      }
+      break;
 #endif
-  case PSPIO_INTERP_JB_CSPLINE:
-    SUCCEED_OR_RETURN( jb_spline_init(&interp->jb_spl, mesh->r, f, mesh->np) );
-    break;
-  default:
-    RETURN_WITH_ERROR( PSPIO_ENOSUPPORT );
+    case PSPIO_INTERP_JB_CSPLINE:
+      SUCCEED_OR_RETURN( jb_spline_init(&interp->jb_spl, mesh->r, f, mesh->np) );
+      break;
+    default:
+      RETURN_WITH_ERROR( PSPIO_ENOSUPPORT );
   }
-  
+
   return PSPIO_SUCCESS;
 }
 
