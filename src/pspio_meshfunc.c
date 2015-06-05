@@ -84,14 +84,14 @@ int pspio_meshfunc_init(pspio_meshfunc_t *func, const pspio_mesh_t *mesh,
   assert(func->f != NULL);
   assert(mesh != NULL);
 
-  // Copy mesh
+  /* Copy mesh */
   SUCCEED_OR_RETURN( pspio_mesh_copy(&func->mesh, mesh) );
 
-  // Function
+  /* Function */
   memcpy(func->f, f, mesh->np * sizeof(double));
   SUCCEED_OR_RETURN( interpolation_init(func->f_interp, mesh, func->f) );
 
-  // First derivative
+  /* First derivative */
   if ( fp != NULL ) {
     memcpy(func->fp, fp, mesh->np * sizeof(double));
   } else {
@@ -100,7 +100,7 @@ int pspio_meshfunc_init(pspio_meshfunc_t *func, const pspio_mesh_t *mesh,
   }
   SUCCEED_OR_RETURN( interpolation_init(func->fp_interp, mesh, func->fp) );
 
-  // Second derivative
+  /* Second derivative */
   if ( fpp != NULL ) {
     memcpy(func->fpp, fpp, mesh->np * sizeof(double));
   } else {
@@ -116,23 +116,30 @@ int pspio_meshfunc_init(pspio_meshfunc_t *func, const pspio_mesh_t *mesh,
 int pspio_meshfunc_copy(pspio_meshfunc_t **dst, const pspio_meshfunc_t *src) {
   assert(src != NULL);
 
-  if ( *dst == NULL ) {
-    SUCCEED_OR_RETURN( pspio_meshfunc_alloc(dst, src->mesh->np) );
-
-  } else {
-    /* All the interpolation objects of dst must be free, otherwise we might have 
-       memory leaks if the interpolation method used previously in dst in not the
-       same as in src. */
-    interpolation_free((*dst)->f_interp);
-    interpolation_free((*dst)->fp_interp);
-    interpolation_free((*dst)->fpp_interp);
+  /* All the interpolation objects of dst must be free, otherwise
+     we might have memory leaks if the interpolation method used
+     previously in dst in not the same as in src. */
+  if ( *dst != NULL ) {
+    if ( (*dst)->f_interp != NULL ) {
+      interpolation_free((*dst)->f_interp);
+    }
+    if ( (*dst)->f_interp != NULL ) {
+      interpolation_free((*dst)->fp_interp);
+    }
+    if ( (*dst)->f_interp != NULL ) {
+      interpolation_free((*dst)->fpp_interp);
+    }
+    pspio_meshfunc_free(*dst);
   }
+  SUCCEED_OR_RETURN( pspio_meshfunc_alloc(dst, src->mesh->np) );
 
   SUCCEED_OR_RETURN( pspio_mesh_copy(&(*dst)->mesh, src->mesh) );
 
   memcpy((*dst)->f, src->f, src->mesh->np * sizeof(double));
-  SUCCEED_OR_RETURN( interpolation_alloc(&(*dst)->f_interp, src->interp_method, src->mesh->np) );
-  SUCCEED_OR_RETURN( interpolation_init((*dst)->f_interp, (*dst)->mesh, (*dst)->f) );
+  SUCCEED_OR_RETURN( interpolation_alloc(&(*dst)->f_interp,
+    src->interp_method, src->mesh->np) );
+  SUCCEED_OR_RETURN( interpolation_init((*dst)->f_interp,
+    (*dst)->mesh, (*dst)->f) );
 
   memcpy((*dst)->fp, src->fp, src->mesh->np * sizeof(double));
   SUCCEED_OR_RETURN( interpolation_alloc(&(*dst)->fp_interp, src->interp_method, src->mesh->np) );
@@ -178,9 +185,11 @@ void pspio_meshfunc_eval(const pspio_meshfunc_t *func, const int np,
   assert(f != NULL);
 
   for (i=0; i<np; i++) {
-    // If the value of r is smaller than the first mesh point or if
-    // it is greater or equal to the last mesh point, then we use a
-    // linear extrapolation to evaluate the function at r.
+    /*
+      If the value of r is smaller than the first mesh point or if
+      it is greater or equal to the last mesh point, then we use a
+      linear extrapolation to evaluate the function at r.
+    */
     if ( r[i] < func->mesh->r[0] ) {
       f[i] = linear_extrapolation(func->mesh->r[0], func->mesh->r[1],
         func->f[0], func->f[1], r[i]);
@@ -204,9 +213,10 @@ void pspio_meshfunc_eval_deriv(const pspio_meshfunc_t *func, const int np,
   assert(fp != NULL);
 
   for (i=0; i<np; i++) {
-    // If the value of r is smaller than the first mesh point or if
-    // it is greater or equal to the last mesh point, then we use a
-    // linear extrapolation to evaluate the function at r.
+    /* If the value of r is smaller than the first mesh point or if
+       it is greater or equal to the last mesh point, then we use a
+       linear extrapolation to evaluate the function at r.
+    */
     if ( r[i] < func->mesh->r[0] ) {
       fp[i] = linear_extrapolation(func->mesh->r[0], func->mesh->r[1],
         func->fp[0], func->fp[1], r[i]);
@@ -230,9 +240,11 @@ void pspio_meshfunc_eval_deriv2(const pspio_meshfunc_t *func, const int np,
   assert(fpp != NULL);
 
   for (i=0; i<np; i++) {
-    // If the value of r is smaller than the first mesh point or if
-    // it is greater or equal to the last mesh point, then we use a
-    // linear extrapolation to evaluate the function at r.
+    /*
+      If the value of r is smaller than the first mesh point or if
+      it is greater or equal to the last mesh point, then we use a
+      linear extrapolation to evaluate the function at r.
+    */
     if ( r[i] < func->mesh->r[0] ) {
       fpp[i] = linear_extrapolation(func->mesh->r[0], func->mesh->r[1],
         func->fpp[0], func->fpp[1], r[i]);
@@ -244,4 +256,44 @@ void pspio_meshfunc_eval_deriv2(const pspio_meshfunc_t *func, const int np,
       interpolation_eval(func->fpp_interp, r[i], &fpp[i]);
     }
   }
+}
+
+
+double *pspio_meshfunc_get_deriv1(const pspio_meshfunc_t *func) {
+
+  assert(func != NULL);
+
+  return func->fp;
+}
+
+
+double *pspio_meshfunc_get_deriv2(const pspio_meshfunc_t *func) {
+
+  assert(func != NULL);
+
+  return func->fpp;
+}
+
+
+double *pspio_meshfunc_get_function(const pspio_meshfunc_t *func) {
+
+  assert(func != NULL);
+
+  return func->f;
+}
+
+
+int pspio_meshfunc_get_interp_method(const pspio_meshfunc_t *func) {
+
+  assert(func != NULL);
+
+  return func->interp_method;
+}
+
+
+pspio_mesh_t *pspio_meshfunc_get_mesh(const pspio_meshfunc_t *func) {
+
+  assert(func != NULL);
+
+  return func->mesh;
 }

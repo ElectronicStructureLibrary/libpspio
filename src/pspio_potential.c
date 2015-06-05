@@ -79,9 +79,10 @@ int pspio_potential_init(pspio_potential_t *potential, const pspio_qn_t *qn,
 int pspio_potential_copy(pspio_potential_t **dst, const pspio_potential_t *src) {
   assert(src != NULL);
 
-  if ( *dst == NULL ) {
-    SUCCEED_OR_RETURN( pspio_potential_alloc(dst, src->v->mesh->np) );
+  if ( *dst != NULL ) {
+    pspio_potential_free(*dst);
   }
+  SUCCEED_OR_RETURN( pspio_potential_alloc(dst, src->v->mesh->np) );
 
   SUCCEED_OR_RETURN( pspio_meshfunc_copy(&(*dst)->v, src->v) );
   SUCCEED_OR_RETURN( pspio_qn_copy(&(*dst)->qn, src->qn) );

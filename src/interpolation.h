@@ -50,12 +50,12 @@ typedef struct{
   int method; /**< Interpolation method */
 
 #ifdef HAVE_GSL
-  // Objects to the used with GSL interpolation
+  /* Objects to the used with GSL interpolation */
   gsl_spline *gsl_spl;       /**< gsl spline structure */
   gsl_interp_accel *gsl_acc; /**< gsl accelerator for interpolation lookups */
 #endif
 
-  // Objects to be used with jb_spline
+  /* Objects to be used with jb_spline */
   jb_spline_t *jb_spl;       /**< JB spline structure */
 
 } interpolation_t;
@@ -75,6 +75,20 @@ typedef struct{
  * @note np should be larger than 1.
  */
 int interpolation_alloc(interpolation_t **interp, const int method, const int np);
+
+
+/**
+ * Duplicates an interpolation structure
+ * 
+ * @param[out] dst: destination interpolation structure pointer
+ * @param[in] src: source interpolation structure pointer
+ * @return error code
+ * @note The src pointer has to be allocated first with the
+ *       interpolation_alloc  method.
+ * @note The dst pointer might or might not be allocated. If it is not, then it
+ *       is allocate here.
+ */
+int interpolation_copy(interpolation_t **dst, const interpolation_t *src);
 
 
 /**

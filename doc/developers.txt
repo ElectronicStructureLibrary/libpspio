@@ -44,6 +44,23 @@
  * of such extensions directly with them. You might get them earlier than
  * you expect.
  *
+ * @section methods Methods
+ *
+ * All the structures that are exposed should provide the following methods:
+ *
+ *  - alloc
+ *  - init
+ *  - copy
+ *  - free
+ * 
+ * They should also provide setter and getter methods for all components that 
+ * are meant to be accessible outside the library.
+ * 
+ * The alloc, init, copy, and setter methods should all return an error code.
+ * The free method should return void. The getter methods should return the
+ * value of the component and, if the component is a pointer, then it should
+ * also return a pointer.
+ *
  *
  * @section indexes Indexes of states, pseudopotentials, and projectors
  *

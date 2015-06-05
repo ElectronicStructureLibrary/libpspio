@@ -40,7 +40,7 @@ int upf_tag_init(FILE * fp, const char * tag, const int go_back) {
 
   if ( go_back ) rewind(fp);
   
-  // Prepare base string
+  /* Prepare base string */
   init_tag = (char *) malloc ((strlen(tag)+3) * sizeof(char));
   FULFILL_OR_EXIT(init_tag != NULL, PSPIO_ENOMEM);
   init_tag[0] = '\0';
@@ -51,12 +51,12 @@ int upf_tag_init(FILE * fp, const char * tag, const int go_back) {
     init_tag[i] = tolower(init_tag[i]);
 
   while ( fgets(line, sizeof line, fp) != NULL ) {
-    // Skip white spaces
+    /* Skip white spaces */
     if ( line[0] == ' ' )
       read_string = strtok(line," ");
     else 
       read_string = line;
-    // Lowercase line
+    /* Lowercase line */
     for (i=0;read_string[i]; i++)
       read_string[i] = tolower(read_string[i]);
     
@@ -77,7 +77,7 @@ int upf_tag_check_end(FILE * fp, const char * tag) {
   char * read_string = NULL;
   int i, status;
   
-  // Prepare base string
+  /* Prepare base string */
   ending_tag = (char *) malloc ((strlen(tag)+4) * sizeof(char));
   FULFILL_OR_EXIT(ending_tag != NULL, PSPIO_ENOMEM);
   ending_tag[0] = '\0';
@@ -88,16 +88,16 @@ int upf_tag_check_end(FILE * fp, const char * tag) {
     ending_tag[i] = tolower(ending_tag[i]);
   
   FULFILL_OR_RETURN( fgets(line, sizeof line, fp) != NULL, PSPIO_EIO );
-  // Skip white spaces
+  /* Skip white spaces */
   if (line[0] == ' ')
     read_string = strtok(line," ");
   else 
     read_string = line;
-  // Lowercase line
+  /* Lowercase line */
   for (i=0;read_string[i]; i++)
     read_string[i] = tolower(read_string[i]);
 
-  // Compare with the ending tag
+  /* Compare with the ending tag */
   if ( strncmp(read_string,ending_tag,strlen(ending_tag)) == 0 ) { 
     status = PSPIO_SUCCESS;
   } else {
@@ -115,10 +115,10 @@ int upf_tag_isdef(FILE * fp, const char * tag) {
   char * read_string = NULL;
   int i;
   
-  // Go to the beginning of the buffer
+  /* Go to the beginning of the buffer */
   rewind(fp);
   
-  // Prepare base string
+  /* Prepare base string */
   init_tag = (char *) malloc ((strlen(tag)+3) * sizeof(char));
   FULFILL_OR_EXIT(init_tag != NULL, PSPIO_ENOMEM);
   init_tag[0] = '\0';
@@ -129,12 +129,12 @@ int upf_tag_isdef(FILE * fp, const char * tag) {
     init_tag[i] = tolower(init_tag[i]);
 
   while ( fgets(line, sizeof line, fp) != NULL ) {
-    // Skip white spaces
+    /* Skip white spaces */
     if ( line[0] == ' ' )
       read_string = strtok(line," ");
     else 
       read_string = line;
-    // Lowercase line
+    /* Lowercase line */
     for (i=0;line[i]; i++)
       line[i] = tolower(line[i]);
 
@@ -145,6 +145,6 @@ int upf_tag_isdef(FILE * fp, const char * tag) {
   }
 
   free(init_tag);
-  // End of the buffer reached; so return false
+  /* End of the buffer reached; so return false */
   return 0;
 }

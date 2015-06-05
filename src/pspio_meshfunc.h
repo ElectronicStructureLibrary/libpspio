@@ -41,15 +41,15 @@ typedef struct{
   pspio_mesh_t *mesh;    /**< Pointer to mesh */
   int interp_method;
 
-  // Function
+  /* Function */
   double *f;                  /**< function values on the mesh */
   interpolation_t *f_interp;  /**< function interpolation object */
 
-  // Function first derivative
+  /* Function first derivative */
   double *fp;                 /**< first derivative values on the mesh */
   interpolation_t *fp_interp; /**< first derivative interpolation object */
 
-  // Function second derivative
+  /* Function second derivative */
   double *fpp;                 /**< second derivative on the mesh */
   interpolation_t *fpp_interp; /**< second derivative interpolation object */
 
@@ -115,19 +115,19 @@ void pspio_meshfunc_free(pspio_meshfunc_t *func);
  **********************************************************************/
 
 /**
- * Returns the value of the function at arbitrary points
+ * Returns the value of the function at arbitrary points.
  * 
  * @param[in] func: function structure
  * @param[in] np: number of points
  * @param[in] *r:  array of points were we want to evaluate the function
  * @param[out] *f: values of the function
  */
-void pspio_meshfunc_eval(const pspio_meshfunc_t *func, const int np, const double *r,
-      double *f);
+void pspio_meshfunc_eval(const pspio_meshfunc_t *func, const int np,
+       const double *r, double *f);
 
 
 /**
- * Returns the value of the derivative of a function at arbitrary points
+ * Returns the value of the derivative of the function at arbitrary points.
  * 
  * @param[in] func: function structure
  * @param[in] np: number of points
@@ -139,7 +139,8 @@ void pspio_meshfunc_eval_deriv(const pspio_meshfunc_t *func, const int np,
 
 
 /**
- * Returns the value of the second derivative of a function at arbitrary points
+ * Returns the value of the second derivative of the function at arbitrary
+ * points.
  * 
  * @param[in] func: function structure
  * @param[in] np: number of points
@@ -148,5 +149,50 @@ void pspio_meshfunc_eval_deriv(const pspio_meshfunc_t *func, const int np,
  */
 void pspio_meshfunc_eval_deriv2(const pspio_meshfunc_t *func, const int np, 
 				const double *r, double *fpp);
+
+
+/**
+ * Returns the first derivative of the function.
+ * 
+ * @param[in] func: function structure
+ * @return pointer to the first derivative
+ */
+double *pspio_meshfunc_get_deriv1(const pspio_meshfunc_t *func);
+
+
+/**
+ * Returns the second derivative of the function.
+ * 
+ * @param[in] func: function structure
+ * @return pointer to the second derivative
+ */
+double *pspio_meshfunc_get_deriv2(const pspio_meshfunc_t *func);
+
+
+/**
+ * Returns the function.
+ * 
+ * @param[in] func: function structure
+ * @return pointer to the function
+ */
+double *pspio_meshfunc_get_function(const pspio_meshfunc_t *func);
+
+
+/**
+ * Returns the interpolation method.
+ * 
+ * @param[in] func: function structure
+ * @return interpolation method
+ */
+int pspio_meshfunc_get_interp_method(const pspio_meshfunc_t *func);
+
+
+/**
+ * Returns the mesh.
+ * 
+ * @param[in] func: function structure
+ * @return pointer to the mesh
+ */
+pspio_mesh_t *pspio_meshfunc_get_mesh(const pspio_meshfunc_t *func);
 
 #endif

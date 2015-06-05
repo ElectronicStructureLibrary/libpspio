@@ -33,14 +33,15 @@ for line in file("src/pspio_common.h", "r").readlines():
     if ( cst_value != "" ):
       try:
         cst_value = int(cst_value)
-        f90_defs += "  integer(pspio_cint), parameter, public :: %s = %d\n" % \
+        f90_defs += "  integer(c_int), parameter, public :: %s = %d\n" % \
           (cst_name, cst_value)
       except:
+        # The following should be change to use the iso_c_bindings
         f90_defs += "  character(len=*), parameter, public :: %s = %s\n" % \
           (cst_name, cst_value)
 f90_defs += "  !%%% END PSPIO CONSTANTS"
 
 # Replace existing Fortran definitions
-f90_file = "src/fortran/pspio_f90_types.F90"
+f90_file = "src/fortran/pspio_fortran.F90"
 f90_src  = file(f90_file, "r").read()
 file(f90_file, "w").write(re.sub(re_cst_f90, f90_defs, f90_src))

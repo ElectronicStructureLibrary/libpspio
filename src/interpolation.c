@@ -17,12 +17,18 @@
 
 */
 
+#include <stdlib.h>
 #include <assert.h>
+#include <string.h>
 
 #include "interpolation.h"
 
 #if defined HAVE_CONFIG_H
 #include "config.h"
+#endif
+
+#ifdef HAVE_GSL
+#include <gsl/gsl_errno.h>
 #endif
 
 
@@ -38,11 +44,12 @@ int interpolation_alloc(interpolation_t **interp, const int method, const int np
   *interp = (interpolation_t *) malloc (sizeof(interpolation_t));
   FULFILL_OR_EXIT(*interp != NULL, PSPIO_ENOMEM);
 
-  //Make sure all pointers are initialized to NULL, as only some of them will be used
+  /* Make sure all pointers are initialized to NULL, as only some of them will be used */
 #ifdef HAVE_GSL
   (*interp)->gsl_spl = NULL;
   (*interp)->gsl_acc = NULL;
 #endif
+  (*interp)->jb_spl = NULL;
 
   (*interp)->method = method;
   switch (method) {
@@ -53,10 +60,52 @@ int interpolation_alloc(interpolation_t **interp, const int method, const int np
     break;
 #endif
   case PSPIO_INTERP_JB_CSPLINE:
-    (*interp)->jb_spl = jb_spline_alloc(np);
+    SUCCEED_OR_RETURN( jb_spline_alloc(&((*interp)->jb_spl), np) );
     break;
   default:
     RETURN_WITH_ERROR( PSPIO_ENOSUPPORT );
+  }
+
+  return PSPIO_SUCCESS;
+}
+
+
+int interpolation_copy(interpolation_t **dst, const interpolation_t *src) {
+  int np;
+
+  assert(src != NULL);
+
+#ifdef HAVE_GSL
+  np = src->gsl_spl->size;
+#else
+  np = src->jb_spl->np;
+#endif
+
+  if ( *dst != NULL ) {
+    interpolation_free(*dst);
+  }
+  SUCCEED_OR_RETURN(interpolation_alloc(dst, src->method, np));
+
+  switch (src->method) {
+#ifdef HAVE_GSL
+    case PSPIO_INTERP_GSL_CSPLINE:
+      (*dst)->gsl_acc->cache = src->gsl_acc->cache;
+      (*dst)->gsl_acc->miss_count = src->gsl_acc->miss_count;
+      (*dst)->gsl_acc->hit_count = src->gsl_acc->hit_count;
+      (*dst)->gsl_spl->interp->xmin = src->gsl_spl->interp->xmin;
+      (*dst)->gsl_spl->interp->xmax = src->gsl_spl->interp->xmax;
+      (*dst)->gsl_spl->interp->size = src->gsl_spl->interp->size;
+      memcpy((*dst)->gsl_spl->x, src->gsl_spl->x,
+        src->gsl_spl->size * sizeof(double));
+      memcpy((*dst)->gsl_spl->y, src->gsl_spl->y,
+        src->gsl_spl->size * sizeof(double));
+      break;
+#endif
+    case PSPIO_INTERP_JB_CSPLINE:
+      SUCCEED_OR_RETURN( jb_spline_copy(&((*dst)->jb_spl), src->jb_spl) );
+      break;
+    default:
+      RETURN_WITH_ERROR( PSPIO_ENOSUPPORT );
   }
 
   return PSPIO_SUCCESS;
@@ -74,20 +123,20 @@ int interpolation_init(interpolation_t *interp, const pspio_mesh_t *mesh, const 
 
   switch (interp->method) {
 #ifdef HAVE_GSL
-  case PSPIO_INTERP_GSL_CSPLINE:
-    ierr = gsl_spline_init(interp->gsl_spl, mesh->r, f, mesh->np);
-    if ( ierr != PSPIO_SUCCESS ) {
-      RETURN_WITH_ERROR( PSPIO_EGSL );
-    }
-    break;
+    case PSPIO_INTERP_GSL_CSPLINE:
+      ierr = gsl_spline_init(interp->gsl_spl, mesh->r, f, mesh->np);
+      if ( ierr != GSL_SUCCESS ) {
+        RETURN_WITH_ERROR( PSPIO_EGSL );
+      }
+      break;
 #endif
-  case PSPIO_INTERP_JB_CSPLINE:
-    SUCCEED_OR_RETURN( jb_spline_init(&interp->jb_spl, mesh->r, f, mesh->np) );
-    break;
-  default:
-    RETURN_WITH_ERROR( PSPIO_ENOSUPPORT );
+    case PSPIO_INTERP_JB_CSPLINE:
+      SUCCEED_OR_RETURN( jb_spline_init(&interp->jb_spl, mesh->r, f, mesh->np) );
+      break;
+    default:
+      RETURN_WITH_ERROR( PSPIO_ENOSUPPORT );
   }
-  
+
   return PSPIO_SUCCESS;
 }
 
