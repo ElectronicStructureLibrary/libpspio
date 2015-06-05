@@ -1,6 +1,6 @@
 /*
  Copyright (C) 2011 J. Alberdi, M. Oliveira, Y. Pouillon, and M. Verstraete
- Copyright (C) 2014 M. Oliveira
+ Copyright (C) 2014-2015 M. Oliveira
 
  This program is free software; you can redistribute it and/or modify
  it under the terms of the GNU Lesser General Public License as published by
@@ -42,7 +42,7 @@
  * Main structure for pseudopotential data
  */
 typedef struct{
-  // general data
+  /* general data */
   int format_guessed;/**< Format of the file guessed by pspio_pspdata_read. */
   char *info;        /**< descriptive string for content of file read in. Nothing should ever be assumed about its content. */
   char *symbol;      /**< Atomic symbol */
@@ -53,30 +53,30 @@ typedef struct{
   int wave_eq;       /**< type of wave equation which was solved: Dirac, Scalar Relativistic, or Schroedinger */
   double total_energy; /**< the total energy of the pseudo atom */
 
-  // The radial mesh.
+  /* The radial mesh. */
   pspio_mesh_t *mesh; /**< Radial mesh - all functions should be discretized on this mesh */
 
-  // The states
+  /* The states */
   int **qn_to_istate;     /**< lookup table giving the position of the state from the quantum numbers */ 
   int n_states;           /**< number of electronic states */
   pspio_state_t **states; /**< struct with electronic states */
 
-  // The pseudopotentials
+  /* The pseudopotentials */
   int scheme;                    /**< scheme used to generate the pseudopotentials */
   int n_potentials;              /**< number of pseudopotentials */
   pspio_potential_t **potentials; /**< struc with pseudopotentials */ 
 
-  // Kleinman and Bylander non-local projectors
+  /* Kleinman and Bylander non-local projectors */
   int n_kbproj;                      /**< number of Kleinman and Bylander projectors */
   pspio_projector_t **kb_projectors; /**< Kleinman and Bylander projectors */
   int l_local;                       /**< angular momentum channel of local potential */
   int kb_l_max;                      /**< maximum angular momentum of KB projectors*/
   pspio_potential_t *vlocal;         /**< local potential for the KB form of the pseudopotentials */ 
 
-  // Exchange and correlation data, including non-linear core corrections
+  /* Exchange and correlation data, including non-linear core corrections */
   pspio_xc_t *xc; /**< xc structure */
 
-  // Valence density
+  /* Valence density */
   pspio_meshfunc_t *rho_valence; /**< valence density */
 
 } pspio_pspdata_t;
@@ -92,6 +92,12 @@ typedef struct{
  * @return error code.
  */
 int pspio_pspdata_init(pspio_pspdata_t **pspdata);
+
+/**
+ * Frees all memory associated with pspdata structure
+ * @param[in,out] pspdata: pointer to pspdata structure to be
+ */
+void pspio_pspdata_free(pspio_pspdata_t *pspdata);
 
 /**
  * Fill pspdata with the data read from a given file.
@@ -122,12 +128,5 @@ int pspio_pspdata_write(pspio_pspdata_t *pspdata, const int file_format,
  * @param[in,out] pspdata: pointer to pspdata structure to be
  */
 void pspio_pspdata_reset(pspio_pspdata_t *pspdata);
-
-
-/**
- * Frees all memory associated with pspdata structure
- * @param[in,out] pspdata: pointer to pspdata structure to be
- */
-void pspio_pspdata_free(pspio_pspdata_t *pspdata);
 
 #endif

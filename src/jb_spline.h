@@ -32,7 +32,7 @@ This code is distributed under the GNU LGPL license.
 * Interpolation data structure
 */
 typedef struct{
-  // Objects to be used with jb_spline
+  /* Objects to be used with jb_spline */
   int np;       /**< JB spline structure */
   double* t;
   double* y;

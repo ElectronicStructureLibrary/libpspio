@@ -46,18 +46,18 @@ int pspio_fhi_read(FILE *fp, pspio_pspdata_t *pspdata) {
   assert(fp != NULL);
   assert(pspdata != NULL); 
 
-  // Read header
+  /* Read header */
   FULFILL_OR_RETURN( fgets(line, PSPIO_STRLEN_LINE, fp) != NULL, PSPIO_EIO );
   FULFILL_OR_RETURN( sscanf(line, "%lf %d", &pspdata->zvalence, &pspdata->n_potentials ) == 2, PSPIO_EFILE_CORRUPT );
   for (i=0; i<10; i++) { 
-    // We ignore the next 10 lines, as they contain no information
+    /* We ignore the next 10 lines, as they contain no information */
     FULFILL_OR_RETURN( fgets(line, PSPIO_STRLEN_LINE, fp) != NULL, PSPIO_EIO );
   }
   pspdata->l_max = pspdata->n_potentials - 1;
   pspdata->n_states = pspdata->n_potentials;
 
 
-  // Allocate states and potentials
+  /* Allocate states and potentials */
   pspdata->states = (pspio_state_t **) malloc ( pspdata->n_states*sizeof(pspio_state_t *));
   FULFILL_OR_EXIT( pspdata->states != NULL, PSPIO_ENOMEM );
   for (i=0; i<pspdata->n_states; i++) {
@@ -70,12 +70,12 @@ int pspio_fhi_read(FILE *fp, pspio_pspdata_t *pspdata) {
   }
 
   
-  // Read mesh, potentials and wavefunctions
+  /* Read mesh, potentials and wavefunctions */
   for (l=0; l < pspdata->l_max+1; l++) {
     FULFILL_OR_RETURN( fgets(line, PSPIO_STRLEN_LINE, fp) != NULL, PSPIO_EIO );
     FULFILL_OR_RETURN( sscanf(line, "%d %lf", &np, &r12 ) == 2, PSPIO_EFILE_CORRUPT );
 
-    // Allocate temporary data
+    /* Allocate temporary data */
     SUCCEED_OR_RETURN( pspio_qn_alloc(&qn) );
     r = (double *) malloc (np*sizeof(double));
     FULFILL_OR_EXIT( r != NULL, PSPIO_ENOMEM );
@@ -84,7 +84,7 @@ int pspio_fhi_read(FILE *fp, pspio_pspdata_t *pspdata) {
     wf = (double *) malloc (np*sizeof(double));
     FULFILL_OR_EXIT(wf != NULL, PSPIO_ENOMEM);
 
-    // Read first line of block
+    /* Read first line of block */
     for (ir=0; ir<np; ir++) {
       FULFILL_OR_BREAK( fgets(line, PSPIO_STRLEN_LINE, fp) != NULL, PSPIO_EIO );
       FULFILL_OR_BREAK( sscanf(line, "%d %lf %lf %lf", &i, &r[ir],
@@ -93,15 +93,17 @@ int pspio_fhi_read(FILE *fp, pspio_pspdata_t *pspdata) {
     }
 
     if ( l == 0 ) {
-      // We will use the first block to generate the mesh, as the mesh
-      // is supposed to be the same for all blocks (at least this is
-      // the behavior of FHI98PP)
+      /*
+	We will use the first block to generate the mesh, as the mesh
+	is supposed to be the same for all blocks (at least this is
+	the behavior of FHI98PP)
+      */
       SKIP_FUNC_ON_ERROR( pspio_mesh_alloc(&pspdata->mesh, np) );
       SKIP_CALL_ON_ERROR( pspio_mesh_init_from_points(pspdata->mesh,
         r, NULL) );
     }
 
-    // Set pseudopotential and wavefunction
+    /* Set pseudopotential and wavefunction */
     SKIP_FUNC_ON_ERROR( pspio_qn_init(qn, 0, l, 0.0) );
     SKIP_FUNC_ON_ERROR(
       pspio_potential_alloc(&pspdata->potentials[LJ_TO_I(l,0.0)], np) );
@@ -111,30 +113,30 @@ int pspio_fhi_read(FILE *fp, pspio_pspdata_t *pspdata) {
     SKIP_FUNC_ON_ERROR( pspio_state_init(pspdata->states[l], 0.0, qn,
       0.0, 0.0, pspdata->mesh, wf, NULL) );
 
-    // Free temporary data
+    /* Free temporary data */
     free(r);
     free(v);
     free(wf);
     pspio_qn_free(qn);
     qn = NULL;
 
-    // Return on error after making sure internal variables are freed
+    /* Return on error after making sure internal variables are freed */
     RETURN_ON_DEFERRED_ERROR;
   }
 
-  // If not done yet, then allocate the xc structure
+  /* If not done yet, then allocate the xc structure */
   if ( pspdata->xc == NULL ) {
     SUCCEED_OR_RETURN( pspio_xc_alloc(&pspdata->xc) );
   }
 
-  // Non-linear core-corrections
+  /* Non-linear core-corrections */
   has_nlcc = ( fgets(line, PSPIO_STRLEN_LINE, fp) != NULL );
   if ( has_nlcc ) {
     double *cd, *cdp, *cdpp;
 
     pspio_xc_set_nlcc_scheme(pspdata->xc, PSPIO_NLCC_FHI);
 
-    // Allocate memory
+    /* Allocate memory */
     cd = (double *) malloc (np*sizeof(double));
     FULFILL_OR_EXIT(cd != NULL, PSPIO_ENOMEM);
     cdp = (double *) malloc (np*sizeof(double));
@@ -142,7 +144,7 @@ int pspio_fhi_read(FILE *fp, pspio_pspdata_t *pspdata) {
     cdpp = (double *) malloc (np*sizeof(double));
     FULFILL_OR_EXIT(cdpp != NULL, PSPIO_ENOMEM);
 
-    // Read core density
+    /* Read core density */
     for (ir=0; ir<np; ir++) {
       if ( ir != 0 ) {
 	FULFILL_OR_BREAK(fgets(line, PSPIO_STRLEN_LINE, fp) != NULL, PSPIO_EIO);
@@ -153,19 +155,19 @@ int pspio_fhi_read(FILE *fp, pspio_pspdata_t *pspdata) {
       cd[ir] /= (M_PI*4.0); cdp[ir] /= (M_PI*4.0); cdpp[ir] /= (M_PI*4.0);
     }
 
-    // Store the non-linear core corrections in the pspdata structure
+    /* Store the non-linear core corrections in the pspdata structure */
     SKIP_FUNC_ON_ERROR(pspio_xc_set_nlcc_density(pspdata->xc, pspdata->mesh, cd, cdp, cdpp));
 
-    // Free temporary variables
+    /* Free temporary variables */
     free(cd); 
     free(cdp); 
     free(cdpp);
 
-    // Return on error after making sure internal variables are freed
+    /* Return on error after making sure internal variables are freed */
     RETURN_ON_DEFERRED_ERROR;
   }
-
-  //We do not know the symbol (note that it might have been set somewhere else)
+  
+  /* We do not know the symbol (note that it might have been set somewhere else) */
   if ( pspdata->symbol == NULL ) {
     pspdata->symbol = (char *) malloc (3*sizeof(char));
     FULFILL_OR_RETURN( pspdata->symbol != NULL, PSPIO_ENOMEM );
@@ -183,12 +185,14 @@ int pspio_fhi_write(FILE *fp, const pspio_pspdata_t *pspdata){
   assert(fp != NULL);
   assert(pspdata != NULL);
 
-  // If one considers that the specifications of this format is the way
-  // FHI98PP writes the data, then only meshes of type log1 should be
-  // allowed. For the moment, we will just check that this is the case.
+  /*
+    If one considers that the specifications of this format is the way
+    FHI98PP writes the data, then only meshes of type log1 should be
+    allowed. For the moment, we will just check that this is the case.
+  */
   assert(pspdata->mesh->type == PSPIO_MESH_LOG1);
 
-  // Write header
+  /* Write header */
   FULFILL_OR_RETURN( fprintf(fp, "%20.14E   %d\n", pspdata->zvalence,
     pspdata->l_max+1) > 0, PSPIO_EIO );
   FULFILL_OR_RETURN( fprintf(fp, " 0.0000    0.0000    0.0000   0.0000\n") > 0,
@@ -198,7 +202,7 @@ int pspio_fhi_write(FILE *fp, const pspio_pspdata_t *pspdata){
       PSPIO_EIO );
   }
 
-  // Write mesh, pseudopotentials, and wavefunctions
+  /* Write mesh, pseudopotentials, and wavefunctions */
   for (l=0; l<pspdata->l_max+1; l++) {
     FULFILL_OR_RETURN( fprintf(fp, "%-4d %20.14E\n", pspdata->mesh->np,
       pspdata->mesh->r[1]/pspdata->mesh->r[0]) > 0, PSPIO_EIO );
@@ -206,7 +210,7 @@ int pspio_fhi_write(FILE *fp, const pspio_pspdata_t *pspdata){
     i = LJ_TO_I(l,0.0);
     is = pspdata->qn_to_istate[0][i];
 
-    // This format is not suitable for j-dependent pseudos
+    /* This format is not suitable for j-dependent pseudos */
     FULFILL_OR_RETURN( pspio_state_get_j(pspdata->states[is]) == 0.0,
       PSPIO_EVALUE );
 
@@ -221,7 +225,7 @@ int pspio_fhi_write(FILE *fp, const pspio_pspdata_t *pspdata){
     }
   }
 
-  // Write non-linear core corrections
+  /* Write non-linear core corrections */
   if (pspio_xc_has_nlcc(pspdata->xc)) {
     pspio_meshfunc_t *nlcc_dens = NULL;
     double cd, cdp, cdpp;

@@ -47,10 +47,10 @@ int abinit_read_header(FILE *fp, const int format, pspio_pspdata_t *pspdata) {
   int exchange, correlation, s;
   double zatom, zval, r2well, rchrg, fchrg, qchrg;
 
-  // Init
+  /* Init */
   format_read = PSPIO_FMT_UNKNOWN;
 
-  // Line 1: read title
+  /* Line 1: read title */
   FULFILL_OR_RETURN( fgets(line, PSPIO_STRLEN_LINE, fp) != NULL, PSPIO_EIO );
   s = strlen(line);
   pspdata->info = (char *) malloc ((s+1)*sizeof(char));
@@ -58,8 +58,8 @@ int abinit_read_header(FILE *fp, const int format, pspio_pspdata_t *pspdata) {
   strncpy(pspdata->info, line, s);
   pspdata->info[s] = '\0';
 
-  // Line 2: read atomic number, Z valence
-  // Note: ignoring psp date
+  /* Line 2: read atomic number, Z valence */
+  /* Note: ignoring psp date */
   FULFILL_OR_RETURN( fgets(line, PSPIO_STRLEN_LINE, fp) != NULL, PSPIO_EIO );
   FULFILL_OR_RETURN( sscanf(line, "%lf %lf", &zatom, &zval) == 2, PSPIO_EFILE_CORRUPT );
   pspdata->z = zatom;
@@ -68,14 +68,14 @@ int abinit_read_header(FILE *fp, const int format, pspio_pspdata_t *pspdata) {
   FULFILL_OR_EXIT( pspdata->symbol != NULL, PSPIO_ENOMEM );
   SUCCEED_OR_RETURN( z_to_symbol(pspdata->z, pspdata->symbol) );
 
-  // Line 3: read pspcod, pspxc, lmax, lloc, mmax, r2well
+  /* Line 3: read pspcod, pspxc, lmax, lloc, mmax, r2well */
   FULFILL_OR_RETURN( fgets(line, PSPIO_STRLEN_LINE, fp) != NULL, PSPIO_EIO );
   FULFILL_OR_RETURN( sscanf(line, "%d %d %d %d %d %lf",
     &pspcod, &pspxc, &lmax, &lloc, &mmax, &r2well) == 6, PSPIO_EFILE_CORRUPT );
   pspdata->l_max = lmax;
   pspdata->l_local = lloc;
 
-  // Following APE conventions: pspxc = -(exchange + correlation * 1000)
+  /* Following APE conventions: pspxc = -(exchange + correlation * 1000) */
   if ( pspxc < 0 ) {
     exchange = -pspxc % 1000;
     correlation = -pspxc / 1000;
@@ -86,9 +86,9 @@ int abinit_read_header(FILE *fp, const int format, pspio_pspdata_t *pspdata) {
   pspio_xc_set_id(pspdata->xc, exchange, correlation);
 
 
-  // Line 4: read rchrg, fchrg, qchrg if NLCC
-  // Note: tolerance copied from Abinit
-  // FIXME: store rchrg, fchrg, qchrg
+  /* Line 4: read rchrg, fchrg, qchrg if NLCC */
+  /* Note: tolerance copied from Abinit */
+  /* FIXME: store rchrg, fchrg, qchrg */
   FULFILL_OR_RETURN( fgets(line, PSPIO_STRLEN_LINE, fp) != NULL, PSPIO_EIO );
   line4 = my_strndup(line, 3);
   if ( strcmp("4--", line4) != 0 ) {
@@ -101,12 +101,12 @@ int abinit_read_header(FILE *fp, const int format, pspio_pspdata_t *pspdata) {
   free(line4);
   RETURN_ON_DEFERRED_ERROR;
 
-  // Ignore lines 5-7
+  /* Ignore lines 5-7 */
   FULFILL_OR_RETURN( fgets(line, PSPIO_STRLEN_LINE, fp) != NULL, PSPIO_EIO );
   FULFILL_OR_RETURN( fgets(line, PSPIO_STRLEN_LINE, fp) != NULL, PSPIO_EIO );
   FULFILL_OR_RETURN( fgets(line, PSPIO_STRLEN_LINE, fp) != NULL, PSPIO_EIO );
 
-  // Check that the format found is the one we expected
+  /* Check that the format found is the one we expected */
   switch (pspcod) {
     case 1:
       format_read = PSPIO_FMT_ABINIT_1;
@@ -164,16 +164,16 @@ int abinit_write_header(FILE *fp, const int format,
   assert(fp != NULL);
   assert(pspdata != NULL);
 
-  // Init auxiliary data
+  /* Init auxiliary data */
   have_nlcc = pspio_xc_has_nlcc(pspdata->xc);
   SUCCEED_OR_RETURN(libxc_to_abinit(pspdata->xc->exchange, \
     pspdata->xc->correlation, &pspxc));
 
-  // Line 1: write title
-  // FIXME: truncate info to its first line
+  /* Line 1: write title */
+  /* FIXME: truncate info to its first line */
   fprintf(fp, "%s\n", pspdata->info);
 
-  // Line 2: write atomic number, Z valence, psp date
+  /* Line 2: write atomic number, Z valence, psp date */
   int_now = time(NULL);
   now = localtime(&int_now);
   sprintf(pspdate, "%2.2d%2.2d%2.2d", 
@@ -181,10 +181,10 @@ int abinit_write_header(FILE *fp, const int format,
   pspdate[6] = '\0';
   FULFILL_OR_RETURN( fprintf(fp, "%8.3lf %8.3lf   %6s   zatom, zion, pspdat\n",
     pspdata->z, pspdata->zvalence, pspdate) > 0, PSPIO_EIO );
-
-  // Line 3: write pspcod, pspxc, lmax, lloc, mmax, r2well
-  // Line 4: write rchrg, fchrg, qchrg if NLCC
-  // Lines 5-7: free comments, unused
+  
+  /* Line 3: write pspcod, pspxc, lmax, lloc, mmax, r2well */
+  /* Line 4: write rchrg, fchrg, qchrg if NLCC */
+  /* Lines 5-7: free comments, unused */
   switch ( format ) {
     case 4:
     case 5:
@@ -194,7 +194,7 @@ int abinit_write_header(FILE *fp, const int format,
         format, pspxc, pspdata->l_max, pspdata->l_local,
         pspdata->mesh->np, 0.0) > 0, PSPIO_EIO );
 
-      // FIXME: write something relevant (bug lp:1348721)
+      /* FIXME: write something relevant (bug lp:1348721) */
       if ( have_nlcc ) {
         rchrg = 0.0;
         fchrg = 0.0;

@@ -40,7 +40,7 @@ int pspio_mesh_alloc(pspio_mesh_t **mesh, const int np) {
   assert(*mesh == NULL);
   assert(np > 1);
 
-  // Memory allocation
+  /* Memory allocation */
   *mesh = (pspio_mesh_t *) malloc (sizeof(pspio_mesh_t));
   FULFILL_OR_EXIT( *mesh != NULL, PSPIO_ENOMEM );
 
@@ -53,7 +53,7 @@ int pspio_mesh_alloc(pspio_mesh_t **mesh, const int np) {
   (*mesh)->rab = (double *) malloc (np * sizeof(double));
   FULFILL_OR_EXIT( (*mesh)->rab != NULL, PSPIO_ENOMEM );
 
-  // Presets
+  /* Presets */
   (*mesh)->np = np;
   memset((*mesh)->r, 0, np*sizeof(double));
   memset((*mesh)->rab, 0, np*sizeof(double));
@@ -90,14 +90,14 @@ void pspio_mesh_init_from_points(pspio_mesh_t *mesh, const double *r,
   assert(mesh->r != NULL);
   assert(mesh->rab != NULL);
 
-  // Init mesh
+  /* Init mesh */
   memcpy(mesh->r, r, mesh->np * sizeof(double));
   if ( rab != NULL ) {
     memcpy(mesh->rab, rab, mesh->np * sizeof(double));
   }
   mesh->type = PSPIO_MESH_UNKNOWN;
 
-  // Try linear mesh
+  /* Try linear mesh */
   if ( mesh->type == PSPIO_MESH_UNKNOWN ) {
     mesh->a = r[1] - r[2];
     mesh->b = r[0];
@@ -118,7 +118,7 @@ void pspio_mesh_init_from_points(pspio_mesh_t *mesh, const double *r,
     }
   }
 
-  // Try log1 mesh
+  /* Try log1 mesh */
   if ( mesh->type == PSPIO_MESH_UNKNOWN ) {
     mesh->a = log(r[1]/r[0]);
     mesh->b = r[0]/exp(mesh->a);
@@ -139,7 +139,7 @@ void pspio_mesh_init_from_points(pspio_mesh_t *mesh, const double *r,
     }
   }
 
-  // Try log2 mesh
+  /* Try log2 mesh */
   if ( mesh->type == PSPIO_MESH_UNKNOWN ) {
     mesh->a = log(r[1]/r[0] - 1.0);
     mesh->b = r[0]/(exp(mesh->a) - 1.0);
@@ -160,7 +160,7 @@ void pspio_mesh_init_from_points(pspio_mesh_t *mesh, const double *r,
     }
   }
 
-  // Unable to determine mesh type
+  /* Unable to determine mesh type */
   if ( mesh->type == PSPIO_MESH_UNKNOWN ) {
     mesh->a = 0.0;
     mesh->b = 0.0;

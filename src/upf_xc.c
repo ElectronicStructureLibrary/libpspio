@@ -35,9 +35,9 @@ int upf_to_libxc (const char xc_string[20], int *exchange, int *correlation) {
   char gradc[] = "     ";
 
   if (sscanf(xc_string, "%s %s %s %s", exch, corr, gradx, gradc) == 4) {
-    // All the following codes have been inferred from the pwscf source
+    /* All the following codes have been inferred from the pwscf source */
 
-    // Exchange:
+    /* Exchange: */
     if (strncmp(exch, "NOX", 3) == 0) {
       *exchange = XC_NONE;
     } else if (strncmp(exch, "SLA", 3) == 0) {
@@ -64,7 +64,7 @@ int upf_to_libxc (const char xc_string[20], int *exchange, int *correlation) {
       return PSPIO_EVALUE;
     }
 
-    // Correlation:
+    /* Correlation: */
     if (strncmp(corr, "NOC", 3) == 0) {
       *correlation = XC_NONE;
     } else if ( (strncmp(corr, "PZ",  2) == 0) && (strncmp(gradc, "NOGC", 4) == 0) ) {
@@ -109,7 +109,7 @@ int libxc_to_upf (const int exchange, const int correlation,
       char longname[21], char shortname[5]) {
   char exch[5], corr[5], gradx[5], gradc[5];
 
-  // Exchange:
+  /* Exchange: */
   if (exchange == 0) {
     strcpy(exch, "NOX ");
     strcpy(gradx,"NOGX");
@@ -142,7 +142,7 @@ int libxc_to_upf (const int exchange, const int correlation,
     strcpy(gradx,"");
   }
 
-  // Correlation:
+  /* Correlation: */
   if (correlation == 0) {
     strcpy(corr, "NOC ");
     strcpy(gradc,"NOGC");
@@ -190,10 +190,10 @@ int libxc_to_upf (const int exchange, const int correlation,
     strcpy(gradc,"");
   }
   
-  // Create longname
+  /* Create longname */
   sprintf(longname, "%4s %4s %4s %4s ", exch, corr, gradx, gradc);
 
-  // Create shortname
+  /* Create shortname */
   strcpy(shortname,"    ");
   if (exchange == XC_LDA_X) {
     strcpy(shortname, corr);

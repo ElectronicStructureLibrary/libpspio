@@ -82,7 +82,7 @@ int jb_spline_init(jb_spline_t **spline, const double *r, const double *f,
   memcpy((*spline)->t, r, np * sizeof(double));
   memcpy((*spline)->y, f, np * sizeof(double));
   (*spline)->ypp = jb_natural_spline_cubic_init(np, r, f);
-  //printf("here1: %f\n", (*spline)->ypp[1]);
+  /* printf("here1: %f\n", (*spline)->ypp[1]); */
 
   return 0;
 }
@@ -111,7 +111,7 @@ double jb_spline_eval(const jb_spline_t *spline, const double r)
   jb_spline_cubic_val( spline->np, spline->t, spline->y, spline->ypp,
 			     r, &ret, NULL, NULL);
   
-  //printf("jb_spline_eval at %f: %f\n", r, ret);
+  /* printf("jb_spline_eval at %f: %f\n", r, ret); */
 
   return ret;
 }
@@ -124,7 +124,7 @@ double jb_spline_eval_deriv(const jb_spline_t *spline, const double r)
   jb_spline_cubic_val( spline->np, spline->t, spline->y, spline->ypp,
 		       r, NULL, &ret, NULL );
 
-  //printf("jb_spline_eval_deriv: %f \n", ret);
+  /* printf("jb_spline_eval_deriv: %f \n", ret); */
 
   return ret;
 }
@@ -137,7 +137,7 @@ double jb_spline_eval_deriv2(const jb_spline_t *spline, const double r)
   jb_spline_cubic_val( spline->np, spline->t, spline->y, spline->ypp,
 		       r, NULL, &ret, NULL );
 
-  //printf("jb_spline_eval_deriv2: %f \n", ret);
+  /* printf("jb_spline_eval_deriv2: %f \n", ret); */
 
   return ret;
 }
@@ -260,7 +260,7 @@ double *jb_natural_spline_cubic_init(int n, const double *t, const double *y)
   int ibcbeg, ibcend;
   double ybcbeg, ybcend;
 
-  // defining boundary conditions for the natural spline
+  /* defining boundary conditions for the natural spline */
   ibcbeg = 2;
   ibcend = 2;
   ybcbeg = 0.0;

@@ -41,15 +41,15 @@ typedef struct{
   pspio_mesh_t *mesh;    /**< Pointer to mesh */
   int interp_method;
 
-  // Function
+  /* Function */
   double *f;                  /**< function values on the mesh */
   interpolation_t *f_interp;  /**< function interpolation object */
 
-  // Function first derivative
+  /* Function first derivative */
   double *fp;                 /**< first derivative values on the mesh */
   interpolation_t *fp_interp; /**< first derivative interpolation object */
 
-  // Function second derivative
+  /* Function second derivative */
   double *fpp;                 /**< second derivative on the mesh */
   interpolation_t *fpp_interp; /**< second derivative interpolation object */
 

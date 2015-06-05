@@ -134,7 +134,7 @@ int pspio_states_lookup_table(const int n_states, pspio_state_t **states,
   assert(states != NULL);
   assert(table_ptr != NULL);
 
-  // Determine dimensions of the table
+  /* Determine dimensions of the table */
   nmax = 0; lmax = 0, rel = 0;
   for (i=0; i<n_states; i++) {
     qn = states[i]->qn;
@@ -145,7 +145,7 @@ int pspio_states_lookup_table(const int n_states, pspio_state_t **states,
   nmax++;
   lsize = rel ? lmax*2+1 : lmax+1;
 
-  // Allocate memory and preset table
+  /* Allocate memory and preset table */
   table = malloc ( (nmax+1) * sizeof(int*));
   FULFILL_OR_EXIT( table != NULL, PSPIO_ENOMEM );
   for(i=0; i<nmax; i++) {
@@ -155,7 +155,7 @@ int pspio_states_lookup_table(const int n_states, pspio_state_t **states,
   }
   table[nmax] = NULL;
 
-  // Build lookup table
+  /* Build lookup table */
   for (i=0; i<n_states; i++) {
     qn = states[i]->qn;    
     table[qn->n][LJ_TO_I(qn->l,qn->j)] = i;
@@ -192,8 +192,6 @@ void pspio_state_wf_eval(const pspio_state_t *state, const int np,
 
 
 char *pspio_state_get_label(const pspio_state_t *state) {
-  int s;
-
   assert(state != NULL);
 
   return state->label;

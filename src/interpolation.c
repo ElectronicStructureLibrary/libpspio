@@ -44,7 +44,7 @@ int interpolation_alloc(interpolation_t **interp, const int method, const int np
   *interp = (interpolation_t *) malloc (sizeof(interpolation_t));
   FULFILL_OR_EXIT(*interp != NULL, PSPIO_ENOMEM);
 
-  //Make sure all pointers are initialized to NULL, as only some of them will be used
+  /* Make sure all pointers are initialized to NULL, as only some of them will be used */
 #ifdef HAVE_GSL
   (*interp)->gsl_spl = NULL;
   (*interp)->gsl_acc = NULL;

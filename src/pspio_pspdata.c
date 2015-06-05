@@ -44,14 +44,14 @@ int pspio_pspdata_init(pspio_pspdata_t **pspdata) {
   assert(pspdata != NULL);
   assert(*pspdata == NULL);
   
-  // Memory allocation
+  /* Memory allocation */
   *pspdata = (pspio_pspdata_t *) malloc (sizeof(pspio_pspdata_t));
   FULFILL_OR_EXIT(*pspdata != NULL, PSPIO_ENOMEM);
 
-  // Nullify pointers and initialize all values to 0
+  /* Nullify pointers and initialize all values to 0 */
   (*pspdata)->format_guessed = PSPIO_FMT_UNKNOWN;
   (*pspdata)->info = NULL;
-  (*pspdata)->symbol = (char *) malloc (3*sizeof(char)); //This string has a fixed lenght, so we allocate the memory here
+  (*pspdata)->symbol = (char *) malloc (3*sizeof(char)); /* This string has a fixed lenght, so we allocate the memory here */
   FULFILL_OR_EXIT((*pspdata)->symbol != NULL, PSPIO_ENOMEM);
   sprintf((*pspdata)->symbol, "   ");
   (*pspdata)->z = 0.0;
@@ -92,22 +92,22 @@ int pspio_pspdata_read(pspio_pspdata_t *pspdata, const int file_format,
 
   assert(pspdata != NULL);
 
-  // Open file
+  /* Open file */
   fp = fopen(file_name, "r");
   FULFILL_OR_RETURN(fp != NULL, PSPIO_ENOFILE);
 
-  // Read from file
+  /* Read from file */
   ierr = PSPIO_ERROR;
   for (fmt=0; fmt<PSPIO_FMT_NFORMATS; fmt++) {
     if ( (file_format != PSPIO_FMT_UNKNOWN) && (fmt != file_format) ) {
       continue;
     }
     
-    // The error chain should be reset, as some errors might have been
-    // set in the previous iteration of this loop
+    /* The error chain should be reset, as some errors might have been
+       set in the previous iteration of this loop */
     pspio_error_free();
 
-    // Always rewind the file to allow for multiple reads
+    /* Always rewind the file to allow for multiple reads */
     FULFILL_OR_RETURN(fp != NULL, PSPIO_ENOFILE);
     rewind(fp);
 
@@ -129,7 +129,7 @@ int pspio_pspdata_read(pspio_pspdata_t *pspdata, const int file_format,
 
     if (ierr != PSPIO_SUCCESS) pspio_pspdata_reset(pspdata);
 
-    // Store the format
+    /* Store the format */
     if ( (ierr == PSPIO_SUCCESS) || (file_format != PSPIO_FMT_UNKNOWN) ) {
       pspdata->format_guessed = fmt;
       break;
@@ -139,13 +139,13 @@ int pspio_pspdata_read(pspio_pspdata_t *pspdata, const int file_format,
   if ( ierr == PSPIO_SUCCESS ) {
   }
 
-  // Close file
+  /* Close file */
   FULFILL_OR_RETURN( fclose(fp) == 0, PSPIO_EIO );
 
-  // Make sure ierr is not silently ignored
+  /* Make sure ierr is not silently ignored */
   FULFILL_OR_RETURN(ierr == PSPIO_SUCCESS, ierr);
 
-  // Create states lookup table
+  /* Create states lookup table */
   SUCCEED_OR_RETURN( pspio_states_lookup_table(pspdata->n_states, pspdata->states, &pspdata->qn_to_istate) );
 
   return PSPIO_SUCCESS;
@@ -160,11 +160,11 @@ int pspio_pspdata_write(pspio_pspdata_t *pspdata, const int file_format,
   assert(pspdata != NULL);
   assert(pspdata->qn_to_istate != NULL);
 
-  // Open file
+  /* Open file */
   fp = fopen(file_name, "w");
   FULFILL_OR_RETURN(fp != NULL, PSPIO_ENOFILE);
 
-  // Write to file in the selected format
+  /* Write to file in the selected format */
   switch(file_format) {
     case PSPIO_FMT_ABINIT_5:
     case PSPIO_FMT_ABINIT_6:
@@ -180,10 +180,10 @@ int pspio_pspdata_write(pspio_pspdata_t *pspdata, const int file_format,
       ierr = PSPIO_EFILE_FORMAT;
   }
   
-  // Close file and check for ierr being non 0
+  /* Close file and check for ierr being non 0 */
   FULFILL_OR_RETURN( fclose(fp) == 0, PSPIO_EIO );
 
-  // Make sure ierr is not silently ignored
+  /* Make sure ierr is not silently ignored */
   RETURN_WITH_ERROR( ierr );
 
   return PSPIO_SUCCESS;
@@ -195,7 +195,7 @@ void pspio_pspdata_reset(pspio_pspdata_t *pspdata) {
 
   assert(pspdata != NULL);
 
-  // General data
+  /* General data */
   if (pspdata->info != NULL) {
     free(pspdata->info);
     pspdata->info = NULL;
@@ -208,13 +208,13 @@ void pspio_pspdata_reset(pspio_pspdata_t *pspdata) {
   pspdata->wave_eq = 0;
   pspdata->total_energy = 0.0;
 
-  // Mesh
+  /* Mesh */
   if (pspdata->mesh != NULL) {
     pspio_mesh_free(pspdata->mesh);
     pspdata->mesh = NULL;
   }
-
-  // States
+  
+  /* States */
   if (pspdata->qn_to_istate != NULL) {
     for (i=0; pspdata->qn_to_istate[i]!=NULL; i++) {
       free(pspdata->qn_to_istate[i]);
@@ -231,7 +231,7 @@ void pspio_pspdata_reset(pspio_pspdata_t *pspdata) {
   }
   pspdata->n_states = 0;
 
-  // Potentials
+  /* Potentials */
   if (pspdata->potentials != NULL) {
     for (i=0; i<pspdata->n_potentials; i++) {
       pspio_potential_free(pspdata->potentials[i]);
@@ -242,7 +242,7 @@ void pspio_pspdata_reset(pspio_pspdata_t *pspdata) {
   pspdata->n_potentials = 0;
   pspdata->scheme = 0;
   
-  // KB projectors
+  /* KB projectors */
   if (pspdata->kb_projectors != NULL) {
     for (i=0; i<pspdata->n_kbproj; i++) {
       pspio_projector_free(pspdata->kb_projectors[i]);
@@ -258,13 +258,13 @@ void pspio_pspdata_reset(pspio_pspdata_t *pspdata) {
     pspdata->vlocal = NULL;
   }
 
-  // XC
+  /* XC */
   if (pspdata->xc != NULL) {
     pspio_xc_free(pspdata->xc);
     pspdata->xc = NULL;
   }
 
-  // Valence density
+  /* Valence density */
   if (pspdata->rho_valence != NULL) {
     pspio_meshfunc_free(pspdata->rho_valence);
     pspdata->rho_valence = NULL;
