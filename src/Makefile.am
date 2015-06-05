@@ -78,7 +78,6 @@ pio_hidden_hdrs = \
   abinit.h \
   interpolation.h \
   jb_spline.h \
-  string_f.h \
   test_common.h \
   upf.h \
   util.h
