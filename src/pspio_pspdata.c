@@ -277,3 +277,355 @@ void pspio_pspdata_free(pspio_pspdata_t *pspdata) {
     free(pspdata);
   }
 }
+
+
+/**********************************************************************
+ * Atomic routines                                                    *
+ **********************************************************************/
+
+int pspio_pspdata_get_format_guessed(pspio_pspdata_t *pspdata){
+  assert(pspdata != NULL);
+
+  return pspdata->format_guessed;
+}
+
+
+int pspio_pspdata_set_symbol(pspio_pspdata_t *pspdata, char * symbol){ 
+  assert(pspdata != NULL);
+
+  FULFILL_OR_RETURN(symbol != NULL, PSPIO_EVALUE);
+
+  pspdata->symbol = (char *) malloc (3*sizeof(char));
+  FULFILL_OR_EXIT( pspdata->symbol != NULL, PSPIO_ENOMEM );
+  strncpy(pspdata->symbol, symbol, 3);
+
+  return PSPIO_SUCCESS;
+}
+
+
+char * pspio_pspdata_get_symbol(pspio_pspdata_t *pspdata){
+  assert(pspdata != NULL);
+
+  return pspdata->symbol;
+}
+
+
+int pspio_pspdata_set_z(pspio_pspdata_t *pspdata, const double z){
+  assert(pspdata != NULL);
+
+  pspdata->z = z;
+
+  return PSPIO_SUCCESS;
+}
+
+
+double pspio_pspdata_get_z(pspio_pspdata_t *pspdata){
+  assert(pspdata != NULL);
+
+  return pspdata->z;
+}
+
+
+int pspio_pspdata_set_zvalence(pspio_pspdata_t *pspdata, const double zvalence){
+  assert(pspdata != NULL);
+
+  pspdata->zvalence = zvalence;
+
+  return PSPIO_SUCCESS;
+}
+
+
+double pspio_pspdata_get_zvalence(pspio_pspdata_t *pspdata){
+  assert(pspdata != NULL);
+
+  return pspdata->zvalence;
+}
+
+
+int pspio_pspdata_set_nelvalence(pspio_pspdata_t *pspdata, const double nelvalence){
+  assert(pspdata != NULL);
+
+  pspdata->nelvalence = nelvalence;
+
+  return PSPIO_SUCCESS;
+}
+
+
+double pspio_pspdata_get_nelvalence(pspio_pspdata_t *pspdata){
+  assert(pspdata != NULL);
+
+  return pspdata->nelvalence;
+}
+
+
+int pspio_pspdata_set_l_max(pspio_pspdata_t *pspdata, const int l_max){
+  assert(pspdata != NULL);
+
+  pspdata->l_max = l_max;
+
+  return PSPIO_SUCCESS;
+}
+
+
+int pspio_pspdata_get_l_max(pspio_pspdata_t *pspdata){
+  assert(pspdata != NULL);
+
+  return pspdata->l_max;
+}
+
+
+int pspio_pspdata_set_wave_eq(pspio_pspdata_t *pspdata, const int wave_eq){
+  assert(pspdata != NULL);
+
+  pspdata->wave_eq = wave_eq;
+
+  return PSPIO_SUCCESS;
+}
+
+
+int pspio_pspdata_get_wave_eq(pspio_pspdata_t *pspdata){
+  assert(pspdata != NULL);
+
+  return pspdata->wave_eq;
+}
+
+
+int pspio_pspdata_set_total_energy(pspio_pspdata_t *pspdata, const double total_energy){
+  assert(pspdata != NULL);
+
+  pspdata->total_energy = total_energy;
+
+  return PSPIO_SUCCESS;
+}
+
+
+double pspio_pspdata_get_total_energy(pspio_pspdata_t *pspdata){
+  assert(pspdata != NULL);
+
+  return pspdata->total_energy;
+}
+
+
+int pspio_pspdata_set_mesh(pspio_pspdata_t *pspdata, const pspio_mesh_t *mesh){
+  assert(pspdata != NULL);
+
+  SUCCEED_OR_RETURN(pspio_mesh_copy(&pspdata->mesh, mesh));
+
+  return PSPIO_SUCCESS;
+}
+
+
+pspio_mesh_t * pspio_pspdata_get_mesh(pspio_pspdata_t *pspdata){
+  assert(pspdata != NULL);
+
+  return pspdata->mesh;
+}
+
+
+int pspio_pspdata_set_n_states(pspio_pspdata_t *pspdata, const int n_states){
+  assert(pspdata != NULL);
+
+  return PSPIO_SUCCESS;
+}
+
+
+int pspio_pspdata_get_n_states(pspio_pspdata_t *pspdata){
+  assert(pspdata != NULL);
+
+  return pspdata->n_states;
+}
+
+
+int pspio_pspdata_set_states(pspio_pspdata_t *pspdata, const pspio_state_t **states){
+  assert(pspdata != NULL);
+
+  return PSPIO_SUCCESS;
+}
+
+
+pspio_state_t ** pspio_pspdata_get_states(pspio_pspdata_t *pspdata){
+  assert(pspdata != NULL);
+
+  return pspdata->states;
+}
+
+
+int pspio_pspdata_set_state(pspio_pspdata_t *pspdata, const int index, const pspio_state_t *state){
+  assert(pspdata != NULL);
+
+  return PSPIO_SUCCESS;
+}
+
+
+pspio_state_t * pspio_pspdata_get_state(pspio_pspdata_t *pspdata, const int index){
+  assert(pspdata != NULL);
+
+  return pspdata->states[index];
+}
+
+
+int pspio_pspdata_set_scheme(pspio_pspdata_t *pspdata, const int scheme){
+  assert(pspdata != NULL);
+
+  return PSPIO_SUCCESS;
+}
+
+
+int pspio_pspdata_get_scheme(pspio_pspdata_t *pspdata){
+  assert(pspdata != NULL);
+
+  return pspdata->scheme;
+}
+
+
+int pspio_pspdata_set_n_potentials(pspio_pspdata_t *pspdata, const int n_potentials){
+  assert(pspdata != NULL);
+
+  return PSPIO_SUCCESS;
+}
+
+
+int pspio_pspdata_get_n_potentials(pspio_pspdata_t *pspdata){
+  assert(pspdata != NULL);
+
+  return pspdata->n_potentials;
+}
+
+
+int pspio_pspdata_set_potentials(pspio_pspdata_t *pspdata, const pspio_potential_t **potentials){
+  assert(pspdata != NULL);
+
+  return PSPIO_SUCCESS;
+}
+
+
+pspio_potential_t ** pspio_pspdata_get_potentials(pspio_pspdata_t *pspdata){
+  assert(pspdata != NULL);
+
+  return pspdata->potentials;
+}
+
+
+int pspio_pspdata_set_potential(pspio_pspdata_t *pspdata, const int index, const pspio_potential_t *potential){
+  assert(pspdata != NULL);
+
+  return PSPIO_SUCCESS;
+}
+
+
+pspio_potential_t * pspio_pspdata_get_potential(pspio_pspdata_t *pspdata, const int index){
+  assert(pspdata != NULL);
+
+  return pspdata->potentials[index];
+}
+
+
+int pspio_pspdata_set_n_kbproj(pspio_pspdata_t *pspdata, const int n_kbproj){
+  assert(pspdata != NULL);
+
+  return PSPIO_SUCCESS;
+}
+
+
+int pspio_pspdata_get_n_kbproj(pspio_pspdata_t *pspdata){
+  assert(pspdata != NULL);
+
+  return pspdata->n_kbproj;
+}
+
+
+int pspio_pspdata_set_kb_projectors(pspio_pspdata_t *pspdata, const pspio_projector_t **kb_projectors){
+  assert(pspdata != NULL);
+
+  return PSPIO_SUCCESS;
+}
+
+
+pspio_projector_t ** pspio_pspdata_get_kb_projectors(pspio_pspdata_t *pspdata){
+  assert(pspdata != NULL);
+
+  return pspdata->kb_projectors;
+}
+
+
+int pspio_pspdata_set_kb_projector(pspio_pspdata_t *pspdata, const int index, const pspio_projector_t *kb_projector){
+  assert(pspdata != NULL);
+
+  return PSPIO_SUCCESS;
+}
+
+pspio_projector_t * pspio_pspdata_get_kb_projector(pspio_pspdata_t *pspdata, const int index){
+  assert(pspdata != NULL);
+
+  return pspdata->kb_projectors[index];
+}
+
+
+int pspio_pspdata_set_l_local(pspio_pspdata_t *pspdata, const int l_local){
+  assert(pspdata != NULL);
+
+  return PSPIO_SUCCESS;
+}
+
+
+int pspio_pspdata_get_l_local(pspio_pspdata_t *pspdata){
+  assert(pspdata != NULL);
+
+  return pspdata->l_local;
+}
+
+
+int pspio_pspdata_set_kb_l_max(pspio_pspdata_t *pspdata, const int kb_l_max){
+  assert(pspdata != NULL);
+
+  return PSPIO_SUCCESS;
+}
+
+
+int pspio_pspdata_get_kb_l_max(pspio_pspdata_t *pspdata){
+  assert(pspdata != NULL);
+
+  return pspdata->kb_l_max;
+}
+
+
+int pspio_pspdata_set_vlocal(pspio_pspdata_t *pspdata, const pspio_potential_t *vlocal){
+  assert(pspdata != NULL);
+
+  return PSPIO_SUCCESS;
+}
+
+
+pspio_potential_t * pspio_pspdata_get_vlocal(pspio_pspdata_t *pspdata){
+  assert(pspdata != NULL);
+
+  return pspdata->vlocal;
+}
+
+
+int pspio_pspdata_set_xc(pspio_pspdata_t *pspdata, const pspio_xc_t *xc){
+  assert(pspdata != NULL);
+
+  return PSPIO_SUCCESS;
+}
+
+
+pspio_xc_t * pspio_pspdata_get_xc(pspio_pspdata_t *pspdata){
+  assert(pspdata != NULL);
+
+  return pspdata->xc;
+}
+
+
+int pspio_pspdata_set_rho_valence(pspio_pspdata_t *pspdata, const pspio_meshfunc_t *rho_valence){
+  assert(pspdata != NULL);
+
+  return PSPIO_SUCCESS;
+}
+
+
+pspio_meshfunc_t * pspio_pspdata_get_rho_valence(pspio_pspdata_t *pspdata){
+  assert(pspdata != NULL);
+
+  return pspdata->rho_valence;
+}
