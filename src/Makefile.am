@@ -122,7 +122,8 @@ pio_basic_tests = \
   test_potential \
   test_projector \
   test_state \
-  test_xc
+  test_xc \
+  test_pspdata
 pio_xfail_tests = \
   test_io
 pio_wrapped_tests = \
@@ -185,6 +186,11 @@ test_xc_SOURCES = test_xc.c
 test_xc_LDADD = -lpspio $(LIBS_COVERAGE)
 test_xc_CPPFLAGS = -I$(srcdir)/../src
 test_xc_DEPENDENCIES = libpspio.la
+
+test_pspdata_SOURCES = test_pspdata.c
+test_pspdata_LDADD = -lpspio $(LIBS_COVERAGE)
+test_pspdata_CPPFLAGS = -I$(srcdir)/../src
+test_pspdata_DEPENDENCIES = libpspio.la
 
 TESTS = \
   $(pio_gcov_pre_tests) \
