@@ -274,10 +274,10 @@ module fpspio_m
     end function pspio_pspdata_get_states
 
     ! get_state
-    type(c_ptr) function pspio_pspdata_get_state(pspdata, i) bind(c)
+    type(c_ptr) function pspio_pspdata_get_state(pspdata, index) bind(c)
       import
       type(c_ptr)           :: pspdata
-      integer(c_int), value :: i
+      integer(c_int), value :: index
     end function pspio_pspdata_get_state
 
     ! set_scheme
@@ -319,6 +319,13 @@ module fpspio_m
       type(c_ptr) :: pspdata
     end function pspio_pspdata_get_potentials
 
+    ! get_potential
+    type(c_ptr) function pspio_pspdata_get_potential(pspdata, index) bind(c)
+      import
+      type(c_ptr)           :: pspdata
+      integer(c_int), value :: index
+    end function pspio_pspdata_get_potential
+
     ! set_n_kbproj
     integer(c_int) function pspio_pspdata_set_n_kbproj(pspdata, n_kbproj) bind(c)
       import
@@ -344,6 +351,13 @@ module fpspio_m
       import
       type(c_ptr) :: pspdata
     end function pspio_pspdata_get_kb_projectors
+
+   ! get_kb_projector
+    type(c_ptr) function pspio_pspdata_get_kb_projector(pspdata, index) bind(c)
+      import
+      type(c_ptr)           :: pspdata
+      integer(c_int), value :: index
+    end function pspio_pspdata_get_kb_projector
 
     ! set_l_local
     integer(c_int) function pspio_pspdata_set_l_local(pspdata, l_local) bind(c)
