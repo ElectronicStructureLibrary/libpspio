@@ -167,6 +167,9 @@ AC_CHECK_HEADERS([time.h])
 # Required functions
 AC_CHECK_FUNCS([strndup])
 
+PKG_CHECK_MODULES([CHECK], [check >= 0.9.4])
+
+
                     # ------------------------------------ #
 
 # Look for the Fortran compiler

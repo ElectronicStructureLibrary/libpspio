@@ -143,7 +143,8 @@ nodist_check_SCRIPTS = \
   $(pio_memprof_tests)
 
 test_error_SOURCES = test_error.c
-test_error_LDADD = -lpspio $(LIBS_COVERAGE)
+test_error_LDADD = -lpspio $(LIBS_COVERAGE) @CHECK_LIBS@
+test_error_CFLAGS = @CHECK_CFLAGS@
 test_error_CPPFLAGS = -I$(srcdir)/../src
 test_error_DEPENDENCIES = libpspio.la
 
