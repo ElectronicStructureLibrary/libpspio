@@ -76,6 +76,7 @@ pio_core_hdrs = \
 # Internal C headers - keep this in alphabetical order
 pio_hidden_hdrs = \
   abinit.h \
+  check_pspio.h \
   interpolation.h \
   jb_spline.h \
   test_common.h \
@@ -115,7 +116,7 @@ endif
 #
 
 pio_basic_tests = \
-  test_error \
+  check_pspio \
   test_mesh \
   test_meshfunc \
   test_qn \
@@ -142,11 +143,14 @@ nodist_check_SCRIPTS = \
   $(pio_gcov_post_tests) \
   $(pio_memprof_tests)
 
-test_error_SOURCES = test_error.c
-test_error_LDADD = -lpspio $(LIBS_COVERAGE) @CHECK_LIBS@
-test_error_CFLAGS = @CHECK_CFLAGS@
-test_error_CPPFLAGS = -I$(srcdir)/../src
-test_error_DEPENDENCIES = libpspio.la
+check_pspio_SOURCES = \
+  check_pspio.h \
+  check_pspio_error.c \
+  check_pspio.c
+check_pspio_LDADD = -lpspio $(LIBS_COVERAGE) @CHECK_LIBS@
+check_pspio_CFLAGS = @CHECK_CFLAGS@
+check_pspio_CPPFLAGS = -I$(top_srcdir)/src
+check_pspio_DEPENDENCIES = libpspio.la
 
 test_io_SOURCES = test_io.c
 test_io_LDADD = -lpspio $(LIBS_COVERAGE)
