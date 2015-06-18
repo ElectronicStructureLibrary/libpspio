@@ -119,7 +119,6 @@ pio_basic_tests = \
   check_pspio \
   test_mesh \
   test_meshfunc \
-  test_qn \
   test_potential \
   test_projector \
   test_state \
@@ -146,6 +145,7 @@ nodist_check_SCRIPTS = \
 check_pspio_SOURCES = \
   check_pspio.h \
   check_pspio_error.c \
+  check_pspio_qn.c \
   check_pspio.c
 check_pspio_LDADD = -lpspio $(LIBS_COVERAGE) @CHECK_LIBS@
 check_pspio_CFLAGS = @CHECK_CFLAGS@
@@ -176,11 +176,6 @@ test_projector_SOURCES = test_projector.c
 test_projector_LDADD = -lpspio $(LIBS_COVERAGE)
 test_projector_CPPFLAGS = -I$(srcdir)/../src
 test_projector_DEPENDENCIES = libpspio.la
-
-test_qn_SOURCES = test_qn.c
-test_qn_LDADD = -lpspio $(LIBS_COVERAGE)
-test_qn_CPPFLAGS = -I$(srcdir)/../src
-test_qn_DEPENDENCIES = libpspio.la
 
 test_state_SOURCES = test_state.c
 test_state_LDADD = -lpspio $(LIBS_COVERAGE)

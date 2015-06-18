@@ -19,7 +19,7 @@
 */
 
 /**
- * @file test_error.c
+ * @file check_pspio_error.c
  * @brief checks pspio_error.c and pspio_error.h 
  */
 
@@ -28,14 +28,13 @@
 
 #include "pspio_error.h"
 
-int eid;
 
-void setup(void)
+void error_setup(void)
 {
-  eid = pspio_error_get_last(NULL);
+  pspio_error_free();
 }
 
-void teardown(void)
+void error_teardown(void)
 {
   pspio_error_free();
 }
@@ -43,7 +42,7 @@ void teardown(void)
 
 START_TEST(test_error_empty)
 {
-  ck_assert_int_eq(eid, PSPIO_SUCCESS);
+  ck_assert_int_eq(pspio_error_get_last(NULL), PSPIO_SUCCESS);
   ck_assert_int_eq(pspio_error_len(), 0);
 
   pspio_error_flush(stdout);
@@ -128,24 +127,29 @@ Suite * make_error_suite(void)
   s = suite_create("Error");
 
   tc_empty = tcase_create("Empty chain");
+  tcase_add_checked_fixture(tc_empty, error_setup, error_teardown);
   tcase_add_test(tc_empty, test_error_empty);
   suite_add_tcase(s, tc_empty);
 
   tc_single = tcase_create("Single error chain");
+  tcase_add_checked_fixture(tc_single, error_setup, error_teardown);
   tcase_add_test(tc_single, test_error_single);
   suite_add_tcase(s, tc_single);
 
   tc_double = tcase_create("Double error chain");
+  tcase_add_checked_fixture(tc_double, error_setup, error_teardown);
   tcase_add_test(tc_double, test_error_double);
   suite_add_tcase(s, tc_double);
 
   tc_triple = tcase_create("Triple error chain");
+  tcase_add_checked_fixture(tc_triple, error_setup, error_teardown);
   tcase_add_test(tc_triple, test_error_triple);
   suite_add_tcase(s, tc_triple);
 
   tc_last = tcase_create("Get last");
+  tcase_add_checked_fixture(tc_last, error_setup, error_teardown);
   tcase_add_test(tc_last, test_error_get_last);
   suite_add_tcase(s, tc_last);
-    
+
   return s;
 }

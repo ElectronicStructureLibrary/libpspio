@@ -27,13 +27,13 @@
 
 #include "check_pspio.h"
 
-
 int main(void)
 {
   int number_failed;
   SRunner *sr;
 
   sr = srunner_create(make_error_suite());
+  srunner_add_suite(sr, make_qn_suite());
 
   srunner_run_all(sr, CK_VERBOSE);
   number_failed = srunner_ntests_failed(sr);
