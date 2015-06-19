@@ -129,7 +129,7 @@ void pspio_error_fetchall(char **err_str) {
     assert(cursor->filename != NULL);
     assert(cursor->routine != NULL);
 
-    err_len  = 18;
+    err_len  = 19;
     err_len += strlen(pspio_error_string(cursor->id));
     err_len += strlen(cursor->filename);
     err_len += strlen(cursor->routine);
