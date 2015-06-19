@@ -117,7 +117,6 @@ endif
 
 pio_basic_tests = \
   check_pspio \
-  test_mesh \
   test_meshfunc \
   test_potential \
   test_projector \
@@ -146,6 +145,7 @@ check_pspio_SOURCES = \
   check_pspio.h \
   check_pspio_error.c \
   check_pspio_qn.c \
+  check_pspio_mesh.c \
   check_pspio.c
 check_pspio_LDADD = -lpspio $(LIBS_COVERAGE) @CHECK_LIBS@
 check_pspio_CFLAGS = @CHECK_CFLAGS@
@@ -156,11 +156,6 @@ test_io_SOURCES = test_io.c
 test_io_LDADD = -lpspio $(LIBS_COVERAGE)
 test_io_CPPFLAGS = -I$(srcdir)/../src
 test_io_DEPENDENCIES = libpspio.la
-
-test_mesh_SOURCES = test_mesh.c
-test_mesh_LDADD = -lpspio $(LIBS_COVERAGE)
-test_mesh_CPPFLAGS = -I$(srcdir)/../src
-test_mesh_DEPENDENCIES = libpspio.la
 
 test_meshfunc_SOURCES = test_meshfunc.c
 test_meshfunc_LDADD = -lpspio $(LIBS_COVERAGE)
