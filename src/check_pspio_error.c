@@ -55,66 +55,66 @@ END_TEST
 
 START_TEST(test_error_single)
 {
-  pspio_error_add(PSPIO_EVALUE, "test_1_1.c", 1234, "dummy1");
-  ck_assert_int_eq(pspio_error_get_last(NULL), PSPIO_EVALUE);
-  ck_assert_int_eq(pspio_error_len(), 1);
+  ck_assert(pspio_error_add(PSPIO_EVALUE, "test_1_1.c", 1234, "dummy1") == PSPIO_EVALUE);
+  ck_assert(pspio_error_get_last(NULL) == PSPIO_EVALUE);
+  ck_assert(pspio_error_len() == 1);
 
   pspio_error_flush(stdout);
 
-  ck_assert_int_eq(pspio_error_get_last(NULL), PSPIO_SUCCESS);
-  ck_assert_int_eq(pspio_error_len(), 0);
+  ck_assert(pspio_error_get_last(NULL) == PSPIO_SUCCESS);
+  ck_assert(pspio_error_len() == 0);
 }
 END_TEST
 
 START_TEST(test_error_double)
 {
-  pspio_error_add(PSPIO_EGSL, "test_2_1.c", 1234, "dummy21");
-  ck_assert_int_eq(pspio_error_get_last(NULL), PSPIO_EGSL);
-  ck_assert_int_eq(pspio_error_len(), 1);
+  ck_assert(pspio_error_add(PSPIO_EGSL, "test_2_1.c", 1234, "dummy21") == PSPIO_EGSL);
+  ck_assert(pspio_error_get_last(NULL) == PSPIO_EGSL);
+  ck_assert(pspio_error_len() == 1);
 
-  pspio_error_add(PSPIO_ENOSUPPORT, "test_2_2.c", 202, "dummy22");
-  ck_assert_int_eq(pspio_error_get_last(NULL), PSPIO_ENOSUPPORT);
-  ck_assert_int_eq(pspio_error_len(), 2);
+  ck_assert(pspio_error_add(PSPIO_ENOSUPPORT, "test_2_2.c", 202, "dummy22") == PSPIO_ENOSUPPORT);
+  ck_assert(pspio_error_get_last(NULL) == PSPIO_ENOSUPPORT);
+  ck_assert(pspio_error_len() == 2);
 
   pspio_error_flush(stdout);
 
-  ck_assert_int_eq(pspio_error_get_last(NULL), PSPIO_SUCCESS);
-  ck_assert_int_eq(pspio_error_len(), 0);
+  ck_assert(pspio_error_get_last(NULL) == PSPIO_SUCCESS);
+  ck_assert(pspio_error_len() == 0);
 }
 END_TEST
 
 START_TEST(test_error_triple)
 {
-  pspio_error_add(PSPIO_EVALUE, "test_3_1.c", 311, "dummy31");
-  ck_assert_int_eq(pspio_error_get_last(NULL), PSPIO_EVALUE);
-  ck_assert_int_eq(pspio_error_len(), 1);
+  ck_assert(pspio_error_add(PSPIO_EVALUE, "test_3_1.c", 311, "dummy31") == PSPIO_EVALUE);
+  ck_assert(pspio_error_get_last(NULL) == PSPIO_EVALUE);
+  ck_assert(pspio_error_len() == 1);
 
-  pspio_error_add(PSPIO_ENOFILE, "test_3_2.c", 322, "dummy32"); 
-  ck_assert_int_eq(pspio_error_get_last(NULL), PSPIO_ENOFILE);
-  ck_assert_int_eq(pspio_error_len(), 2);
+  ck_assert(pspio_error_add(PSPIO_ENOFILE, "test_3_2.c", 322, "dummy32") == PSPIO_ENOFILE); 
+  ck_assert(pspio_error_get_last(NULL) == PSPIO_ENOFILE);
+  ck_assert(pspio_error_len() == 2);
 
-  pspio_error_add(PSPIO_ERROR, "test_3_3.c", 333, "dummy33"); 
-  ck_assert_int_eq(pspio_error_get_last(NULL), PSPIO_ERROR);
-  ck_assert_int_eq(pspio_error_len(), 3);
+  ck_assert(pspio_error_add(PSPIO_ERROR, "test_3_3.c", 333, "dummy33") == PSPIO_ERROR); 
+  ck_assert(pspio_error_get_last(NULL) == PSPIO_ERROR);
+  ck_assert(pspio_error_len() == 3);
 
   pspio_error_flush(stdout);
 
-  ck_assert_int_eq(pspio_error_get_last(NULL), PSPIO_SUCCESS);
-  ck_assert_int_eq(pspio_error_len(), 0);
+  ck_assert(pspio_error_get_last(NULL) == PSPIO_SUCCESS);
+  ck_assert(pspio_error_len() == 0);
 }
 END_TEST
 
 START_TEST(test_error_get_last)
 {
-  pspio_error_add(PSPIO_EGSL,    "test_4_1.c", 411, "dummy41");
-  pspio_error_add(PSPIO_ENOFILE, "test_4_2.c", 422, "dummy42");
-  pspio_error_add(PSPIO_ERROR,   "test_4_3.c", 433, "dummy43");
-  ck_assert_int_eq(pspio_error_len(), 3);
+  ck_assert(pspio_error_add(PSPIO_EGSL,    "test_4_1.c", 411, "dummy41") == PSPIO_EGSL);
+  ck_assert(pspio_error_add(PSPIO_ENOFILE, "test_4_2.c", 422, "dummy42") == PSPIO_ENOFILE);
+  ck_assert(pspio_error_add(PSPIO_ERROR,   "test_4_3.c", 433, "dummy43") == PSPIO_ERROR);
+  ck_assert(pspio_error_len() == 3);
 
-  ck_assert_int_eq(pspio_error_get_last("dummy41"), PSPIO_EGSL);
-  ck_assert_int_eq(pspio_error_get_last("dummy42"), PSPIO_ENOFILE);
-  ck_assert_int_eq(pspio_error_get_last("dummy43"), PSPIO_ERROR);
-  ck_assert_int_eq(pspio_error_get_last("dummy44"), PSPIO_SUCCESS);
+  ck_assert(pspio_error_get_last("dummy41") == PSPIO_EGSL);
+  ck_assert(pspio_error_get_last("dummy42") == PSPIO_ENOFILE);
+  ck_assert(pspio_error_get_last("dummy43") == PSPIO_ERROR);
+  ck_assert(pspio_error_get_last("dummy44") == PSPIO_SUCCESS);
 }
 END_TEST
 
