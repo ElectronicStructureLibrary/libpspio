@@ -28,7 +28,7 @@
 
 #include "pspio_qn.h"
 
-static pspio_qn_t *qn1 = NULL, *qn2 = NULL; 
+pspio_qn_t *qn1 = NULL, *qn2 = NULL; 
 
 
 void qn_setup(void)
@@ -44,6 +44,13 @@ void qn_teardown(void)
   pspio_qn_free(qn1);
   pspio_qn_free(qn2);
 }
+
+START_TEST(test_qn_alloc)
+{
+  ck_assert(pspio_qn_alloc(&qn1) == PSPIO_SUCCESS);
+  ck_assert(pspio_qn_alloc(&qn2) == PSPIO_SUCCESS);
+}
+END_TEST
 
 START_TEST(test_qn_init)
 {
@@ -80,6 +87,7 @@ START_TEST(test_qn_copy)
   ck_assert(pspio_qn_cmp(qn2, qn1) == PSPIO_QN_EQUAL);
 
   pspio_qn_free(qn2);
+  qn2 = NULL;
   ck_assert(pspio_qn_copy(&qn2, qn1) == PSPIO_SUCCESS);
   ck_assert(pspio_qn_cmp(qn2, qn1) == PSPIO_QN_EQUAL);
 }
@@ -100,9 +108,14 @@ END_TEST
 Suite * make_qn_suite(void)
 {
   Suite *s;
-  TCase *tc_init, *tc_cmp, *tc_copy, *tc_labels;
+  TCase *tc_alloc, *tc_init, *tc_cmp, *tc_copy, *tc_labels;
 
   s = suite_create("Quantum numbers");
+
+  tc_alloc = tcase_create("Allocation");
+  tcase_add_checked_fixture(tc_alloc, NULL, qn_teardown);
+  tcase_add_test(tc_alloc, test_qn_alloc);
+  suite_add_tcase(s, tc_alloc);
 
   tc_init = tcase_create("Initialization");
   tcase_add_checked_fixture(tc_init, qn_setup, qn_teardown);
