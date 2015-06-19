@@ -173,9 +173,6 @@ void pspio_mesh_init_from_points(pspio_mesh_t *mesh, const double *r,
   if ( mesh->type == PSPIO_MESH_UNKNOWN ) {
     mesh->b = (r[1]*r[1] - r[2]*r[0])/(r[0] + r[2] - 2*r[1]);
     mesh->a = log( (r[1] + mesh->b)/(r[0] + mesh->b) );
-
-    printf("a=%f b=%f\n", mesh->a, mesh->b);
-
     if ( fabs(r[2] - mesh->b*(exp(mesh->a*3.0) - 1.0)) < tol ) {
       mesh->type = PSPIO_MESH_LOG2;
       if ( rab != NULL ) {
