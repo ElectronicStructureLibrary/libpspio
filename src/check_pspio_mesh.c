@@ -31,188 +31,198 @@
 #include "pspio_error.h"
 #include "pspio_mesh.h"
 
-static pspio_mesh_t *m1 = NULL, *m2 = NULL;
+static pspio_mesh_t *m = NULL;
 
-void mesh_setup(void)
+void mesh_setup(void) 
 {
-  pspio_mesh_free(m1);
-  pspio_mesh_free(m2);
-  pspio_mesh_alloc(&m1, 8);
-  pspio_mesh_alloc(&m2, 8);
+  pspio_mesh_free(m);
+  pspio_mesh_alloc(&m, 8);
 }
 
 void mesh_teardown(void)
 {
-  pspio_mesh_free(m1);
-  pspio_mesh_free(m2);
+  pspio_mesh_free(m);
+  m = NULL;
 }
+
+void mesh_compare(const pspio_mesh_t *m1, const pspio_mesh_t *m2)
+{
+  int i;
+  double *r1, *r2, *rab1, *rab2;
+
+  ck_assert(pspio_mesh_get_np(m1) == pspio_mesh_get_np(m2));
+  ck_assert(pspio_mesh_get_a(m1) == pspio_mesh_get_a(m2));
+  ck_assert(pspio_mesh_get_b(m1) == pspio_mesh_get_b(m2));
+  r1 = pspio_mesh_get_r(m1);
+  r2 = pspio_mesh_get_r(m2);
+  for (i=0; i<pspio_mesh_get_np(m1); i++) {
+    ck_assert(r1[i] == r2[i]);
+  }
+  rab1 = pspio_mesh_get_rab(m1);
+  rab2 = pspio_mesh_get_rab(m2);
+  for (i=0; i<pspio_mesh_get_np(m1); i++) {
+    ck_assert(rab1[i] == rab2[i]);
+  }
+}
+
+
+void mesh_compare_values(const double a, const double b, const double r[8], const double rab[8], const double tol)
+{
+  int i;
+  double *r2, *rab2;
+
+  ck_assert(pspio_mesh_get_np(m) == 8);
+  ck_assert(pspio_mesh_get_a(m) == a);
+  ck_assert(pspio_mesh_get_b(m) == b);
+  r2 = pspio_mesh_get_r(m);
+  rab2 = pspio_mesh_get_rab(m);
+  for (i=0; i<pspio_mesh_get_np(m); i++) {
+    ck_assert( fabs(r2[i] - r[i]) <= tol);
+    ck_assert( fabs(rab2[i] - rab[i]) <= tol);
+  }
+}
+
 
 START_TEST(test_mesh_alloc)
 {
-  ck_assert(pspio_mesh_alloc(&m1, 2) == PSPIO_SUCCESS);
-  ck_assert(pspio_mesh_alloc(&m2, 10) == PSPIO_SUCCESS);
+  ck_assert(pspio_mesh_alloc(&m, 10) == PSPIO_SUCCESS);
 }
 END_TEST
 
 START_TEST(test_mesh_init)
 {
-  const double r_init[] = {0.0, 0.05, 0.10, 0.20, 0.40, 0.65, 0.85, 1.00};
-  const double rab_init[] = {0.05, 0.05, 0.20, 0.20, 0.20, 0.20, 0.05, 0.05};
+  const double r_init[8] = {0.0, 0.05, 0.10, 0.20, 0.40, 0.65, 0.85, 1.00};
+  const double rab_init[8] = {0.05, 0.05, 0.20, 0.20, 0.20, 0.20, 0.05, 0.05};
+  const double a = 1.0, b = 2.0;
 
-  double r_log1[8];
-  double rab_log1[8];
-
-  double r_log2[8];
-  double rab_log2[8];
-
-  double r_lin[8];
-  double rab_lin[8];
-
-  const double a = 1.0;
-  const double b = 2.0;
-  const double tol = 5.0e-10;
-
-  int i;
-  double *r, *rab;
-
-  /* Generate values of auxiliary vectors */
-  for (i=0; i<pspio_mesh_get_np(m1); i++) {
-    r_lin[i] = a*(i+1) + b;
-    rab_lin[i] = a;
-
-    r_log1[i] = b*exp(a*(i+1));
-    rab_log1[i] = a*r_log1[i];
-
-    r_log2[i] = b*(exp(a*(i+1)) - 1.0);
-    rab_log2[i] = a*r_log2[i] + a*b;
-  }
-
-  /* mesh_init */
-  ck_assert(pspio_mesh_init(m1, PSPIO_MESH_LOG1, a, b, r_init, rab_init) == PSPIO_SUCCESS);
-  ck_assert(pspio_mesh_get_np(m1) == 8);
-  ck_assert(pspio_mesh_get_a(m1) == a);
-  ck_assert(pspio_mesh_get_b(m1) == b);
-  r = pspio_mesh_get_r(m1);
-  rab = pspio_mesh_get_rab(m1);
-  for (i=0; i<pspio_mesh_get_np(m1); i++) {
-    ck_assert(r[i] == r_init[i]);
-    ck_assert(rab[i] == rab_init[i]);
-  }
-
-  /* mesh_from_parameters with LINEAR mesh */
-  pspio_mesh_init_from_parameters(m1, PSPIO_MESH_LINEAR, a, b);
-  ck_assert(pspio_mesh_get_np(m1) == 8);
-  ck_assert(pspio_mesh_get_a(m1) == a);
-  ck_assert(pspio_mesh_get_b(m1) == b);
-  r = pspio_mesh_get_r(m1);
-  rab = pspio_mesh_get_rab(m1);
-  for (i=0; i<pspio_mesh_get_np(m1); i++) {
-    ck_assert(r[i] == r_lin[i]);
-    ck_assert(rab[i] == rab_lin[i]);
-  }
-
-  /* mesh_from_parameters with LOG1 mesh */
-  pspio_mesh_init_from_parameters(m1, PSPIO_MESH_LOG1, a, b);
-  ck_assert(pspio_mesh_get_np(m1) == 8);
-  ck_assert(pspio_mesh_get_a(m1) == a);
-  ck_assert(pspio_mesh_get_b(m1) == b);
-  r = pspio_mesh_get_r(m1);
-  rab = pspio_mesh_get_rab(m1);
-  for (i=0; i<pspio_mesh_get_np(m1); i++) {
-    ck_assert(r[i] == r_log1[i]);
-    ck_assert(rab[i] == rab_log1[i]);
-  }
-
-  /* mesh_from_parameters with LOG2 mesh */
-  pspio_mesh_init_from_parameters(m1, PSPIO_MESH_LOG2, a, b);
-  ck_assert(pspio_mesh_get_np(m1) == 8);
-  ck_assert(pspio_mesh_get_a(m1) == a);
-  ck_assert(pspio_mesh_get_b(m1) == b);
-  r = pspio_mesh_get_r(m1);
-  rab = pspio_mesh_get_rab(m1);
-  for (i=0; i<pspio_mesh_get_np(m1); i++) {
-    ck_assert(r[i] == r_log2[i]);
-    ck_assert(rab[i] == rab_log2[i]);
-  }
-
-  /* mesh_from_points with LINEAR mesh */
-  pspio_mesh_init_from_points(m1, r_lin, rab_lin);
-  ck_assert(pspio_mesh_get_np(m1) == 8);
-  ck_assert(fabs(pspio_mesh_get_a(m1) - a) < tol);
-  ck_assert(fabs(pspio_mesh_get_b(m1) - b) < tol);
-  r = pspio_mesh_get_r(m1);
-  rab = pspio_mesh_get_rab(m1);
-  for (i=0; i<pspio_mesh_get_np(m1); i++) {
-    ck_assert(r[i] == r_lin[i]);
-    ck_assert(rab[i] == rab_lin[i]);
-  }
-
-  /* mesh_from_points with LOG1 mesh */
-  pspio_mesh_init_from_points(m1, r_log1, rab_log1);
-  ck_assert(pspio_mesh_get_np(m1) == 8);
-  ck_assert(fabs(pspio_mesh_get_a(m1) - a) < tol);
-  ck_assert(fabs(pspio_mesh_get_b(m1) - b) < tol);
-  r = pspio_mesh_get_r(m1);
-  rab = pspio_mesh_get_rab(m1);
-  for (i=0; i<pspio_mesh_get_np(m1); i++) {
-    ck_assert(r[i] == r_log1[i]);
-    ck_assert(rab[i] == rab_log1[i]);
-  }
-
-  /* mesh_from_points with LOG2 mesh */
-  pspio_mesh_init_from_points(m1, r_log2, rab_log2);
-  ck_assert(pspio_mesh_get_np(m1) == 8);
-  ck_assert(fabs(pspio_mesh_get_a(m1) - a) < tol);
-  ck_assert(fabs(pspio_mesh_get_b(m1) - b) < tol);
-  r = pspio_mesh_get_r(m1);
-  rab = pspio_mesh_get_rab(m1);
-  for (i=0; i<pspio_mesh_get_np(m1); i++) {
-    ck_assert(r[i] == r_log2[i]);
-    ck_assert(rab[i] == rab_log2[i]);
-  }
-
+  ck_assert(pspio_mesh_init(m, PSPIO_MESH_LOG1, a, b, r_init, rab_init) == PSPIO_SUCCESS);
+  mesh_compare_values(a, b, r_init, rab_init, 0.0);
 }
 END_TEST
 
-START_TEST(test_mesh_copy)
+START_TEST(test_mesh_init_parameters_linear)
 {
   int i;
-  double *r1, *r2, *rab1, *rab2;
+  double r_lin[8], rab_lin[8];
+  const double a = 1.0, b = 2.0;
 
-  pspio_mesh_init_from_parameters(m1, PSPIO_MESH_LOG1, 1.0, 2.0);
+  for (i=0; i<pspio_mesh_get_np(m); i++) {
+    r_lin[i] = a*(i+1) + b;
+    rab_lin[i] = a;
+  }
+  pspio_mesh_init_from_parameters(m, PSPIO_MESH_LINEAR, a, b);
+  mesh_compare_values(a, b, r_lin, rab_lin, 0.0);
+}
+END_TEST
 
-  /* Copy m1 to NULL m2 */
-  ck_assert(pspio_mesh_copy(&m2, m1) == PSPIO_SUCCESS);
-  ck_assert(pspio_mesh_get_np(m1) == pspio_mesh_get_np(m2));
-  ck_assert(pspio_mesh_get_a(m1) == pspio_mesh_get_a(m2));
-  ck_assert(pspio_mesh_get_b(m1) == pspio_mesh_get_b(m2));
-  r1 = pspio_mesh_get_r(m1);
-  r2 = pspio_mesh_get_r(m2);
-  for (i=0; i<pspio_mesh_get_np(m1); i++) {
-    ck_assert(r1[i] == r2[i]);
-  }
-  rab1 = pspio_mesh_get_rab(m1);
-  rab2 = pspio_mesh_get_rab(m2);
-  for (i=0; i<pspio_mesh_get_np(m1); i++) {
-    ck_assert(rab1[i] == rab2[i]);
-  }
+START_TEST(test_mesh_init_parameters_log1)
+{
+  int i;
+  double r_log1[8], rab_log1[8];
+  const double a = 1.0, b = 2.0;
 
-  /* Copy m1 to non-NULL m2 */
-  ck_assert(pspio_mesh_copy(&m2, m1) == PSPIO_SUCCESS);
-  ck_assert(pspio_mesh_get_np(m1) == pspio_mesh_get_np(m2));
-  ck_assert(pspio_mesh_get_a(m1) == pspio_mesh_get_a(m2));
-  ck_assert(pspio_mesh_get_b(m1) == pspio_mesh_get_b(m2));
-  r1 = pspio_mesh_get_r(m1);
-  r2 = pspio_mesh_get_r(m2);
-  for (i=0; i<pspio_mesh_get_np(m1); i++) {
-    ck_assert(r1[i] == r2[i]);
+  for (i=0; i<pspio_mesh_get_np(m); i++) {
+    r_log1[i] = b*exp(a*(i+1));
+    rab_log1[i] = a*r_log1[i];
   }
-  rab1 = pspio_mesh_get_rab(m1);
-  rab2 = pspio_mesh_get_rab(m2);
-  for (i=0; i<pspio_mesh_get_np(m1); i++) {
-    ck_assert(rab1[i] == rab2[i]);
-  }
+  pspio_mesh_init_from_parameters(m, PSPIO_MESH_LOG1, a, b);
+  mesh_compare_values(a, b, r_log1, rab_log1, 0.0);
+}
+END_TEST
 
+START_TEST(test_mesh_init_parameters_log2)
+{
+  int i;
+  double r_log2[8], rab_log2[8];
+  const double a = 1.0, b = 2.0;
+
+  for (i=0; i<pspio_mesh_get_np(m); i++) {
+    r_log2[i] = b*(exp(a*(i+1)) - 1.0);
+    rab_log2[i] = a*r_log2[i] + a*b;
+  }
+  pspio_mesh_init_from_parameters(m, PSPIO_MESH_LOG2, a, b);
+  mesh_compare_values(a, b, r_log2, rab_log2, 0.0);
+}
+END_TEST
+
+START_TEST(test_mesh_init_points_linear)
+{
+  int i;
+  double r_lin[8], rab_lin[8];
+  const double a = 1.0, b = 2.0;
+
+  for (i=0; i<pspio_mesh_get_np(m); i++) {
+    r_lin[i] = a*(i+1) + b;
+    rab_lin[i] = a;
+  }
+  pspio_mesh_init_from_points(m, r_lin, rab_lin);
+  mesh_compare_values(a, b, r_lin, rab_lin, 5.0e-10);
+}
+END_TEST
+
+START_TEST(test_mesh_init_points_log1)
+{
+  int i;
+  double r_log1[8], rab_log1[8];
+  const double a = 1.0, b = 2.0;
+
+  for (i=0; i<pspio_mesh_get_np(m); i++) {
+    r_log1[i] = b*exp(a*(i+1));
+    rab_log1[i] = a*r_log1[i];
+  }
+  pspio_mesh_init_from_points(m, r_log1, rab_log1);
+  mesh_compare_values(a, b, r_log1, rab_log1, 5.0e-10);
+}
+END_TEST
+
+START_TEST(test_mesh_init_points_log2)
+{
+  int i;
+  double r_log2[8], rab_log2[8];
+  const double a = 1.0, b = 2.0;
+
+  for (i=0; i<pspio_mesh_get_np(m); i++) {
+    r_log2[i] = b*(exp(a*(i+1)) - 1.0);
+    rab_log2[i] = a*r_log2[i] + a*b;
+  }
+  pspio_mesh_init_from_points(m, r_log2, rab_log2);
+  mesh_compare_values(a, b, r_log2, rab_log2, 5.0e-10);
+}
+END_TEST
+
+START_TEST(test_mesh_copy_null) 
+{
+  pspio_mesh_t *m2 = NULL;
+
+  pspio_mesh_init_from_parameters(m, PSPIO_MESH_LOG1, 1.0, 2.0);
+  ck_assert(pspio_mesh_copy(&m2, m) == PSPIO_SUCCESS);
+  mesh_compare(m, m2);
+}
+END_TEST
+
+START_TEST(test_mesh_copy_nonnull) 
+{
+  pspio_mesh_t *m2 = NULL;
+
+  pspio_mesh_init_from_parameters(m, PSPIO_MESH_LOG1, 1.0, 2.0);
+  pspio_mesh_alloc(&m2, 8);
+  pspio_mesh_init_from_parameters(m2, PSPIO_MESH_LOG2, 1.0, 2.0);
+
+  ck_assert(pspio_mesh_copy(&m2, m) == PSPIO_SUCCESS);
+  mesh_compare(m, m2);
+}
+END_TEST
+
+START_TEST(test_mesh_copy_nonnull_size) 
+{
+  pspio_mesh_t *m2 = NULL;
+
+  pspio_mesh_init_from_parameters(m, PSPIO_MESH_LOG1, 1.0, 2.0);
+  pspio_mesh_alloc(&m2, 10);
+  pspio_mesh_init_from_parameters(m2, PSPIO_MESH_LOG2, 1.0, 2.0);
+
+  ck_assert(pspio_mesh_copy(&m2, m) == PSPIO_SUCCESS);
+  mesh_compare(m, m2);
 }
 END_TEST
 
@@ -231,11 +241,19 @@ Suite * make_mesh_suite(void)
   tc_init = tcase_create("Initialization");
   tcase_add_checked_fixture(tc_init, mesh_setup, mesh_teardown);
   tcase_add_test(tc_init, test_mesh_init);
+  tcase_add_test(tc_init, test_mesh_init_parameters_linear);
+  tcase_add_test(tc_init, test_mesh_init_parameters_log1);
+  tcase_add_test(tc_init, test_mesh_init_parameters_log2);
+  tcase_add_test(tc_init, test_mesh_init_points_linear);
+  tcase_add_test(tc_init, test_mesh_init_points_log1);
+  tcase_add_test(tc_init, test_mesh_init_points_log2);
   suite_add_tcase(s, tc_init);
 
   tc_copy = tcase_create("Copy");
   tcase_add_checked_fixture(tc_copy, mesh_setup, mesh_teardown);
-  tcase_add_test(tc_copy, test_mesh_copy);
+  tcase_add_test(tc_copy, test_mesh_copy_null);
+  tcase_add_test(tc_copy, test_mesh_copy_nonnull);
+  tcase_add_test(tc_copy, test_mesh_copy_nonnull_size);
   suite_add_tcase(s, tc_copy);
     
   return s;
