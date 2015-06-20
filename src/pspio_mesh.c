@@ -208,6 +208,7 @@ int pspio_mesh_copy(pspio_mesh_t **dst, const pspio_mesh_t *src) {
   /* The destination mesh must have the same number of points as the source mesh */
   if ( (*dst)->np != src->np ) {
     pspio_mesh_free(*dst);
+    *dst = NULL;
     SUCCEED_OR_RETURN(pspio_mesh_alloc(dst, src->np));
   }
 
