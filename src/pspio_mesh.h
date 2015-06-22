@@ -182,4 +182,21 @@ double *pspio_mesh_get_r(const pspio_mesh_t *mesh);
  */
 double *pspio_mesh_get_rab(const pspio_mesh_t *mesh);
 
+/**********************************************************************
+ * Utility routines                                                   *
+ **********************************************************************/
+
+/**
+ * Compares two meshes.
+ * @param[in] mesh1: first mesh to compare
+ * @param[in] mesh2: second mesh to compare
+ * @return PSPIO_MESH_EQUAL for strict equality, PSPIO_MESH_MTEQUAL
+ *         when the mesh are of the same type and have the same
+ *         parameters, but have a different number of points,
+ *         PSPIO_MESH_DIFF when different, PSPIO_ERROR if a problem
+ *         occured.
+ */
+int pspio_mesh_cmp(const pspio_mesh_t *mesh1, const pspio_mesh_t *mesh2);
+
+
 #endif
