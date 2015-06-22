@@ -179,7 +179,7 @@ Suite * make_qn_suite(void)
   tcase_add_test(tc_init, test_qn_init_bad_j);
   suite_add_tcase(s, tc_init);
 
-  tc_cmp = tcase_create("Comparization");
+  tc_cmp = tcase_create("Comparison");
   tcase_add_checked_fixture(tc_cmp, qn_setup, qn_teardown);
   tcase_add_test(tc_cmp, test_qn_cmp_equal);
   tcase_add_test(tc_cmp, test_qn_cmp_mtequal);
