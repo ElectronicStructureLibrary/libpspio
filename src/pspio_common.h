@@ -102,6 +102,7 @@
 #define PSPIO_SCM_TM2 10
 #define PSPIO_SCM_RTM 11
 
+
 /**
  * Mesh types
  */
@@ -110,6 +111,14 @@
 #define PSPIO_MESH_LOG1    1 /**< r_i = b*exp(a*i) */
 #define PSPIO_MESH_LOG2    2 /**< r_i = b*(exp(a*i) - 1) */
 #define PSPIO_MESH_LINEAR  3 /**< r_i = a*i + b */
+
+
+/**
+ * Mesh comparison
+ */
+#define PSPIO_MESH_DIFF    -1
+#define PSPIO_MESH_EQUAL   -2
+#define PSPIO_MESH_MTEQUAL -3
 
 
 /**
