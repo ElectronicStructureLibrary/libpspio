@@ -123,13 +123,13 @@ void pspio_state_free(pspio_state_t *state);
  **********************************************************************/
 
 /**
- * Returns the values of the states wavefunction at arbitrary points
+ * Returns the value of the states wavefunction at an arbitrary points
+ *
  * @param[in] state: state structure
- * @param[in] np: number of points
- * @param[in] *r: positions were we want to evaluate the wavefunction
- * @param[out] *wf: values of the wavefunction at r
+ * @param[in] r: point were we want to evaluate the wavefunction
+ * @return value of the wavefunction at r
  */
-void pspio_state_wf_eval(const pspio_state_t *state, const int np, const double *r, double *wf);
+double pspio_state_wf_eval(const pspio_state_t *state, const double r);
 
 /**
  * Returns the state label

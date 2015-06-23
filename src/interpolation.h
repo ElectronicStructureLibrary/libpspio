@@ -121,9 +121,9 @@ void interpolation_free(interpolation_t *interp);
  * 
  * @param[in] interp: interpolation structure
  * @param[in] r:  point were we want to evaluate the function
- * @param[out] *f: value of the function
+ * @return value of the function
  */
-void interpolation_eval(const interpolation_t *interp, const double r, double *f);
+double interpolation_eval(const interpolation_t *interp, const double r);
 
 
 /**
@@ -131,9 +131,9 @@ void interpolation_eval(const interpolation_t *interp, const double r, double *f
  * 
  * @param[in] interp: interpolation structure
  * @param[in] r: point were we want to evaluate the function
- * @param[out] *fp: value of the derivative
+ * @return value of the derivative
  */
-void interpolation_eval_deriv(const interpolation_t *interp, const double r, double *fp);
+double interpolation_eval_deriv(const interpolation_t *interp, const double r);
 
 
 /**
@@ -141,8 +141,8 @@ void interpolation_eval_deriv(const interpolation_t *interp, const double r, dou
  * 
  * @param[in] interp: interpolation structure
  * @param[in] r: point were we want to evaluate the function
- * @param[out] *fpp: value of the second derivative
+ * @return value of the second derivative
  */
-void interpolation_eval_deriv2(const interpolation_t *interp, const double r, double *fpp);
+double interpolation_eval_deriv2(const interpolation_t *interp, const double r);
 
 #endif

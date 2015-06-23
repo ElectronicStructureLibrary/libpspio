@@ -152,14 +152,11 @@ pspio_meshfunc_t *pspio_xc_get_nlcc_density(const pspio_xc_t *xc) {
   return xc->nlcc_dens;
 }
 
-void pspio_xc_nlcc_density_eval(const pspio_xc_t *xc, const int np,
-       const double *r, double *nlcc_dens) {
+double pspio_xc_nlcc_density_eval(const pspio_xc_t *xc, const double r) {
   assert(xc != NULL);
-  assert(r != NULL);
-  assert(nlcc_dens != NULL);
   assert(xc->nlcc_scheme != PSPIO_NLCC_NONE);
 
-  pspio_meshfunc_eval(xc->nlcc_dens, np, r, nlcc_dens);
+  return pspio_meshfunc_eval(xc->nlcc_dens, r);
 }
 
 int pspio_xc_has_nlcc(const pspio_xc_t *xc) {

@@ -106,12 +106,10 @@ void pspio_projector_free(pspio_projector_t *projector) {
  * Atomic routines                                                    *
  **********************************************************************/
 
-void pspio_projector_eval(const pspio_projector_t *projector, const int np, 
-       const double *radii, double *pofr) {
+double pspio_projector_eval(const pspio_projector_t *projector, const double r) {
   assert(projector != NULL);
-  assert(radii != NULL);
 
-  pspio_meshfunc_eval(projector->proj, np, radii, pofr);
+  return pspio_meshfunc_eval(projector->proj, r);
 }
 
 

@@ -418,13 +418,12 @@ module fpspio_m
       real(c_double) :: rho_valence(*)
     end function pspio_pspdata_set_rho_valence
 
-    subroutine pspio_pspdata_rho_valence_eval(pspdata, r, rho) bind(c)
     ! rho_valence_eval
+    real(c_double) function pspio_pspdata_rho_valence_eval(pspdata, r) bind(c)
       import
-      type(c_ptr)    :: pspdata
-      real(c_double) :: r(*)
-      real(c_double) :: rho(*)
-    end subroutine pspio_pspdata_rho_valence_eval
+      type(c_ptr)           :: pspdata
+      real(c_double), value :: r
+    end function pspio_pspdata_rho_valence_eval
 
 
     !----------------------------------------------------------------------------!
@@ -521,12 +520,11 @@ module fpspio_m
     end subroutine pspio_state_free
 
     ! wf_eval
-    subroutine pspio_state_wf_eval(state, r, wf) bind(c)
+    real(c_double) function pspio_state_wf_eval(state, r) bind(c)
       import
-      type(c_ptr)    :: state
-      real(c_double) :: r(*)
-      real(c_double) :: wf(*)
-    end subroutine pspio_state_wf_eval
+      type(c_ptr)           :: state
+      real(c_double), value :: r
+    end function pspio_state_wf_eval
 
     ! get_l
     integer(c_int) function pspio_state_get_l(state) bind(c)
@@ -591,12 +589,11 @@ module fpspio_m
     end subroutine pspio_potential_free
 
     ! eval
-    subroutine pspio_potential_eval(potential, r, v) bind(c)
+    real(c_double) function pspio_potential_eval(potential, r) bind(c)
       import
-      type(c_ptr)    :: potential
-      real(c_double) :: r(*)
-      real(c_double) :: v(*)
-    end subroutine pspio_potential_eval
+      type(c_ptr)           :: potential
+      real(c_double), value :: r
+    end function pspio_potential_eval
 
     !----------------------------------------------------------------------------!
     ! pspio_projector                                                            !
@@ -626,12 +623,11 @@ module fpspio_m
     end subroutine pspio_projector_free
 
     ! eval
-    subroutine pspio_projector_eval(projector, r, p) bind(c)
+    real(c_double) function pspio_projector_eval(projector, r) bind(c)
       import
-      type(c_ptr)    :: projector
-      real(c_double) :: r(*)
-      real(c_double) :: p(*)
-    end subroutine pspio_projector_eval
+      type(c_ptr)           :: projector
+      real(c_double), value :: r
+    end function pspio_projector_eval
 
     ! get_energy
     real(c_double) function pspio_projector_get_energy(projector) bind(c)
@@ -712,10 +708,10 @@ module fpspio_m
     end function pspio_xc_has_nlcc
 
     ! nlcc_density_eval
-    type(c_ptr) function pspio_xc_nlcc_density_eval(xc, r) bind(c)
+    real(c_double) function pspio_xc_nlcc_density_eval(xc, r) bind(c)
       import
-      type(c_ptr)    :: xc
-      real(c_double) :: r(*)
+      type(c_ptr)           :: xc
+      real(c_double), value :: r
     end function pspio_xc_nlcc_density_eval
 
 

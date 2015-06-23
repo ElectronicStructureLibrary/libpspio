@@ -103,16 +103,14 @@ void pspio_projector_free(pspio_projector_t *projector);
  **********************************************************************/
 
 /**
- * Returns the value of the projector at an array of arbitrary points
+ * Returns the value of the projector at an arbitrary point
  * 
  * @param[in] projector: projector structure
- * @param[in] np: number of points
- * @param[in] *radii: positions were we want to evaluate the projector
- * @param[out] *pofr: values of the projector at r
+ * @param[in] r: point were we want to evaluate the projector
+ * @return value of the projector at r
  * @note The projector pointer has to be fully set.
  */
-void pspio_projector_eval(const pspio_projector_t *projector, const int np, 
-			 const double *radii, double *pofr);
+double pspio_projector_eval(const pspio_projector_t *projector, const double r);
 
 /**
  * Returns the energy of the projector

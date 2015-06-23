@@ -105,11 +105,8 @@ void pspio_potential_free(pspio_potential_t *potential){
  * Atomic routines                                                    *
  **********************************************************************/
 
-void pspio_potential_eval(const pspio_potential_t *potential, const int np, 
-			 const double *radii, double *vofr) {
+double pspio_potential_eval(const pspio_potential_t *potential, const double r) {
   assert(potential != NULL);
-  assert(radii != NULL);
-  assert(vofr != NULL);
 
-  pspio_meshfunc_eval(potential->v, np, radii, vofr);
+  return pspio_meshfunc_eval(potential->v, r);
 }

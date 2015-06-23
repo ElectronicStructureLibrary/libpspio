@@ -166,55 +166,44 @@ void interpolation_free(interpolation_t *interp) {
  * Atomic routines                                                    *
  **********************************************************************/
 
-void interpolation_eval(const interpolation_t *interp, const double r, double *f) {
+double interpolation_eval(const interpolation_t *interp, const double r) {
   assert(interp != NULL);
-  assert(f != NULL);
 
   switch (interp->method) {
 #ifdef HAVE_GSL
   case PSPIO_INTERP_GSL_CSPLINE:
-    *f = gsl_spline_eval(interp->gsl_spl, r, interp->gsl_acc);
-    break;
+    return gsl_spline_eval(interp->gsl_spl, r, interp->gsl_acc);
 #endif
   case PSPIO_INTERP_JB_CSPLINE:
-    *f = jb_spline_eval(interp->jb_spl, r);
-    break;
+    return jb_spline_eval(interp->jb_spl, r);
   }
 
 }
 
-
-void interpolation_eval_deriv(const interpolation_t *interp, const double r, double *fp) {
+double interpolation_eval_deriv(const interpolation_t *interp, const double r) {
   assert(interp != NULL);
-  assert(fp != NULL);
 
   switch (interp->method) {
 #ifdef HAVE_GSL
   case PSPIO_INTERP_GSL_CSPLINE:
-    *fp = gsl_spline_eval_deriv(interp->gsl_spl, r, interp->gsl_acc);
-    break;
+    return gsl_spline_eval_deriv(interp->gsl_spl, r, interp->gsl_acc);
 #endif
   case PSPIO_INTERP_JB_CSPLINE:
-    *fp = jb_spline_eval_deriv(interp->jb_spl, r);
-    break;
+    return jb_spline_eval_deriv(interp->jb_spl, r);
   }
 
 }
 
-
-void interpolation_eval_deriv2(const interpolation_t *interp, const double r, double *fpp) {
+double interpolation_eval_deriv2(const interpolation_t *interp, const double r) {
   assert(interp != NULL);
-  assert(fpp != NULL);
 
   switch (interp->method) {
 #ifdef HAVE_GSL
   case PSPIO_INTERP_GSL_CSPLINE:
-    *fpp = gsl_spline_eval_deriv2(interp->gsl_spl, r, interp->gsl_acc);
-    break;
+    return gsl_spline_eval_deriv2(interp->gsl_spl, r, interp->gsl_acc);
 #endif
   case PSPIO_INTERP_JB_CSPLINE:
-    *fpp = jb_spline_eval_deriv2(interp->jb_spl, r);
-    break;
+    return jb_spline_eval_deriv2(interp->jb_spl, r);
   }
 
 }

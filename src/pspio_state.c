@@ -181,13 +181,10 @@ void pspio_state_free(pspio_state_t *state) {
  * Atomic routines                                                    *
  **********************************************************************/
 
-void pspio_state_wf_eval(const pspio_state_t *state, const int np,
-       const double *r, double *wf) {
+double pspio_state_wf_eval(const pspio_state_t *state, const double r) {
   assert(state != NULL);
-  assert(r != NULL);
-  assert(wf != NULL);
   
-  pspio_meshfunc_eval(state->wf, np, r, wf);
+  return pspio_meshfunc_eval(state->wf, r);
 }
 
 

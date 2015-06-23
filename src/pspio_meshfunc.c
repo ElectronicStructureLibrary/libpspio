@@ -96,7 +96,7 @@ int pspio_meshfunc_init(pspio_meshfunc_t *func, const pspio_mesh_t *mesh,
     memcpy(func->fp, fp, mesh->np * sizeof(double));
   } else {
     for (i=0; i<mesh->np; i++) 
-      interpolation_eval_deriv(func->f_interp, mesh->r[i], &func->fp[i]);
+      func->fp[i] = interpolation_eval_deriv(func->f_interp, mesh->r[i]);
   }
   SUCCEED_OR_RETURN( interpolation_init(func->fp_interp, mesh, func->fp) );
 
@@ -105,7 +105,7 @@ int pspio_meshfunc_init(pspio_meshfunc_t *func, const pspio_mesh_t *mesh,
     memcpy(func->fpp, fpp, mesh->np * sizeof(double));
   } else {
     for (i=0; i<mesh->np; i++)
-      interpolation_eval_deriv2(func->f_interp, mesh->r[i], &func->fpp[i]);
+      func->fpp[i] = interpolation_eval_deriv2(func->f_interp, mesh->r[i]);
   }
   SUCCEED_OR_RETURN( interpolation_init(func->fpp_interp, mesh, func->fpp) );
 
@@ -188,85 +188,58 @@ void pspio_meshfunc_free(pspio_meshfunc_t *func) {
  * Atomic routines                                                    *
  **********************************************************************/
 
-void pspio_meshfunc_eval(const pspio_meshfunc_t *func, const int np, 
-			 const double *r, double *f) {
-  int i;
-
+double pspio_meshfunc_eval(const pspio_meshfunc_t *func, const double r) {
   assert(func != NULL);
-  assert(r != NULL);
-  assert(f != NULL);
 
-  for (i=0; i<np; i++) {
-    /*
-      If the value of r is smaller than the first mesh point or if
-      it is greater or equal to the last mesh point, then we use a
-      linear extrapolation to evaluate the function at r.
-    */
-    if ( r[i] < func->mesh->r[0] ) {
-      f[i] = linear_extrapolation(func->mesh->r[0], func->mesh->r[1],
-        func->f[0], func->f[1], r[i]);
-    } else if ( r[i] >= func->mesh->r[func->mesh->np-1] ) {
-      f[i] = linear_extrapolation(func->mesh->r[func->mesh->np-2],
-        func->mesh->r[func->mesh->np-1], func->f[func->mesh->np-2],
-        func->f[func->mesh->np-1], r[i]);
-    } else {
-      interpolation_eval(func->f_interp, r[i], &f[i]);
-    }
+  /*
+    If the value of r is smaller than the first mesh point or if
+    it is greater or equal to the last mesh point, then we use a
+    linear extrapolation to evaluate the function at r.
+  */
+  if ( r < func->mesh->r[0] ) {
+    return linear_extrapolation(func->mesh->r[0], func->mesh->r[1], func->f[0], func->f[1], r);
+  } else if ( r >= func->mesh->r[func->mesh->np-1] ) {
+    return linear_extrapolation(func->mesh->r[func->mesh->np-2], func->mesh->r[func->mesh->np-1], 
+				func->f[func->mesh->np-2], func->f[func->mesh->np-1], r);
+  } else {
+    return interpolation_eval(func->f_interp, r);
   }
 }
 
 
-void pspio_meshfunc_eval_deriv(const pspio_meshfunc_t *func, const int np, 
-       const double *r, double *fp) {
-  int i;
-
+double pspio_meshfunc_eval_deriv(const pspio_meshfunc_t *func, const double r) {
   assert(func != NULL);
-  assert(r != NULL);
-  assert(fp != NULL);
 
-  for (i=0; i<np; i++) {
-    /* If the value of r is smaller than the first mesh point or if
-       it is greater or equal to the last mesh point, then we use a
-       linear extrapolation to evaluate the function at r.
-    */
-    if ( r[i] < func->mesh->r[0] ) {
-      fp[i] = linear_extrapolation(func->mesh->r[0], func->mesh->r[1],
-        func->fp[0], func->fp[1], r[i]);
-    } else if ( r[i] >= func->mesh->r[func->mesh->np-1] ) {
-      fp[i] = linear_extrapolation(func->mesh->r[func->mesh->np-2],
-        func->mesh->r[func->mesh->np-1], func->fp[func->mesh->np-2],
-        func->fp[func->mesh->np-1], r[i]);
-    } else {
-      interpolation_eval(func->fp_interp, r[i], &fp[i]);
-    }
+  /* If the value of r is smaller than the first mesh point or if
+     it is greater or equal to the last mesh point, then we use a
+     linear extrapolation to evaluate the function at r.
+  */
+  if ( r < func->mesh->r[0] ) {
+    return linear_extrapolation(func->mesh->r[0], func->mesh->r[1], func->fp[0], func->fp[1], r);
+  } else if ( r >= func->mesh->r[func->mesh->np-1] ) {
+    return linear_extrapolation(func->mesh->r[func->mesh->np-2], func->mesh->r[func->mesh->np-1], 
+				func->fp[func->mesh->np-2], func->fp[func->mesh->np-1], r);
+  } else {
+    return interpolation_eval(func->fp_interp, r);
   }
 }
 
 
-void pspio_meshfunc_eval_deriv2(const pspio_meshfunc_t *func, const int np, 
-       const double *r, double *fpp) {
-  int i;
-
+double pspio_meshfunc_eval_deriv2(const pspio_meshfunc_t *func, const double r) {
   assert(func != NULL);
-  assert(r != NULL);
-  assert(fpp != NULL);
 
-  for (i=0; i<np; i++) {
-    /*
-      If the value of r is smaller than the first mesh point or if
-      it is greater or equal to the last mesh point, then we use a
-      linear extrapolation to evaluate the function at r.
-    */
-    if ( r[i] < func->mesh->r[0] ) {
-      fpp[i] = linear_extrapolation(func->mesh->r[0], func->mesh->r[1],
-        func->fpp[0], func->fpp[1], r[i]);
-    } else if ( r[i] >= func->mesh->r[func->mesh->np-1] ) {
-      fpp[i] = linear_extrapolation(func->mesh->r[func->mesh->np-2],
-        func->mesh->r[func->mesh->np-1], func->fpp[func->mesh->np-2],
-        func->fpp[func->mesh->np-1], r[i]);
-    } else {
-      interpolation_eval(func->fpp_interp, r[i], &fpp[i]);
-    }
+  /*
+    If the value of r is smaller than the first mesh point or if
+    it is greater or equal to the last mesh point, then we use a
+    linear extrapolation to evaluate the function at r.
+  */
+  if ( r < func->mesh->r[0] ) {
+    return linear_extrapolation(func->mesh->r[0], func->mesh->r[1], func->fpp[0], func->fpp[1], r);
+  } else if ( r >= func->mesh->r[func->mesh->np-1] ) {
+    return linear_extrapolation(func->mesh->r[func->mesh->np-2], func->mesh->r[func->mesh->np-1], 
+				func->fpp[func->mesh->np-2], func->fpp[func->mesh->np-1], r);
+  } else {
+    return interpolation_eval(func->fpp_interp, r);
   }
 }
 

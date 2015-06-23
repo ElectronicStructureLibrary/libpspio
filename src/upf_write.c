@@ -147,7 +147,7 @@ void upf_write_nlcc(FILE *fp, const pspio_pspdata_t *pspdata) {
 
   /* Print density */
   for (i=0; i<pspdata->mesh->np; i++) {
-    pspio_xc_nlcc_density_eval(pspdata->xc, 1, &(pspdata->mesh->r[i]), &rho);
+    rho = pspio_xc_nlcc_density_eval(pspdata->xc, pspdata->mesh->r[i]);
     if (i != 0 && i % 4 == 0) fprintf(fp, "\n");
     fprintf(fp, " %18.11E", rho);
   }
@@ -171,8 +171,7 @@ void upf_write_nonlocal(FILE *fp, const pspio_pspdata_t *pspdata) {
     fprintf(fp, "%5d%5d             Beta    L\n", ikb+1, l);
     fprintf(fp, "%6d\n", pspdata->mesh->np);
     for (i=0; i<pspdata->mesh->np; i++) {
-      pspio_projector_eval(pspdata->kb_projectors[ikb], 1,
-        &(pspdata->mesh->r[i]), &proj);
+      proj = pspio_projector_eval(pspdata->kb_projectors[ikb], pspdata->mesh->r[i]);
       if (i != 0 && i % 4 == 0) fprintf(fp, "\n");
       proj *= 2.0*pspdata->mesh->r[i];
       fprintf(fp, " %18.11E", proj);
@@ -206,7 +205,7 @@ void upf_write_local(FILE *fp, const pspio_pspdata_t *pspdata) {
   /* Print vlocal */
   for (i=0; i<pspdata->mesh->np; i++) {
     if (i != 0 && i % 4 == 0) fprintf(fp, "\n");
-    pspio_potential_eval(pspdata->vlocal, 1, &(pspdata->mesh->r[i]), &vlocal);
+    vlocal = pspio_potential_eval(pspdata->vlocal, pspdata->mesh->r[i]);
     vlocal *= 2.0;
     fprintf(fp, " %18.11E", vlocal);
   }
@@ -232,7 +231,7 @@ void upf_write_pswfc(FILE *fp, const pspio_pspdata_t *pspdata) {
     fprintf(fp, "%s %4d %5.2f          Wavefunction\n", label, l, occ);
     for (i=0; i<pspdata->mesh->np; i++) {
       if (i != 0 && i % 4 == 0) fprintf(fp, "\n");
-      pspio_state_wf_eval(pspdata->states[is], 1, &(pspdata->mesh->r[i]), &wf);
+      wf = pspio_state_wf_eval(pspdata->states[is], pspdata->mesh->r[i]);
       wf *= pspdata->mesh->r[i];
       fprintf(fp, " %18.11E", wf);
     }
@@ -254,7 +253,7 @@ void upf_write_rhoatom(FILE *fp, const pspio_pspdata_t *pspdata) {
   /* Print valence density */
   for (i=0; i<pspdata->mesh->np; i++) {
     if (i != 0 && i % 4 == 0) fprintf(fp, "\n");
-    pspio_meshfunc_eval(pspdata->rho_valence, 1, &(pspdata->mesh->r[i]), &rho);
+    rho = pspio_meshfunc_eval(pspdata->rho_valence, pspdata->mesh->r[i]);
     rho *= 4.0*M_PI*pspdata->mesh->r[i]*pspdata->mesh->r[i];
     fprintf(fp, " %18.11E", rho);
   }

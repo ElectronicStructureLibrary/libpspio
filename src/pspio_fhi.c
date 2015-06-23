@@ -216,8 +216,8 @@ int pspio_fhi_write(FILE *fp, const pspio_pspdata_t *pspdata){
 
     for (ir=0; ir<pspdata->mesh->np; ir++) {
       r = pspdata->mesh->r[ir];
-      pspio_state_wf_eval(pspdata->states[is], 1, &r, &wf);
-      pspio_potential_eval(pspdata->potentials[i], 1, &r, &v);
+      wf = pspio_state_wf_eval(pspdata->states[is], r);
+      v = pspio_potential_eval(pspdata->potentials[i], r);
       wf = wf*r;
 
       FULFILL_OR_RETURN( fprintf(fp, "%4d %20.14E %20.14E %20.14E\n", ir+1,
@@ -234,9 +234,9 @@ int pspio_fhi_write(FILE *fp, const pspio_pspdata_t *pspdata){
 
     for (ir=0; ir<pspdata->mesh->np; ir++) {
       r = pspdata->mesh->r[ir];
-      pspio_meshfunc_eval(nlcc_dens, 1, &r, &cd);
-      pspio_meshfunc_eval_deriv(nlcc_dens, 1, &r, &cdp);
-      pspio_meshfunc_eval_deriv2(nlcc_dens, 1, &r, &cdpp);
+      cd = pspio_meshfunc_eval(nlcc_dens, r);
+      cdp = pspio_meshfunc_eval_deriv(nlcc_dens, r);
+      cdpp = pspio_meshfunc_eval_deriv2(nlcc_dens, r);
       cd *= M_PI*4.0; cdp *= M_PI*4.0; cdpp *= M_PI*4.0;
 
       FULFILL_OR_RETURN( fprintf(fp, " %18.12E %18.12E %18.12E %18.12E\n",

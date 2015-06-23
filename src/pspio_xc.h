@@ -161,15 +161,13 @@ pspio_meshfunc_t *pspio_xc_get_nlcc_density(const pspio_xc_t *xc);
 
 
 /**
- * Returns the value of the NLCC core density at an array of arbitrary points
+ * Returns the value of the NLCC core density at an arbitrary points
  * @param[in] xc: xc structure
- * @param[in] np: number of points
- * @param[in] *r: positions were we want to evaluate the core density
- * @param[out] *nlcc_dens: values of the core density at r
+ * @param[in] r: point were we want to evaluate the core density
+ * @return value of the core density at r
  * @note The xc pointer has to be fully set.
  */
-void pspio_xc_nlcc_density_eval(const pspio_xc_t *xc, const int np, 
-				const double *r, double *nlcc_dens);
+double pspio_xc_nlcc_density_eval(const pspio_xc_t *xc, const double r);
 
 /**
  * Returns if xc has non-linear core-corrections
