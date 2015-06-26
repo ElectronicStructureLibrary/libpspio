@@ -30,5 +30,6 @@ Suite *make_error_suite(void);
 Suite *make_qn_suite(void);
 Suite *make_mesh_suite(void);
 Suite *make_meshfunc_suite(void);
+Suite *make_potential_suite(void);
 
 #endif
