@@ -77,12 +77,22 @@ int pspio_potential_init(pspio_potential_t *potential, const pspio_qn_t *qn,
 
 
 int pspio_potential_copy(pspio_potential_t **dst, const pspio_potential_t *src) {
+  int np;
+
   assert(src != NULL);
 
-  if ( *dst != NULL ) {
-    pspio_potential_free(*dst);
+  np = pspio_mesh_get_np(src->v->mesh);
+
+  if ( *dst == NULL ) {
+    SUCCEED_OR_RETURN( pspio_potential_alloc(dst, np) );
   }
-  SUCCEED_OR_RETURN( pspio_potential_alloc(dst, src->v->mesh->np) );
+
+  /* The mesh of the destination potential must have the same number of points as the mesh of the source potential */
+  if ( pspio_mesh_get_np((*dst)->v->mesh) != np ) {
+    pspio_potential_free(*dst);
+    *dst = NULL;
+    SUCCEED_OR_RETURN(pspio_potential_alloc(dst, np));
+  }
 
   SUCCEED_OR_RETURN( pspio_meshfunc_copy(&(*dst)->v, src->v) );
   SUCCEED_OR_RETURN( pspio_qn_copy(&(*dst)->qn, src->qn) );
@@ -109,4 +119,18 @@ double pspio_potential_eval(const pspio_potential_t *potential, const double r) 
   assert(potential != NULL);
 
   return pspio_meshfunc_eval(potential->v, r);
+}
+
+
+double pspio_potential_eval_deriv(const pspio_potential_t *potential, const double r) {
+  assert(potential != NULL);
+
+  return pspio_meshfunc_eval_deriv(potential->v, r);
+}
+
+
+double pspio_potential_eval_deriv2(const pspio_potential_t *potential, const double r) {
+  assert(potential != NULL);
+
+  return pspio_meshfunc_eval_deriv2(potential->v, r);
 }

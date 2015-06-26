@@ -111,4 +111,25 @@ void pspio_potential_free(pspio_potential_t *potential);
 double pspio_potential_eval(const pspio_potential_t *potential, double r);
 
 
+/**
+ * Returns the value of the derivative of the potential at an arbitrary point
+ * 
+ * @param[in] potential: potential structure
+ * @param[in] r: point were we want to evaluate the derivative of the potential
+ * @return value of the derivative at r
+ * @note The potential pointer has to be fully set.
+ */
+double pspio_potential_eval_deriv(const pspio_potential_t *potential, double r);
+
+
+/**
+ * Returns the value of the second derivative of the potential at an arbitrary point
+ * 
+ * @param[in] potential: potential structure
+ * @param[in] r: point were we want to evaluate the second derivative of the potential
+ * @return value of the second derivative at r
+ * @note The potential pointer has to be fully set.
+ */
+double pspio_potential_eval_deriv2(const pspio_potential_t *potential, double r);
+
 #endif
