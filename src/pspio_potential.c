@@ -134,3 +134,10 @@ double pspio_potential_eval_deriv2(const pspio_potential_t *potential, const dou
 
   return pspio_meshfunc_eval_deriv2(potential->v, r);
 }
+
+
+pspio_qn_t *pspio_potential_get_qn(const pspio_potential_t *potential) {
+  assert(potential != NULL);
+
+  return potential->qn;
+}
