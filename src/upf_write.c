@@ -158,17 +158,18 @@ void upf_write_nlcc(FILE *fp, const pspio_pspdata_t *pspdata) {
 
 
 void upf_write_nonlocal(FILE *fp, const pspio_pspdata_t *pspdata) {
-  int ikb, l, i;
+  int ikb, i;
   double proj, ekb;
+  pspio_qn_t *qn;
 
   /* Write init tag */
   fprintf(fp, "<PP_NONLOCAL>\n");
 
   /* Write projectors */
   for (ikb=0; ikb<pspdata->n_kbproj; ikb++) {
-    l = pspio_projector_get_l(pspdata->kb_projectors[ikb]);
+    qn = pspio_projector_get_qn(pspdata->kb_projectors[ikb]);
     fprintf(fp, "  <PP_BETA>\n");
-    fprintf(fp, "%5d%5d             Beta    L\n", ikb+1, l);
+    fprintf(fp, "%5d%5d             Beta    L\n", ikb+1, pspio_qn_get_l(qn));
     fprintf(fp, "%6d\n", pspdata->mesh->np);
     for (i=0; i<pspdata->mesh->np; i++) {
       proj = pspio_projector_eval(pspdata->kb_projectors[ikb], pspdata->mesh->r[i]);
@@ -267,6 +268,7 @@ void upf_write_addinfo(FILE *fp, const pspio_pspdata_t *pspdata) {
   int is, n, l;
   double occ, j;
   char *label;
+  pspio_qn_t *qn;
 
   /* Write init tag */
   fprintf(fp, "<PP_ADDINFO>\n");
@@ -283,9 +285,8 @@ void upf_write_addinfo(FILE *fp, const pspio_pspdata_t *pspdata) {
   
   /* Write projectors data */
   for (is=0; is<pspdata->n_kbproj; is++) {
-    l = pspio_projector_get_l(pspdata->kb_projectors[is]);
-    j = pspio_projector_get_j(pspdata->kb_projectors[is]);
-    fprintf(fp, "  %2d  %4.2f\n", l, j);
+    qn = pspio_projector_get_qn(pspdata->kb_projectors[is]);
+    fprintf(fp, "  %2d  %4.2f\n", pspio_qn_get_l(qn), pspio_qn_get_j(qn));
   }
 
   /* Write extra line (we will put all the numbers to zero for the moment) */

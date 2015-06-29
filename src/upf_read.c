@@ -403,7 +403,7 @@ int upf_read_local(FILE *fp, const int np, pspio_pspdata_t *pspdata) {
   for (i=0; i<pspdata->l_max+1; i++) {
     n = 0;
     for (j=0; j<pspdata->n_kbproj; j++) {
-      if ( pspio_projector_get_l(pspdata->kb_projectors[j]) == i ) n++;
+      if ( pspio_qn_get_l(pspio_projector_get_qn(pspdata->kb_projectors[j])) == i ) n++;
     }
     if ( n == 0 ) pspdata->l_local = i;
   }

@@ -77,12 +77,22 @@ int pspio_projector_init(pspio_projector_t *projector, const pspio_qn_t *qn,
 
 
 int pspio_projector_copy(pspio_projector_t **dst, const pspio_projector_t *src) {
+  int np;
+
   assert(src != NULL);
 
-  if ( *dst != NULL ) {
-    pspio_projector_free(*dst);
+  np = pspio_mesh_get_np(src->proj->mesh);
+
+  if ( *dst == NULL ) {
+    SUCCEED_OR_RETURN( pspio_projector_alloc(dst, np) );
   }
-  SUCCEED_OR_RETURN( pspio_projector_alloc(dst, src->proj->mesh->np) );
+
+  /* The mesh of the destination projector must have the same number of points as the mesh of the source projector */
+  if ( pspio_mesh_get_np((*dst)->proj->mesh) != np ) {
+    pspio_projector_free(*dst);
+    *dst = NULL;
+    SUCCEED_OR_RETURN(pspio_projector_alloc(dst, np));
+  }
 
   SUCCEED_OR_RETURN( pspio_meshfunc_copy(&(*dst)->proj, src->proj) );
   SUCCEED_OR_RETURN( pspio_qn_copy(&(*dst)->qn, src->qn) );
@@ -113,6 +123,20 @@ double pspio_projector_eval(const pspio_projector_t *projector, const double r) 
 }
 
 
+double pspio_projector_eval_deriv(const pspio_projector_t *projector, const double r) {
+  assert(projector != NULL);
+
+  return pspio_meshfunc_eval_deriv(projector->proj, r);
+}
+
+
+double pspio_projector_eval_deriv2(const pspio_projector_t *projector, const double r) {
+  assert(projector != NULL);
+
+  return pspio_meshfunc_eval_deriv2(projector->proj, r);
+}
+
+
 double pspio_projector_get_energy(const pspio_projector_t *projector) {
   assert(projector != NULL);
 
@@ -120,15 +144,9 @@ double pspio_projector_get_energy(const pspio_projector_t *projector) {
 }
 
 
-int pspio_projector_get_l(const pspio_projector_t *projector) {
+pspio_qn_t *pspio_projector_get_qn(const pspio_projector_t *projector) {
   assert(projector != NULL);
 
-  return pspio_qn_get_l(projector->qn);
+  return projector->qn;
 }
 
-
-double pspio_projector_get_j(const pspio_projector_t *projector) {
-  assert(projector != NULL);
-
-  return pspio_qn_get_j(projector->qn);
-}

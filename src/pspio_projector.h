@@ -112,6 +112,29 @@ void pspio_projector_free(pspio_projector_t *projector);
  */
 double pspio_projector_eval(const pspio_projector_t *projector, const double r);
 
+
+/**
+ * Returns the value of the derivative of the projector at an arbitrary point
+ * 
+ * @param[in] projector: projector structure
+ * @param[in] r: point were we want to evaluate the derivative of the projector
+ * @return value of the derivative at r
+ * @note The projector pointer has to be fully set.
+ */
+double pspio_projector_eval_deriv(const pspio_projector_t *projector, double r);
+
+
+/**
+ * Returns the value of the second derivative of the projector at an arbitrary point
+ * 
+ * @param[in] projector: projector structure
+ * @param[in] r: point were we want to evaluate the second derivative of the projector
+ * @return value of the second derivative at r
+ * @note The projector pointer has to be fully set.
+ */
+double pspio_projector_eval_deriv2(const pspio_projector_t *projector, double r);
+
+
 /**
  * Returns the energy of the projector
  * 
@@ -121,22 +144,15 @@ double pspio_projector_eval(const pspio_projector_t *projector, const double r);
  */
 double pspio_projector_get_energy(const pspio_projector_t *projector);
 
-/**
- * Returns the angular momentum of the projector
- * 
- * @param[in] projector: projector structure
- * @return value of the projector angular momentum
- * @note The projector pointer has to be fully set.
- */
-int pspio_projector_get_l(const pspio_projector_t *projector);
 
 /**
- * Returns the total angular momentum of the projector
+ * Returns the quantum numbers of the projector
  * 
  * @param[in] projector: projector structure
- * @return value of the projector total angular momentum
+ * @return pointer to the projector quantum numbers
  * @note The projector pointer has to be fully set.
  */
-double pspio_projector_get_j(const pspio_projector_t *projector);
+pspio_qn_t *pspio_projector_get_qn(const pspio_projector_t *projector);
+
 
 #endif
