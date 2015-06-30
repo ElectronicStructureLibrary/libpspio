@@ -195,24 +195,10 @@ char *pspio_state_get_label(const pspio_state_t *state) {
 }
 
 
-int pspio_state_get_n(const pspio_state_t *state) {
+pspio_qn_t *pspio_state_get_qn(const pspio_state_t *state) {
   assert(state != NULL);
-  
-  return pspio_qn_get_n(state->qn);
-}
 
-
-int pspio_state_get_l(const pspio_state_t *state) {
-  assert(state != NULL);
-  
-  return pspio_qn_get_l(state->qn);
-}
-
-
-double pspio_state_get_j(const pspio_state_t *state) {
-  assert(state != NULL);
-  
-  return pspio_qn_get_j(state->qn);
+  return state->qn;
 }
 
 
@@ -222,11 +208,13 @@ double pspio_state_get_occ(const pspio_state_t *state) {
   return state->occ;
 }
 
+
 double pspio_state_get_ev(const pspio_state_t *state) {
   assert(state != NULL);
 
   return state->eigenval;
 }
+
 
 double pspio_state_get_rc(const pspio_state_t *state) {
   assert(state != NULL);

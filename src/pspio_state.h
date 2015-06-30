@@ -131,6 +131,7 @@ void pspio_state_free(pspio_state_t *state);
  */
 double pspio_state_wf_eval(const pspio_state_t *state, const double r);
 
+
 /**
  * Returns the state label
  * @param[in] state: state structure
@@ -138,26 +139,16 @@ double pspio_state_wf_eval(const pspio_state_t *state, const double r);
  */
 char *pspio_state_get_label(const pspio_state_t *state);
 
-/**
- * Returns the main quantum number
- * @param[in] state: state structure
- * @return the main  quantum number
- */
-int pspio_state_get_n(const pspio_state_t *state);
 
 /**
- * Returns the angular momentum quantum number
+ * Returns the quantum numbers of the state
+ * 
  * @param[in] state: state structure
- * @return the angular momentum quantum number
+ * @return pointer to the state quantum numbers
+ * @note The state pointer has to be fully set.
  */
-int pspio_state_get_l(const pspio_state_t *state);
+pspio_qn_t *pspio_state_get_qn(const pspio_state_t *state);
 
-/**
- * Returns the total angular momentum quantum number
- * @param[in] state: state structure
- * @return the total angular momentum quantum number
- */
-double pspio_state_get_j(const pspio_state_t *state);
 
 /**
  * Returns the state occupancies
@@ -166,6 +157,7 @@ double pspio_state_get_j(const pspio_state_t *state);
  */
 double pspio_state_get_occ(const pspio_state_t *state);
 
+
 /**
  * Returns the state eigenvalue
  * @param[in] state: state structure
@@ -173,11 +165,13 @@ double pspio_state_get_occ(const pspio_state_t *state);
  */
 double pspio_state_get_ev(const pspio_state_t *state);
 
+
 /**
  * Returns the state cut-off radius
  * @param[in] state: state structure
  * @return the cut-off radius
  */
 double pspio_state_get_rc(const pspio_state_t *state);
+
 
 #endif

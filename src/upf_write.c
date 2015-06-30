@@ -99,7 +99,7 @@ int upf_write_header(FILE *fp, const pspio_pspdata_t *pspdata) {
   fprintf(fp, " Wavefunctions         nl  l   occ\n");
   for (is=0; is<pspdata->n_states; is++) {
     label = pspio_state_get_label(pspdata->states[is]);
-    l = pspio_state_get_l(pspdata->states[is]);
+    l = pspio_qn_get_l(pspio_state_get_qn(pspdata->states[is]));
     occ = pspio_state_get_occ(pspdata->states[is]);
     fprintf(fp, "                       %2s%3d%6.2f\n", label, l, occ);    
   }
@@ -227,7 +227,7 @@ void upf_write_pswfc(FILE *fp, const pspio_pspdata_t *pspdata) {
   /* Write wavefunctions */
   for (is=0; is<pspdata->n_states; is++) {
     label = pspio_state_get_label(pspdata->states[is]);
-    l = pspio_state_get_l(pspdata->states[is]);
+    l = pspio_qn_get_l(pspio_state_get_qn(pspdata->states[is]));
     occ = pspio_state_get_occ(pspdata->states[is]);
     fprintf(fp, "%s %4d %5.2f          Wavefunction\n", label, l, occ);
     for (i=0; i<pspdata->mesh->np; i++) {
@@ -265,8 +265,8 @@ void upf_write_rhoatom(FILE *fp, const pspio_pspdata_t *pspdata) {
 
 
 void upf_write_addinfo(FILE *fp, const pspio_pspdata_t *pspdata) {
-  int is, n, l;
-  double occ, j;
+  int is;
+  double occ;
   char *label;
   pspio_qn_t *qn;
 
@@ -276,11 +276,9 @@ void upf_write_addinfo(FILE *fp, const pspio_pspdata_t *pspdata) {
   /* Write wavefunctions data */
   for (is=0; is<pspdata->n_states; is++) {
     label = pspio_state_get_label(pspdata->states[is]);
-    n = pspio_state_get_n(pspdata->states[is]);
-    l = pspio_state_get_l(pspdata->states[is]);
-    j = pspio_state_get_j(pspdata->states[is]);
+    qn = pspio_state_get_qn(pspdata->states[is]);
     occ = pspio_state_get_occ(pspdata->states[is]);
-    fprintf(fp, "%2s  %1d  %1d  %4.2f  %4.2f\n", label, n, l, j, occ);
+    fprintf(fp, "%2s  %1d  %1d  %4.2f  %4.2f\n", label, pspio_qn_get_n(qn), pspio_qn_get_l(qn), pspio_qn_get_j(qn), occ);
   }
   
   /* Write projectors data */

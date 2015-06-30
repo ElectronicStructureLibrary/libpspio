@@ -211,7 +211,7 @@ int pspio_fhi_write(FILE *fp, const pspio_pspdata_t *pspdata){
     is = pspdata->qn_to_istate[0][i];
 
     /* This format is not suitable for j-dependent pseudos */
-    FULFILL_OR_RETURN( pspio_state_get_j(pspdata->states[is]) == 0.0,
+    FULFILL_OR_RETURN( pspio_qn_get_j(pspio_state_get_qn(pspdata->states[is])) == 0.0,
       PSPIO_EVALUE );
 
     for (ir=0; ir<pspdata->mesh->np; ir++) {
