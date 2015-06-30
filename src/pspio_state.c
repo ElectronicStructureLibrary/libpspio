@@ -100,15 +100,23 @@ int pspio_state_init(pspio_state_t *state, const double eigenval,
 
 
 int pspio_state_copy(pspio_state_t **dst, const pspio_state_t *src) {
-  int s;
+  int np, s;
 
   assert(src != NULL);
   assert((src->label != NULL));
 
-  if ( *dst != NULL ) {
-    pspio_state_free(*dst);
+  np = pspio_mesh_get_np(src->wf->mesh);
+
+  if ( *dst == NULL ) {
+    SUCCEED_OR_RETURN( pspio_state_alloc(dst, np) );
   }
-  SUCCEED_OR_RETURN( pspio_state_alloc(dst, src->wf->mesh->np) );
+
+  /* The mesh of the destination wavefunction must have the same number of points as the mesh of the source wavefunction */
+  if ( pspio_mesh_get_np((*dst)->wf->mesh) != np ) {
+    pspio_state_free(*dst);
+    *dst = NULL;
+    SUCCEED_OR_RETURN(pspio_state_alloc(dst, np));
+  }
 
   SUCCEED_OR_RETURN( pspio_meshfunc_copy(&(*dst)->wf, src->wf) );
   SUCCEED_OR_RETURN( pspio_qn_copy(&(*dst)->qn, src->qn) );
