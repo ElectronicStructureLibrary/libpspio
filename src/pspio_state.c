@@ -188,6 +188,20 @@ double pspio_state_wf_eval(const pspio_state_t *state, const double r) {
 }
 
 
+double pspio_state_wf_eval_deriv(const pspio_state_t *state, const double r) {
+  assert(state != NULL);
+  
+  return pspio_meshfunc_eval_deriv(state->wf, r);
+}
+
+
+double pspio_state_wf_eval_deriv2(const pspio_state_t *state, const double r) {
+  assert(state != NULL);
+  
+  return pspio_meshfunc_eval_deriv2(state->wf, r);
+}
+
+
 char *pspio_state_get_label(const pspio_state_t *state) {
   assert(state != NULL);
 

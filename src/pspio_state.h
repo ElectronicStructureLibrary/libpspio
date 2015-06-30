@@ -123,13 +123,33 @@ void pspio_state_free(pspio_state_t *state);
  **********************************************************************/
 
 /**
- * Returns the value of the states wavefunction at an arbitrary points
+ * Returns the value of the states wavefunction at an arbitrary point
  *
  * @param[in] state: state structure
  * @param[in] r: point were we want to evaluate the wavefunction
  * @return value of the wavefunction at r
  */
 double pspio_state_wf_eval(const pspio_state_t *state, const double r);
+
+
+/**
+ * Returns the value of derivative of the states wavefunction at an arbitrary point
+ *
+ * @param[in] state: state structure
+ * @param[in] r: point were we want to evaluate the derivative of the wavefunction
+ * @return value of the wavefunction derivative at r
+ */
+double pspio_state_wf_eval_deriv(const pspio_state_t *state, const double r);
+
+
+/**
+ * Returns the value of second derivative of the states wavefunction at an arbitrary point
+ *
+ * @param[in] state: state structure
+ * @param[in] r: point were we want to evaluate the second derivative of the wavefunction
+ * @return value of the wavefunction second derivative at r
+ */
+double pspio_state_wf_eval_deriv2(const pspio_state_t *state, const double r);
 
 
 /**
