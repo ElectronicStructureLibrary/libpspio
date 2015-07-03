@@ -145,7 +145,8 @@ int upf_read_header(FILE *fp, int *np, pspio_pspdata_t *pspdata) {
   } else {
     SUCCEED_OR_RETURN( pspio_xc_set_nlcc_scheme(pspdata->xc, PSPIO_NLCC_NONE) );
   }
-  pspio_xc_set_id(pspdata->xc, exchange, correlation);
+  pspio_xc_set_exchange(pspdata->xc, exchange);
+  pspio_xc_set_correlation(pspdata->xc, correlation);
 
   /* Check end tag */
   SUCCEED_OR_RETURN( upf_tag_check_end(fp, "PP_HEADER") );
