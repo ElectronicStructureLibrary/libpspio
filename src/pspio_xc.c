@@ -83,13 +83,33 @@ void pspio_xc_free(pspio_xc_t *xc){
  * Atomic routines                                                    *
  **********************************************************************/
 
-void pspio_xc_set_id(pspio_xc_t *xc, const int exchange,
-       const int correlation) {
+void pspio_xc_set_exchange(pspio_xc_t *xc, const int exchange) {
   assert(xc != NULL);
 
   xc->exchange = exchange;
+}
+
+
+int pspio_xc_get_exchange(const pspio_xc_t *xc) {
+  assert(xc != NULL);
+
+  return xc->exchange;
+}
+
+
+void pspio_xc_set_correltion(pspio_xc_t *xc, const int correlation) {
+  assert(xc != NULL);
+
   xc->correlation = correlation;
 }
+
+
+int pspio_xc_get_correlation(const pspio_xc_t *xc) {
+  assert(xc != NULL);
+
+  return xc->correlation;
+}
+
 
 int pspio_xc_set_nlcc_scheme(pspio_xc_t *xc, const int nlcc_scheme) {
   assert(xc != NULL);
@@ -112,6 +132,14 @@ int pspio_xc_set_nlcc_scheme(pspio_xc_t *xc, const int nlcc_scheme) {
   return PSPIO_SUCCESS;
 }
 
+
+int pspio_xc_get_nlcc_scheme(const pspio_xc_t *xc) {
+  assert(xc != NULL);
+
+  return xc->nlcc_scheme;
+}
+
+
 int pspio_xc_set_nlcc_density(pspio_xc_t *xc, const pspio_mesh_t *mesh,
       const double *cd, const double *cdp, const double *cdpp) {
   int ierr;
@@ -131,18 +159,6 @@ int pspio_xc_set_nlcc_density(pspio_xc_t *xc, const pspio_mesh_t *mesh,
   return PSPIO_SUCCESS;
 }
 
-void pspio_xc_get_id(const pspio_xc_t *xc, int *exchange, int *correlation) {
-  assert(xc != NULL);
-
-  *exchange = xc->exchange;
-  *correlation = xc->correlation;
-}
-
-int pspio_xc_get_nlcc_scheme(const pspio_xc_t *xc) {
-  assert(xc != NULL);
-
-  return xc->nlcc_scheme;
-}
 
 pspio_meshfunc_t *pspio_xc_get_nlcc_density(const pspio_xc_t *xc) {
 
@@ -152,12 +168,14 @@ pspio_meshfunc_t *pspio_xc_get_nlcc_density(const pspio_xc_t *xc) {
   return xc->nlcc_dens;
 }
 
+
 double pspio_xc_nlcc_density_eval(const pspio_xc_t *xc, const double r) {
   assert(xc != NULL);
   assert(xc->nlcc_scheme != PSPIO_NLCC_NONE);
 
   return pspio_meshfunc_eval(xc->nlcc_dens, r);
 }
+
 
 int pspio_xc_has_nlcc(const pspio_xc_t *xc) {
   assert (xc != NULL);
