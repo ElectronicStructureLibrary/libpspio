@@ -61,6 +61,24 @@ int pspio_xc_alloc(pspio_xc_t **xc);
 
 
 /**
+ * Initializes all the parameters of the xc structure.
+ * @param[in,out] xc: xc structure pointer to be initialized
+ * @param[in] exchange: identifier
+ * @param[in] correlation: identifier
+ * @param[in] nlcc_scheme:  scheme used to obtain core density
+ * @param[in] mesh: the radial mesh
+ * @param[in] cd: values of the core density on the mesh (optional if nlcc_scheme == PSPIO_NLCC_NONE)
+ * @param[in] cdp: values of the core density first derivative on the mesh (optional)
+ * @param[in] cdpp: values of the core density second derivative on the mesh (optional)
+ * @return error code
+ * @note The xc pointer is supposed to have been already allocated
+ *       with pspio_xc_alloc.
+ */
+int pspio_xc_init(pspio_xc_t *xc, const int exchange, const int correlation, const int nlcc_scheme,
+		  const pspio_mesh_t *mesh, const double *cd, const double *cdd, const double *cddd);
+
+
+/**
  * Duplicates a xc structure.
  * @param[out] dst: destination xc structure pointer
  * @param[in] src: source xc structure pointer 
@@ -91,8 +109,9 @@ void pspio_xc_free(pspio_xc_t *xc);
  * Sets the exchange id.
  * @param[in,out] xc: xc structure to set
  * @param[in] exchange: identifier
+ * @return error code
  */
-void pspio_xc_set_exchange(pspio_xc_t *xc, const int exchange);
+int pspio_xc_set_exchange(pspio_xc_t *xc, const int exchange);
 
 
 /**
@@ -107,8 +126,9 @@ int pspio_xc_get_exchange(const pspio_xc_t *xc);
  * Sets the correlation id.
  * @param[in,out] xc: xc structure to set
  * @param[in] correlation: identifier
+ * @return error code
  */
-void pspio_xc_set_correlation(pspio_xc_t *xc, const int correlation);
+int pspio_xc_set_correlation(pspio_xc_t *xc, const int correlation);
 
 
 /**

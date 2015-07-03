@@ -83,8 +83,8 @@ int abinit_read_header(FILE *fp, const int format, pspio_pspdata_t *pspdata) {
     SUCCEED_OR_RETURN( abinit_to_libxc(pspxc, &exchange, &correlation) );
   }
   SUCCEED_OR_RETURN( pspio_xc_alloc(&pspdata->xc) );
-  pspio_xc_set_id(pspdata->xc, exchange, correlation);
-
+  SUCCEED_OR_RETURN( pspio_xc_set_exchange(pspdata->xc, exchange) );
+  SUCCEED_OR_RETURN( pspio_xc_set_correlation(pspdata->xc, correlation) );
 
   /* Line 4: read rchrg, fchrg, qchrg if NLCC */
   /* Note: tolerance copied from Abinit */

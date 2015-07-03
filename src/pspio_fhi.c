@@ -134,7 +134,7 @@ int pspio_fhi_read(FILE *fp, pspio_pspdata_t *pspdata) {
   if ( has_nlcc ) {
     double *cd, *cdp, *cdpp;
 
-    pspio_xc_set_nlcc_scheme(pspdata->xc, PSPIO_NLCC_FHI);
+    SUCCEED_OR_RETURN( pspio_xc_set_nlcc_scheme(pspdata->xc, PSPIO_NLCC_FHI) );
 
     /* Allocate memory */
     cd = (double *) malloc (np*sizeof(double));

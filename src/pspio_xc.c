@@ -48,6 +48,21 @@ int pspio_xc_alloc(pspio_xc_t **xc) {
 }
 
 
+int pspio_xc_init(pspio_xc_t *xc, const int exchange, const int correlation, const int nlcc_scheme,
+		  const pspio_mesh_t *mesh, const double *cd, const double *cdd, const double *cddd) {
+  assert(xc != NULL);  
+
+  SUCCEED_OR_RETURN( pspio_xc_set_exchange(xc, exchange) );
+  SUCCEED_OR_RETURN( pspio_xc_set_correlation(xc, correlation) );
+  SUCCEED_OR_RETURN( pspio_xc_set_nlcc_scheme(xc, nlcc_scheme) );
+  if ( nlcc_scheme != PSPIO_NLCC_NONE ) {
+    SUCCEED_OR_RETURN( pspio_xc_set_nlcc_density(xc, mesh, cd, cdd, cddd) );
+  }
+
+  return PSPIO_SUCCESS;
+}
+
+
 int pspio_xc_copy(pspio_xc_t **dst, const pspio_xc_t *src) {
   assert(src != NULL);
 
@@ -83,10 +98,12 @@ void pspio_xc_free(pspio_xc_t *xc){
  * Atomic routines                                                    *
  **********************************************************************/
 
-void pspio_xc_set_exchange(pspio_xc_t *xc, const int exchange) {
+int pspio_xc_set_exchange(pspio_xc_t *xc, const int exchange) {
   assert(xc != NULL);
 
   xc->exchange = exchange;
+
+  return PSPIO_SUCCESS;
 }
 
 
@@ -97,10 +114,12 @@ int pspio_xc_get_exchange(const pspio_xc_t *xc) {
 }
 
 
-void pspio_xc_set_correltion(pspio_xc_t *xc, const int correlation) {
+int pspio_xc_set_correltion(pspio_xc_t *xc, const int correlation) {
   assert(xc != NULL);
 
   xc->correlation = correlation;
+
+  return PSPIO_SUCCESS;
 }
 
 
