@@ -117,7 +117,6 @@ endif
 
 pio_basic_tests = \
   check_pspio \
-  test_xc \
   test_pspdata
 pio_xfail_tests = \
   test_io
@@ -146,6 +145,7 @@ check_pspio_SOURCES = \
   check_pspio_potential.c \
   check_pspio_projector.c \
   check_pspio_state.c \
+  check_pspio_xc.c \
   check_pspio.c
 check_pspio_LDADD = -lpspio $(LIBS_COVERAGE) @CHECK_LIBS@
 check_pspio_CFLAGS = @CHECK_CFLAGS@
@@ -156,11 +156,6 @@ test_io_SOURCES = test_io.c
 test_io_LDADD = -lpspio $(LIBS_COVERAGE)
 test_io_CPPFLAGS = -I$(srcdir)/../src
 test_io_DEPENDENCIES = libpspio.la
-
-test_xc_SOURCES = test_xc.c
-test_xc_LDADD = -lpspio $(LIBS_COVERAGE)
-test_xc_CPPFLAGS = -I$(srcdir)/../src
-test_xc_DEPENDENCIES = libpspio.la
 
 test_pspdata_SOURCES = test_pspdata.c
 test_pspdata_LDADD = -lpspio $(LIBS_COVERAGE)
