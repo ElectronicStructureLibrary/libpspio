@@ -185,7 +185,7 @@ END_TEST
 
 START_TEST(test_state_lookup_table)
 {
-  int i, j;
+  int i;
   const int n_states = 3;
   pspio_state_t **st;
   int **table = NULL;
@@ -214,7 +214,7 @@ START_TEST(test_state_lookup_table)
   ck_assert_msg( table[3][1] ==  1, "table[%i][%i] = %i, expected = %i\n", 3, 1, table[3][1],  1);
   ck_assert_msg( table[3][2] ==  2, "table[%i][%i] = %i, expected = %i\n", 3, 2, table[3][2],  2);
 
-  for (i=0; i<n_states; i++) {  
+  for (i=0; i<n_states; i++) {
     pspio_state_free(st[i]);
   }
   free(st);
