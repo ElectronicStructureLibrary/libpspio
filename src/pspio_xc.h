@@ -179,13 +179,33 @@ pspio_meshfunc_t *pspio_xc_get_nlcc_density(const pspio_xc_t *xc);
 
 
 /**
- * Returns the value of the NLCC core density at an arbitrary points
+ * Returns the value of the NLCC core density at an arbitrary point
  * @param[in] xc: xc structure
  * @param[in] r: point were we want to evaluate the core density
  * @return value of the core density at r
  * @note The xc pointer has to be fully set.
  */
 double pspio_xc_nlcc_density_eval(const pspio_xc_t *xc, const double r);
+
+
+/**
+ * Returns the value of the derivative of the NLCC core density at an arbitrary point
+ * @param[in] xc: xc structure
+ * @param[in] r: point were we want to evaluate the derivative of the core density
+ * @return value of the core density derivative at r
+ * @note The xc pointer has to be fully set.
+ */
+double pspio_xc_nlcc_density_eval_deriv(const pspio_xc_t *xc, const double r);
+
+
+/**
+ * Returns the value of the second derivative of the NLCC core density at an arbitrary point
+ * @param[in] xc: xc structure
+ * @param[in] r: point were we want to evaluate the second derivative of the core density
+ * @return value of the core density second derivative at r
+ * @note The xc pointer has to be fully set.
+ */
+double pspio_xc_nlcc_density_eval_deriv2(const pspio_xc_t *xc, const double r);
 
 
 /**
