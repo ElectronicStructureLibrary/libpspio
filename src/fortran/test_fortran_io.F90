@@ -54,7 +54,7 @@ program test_fortran
 
   ! Init pspdata
   write(*,'(A)') "test_fortran_io: initializing pspdata"
-  ierr = fpspio_pspdata_init(pspdata)
+  ierr = fpspio_pspdata_alloc(pspdata)
   if ( ierr /= 0 ) then
     call fpspio_error_flush()
     stop 1

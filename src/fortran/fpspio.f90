@@ -136,10 +136,10 @@ module fpspio_m
     !----------------------------------------------------------------------------!
 
     ! init
-    integer(c_int) function pspio_pspdata_init(pspdata) bind(c)
+    integer(c_int) function pspio_pspdata_alloc(pspdata) bind(c)
       import
       type(c_ptr) :: pspdata
-    end function pspio_pspdata_init
+    end function pspio_pspdata_alloc
 
     ! free
     subroutine pspio_pspdata_free(pspdata) bind(c)
@@ -526,23 +526,11 @@ module fpspio_m
       real(c_double), value :: r
     end function pspio_state_wf_eval
 
-    ! get_l
-    integer(c_int) function pspio_state_get_l(state) bind(c)
+    ! get_qn
+    type(fpspio_qn_t) function pspio_state_get_qn(state) bind(c)
       import
       type(c_ptr) :: state
-    end function pspio_state_get_l
-
-    ! get_n
-    integer(c_int) function pspio_state_get_n(state) bind(c)
-      import
-      type(c_ptr) :: state
-    end function pspio_state_get_n
-
-    ! get_j
-    real(c_double) function pspio_state_get_j(state) bind(c)
-      import
-      type(c_ptr) :: state
-    end function pspio_state_get_j
+    end function pspio_state_get_qn
 
     ! get_occ
     real(c_double) function pspio_state_get_occ(state) bind(c)
@@ -635,17 +623,11 @@ module fpspio_m
       type(c_ptr) :: projector
     end function pspio_projector_get_energy
 
-    ! get_l
-    integer(c_int) function pspio_projector_get_l(projector) bind(c)
+    ! get_qn
+    type(fpspio_qn_t) function pspio_projector_get_qn(projector) bind(c)
       import
       type(c_ptr) :: projector      
-    end function pspio_projector_get_l
-
-    ! get_j
-    real(c_double) function pspio_projector_get_j(projector) bind(c)
-      import
-      type(c_ptr) :: projector
-    end function pspio_projector_get_j
+    end function pspio_projector_get_qn
 
 
     !----------------------------------------------------------------------------!
@@ -664,13 +646,19 @@ module fpspio_m
       type(c_ptr) :: xc
     end subroutine pspio_xc_free
 
-    ! set_id
-    integer(c_int) function pspio_xc_set_id(xc, exchange, correlation) bind(c)
+    ! set_exchange
+    integer(c_int) function pspio_xc_set_exchange(xc, exchange) bind(c)
       import
       type(c_ptr)           :: xc
       integer(c_int), value :: exchange
+    end function pspio_xc_set_exchange
+
+    ! set_correlation
+    integer(c_int) function pspio_xc_set_correlation(xc, correlation) bind(c)
+      import
+      type(c_ptr)           :: xc
       integer(c_int), value :: correlation
-    end function pspio_xc_set_id
+    end function pspio_xc_set_correlation
 
     ! set_nlcc_scheme
     integer(c_int) function pspio_xc_set_nlcc_scheme(xc, nlcc_scheme) bind(c)
@@ -754,11 +742,10 @@ module fpspio_m
     end function pspio_error_get_last
 
     ! str
-    subroutine pspio_error_str(error_id, error_msg) bind(c)
+    character(kind=c_char) function pspio_error_string(error_id) bind(c) result(error_msg)
       import
       integer(c_int), value  :: error_id
-      character(kind=c_char) :: error_msg(PSPIO_STRLEN_ERROR)
-    end subroutine pspio_error_str
+    end function pspio_error_string
 
 
     !----------------------------------------------------------------------------!
@@ -782,12 +769,12 @@ contains
   !----------------------------------------------------------------------------!
 
   ! init
-  integer function fpspio_pspdata_init(pspdata) result(ierr)
+  integer function fpspio_pspdata_alloc(pspdata) result(ierr)
     type(fpspio_pspdata_t), intent(inout) :: pspdata
 
-    ierr = pspio_pspdata_init(pspdata%ptr)
+    ierr = pspio_pspdata_alloc(pspdata%ptr)
 
-  end function fpspio_pspdata_init
+  end function fpspio_pspdata_alloc
 
   ! read
   integer function fpspio_pspdata_read(pspdata, format, filename) result(ierr)
@@ -1286,13 +1273,10 @@ contains
 
   end subroutine fpspio_state_wf_eval_v
 
-  ! get_qn
   type(fpspio_qn_t) function fpspio_state_get_qn(state) result(qn)
     type(fpspio_state_t), intent(in)  :: state
 
-    qn%n = pspio_state_get_n(state%ptr)
-    qn%l = pspio_state_get_l(state%ptr)
-    qn%j = pspio_state_get_j(state%ptr)
+    qn = pspio_state_get_qn(state%ptr)
 
   end function fpspio_state_get_qn
 
@@ -1433,21 +1417,13 @@ contains
 
   end function fpspio_projector_get_energy
 
-  ! get_l
-  integer function fpspio_projector_get_l(projector) result(l)
+  ! get_qn
+  type(fpspio_qn_t) function fpspio_projector_get_qn(projector) result(qn)
     type(fpspio_projector_t), intent(in)  :: projector
 
-    l = pspio_projector_get_l(projector%ptr)
+    qn = pspio_projector_get_qn(projector%ptr)
 
-  end function fpspio_projector_get_l
-
-  ! get_j
-  real(8) function fpspio_projector_get_j(projector) result(j)
-    type(fpspio_projector_t), intent(in)  :: projector
-
-    j = pspio_projector_get_j(projector%ptr)
-
-  end function fpspio_projector_get_j
+  end function fpspio_projector_get_qn
 
 
   !----------------------------------------------------------------------------!
@@ -1470,15 +1446,23 @@ contains
 
   end subroutine fpspio_xc_free
 
-  ! set_id
-  integer function fpspio_xc_set_id(xc, exchange, correlation) result(ierr)
+  ! set_exchange
+  integer function fpspio_xc_set_exchange(xc, exchange) result(ierr)
     type(fpspio_xc_t), intent(inout) :: xc
     integer,           intent(in)    :: exchange
+
+    ierr = pspio_xc_set_exchange(xc%ptr, exchange)
+
+  end function fpspio_xc_set_exchange
+
+  ! set_correlation
+  integer function fpspio_xc_set_correlation(xc, correlation) result(ierr)
+    type(fpspio_xc_t), intent(inout) :: xc
     integer,           intent(in)    :: correlation
 
-    ierr = pspio_xc_set_id(xc%ptr, exchange, correlation)
+    ierr = pspio_xc_set_correlation(xc%ptr, correlation)
 
-  end function fpspio_xc_set_id
+  end function fpspio_xc_set_correlation
 
   ! set_nlcc_scheme
   integer function fpspio_xc_set_nlcc_scheme(xc, nlcc_scheme) result(ierr)
@@ -1572,16 +1556,16 @@ contains
   end function fpspio_error_get_last
 
   ! str
-  subroutine fpspio_error_str(error_id, error_msg)
+  subroutine fpspio_error_string(error_id, error_msg)
     integer,                           intent(in)  :: error_id
     character(len=PSPIO_STRLEN_ERROR), intent(out) :: error_msg
 
     character(kind=c_char) :: c_error_msg(PSPIO_STRLEN_ERROR)
 
-    call pspio_error_str(error_id, c_error_msg)
+    c_error_msg = pspio_error_string(error_id)
     call c_to_f_string(c_error_msg, error_msg)
 
-  end subroutine fpspio_error_str
+  end subroutine fpspio_error_string
 
 
   ! Helper functions to convert between C and Fortran strings
