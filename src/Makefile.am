@@ -116,8 +116,7 @@ endif
 #
 
 pio_basic_tests = \
-  check_pspio \
-  test_pspdata
+  check_pspio
 pio_xfail_tests = \
   test_io
 pio_wrapped_tests = \
@@ -146,6 +145,7 @@ check_pspio_SOURCES = \
   check_pspio_projector.c \
   check_pspio_state.c \
   check_pspio_xc.c \
+  check_pspio_pspdata.c \
   check_pspio.c
 check_pspio_LDADD = -lpspio $(LIBS_COVERAGE) @CHECK_LIBS@
 check_pspio_CFLAGS = @CHECK_CFLAGS@
@@ -156,11 +156,6 @@ test_io_SOURCES = test_io.c
 test_io_LDADD = -lpspio $(LIBS_COVERAGE)
 test_io_CPPFLAGS = -I$(srcdir)/../src
 test_io_DEPENDENCIES = libpspio.la
-
-test_pspdata_SOURCES = test_pspdata.c
-test_pspdata_LDADD = -lpspio $(LIBS_COVERAGE)
-test_pspdata_CPPFLAGS = -I$(srcdir)/../src
-test_pspdata_DEPENDENCIES = libpspio.la
 
 TESTS = \
   $(pio_gcov_pre_tests) \
