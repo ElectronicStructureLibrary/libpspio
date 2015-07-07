@@ -87,11 +87,13 @@ typedef struct{
  **********************************************************************/
 
 /**
- * Initialize pspdata with null vales.
- * @param[in,out] pspdata: pointer to pspdata structure to be initialized
- * @return error code.
+ * Allocates memory and preset pspdata structure
+ * 
+ * @param[in,out] pspdata: pspdata structure
+ * @return error code
  */
-int pspio_pspdata_init(pspio_pspdata_t **pspdata);
+int pspio_pspdata_alloc(pspio_pspdata_t **pspdata);
+
 
 /**
  * Frees all memory associated with pspdata structure

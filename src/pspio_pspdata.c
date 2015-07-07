@@ -40,7 +40,7 @@
  * Global routines                                                    *
  **********************************************************************/
 
-int pspio_pspdata_init(pspio_pspdata_t **pspdata) {
+int pspio_pspdata_alloc(pspio_pspdata_t **pspdata) {
   assert(pspdata != NULL);
   assert(*pspdata == NULL);
   
