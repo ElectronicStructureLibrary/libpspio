@@ -114,7 +114,7 @@ void pspio_mesh_init_from_parameters(pspio_mesh_t *mesh, const int type,
 void pspio_mesh_init_from_points(pspio_mesh_t *mesh, const double *r, 
       const double *rab) {
   int i;
-  double tol = 5.0e-10;
+  double tol = 1.0e-10;
 
   assert(mesh != NULL);
   assert(mesh->r != NULL);
@@ -133,14 +133,14 @@ void pspio_mesh_init_from_points(pspio_mesh_t *mesh, const double *r,
     mesh->b = r[0] - mesh->a;
     mesh->type = PSPIO_MESH_LINEAR;
     for (i=0; i<mesh->np; i++) {
-      if ( fabs(r[i] - (mesh->a*(i+1) + mesh->b)) > tol ) {
+      if ( fabs( (r[i] - (mesh->a*(i+1) + mesh->b))/r[i] ) > tol ) {
 	mesh->type = PSPIO_MESH_UNKNOWN;
 	break;
       }
     }
     if ( rab != NULL ) {
       for (i=0; i<mesh->np; i++) {
-	if ( fabs(rab[i] - mesh->a) > tol ) {
+	if ( fabs( (rab[i] - mesh->a)/rab[i] ) > tol ) {
 	  mesh->type = PSPIO_MESH_UNKNOWN;
 	  break;
 	}
@@ -158,14 +158,14 @@ void pspio_mesh_init_from_points(pspio_mesh_t *mesh, const double *r,
     mesh->b = r[0]/exp(mesh->a);
     mesh->type = PSPIO_MESH_LOG1;
     for (i=0; i<mesh->np; i++) {
-      if ( fabs(r[i] - (mesh->b*exp(mesh->a*(i+1)))) > tol ) {
+      if ( fabs( (r[i] - (mesh->b*exp(mesh->a*(i+1))))/r[i] ) > tol ) {
 	mesh->type = PSPIO_MESH_UNKNOWN;
 	break;
       }
     }
     if ( rab != NULL ) {
       for (i=0; i<mesh->np; i++) {
-	if ( fabs(rab[i] - mesh->a*mesh->r[i]) > tol ) {
+	if ( fabs( (rab[i] - mesh->a*mesh->r[i])/rab[i] ) > tol ) {
 	  mesh->type = PSPIO_MESH_UNKNOWN;
 	  break;
 	}
@@ -183,14 +183,14 @@ void pspio_mesh_init_from_points(pspio_mesh_t *mesh, const double *r,
     mesh->a = log( (r[1] + mesh->b)/(r[0] + mesh->b) );
     mesh->type = PSPIO_MESH_LOG2;
     for (i=0; i<mesh->np; i++) {
-      if ( fabs(r[i] - (mesh->b*(exp(mesh->a*(i+1)) - 1.0))) > tol ) {
+      if ( fabs( (r[i] - (mesh->b*(exp(mesh->a*(i+1)) - 1.0)))/r[i] ) > tol ) {
 	mesh->type = PSPIO_MESH_UNKNOWN;
 	break;
       }
     }
     if ( rab != NULL ) {
       for (i=0; i<mesh->np; i++) {
-	if ( fabs(rab[i] - (mesh->a*mesh->r[i] + mesh->a*mesh->b)) > tol ) {
+	if ( fabs( (rab[i] - (mesh->a*mesh->r[i] + mesh->a*mesh->b))/rab[i] ) > tol ) {
 	  mesh->type = PSPIO_MESH_UNKNOWN;
 	  break;
 	}
