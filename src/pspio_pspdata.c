@@ -71,10 +71,10 @@ int pspio_pspdata_alloc(pspio_pspdata_t **pspdata) {
   (*pspdata)->n_potentials = 0;
   (*pspdata)->potentials = NULL;
 
-  (*pspdata)->n_kbproj = 0;
-  (*pspdata)->kb_projectors = NULL;
+  (*pspdata)->n_projectors = 0;
+  (*pspdata)->projectors = NULL;
+  (*pspdata)->projectors_l_max = 0;
   (*pspdata)->l_local = 0;
-  (*pspdata)->kb_l_max = 0;
   (*pspdata)->vlocal = NULL;
 
   (*pspdata)->xc = NULL;
@@ -242,17 +242,17 @@ void pspio_pspdata_reset(pspio_pspdata_t *pspdata) {
   pspdata->n_potentials = 0;
   pspdata->scheme = 0;
   
-  /* KB projectors */
-  if (pspdata->kb_projectors != NULL) {
-    for (i=0; i<pspdata->n_kbproj; i++) {
-      pspio_projector_free(pspdata->kb_projectors[i]);
+  /* Projectors */
+  if (pspdata->projectors != NULL) {
+    for (i=0; i<pspdata->n_projectors; i++) {
+      pspio_projector_free(pspdata->projectors[i]);
     }
-    free(pspdata->kb_projectors);
-    pspdata->kb_projectors = NULL;
+    free(pspdata->projectors);
+    pspdata->projectors = NULL;
   }
-  pspdata->n_kbproj = 0;
+  pspdata->n_projectors = 0;
   pspdata->l_local = 0;
-  pspdata->kb_l_max = 0;
+  pspdata->projectors_l_max = 0;
   if (pspdata->vlocal != NULL) {
     pspio_potential_free(pspdata->vlocal);
     pspdata->vlocal = NULL;
@@ -520,44 +520,60 @@ pspio_potential_t * pspio_pspdata_get_potential(pspio_pspdata_t *pspdata, const 
 }
 
 
-int pspio_pspdata_set_n_kbproj(pspio_pspdata_t *pspdata, const int n_kbproj){
+int pspio_pspdata_set_n_projectors(pspio_pspdata_t *pspdata, const int n_projectors){
   assert(pspdata != NULL);
 
   return PSPIO_SUCCESS;
 }
 
 
-int pspio_pspdata_get_n_kbproj(pspio_pspdata_t *pspdata){
+int pspio_pspdata_get_n_projectors(pspio_pspdata_t *pspdata){
   assert(pspdata != NULL);
 
-  return pspdata->n_kbproj;
+  return pspdata->n_projectors;
 }
 
 
-int pspio_pspdata_set_kb_projectors(pspio_pspdata_t *pspdata, const pspio_projector_t **kb_projectors){
+int pspio_pspdata_set_projectors(pspio_pspdata_t *pspdata, const pspio_projector_t **projectors){
   assert(pspdata != NULL);
 
   return PSPIO_SUCCESS;
 }
 
 
-pspio_projector_t ** pspio_pspdata_get_kb_projectors(pspio_pspdata_t *pspdata){
+pspio_projector_t ** pspio_pspdata_get_projectors(pspio_pspdata_t *pspdata){
   assert(pspdata != NULL);
 
-  return pspdata->kb_projectors;
+  return pspdata->projectors;
 }
 
 
-int pspio_pspdata_set_kb_projector(pspio_pspdata_t *pspdata, const int index, const pspio_projector_t *kb_projector){
+int pspio_pspdata_set_projector(pspio_pspdata_t *pspdata, const int index, const pspio_projector_t *projector){
   assert(pspdata != NULL);
 
   return PSPIO_SUCCESS;
 }
 
-pspio_projector_t * pspio_pspdata_get_kb_projector(pspio_pspdata_t *pspdata, const int index){
+pspio_projector_t * pspio_pspdata_get_projector(pspio_pspdata_t *pspdata, const int index){
   assert(pspdata != NULL);
 
-  return pspdata->kb_projectors[index];
+  return pspdata->projectors[index];
+}
+
+
+int pspio_pspdata_set_projectors_l_max(pspio_pspdata_t *pspdata, const int l_max){
+  assert(pspdata != NULL);
+
+  pspdata->projectors_l_max = l_max;
+
+  return PSPIO_SUCCESS;
+}
+
+
+int pspio_pspdata_get_projectors_l_max(pspio_pspdata_t *pspdata){
+  assert(pspdata != NULL);
+
+  return pspdata->projectors_l_max;
 }
 
 
@@ -572,20 +588,6 @@ int pspio_pspdata_get_l_local(pspio_pspdata_t *pspdata){
   assert(pspdata != NULL);
 
   return pspdata->l_local;
-}
-
-
-int pspio_pspdata_set_kb_l_max(pspio_pspdata_t *pspdata, const int kb_l_max){
-  assert(pspdata != NULL);
-
-  return PSPIO_SUCCESS;
-}
-
-
-int pspio_pspdata_get_kb_l_max(pspio_pspdata_t *pspdata){
-  assert(pspdata != NULL);
-
-  return pspdata->kb_l_max;
 }
 
 

@@ -123,7 +123,7 @@ int upf_read_header(FILE *fp, int *np, pspio_pspdata_t *pspdata) {
   
   /* Read the max angular momentun component of the KB projectors */
   FULFILL_OR_RETURN( fgets(line, PSPIO_STRLEN_LINE, fp) != NULL, PSPIO_EIO );
-  FULFILL_OR_RETURN( sscanf(line, "%d",&pspdata->kb_l_max) == 1, PSPIO_EFILE_CORRUPT );
+  FULFILL_OR_RETURN( sscanf(line, "%d",&pspdata->projectors_l_max) == 1, PSPIO_EFILE_CORRUPT );
   
   /* Read the number of points in mesh */
   FULFILL_OR_RETURN( fgets(line, PSPIO_STRLEN_LINE, fp) != NULL, PSPIO_EIO );
@@ -131,7 +131,7 @@ int upf_read_header(FILE *fp, int *np, pspio_pspdata_t *pspdata) {
   
   /* Read the number of wavefunctions and projectors */
   FULFILL_OR_RETURN( fgets(line, PSPIO_STRLEN_LINE, fp) != NULL, PSPIO_EIO );
-  FULFILL_OR_RETURN( sscanf(line, "%d %d", &pspdata->n_states, &pspdata->n_kbproj) == 2, PSPIO_EFILE_CORRUPT );
+  FULFILL_OR_RETURN( sscanf(line, "%d %d", &pspdata->n_states, &pspdata->n_projectors) == 2, PSPIO_EFILE_CORRUPT );
 
   /* Skip info on wavefunctions, as it is repeated in the PP_PSWFC block */
   for (i=0; i<pspdata->n_states+1; i++) {
@@ -266,19 +266,19 @@ int upf_read_nonlocal(FILE *fp, const int np, pspio_pspdata_t *pspdata) {
   /* Allocate memory */
   SUCCEED_OR_RETURN( pspio_qn_alloc(&qn) );
 
-  proj_j = (double *) malloc (pspdata->n_kbproj * sizeof(double));
+  proj_j = (double *) malloc (pspdata->n_projectors * sizeof(double));
   FULFILL_OR_EXIT(proj_j != NULL, PSPIO_ENOMEM);
 
   projector_read = (double *) malloc (np * sizeof(double));
   FULFILL_OR_EXIT(projector_read != NULL, PSPIO_ENOMEM);
 
-  pspdata->kb_projectors = (pspio_projector_t **) malloc ( pspdata->n_kbproj*sizeof(pspio_projector_t *));
-  FULFILL_OR_EXIT(pspdata->kb_projectors != NULL, PSPIO_ENOMEM);
-  for (i=0; i<pspdata->n_kbproj; i++) pspdata->kb_projectors[i] = NULL;
+  pspdata->projectors = (pspio_projector_t **) malloc ( pspdata->n_projectors*sizeof(pspio_projector_t *));
+  FULFILL_OR_EXIT(pspdata->projectors != NULL, PSPIO_ENOMEM);
+  for (i=0; i<pspdata->n_projectors; i++) pspdata->projectors[i] = NULL;
 
-  ekb = (double *) malloc (pspdata->n_kbproj*sizeof(double));
+  ekb = (double *) malloc (pspdata->n_projectors*sizeof(double));
   FULFILL_OR_EXIT(ekb != NULL, PSPIO_ENOMEM);
-  memset(ekb, 0, pspdata->n_kbproj*sizeof(double));
+  memset(ekb, 0, pspdata->n_projectors*sizeof(double));
 
   /* We start by reading the KB energies, as it is more convinient this way */
   DEFER_FUNC_ERROR( upf_tag_init(fp,"PP_DIJ",NO_GO_BACK) );
@@ -308,18 +308,18 @@ int upf_read_nonlocal(FILE *fp, const int np, pspio_pspdata_t *pspdata) {
       FULFILL_OR_BREAK( fgets(line, PSPIO_STRLEN_LINE, fp) != NULL, PSPIO_EIO );
     }
     /* Read j quantum numbers */
-    for (i=0; i<pspdata->n_kbproj; i++) {
+    for (i=0; i<pspdata->n_projectors; i++) {
       FULFILL_OR_BREAK( fgets(line, PSPIO_STRLEN_LINE, fp) != NULL, PSPIO_EIO );
       FULFILL_OR_BREAK( sscanf(line,"%d %lf",&j, &proj_j[i]) == 2, PSPIO_EFILE_CORRUPT );
     }
   } else {
-    for (i=0; i<pspdata->n_kbproj; i++) proj_j[i] = 0.0;
+    for (i=0; i<pspdata->n_projectors; i++) proj_j[i] = 0.0;
   }
 
   /* Now we go back and read the projector functions */
   SKIP_FUNC_ON_ERROR( upf_tag_init(fp, "PP_NONLOCAL", GO_BACK) );
 
-  for (i=0; i<pspdata->n_kbproj; i++){
+  for (i=0; i<pspdata->n_projectors; i++){
     SUCCEED_OR_BREAK( upf_tag_init(fp, "PP_BETA", NO_GO_BACK) );
 
     FULFILL_OR_BREAK( fgets(line, PSPIO_STRLEN_LINE, fp) != NULL, PSPIO_EIO );
@@ -350,8 +350,8 @@ int upf_read_nonlocal(FILE *fp, const int np, pspio_pspdata_t *pspdata) {
     /* Store the projectors in the pspdata structure */
     SUCCEED_OR_BREAK( pspio_qn_init(qn, 0, l, proj_j[i]) );
     SUCCEED_OR_BREAK(
-      pspio_projector_alloc( &(pspdata->kb_projectors[i]), np) );
-    SUCCEED_OR_BREAK( pspio_projector_init(pspdata->kb_projectors[i], qn, ekb[i], pspdata->mesh, projector_read) );
+      pspio_projector_alloc( &(pspdata->projectors[i]), np) );
+    SUCCEED_OR_BREAK( pspio_projector_init(pspdata->projectors[i], qn, ekb[i], pspdata->mesh, projector_read) );
 
     /* Check end tag */
     if ( pspio_error_get_last(__func__) == PSPIO_SUCCESS ) {
@@ -403,8 +403,8 @@ int upf_read_local(FILE *fp, const int np, pspio_pspdata_t *pspdata) {
   pspdata->l_local = -1;
   for (i=0; i<pspdata->l_max+1; i++) {
     n = 0;
-    for (j=0; j<pspdata->n_kbproj; j++) {
-      if ( pspio_qn_get_l(pspio_projector_get_qn(pspdata->kb_projectors[j])) == i ) n++;
+    for (j=0; j<pspdata->n_projectors; j++) {
+      if ( pspio_qn_get_l(pspio_projector_get_qn(pspdata->projectors[j])) == i ) n++;
     }
     if ( n == 0 ) pspdata->l_local = i;
   }

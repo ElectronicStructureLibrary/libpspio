@@ -66,12 +66,12 @@ typedef struct{
   int n_potentials;              /**< number of pseudopotentials */
   pspio_potential_t **potentials; /**< struc with pseudopotentials */ 
 
-  /* Kleinman and Bylander non-local projectors */
-  int n_kbproj;                      /**< number of Kleinman and Bylander projectors */
-  pspio_projector_t **kb_projectors; /**< Kleinman and Bylander projectors */
-  int l_local;                       /**< angular momentum channel of local potential */
-  int kb_l_max;                      /**< maximum angular momentum of KB projectors*/
-  pspio_potential_t *vlocal;         /**< local potential for the KB form of the pseudopotentials */ 
+  /* Non-local projectors */
+  int n_projectors;               /**< number of projectors */
+  pspio_projector_t **projectors; /**< projectors */
+  int projectors_l_max;           /**< maximum angular momentum of considered in the projectors */
+  int l_local;                    /**< angular momentum channel of local potential */
+  pspio_potential_t *vlocal;      /**< local potential for the non-local form of the pseudopotentials */ 
 
   /* Exchange and correlation data, including non-linear core corrections */
   pspio_xc_t *xc; /**< xc structure */
@@ -343,44 +343,57 @@ pspio_potential_t * pspio_pspdata_get_potential(pspio_pspdata_t *pspdata, const 
 
 /**
  * @param[in,out] pspdata: pointer to pspdata structure
- * @param[in] n_kbproj: number of KB projectors
+ * @param[in] n_projectors: number of projectors
  * @return error code
  */
-int pspio_pspdata_set_n_kbproj(pspio_pspdata_t *pspdata, const int n_kbproj);
+int pspio_pspdata_set_n_projectors(pspio_pspdata_t *pspdata, const int n_projectors);
 
 /**
  * @param[in] pspdata: pointer to pspdata structure
- * @return number of KB projectors
+ * @return number of projectors
  */
-int pspio_pspdata_get_n_kbproj(pspio_pspdata_t *pspdata);
+int pspio_pspdata_get_n_projectors(pspio_pspdata_t *pspdata);
 
 /**
  * @param[in,out] pspdata: pointer to pspdata structure
- * @param[in] kb_projectors: pointer to kb_projectors array
+ * @param[in] projectors: pointer to projectors array
  * @return error code
  */
-int pspio_pspdata_set_kb_projectors(pspio_pspdata_t *pspdata, const pspio_projector_t **kb_projectors);
+int pspio_pspdata_set_projectors(pspio_pspdata_t *pspdata, const pspio_projector_t **projectors);
 
 /**
  * @param[in] pspdata: pointer to pspdata structure
- * @return pointer to KB projectors array
+ * @return pointer to projectors array
  */
-pspio_projector_t ** pspio_pspdata_get_kb_projectors(pspio_pspdata_t *pspdata);
+pspio_projector_t ** pspio_pspdata_get_projectors(pspio_pspdata_t *pspdata);
 
 /**
  * @param[in,out] pspdata: pointer to pspdata structure
- * @param[in] index: index of kb_projector to be set
- * @param[in] kb_projector: pointer to kb_projector
+ * @param[in] index: index of projector to be set
+ * @param[in] projector: pointer to projector
  * @return error code
  */
-int pspio_pspdata_set_kb_projector(pspio_pspdata_t *pspdata, const int index, const pspio_projector_t *kb_projector);
+int pspio_pspdata_set_projector(pspio_pspdata_t *pspdata, const int index, const pspio_projector_t *projector);
 
 /**
  * @param[in] pspdata: pointer to pspdata structure
- * @param[in] index: index of KB projector to get
- * @return pointer to KB projector
+ * @param[in] index: index of projector to get
+ * @return pointer to projector
  */
-pspio_projector_t * pspio_pspdata_get_kb_projector(pspio_pspdata_t *pspdata, const int index);
+pspio_projector_t * pspio_pspdata_get_projector(pspio_pspdata_t *pspdata, const int index);
+
+/**
+ * @param[in,out] pspdata: pointer to pspdata structure
+ * @param[in] projectors_l_max: maximal angular momentum of projectors
+ * @return error code
+ */
+int pspio_pspdata_set_projectors_l_max(pspio_pspdata_t *pspdata, const int l_max);
+
+/**
+ * @param[in] pspdata: pointer to pspdata structure
+ * @return maximal angular momentum of projectors.
+ */
+int pspio_pspdata_get_projectors_l_max(pspio_pspdata_t *pspdata);
 
 /**
  * @param[in,out] pspdata: pointer to pspdata structure
@@ -394,19 +407,6 @@ int pspio_pspdata_set_l_local(pspio_pspdata_t *pspdata, const int l_local);
  * @return angular momentum channel of local potential
  */
 int pspio_pspdata_get_l_local(pspio_pspdata_t *pspdata);
-
-/**
- * @param[in,out] pspdata: pointer to pspdata structure
- * @param[in] kb_l_max: maximal angular momentum of KB projectors
- * @return error code
- */
-int pspio_pspdata_set_kb_l_max(pspio_pspdata_t *pspdata, const int kb_l_max);
-
-/**
- * @param[in] pspdata: pointer to pspdata structure
- * @return maximal angular momentum of KB projectors.
- */
-int pspio_pspdata_get_kb_l_max(pspio_pspdata_t *pspdata);
 
 /**
  * @param[in,out] pspdata: pointer to pspdata structure

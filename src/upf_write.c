@@ -87,14 +87,14 @@ int upf_write_header(FILE *fp, const pspio_pspdata_t *pspdata) {
   
   /* Write the max angular momentun component */
   fprintf(fp, "%5d                  Max angular momentum component\n",
-    pspdata->kb_l_max);
+    pspdata->projectors_l_max);
  
   /* Write the number of points in mesh */
   fprintf(fp, "%5d                  Number of points in mesh\n",
     pspdata->mesh->np);
   
   /* Write the number of wavefunctions and projectors */
-  fprintf(fp, "%5d%5d             Number of Wavefunctions, Number of Projectors\n", pspdata->n_states, pspdata->n_kbproj);
+  fprintf(fp, "%5d%5d             Number of Wavefunctions, Number of Projectors\n", pspdata->n_states, pspdata->n_projectors);
 
   /* Write wavefunctions info */
   fprintf(fp, " Wavefunctions         nl  l   occ\n");
@@ -167,13 +167,13 @@ void upf_write_nonlocal(FILE *fp, const pspio_pspdata_t *pspdata) {
   fprintf(fp, "<PP_NONLOCAL>\n");
 
   /* Write projectors */
-  for (ikb=0; ikb<pspdata->n_kbproj; ikb++) {
-    qn = pspio_projector_get_qn(pspdata->kb_projectors[ikb]);
+  for (ikb=0; ikb<pspdata->n_projectors; ikb++) {
+    qn = pspio_projector_get_qn(pspdata->projectors[ikb]);
     fprintf(fp, "  <PP_BETA>\n");
     fprintf(fp, "%5d%5d             Beta    L\n", ikb+1, pspio_qn_get_l(qn));
     fprintf(fp, "%6d\n", pspdata->mesh->np);
     for (i=0; i<pspdata->mesh->np; i++) {
-      proj = pspio_projector_eval(pspdata->kb_projectors[ikb], pspdata->mesh->r[i]);
+      proj = pspio_projector_eval(pspdata->projectors[ikb], pspdata->mesh->r[i]);
       if (i != 0 && i % 4 == 0) fprintf(fp, "\n");
       proj *= 2.0*pspdata->mesh->r[i];
       fprintf(fp, " %18.11E", proj);
@@ -184,9 +184,9 @@ void upf_write_nonlocal(FILE *fp, const pspio_pspdata_t *pspdata) {
   /* Write the KB energies */
   fprintf(fp, "  <PP_DIJ>\n");
   fprintf(fp, "%5d                  Number of nonzero Dij\n",
-    pspdata->n_kbproj);
-  for (ikb=0; ikb<pspdata->n_kbproj; ikb++) {
-    ekb = pspio_projector_get_energy(pspdata->kb_projectors[ikb]);
+    pspdata->n_projectors);
+  for (ikb=0; ikb<pspdata->n_projectors; ikb++) {
+    ekb = pspio_projector_get_energy(pspdata->projectors[ikb]);
     ekb /= 2.0;
     fprintf(fp, "%5d%5d%19.11E\n", ikb+1, ikb+1, ekb);
   }
@@ -283,8 +283,8 @@ void upf_write_addinfo(FILE *fp, const pspio_pspdata_t *pspdata) {
   }
   
   /* Write projectors data */
-  for (is=0; is<pspdata->n_kbproj; is++) {
-    qn = pspio_projector_get_qn(pspdata->kb_projectors[is]);
+  for (is=0; is<pspdata->n_projectors; is++) {
+    qn = pspio_projector_get_qn(pspdata->projectors[is]);
     fprintf(fp, "  %2d  %4.2f\n", pspio_qn_get_l(qn), pspio_qn_get_j(qn));
   }
 
