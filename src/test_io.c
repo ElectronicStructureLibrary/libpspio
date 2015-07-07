@@ -50,7 +50,7 @@ int main(int argc, char *argv[]) {
 
   /* Init pspdata */
   DEBUG_PRINT("test_io: initializing pspdata\n");
-  CHECK_STAT(pspio_pspdata_init(&pspdata), PSPIO_SUCCESS);
+  CHECK_STAT(pspio_pspdata_alloc(&pspdata), PSPIO_SUCCESS);
   DEBUG_PRINT("\n");
 
   /* Check parsing of file */
