@@ -96,7 +96,7 @@ START_TEST(test_qn_cmp_diff)
 {
   pspio_qn_init(qn1, 1, 2, 0.0);
   pspio_qn_init(qn2, 1, 2, 2.5);
-  ck_assert(pspio_qn_cmp(qn1, qn2) == PSPIO_QN_DIFF);
+  ck_assert(pspio_qn_cmp(qn1, qn2) == PSPIO_DIFF);
 }
 END_TEST
 
@@ -104,7 +104,7 @@ START_TEST(test_qn_cmp_mtequal)
 {
   pspio_qn_init(qn1, 1, 2, 0.0);
   pspio_qn_init(qn2, 2, 2, 0.0);
-  ck_assert(pspio_qn_cmp(qn1, qn2) == PSPIO_QN_MTEQUAL);
+  ck_assert(pspio_qn_cmp(qn1, qn2) == PSPIO_MTEQUAL);
 }
 END_TEST
 
@@ -112,7 +112,7 @@ START_TEST(test_qn_cmp_equal)
 {
   pspio_qn_init(qn1, 1, 2, 0.0);
   pspio_qn_init(qn2, 1, 2, 0.0);
-  ck_assert(pspio_qn_cmp(qn1, qn2) == PSPIO_QN_EQUAL);
+  ck_assert(pspio_qn_cmp(qn1, qn2) == PSPIO_EQUAL);
 }
 END_TEST
 
@@ -124,7 +124,7 @@ START_TEST(test_qn_copy_null)
   qn2 = NULL;
 
   ck_assert(pspio_qn_copy(&qn2, qn1) == PSPIO_SUCCESS);
-  ck_assert(pspio_qn_cmp(qn1, qn2) == PSPIO_QN_EQUAL);
+  ck_assert(pspio_qn_cmp(qn1, qn2) == PSPIO_EQUAL);
 }
 END_TEST
 
@@ -133,7 +133,7 @@ START_TEST(test_qn_copy_nonnull)
   pspio_qn_init(qn1, 1, 2, 0.0);
   pspio_qn_init(qn2, 1, 2, 2.5);
   ck_assert(pspio_qn_copy(&qn2, qn1) == PSPIO_SUCCESS);
-  ck_assert(pspio_qn_cmp(qn1, qn2) == PSPIO_QN_EQUAL);
+  ck_assert(pspio_qn_cmp(qn1, qn2) == PSPIO_EQUAL);
 }
 END_TEST
 

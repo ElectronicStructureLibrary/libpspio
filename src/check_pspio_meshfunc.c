@@ -122,7 +122,7 @@ void meshfunc_compare_values(const pspio_mesh_t *mesh, const pspio_meshfunc_t *m
   pspio_mesh_t *m;
   
   m = pspio_meshfunc_get_mesh(meshfunc);
-  ck_assert(pspio_mesh_cmp(m, mesh) == PSPIO_MESH_EQUAL);
+  ck_assert(pspio_mesh_cmp(m, mesh) == PSPIO_EQUAL);
   ff   = pspio_meshfunc_get_function(meshfunc);
   ffp  = pspio_meshfunc_get_deriv1(meshfunc);
   ffpp = pspio_meshfunc_get_deriv2(meshfunc);

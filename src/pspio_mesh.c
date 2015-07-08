@@ -292,13 +292,13 @@ int pspio_mesh_cmp(const pspio_mesh_t *mesh1, const pspio_mesh_t *mesh2) {
 
   assert((mesh1 != NULL) && (mesh2 != NULL));
 
-  result = mesh1->np == mesh2->np ? PSPIO_MESH_EQUAL : PSPIO_MESH_MTEQUAL;
+  result = mesh1->np == mesh2->np ? PSPIO_EQUAL : PSPIO_MTEQUAL;
 
   if ( (mesh1->type == PSPIO_MESH_UNKNOWN) && (mesh2->type == PSPIO_MESH_UNKNOWN) ) {
     /* We need to compare the points explicitly */
     np = mesh1->np < mesh2->np ? mesh2->np : mesh1->np;
     for (i=0; i<np; i++) {
-      if ( mesh1->r[i] != mesh2->r[i] ) return PSPIO_MESH_DIFF;
+      if ( mesh1->r[i] != mesh2->r[i] ) return PSPIO_DIFF;
     }
     return result;
   } else if ( (mesh1->type == mesh2->type) &&
@@ -306,6 +306,6 @@ int pspio_mesh_cmp(const pspio_mesh_t *mesh1, const pspio_mesh_t *mesh2) {
 	      (fabs(mesh2->b - mesh1->b) < 1.0e-10) ) {
     return result;
   } else {
-    return PSPIO_MESH_DIFF;
+    return PSPIO_DIFF;
   }
 }

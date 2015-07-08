@@ -115,11 +115,11 @@ int pspio_qn_cmp(const pspio_qn_t *qn1, const pspio_qn_t *qn2) {
 
   if ( (qn1->n == qn2->n) && (qn1->l == qn2->l) &&
        (fabs(qn2->j - qn1->j) < 1.0e-9) ) {
-    return PSPIO_QN_EQUAL;
+    return PSPIO_EQUAL;
   } else if ( (qn1->l == qn2->l) && (fabs(qn2->j - qn1->j) < 1.0e-9) ) {
-    return PSPIO_QN_MTEQUAL;
+    return PSPIO_MTEQUAL;
   } else {
-    return PSPIO_QN_DIFF;
+    return PSPIO_DIFF;
   }
 }
 

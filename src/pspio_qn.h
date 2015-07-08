@@ -124,11 +124,9 @@ double pspio_qn_get_j(const pspio_qn_t *qn);
  * Compares two sets of quantum numbers.
  * @param[in] qn1: first set to compare
  * @param[in] qn2: second set to compare
- * @return PSPIO_QN_EQUAL for strict equality, PSPIO_QN_MTEQUAL when the
- *         angular momenta are equal, PSPIO_QN_DIFF when different,
+ * @return PSPIO_EQUAL for strict equality, PSPIO_MTEQUAL when the
+ *         angular momenta are equal, PSPIO_DIFF when different,
  *         PSPIO_ERROR if a problem occured
- * @note For now, the return value can be interpreted in different ways
- *       depending on its sign.
  */
 int pspio_qn_cmp(const pspio_qn_t *qn1, const pspio_qn_t *qn2);
 

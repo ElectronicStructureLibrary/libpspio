@@ -179,7 +179,7 @@ START_TEST(test_mesh_cmp_diff_type)
 {
   pspio_mesh_init_from_parameters(m1, PSPIO_MESH_LINEAR, 1.0, 2.0);
   pspio_mesh_init_from_parameters(m2, PSPIO_MESH_LOG1, 1.0, 2.0);
-  ck_assert(pspio_mesh_cmp(m1, m2) == PSPIO_MESH_DIFF);
+  ck_assert(pspio_mesh_cmp(m1, m2) == PSPIO_DIFF);
 }
 END_TEST
 
@@ -187,7 +187,7 @@ START_TEST(test_mesh_cmp_diff_a)
 {
   pspio_mesh_init_from_parameters(m1, PSPIO_MESH_LINEAR, 1.0, 2.0);
   pspio_mesh_init_from_parameters(m2, PSPIO_MESH_LINEAR, 2.0, 2.0);
-  ck_assert(pspio_mesh_cmp(m1, m2) == PSPIO_MESH_DIFF);
+  ck_assert(pspio_mesh_cmp(m1, m2) == PSPIO_DIFF);
 }
 END_TEST
 
@@ -195,7 +195,7 @@ START_TEST(test_mesh_cmp_diff_b)
 {
   pspio_mesh_init_from_parameters(m1, PSPIO_MESH_LINEAR, 2.0, 3.0);
   pspio_mesh_init_from_parameters(m2, PSPIO_MESH_LINEAR, 2.0, 2.0);
-  ck_assert(pspio_mesh_cmp(m1, m2) == PSPIO_MESH_DIFF);
+  ck_assert(pspio_mesh_cmp(m1, m2) == PSPIO_DIFF);
 }
 END_TEST
 
@@ -206,7 +206,7 @@ START_TEST(test_mesh_cmp_diff_r)
 
   pspio_mesh_init_from_points(m1, r1, NULL);
   pspio_mesh_init_from_points(m2, r2, NULL);
-  ck_assert(pspio_mesh_cmp(m1, m2) == PSPIO_MESH_DIFF);
+  ck_assert(pspio_mesh_cmp(m1, m2) == PSPIO_DIFF);
 }
 END_TEST
 
@@ -217,7 +217,7 @@ START_TEST(test_mesh_cmp_mtequal)
   m2 = NULL;
   pspio_mesh_alloc(&m2, 10);
   pspio_mesh_init_from_parameters(m2, PSPIO_MESH_LINEAR, 1.0, 2.0);
-  ck_assert(pspio_mesh_cmp(m1, m2) == PSPIO_MESH_MTEQUAL);
+  ck_assert(pspio_mesh_cmp(m1, m2) == PSPIO_MTEQUAL);
 }
 END_TEST
 
@@ -225,7 +225,7 @@ START_TEST(test_mesh_cmp_equal)
 {
   pspio_mesh_init_from_parameters(m1, PSPIO_MESH_LINEAR, 1.0, 2.0);
   pspio_mesh_init_from_parameters(m2, PSPIO_MESH_LINEAR, 1.0, 2.0);
-  ck_assert(pspio_mesh_cmp(m1, m2) == PSPIO_MESH_EQUAL);
+  ck_assert(pspio_mesh_cmp(m1, m2) == PSPIO_EQUAL);
 }
 END_TEST
 
@@ -233,7 +233,7 @@ START_TEST(test_mesh_copy_null)
 {
   pspio_mesh_init_from_parameters(m1, PSPIO_MESH_LOG1, 1.0, 2.0);
   ck_assert(pspio_mesh_copy(&m2, m1) == PSPIO_SUCCESS);
-  ck_assert(pspio_mesh_cmp(m1, m2) == PSPIO_MESH_EQUAL);
+  ck_assert(pspio_mesh_cmp(m1, m2) == PSPIO_EQUAL);
 }
 END_TEST
 
@@ -243,7 +243,7 @@ START_TEST(test_mesh_copy_nonnull)
   pspio_mesh_init_from_parameters(m2, PSPIO_MESH_LOG2, 1.0, 2.0);
 
   ck_assert(pspio_mesh_copy(&m2, m1) == PSPIO_SUCCESS);
-  ck_assert(pspio_mesh_cmp(m1, m2) == PSPIO_MESH_EQUAL);
+  ck_assert(pspio_mesh_cmp(m1, m2) == PSPIO_EQUAL);
 }
 END_TEST
 
@@ -256,7 +256,7 @@ START_TEST(test_mesh_copy_nonnull_size)
   pspio_mesh_init_from_parameters(m2, PSPIO_MESH_LOG2, 1.0, 2.0);
 
   ck_assert(pspio_mesh_copy(&m2, m1) == PSPIO_SUCCESS);
-  ck_assert(pspio_mesh_cmp(m1, m2) == PSPIO_MESH_EQUAL);
+  ck_assert(pspio_mesh_cmp(m1, m2) == PSPIO_EQUAL);
 }
 END_TEST
 

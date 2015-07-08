@@ -107,7 +107,7 @@ void xc_compare_values(const pspio_xc_t *xc, const int exchange, const int corre
   ck_assert( pspio_xc_get_exchange(xc) == exchange );
   ck_assert( pspio_xc_get_correlation(xc) == correlation );
   ck_assert( pspio_xc_get_nlcc_scheme(xc) == nlcc_scheme );
-  ck_assert( pspio_mesh_cmp(pspio_meshfunc_get_mesh(pspio_xc_get_nlcc_density(xc)), mesh) == PSPIO_MESH_EQUAL );
+  ck_assert( pspio_mesh_cmp(pspio_meshfunc_get_mesh(pspio_xc_get_nlcc_density(xc)), mesh) == PSPIO_EQUAL );
   cdp = pspio_meshfunc_get_function(pspio_xc_get_nlcc_density(xc));
   for (i=0; i<pspio_mesh_get_np(mesh); i++) {
     ck_assert_msg( fabs(cd[i] - cdp[i]) < tol, "nlcc density at point %i: interp= %16.10e expected= %16.10e\n", i, cdp[i], cd[i]);

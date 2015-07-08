@@ -117,8 +117,8 @@ void projector_compare_values(const pspio_mesh_t *mesh, const pspio_projector_t 
   int i;
   double *pp;
 
-  ck_assert(pspio_mesh_cmp(pspio_meshfunc_get_mesh(proj->proj), mesh) == PSPIO_MESH_EQUAL);
-  ck_assert(pspio_qn_cmp(pspio_projector_get_qn(proj), qn) == PSPIO_QN_EQUAL);
+  ck_assert(pspio_mesh_cmp(pspio_meshfunc_get_mesh(proj->proj), mesh) == PSPIO_EQUAL);
+  ck_assert(pspio_qn_cmp(pspio_projector_get_qn(proj), qn) == PSPIO_EQUAL);
   ck_assert( fabs(energy - pspio_projector_get_energy(proj)) < tol);
   pp = pspio_meshfunc_get_function(proj->proj);
   for (i=0; i<pspio_mesh_get_np(mesh); i++) {

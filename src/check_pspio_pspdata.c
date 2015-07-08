@@ -124,7 +124,7 @@ END_TEST
 START_TEST(test_pspdata_mesh)
 {
   ck_assert(pspio_pspdata_set_mesh(pspdata, mesh) == PSPIO_SUCCESS);
-  ck_assert(pspio_mesh_cmp(pspio_pspdata_get_mesh(pspdata), mesh) == PSPIO_MESH_EQUAL);
+  ck_assert(pspio_mesh_cmp(pspio_pspdata_get_mesh(pspdata), mesh) == PSPIO_EQUAL);
 }
 END_TEST
 

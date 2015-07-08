@@ -116,8 +116,8 @@ void potential_compare_values(const pspio_mesh_t *mesh, const pspio_potential_t 
   int i;
   double *vv;
 
-  ck_assert(pspio_mesh_cmp(pspio_meshfunc_get_mesh(pot->v), mesh) == PSPIO_MESH_EQUAL);
-  ck_assert(pspio_qn_cmp(pspio_potential_get_qn(pot), qn) == PSPIO_QN_EQUAL);
+  ck_assert(pspio_mesh_cmp(pspio_meshfunc_get_mesh(pot->v), mesh) == PSPIO_EQUAL);
+  ck_assert(pspio_qn_cmp(pspio_potential_get_qn(pot), qn) == PSPIO_EQUAL);
   vv = pspio_meshfunc_get_function(pot->v);
   for (i=0; i<pspio_mesh_get_np(mesh); i++) {
     ck_assert_msg( fabs(v[i] - vv[i]) < tol, "potential at point %i: interp= %16.10e expected= %16.10e\n", i, vv[i], v[i]);

@@ -114,19 +114,11 @@
 
 
 /**
- * Mesh comparison
+ * Comparison
  */
-#define PSPIO_MESH_DIFF    -1
-#define PSPIO_MESH_EQUAL   -2
-#define PSPIO_MESH_MTEQUAL -3
-
-
-/**
- * Quantum numbers
- */
-#define PSPIO_QN_DIFF    -1
-#define PSPIO_QN_EQUAL   -2
-#define PSPIO_QN_MTEQUAL -3
+#define PSPIO_DIFF    -1
+#define PSPIO_EQUAL   -2
+#define PSPIO_MTEQUAL -3
 
 
 /**

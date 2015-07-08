@@ -123,10 +123,10 @@ void state_compare_values(const pspio_state_t *state, const double eigenval, con
   double *wf2;
 
   ck_assert( fabs(eigenval - pspio_state_get_ev(state)) < tol );
-  ck_assert( pspio_qn_cmp(pspio_state_get_qn(state), qn) == PSPIO_QN_EQUAL );
+  ck_assert( pspio_qn_cmp(pspio_state_get_qn(state), qn) == PSPIO_EQUAL );
   ck_assert( fabs(occ - pspio_state_get_occ(state)) < tol );
   ck_assert( fabs(rc - pspio_state_get_rc(state)) < tol );
-  ck_assert( pspio_mesh_cmp(pspio_meshfunc_get_mesh(state->wf), mesh) == PSPIO_MESH_EQUAL );
+  ck_assert( pspio_mesh_cmp(pspio_meshfunc_get_mesh(state->wf), mesh) == PSPIO_EQUAL );
   wf2 = pspio_meshfunc_get_function(state->wf);
   for (i=0; i<pspio_mesh_get_np(mesh); i++) {
     ck_assert_msg( fabs(wf[i] - wf2[i]) < tol, "wavefunction at point %i: interp= %16.10e expected= %16.10e\n", i, wf2[i], wf[i]);
