@@ -423,7 +423,17 @@ pspio_mesh_t * pspio_pspdata_get_mesh(pspio_pspdata_t *pspdata){
 
 
 int pspio_pspdata_set_n_states(pspio_pspdata_t *pspdata, const int n_states){
+  int is;
+
   assert(pspdata != NULL);
+
+  pspdata->n_states = n_states;
+
+  pspdata->states = (pspio_state_t **) malloc ( pspdata->n_states*sizeof(pspio_state_t *));
+  FULFILL_OR_EXIT(pspdata->states != NULL, PSPIO_ENOMEM);
+  for (is=0; is<pspdata->n_states; is++) {
+    pspdata->states[is] = NULL;
+  }
 
   return PSPIO_SUCCESS;
 }
@@ -433,20 +443,6 @@ int pspio_pspdata_get_n_states(pspio_pspdata_t *pspdata){
   assert(pspdata != NULL);
 
   return pspdata->n_states;
-}
-
-
-int pspio_pspdata_set_states(pspio_pspdata_t *pspdata, const pspio_state_t **states){
-  assert(pspdata != NULL);
-
-  return PSPIO_SUCCESS;
-}
-
-
-pspio_state_t ** pspio_pspdata_get_states(pspio_pspdata_t *pspdata){
-  assert(pspdata != NULL);
-
-  return pspdata->states;
 }
 
 
@@ -467,6 +463,8 @@ pspio_state_t * pspio_pspdata_get_state(pspio_pspdata_t *pspdata, const int inde
 int pspio_pspdata_set_scheme(pspio_pspdata_t *pspdata, const int scheme){
   assert(pspdata != NULL);
 
+  pspdata->scheme = scheme;
+
   return PSPIO_SUCCESS;
 }
 
@@ -479,7 +477,17 @@ int pspio_pspdata_get_scheme(pspio_pspdata_t *pspdata){
 
 
 int pspio_pspdata_set_n_potentials(pspio_pspdata_t *pspdata, const int n_potentials){
+  int ip;
+
   assert(pspdata != NULL);
+
+  pspdata->n_potentials = n_potentials;
+
+  pspdata->potentials = (pspio_potential_t **) malloc ( pspdata->n_potentials*sizeof(pspio_potential_t *));
+  FULFILL_OR_EXIT(pspdata->potentials != NULL, PSPIO_ENOMEM);
+  for (ip=0; ip<pspdata->n_potentials; ip++) {
+    pspdata->potentials[ip] = NULL;
+  }
 
   return PSPIO_SUCCESS;
 }
@@ -489,20 +497,6 @@ int pspio_pspdata_get_n_potentials(pspio_pspdata_t *pspdata){
   assert(pspdata != NULL);
 
   return pspdata->n_potentials;
-}
-
-
-int pspio_pspdata_set_potentials(pspio_pspdata_t *pspdata, const pspio_potential_t **potentials){
-  assert(pspdata != NULL);
-
-  return PSPIO_SUCCESS;
-}
-
-
-pspio_potential_t ** pspio_pspdata_get_potentials(pspio_pspdata_t *pspdata){
-  assert(pspdata != NULL);
-
-  return pspdata->potentials;
 }
 
 
@@ -521,7 +515,17 @@ pspio_potential_t * pspio_pspdata_get_potential(pspio_pspdata_t *pspdata, const 
 
 
 int pspio_pspdata_set_n_projectors(pspio_pspdata_t *pspdata, const int n_projectors){
+  int ip;
+
   assert(pspdata != NULL);
+
+  pspdata->n_projectors = n_projectors;
+
+  pspdata->projectors = (pspio_projector_t **) malloc ( pspdata->n_projectors*sizeof(pspio_projector_t *));
+  FULFILL_OR_EXIT(pspdata->projectors != NULL, PSPIO_ENOMEM);
+  for (ip=0; ip<pspdata->n_projectors; ip++) {
+    pspdata->projectors[ip] = NULL;
+  }
 
   return PSPIO_SUCCESS;
 }
@@ -531,20 +535,6 @@ int pspio_pspdata_get_n_projectors(pspio_pspdata_t *pspdata){
   assert(pspdata != NULL);
 
   return pspdata->n_projectors;
-}
-
-
-int pspio_pspdata_set_projectors(pspio_pspdata_t *pspdata, const pspio_projector_t **projectors){
-  assert(pspdata != NULL);
-
-  return PSPIO_SUCCESS;
-}
-
-
-pspio_projector_t ** pspio_pspdata_get_projectors(pspio_pspdata_t *pspdata){
-  assert(pspdata != NULL);
-
-  return pspdata->projectors;
 }
 
 
@@ -579,6 +569,8 @@ int pspio_pspdata_get_projectors_l_max(pspio_pspdata_t *pspdata){
 
 int pspio_pspdata_set_l_local(pspio_pspdata_t *pspdata, const int l_local){
   assert(pspdata != NULL);
+
+  pspdata->l_local = l_local;
 
   return PSPIO_SUCCESS;
 }

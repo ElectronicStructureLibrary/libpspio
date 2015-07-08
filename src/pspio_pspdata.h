@@ -261,19 +261,6 @@ int pspio_pspdata_get_n_states(pspio_pspdata_t *pspdata);
 
 /**
  * @param[in,out] pspdata: pointer to pspdata structure
- * @param[in] states: pointer to states array
- * @return error code
- */
-int pspio_pspdata_set_states(pspio_pspdata_t *pspdata, const pspio_state_t **states);
-
-/**
- * @param[in] pspdata: pointer to pspdata structure
- * @return pointer to states array
- */
-pspio_state_t ** pspio_pspdata_get_states(pspio_pspdata_t *pspdata);
-
-/**
- * @param[in,out] pspdata: pointer to pspdata structure
  * @param[in] index: index of state to be set
  * @param[in] state: pointer to state
  * @return error code
@@ -315,19 +302,6 @@ int pspio_pspdata_get_n_potentials(pspio_pspdata_t *pspdata);
 
 /**
  * @param[in,out] pspdata: pointer to pspdata structure
- * @param[in] potentials: pointer to potentials array
- * @return error code
- */
-int pspio_pspdata_set_potentials(pspio_pspdata_t *pspdata, const pspio_potential_t **potentials);
-
-/**
- * @param[in] pspdata: pointer to pspdata structure
- * @return pointer to potentials array
- */
-pspio_potential_t ** pspio_pspdata_get_potentials(pspio_pspdata_t *pspdata);
-
-/**
- * @param[in,out] pspdata: pointer to pspdata structure
  * @param[in] index: index of potential to be set
  * @param[in] potential: pointer to potential
  * @return error code
@@ -353,19 +327,6 @@ int pspio_pspdata_set_n_projectors(pspio_pspdata_t *pspdata, const int n_project
  * @return number of projectors
  */
 int pspio_pspdata_get_n_projectors(pspio_pspdata_t *pspdata);
-
-/**
- * @param[in,out] pspdata: pointer to pspdata structure
- * @param[in] projectors: pointer to projectors array
- * @return error code
- */
-int pspio_pspdata_set_projectors(pspio_pspdata_t *pspdata, const pspio_projector_t **projectors);
-
-/**
- * @param[in] pspdata: pointer to pspdata structure
- * @return pointer to projectors array
- */
-pspio_projector_t ** pspio_pspdata_get_projectors(pspio_pspdata_t *pspdata);
 
 /**
  * @param[in,out] pspdata: pointer to pspdata structure

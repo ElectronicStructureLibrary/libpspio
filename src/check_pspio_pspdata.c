@@ -135,6 +135,78 @@ START_TEST(test_pspdata_n_states)
 }
 END_TEST
 
+START_TEST(test_pspdata_state)
+{
+
+}
+END_TEST
+
+START_TEST(test_pspdata_scheme)
+{
+  ck_assert(pspio_pspdata_set_scheme(pspdata, PSPIO_SCM_MRPP) == PSPIO_SUCCESS);
+  ck_assert(pspio_pspdata_get_scheme(pspdata) == PSPIO_SCM_MRPP);
+}
+END_TEST
+
+START_TEST(test_pspdata_n_potentials)
+{
+  ck_assert(pspio_pspdata_set_n_potentials(pspdata, 2) == PSPIO_SUCCESS);
+  ck_assert(pspio_pspdata_get_n_potentials(pspdata) == 2);
+}
+END_TEST
+
+START_TEST(test_pspdata_potential)
+{
+
+}
+END_TEST
+
+START_TEST(test_pspdata_n_projectors)
+{
+  ck_assert(pspio_pspdata_set_n_projectors(pspdata, 4) == PSPIO_SUCCESS);
+  ck_assert(pspio_pspdata_get_n_projectors(pspdata) == 4);
+}
+END_TEST
+
+START_TEST(test_pspdata_projector)
+{
+
+}
+END_TEST
+
+START_TEST(test_pspdata_projectors_l_max)
+{
+  ck_assert(pspio_pspdata_set_projectors_l_max(pspdata, 1) == PSPIO_SUCCESS);
+  ck_assert(pspio_pspdata_get_projectors_l_max(pspdata) == 1);
+}
+END_TEST
+
+START_TEST(test_pspdata_l_local)
+{
+  ck_assert(pspio_pspdata_set_l_local(pspdata, -1) == PSPIO_SUCCESS);
+  ck_assert(pspio_pspdata_get_l_local(pspdata) == -1);
+}
+END_TEST
+
+START_TEST(test_pspdata_vlocal)
+{
+
+}
+END_TEST
+
+START_TEST(test_pspdata_xc)
+{
+
+}
+END_TEST
+
+START_TEST(test_pspdata_rho_valence)
+{
+
+}
+END_TEST
+
+
 Suite * make_pspdata_suite(void)
 {
   Suite *s;
@@ -158,8 +230,20 @@ Suite * make_pspdata_suite(void)
   tcase_add_test(tc_getset, test_pspdata_wave_eq);
   tcase_add_test(tc_getset, test_pspdata_total_energy);
   tcase_add_test(tc_getset, test_pspdata_mesh);
+  tcase_add_test(tc_getset, test_pspdata_n_states);
+  tcase_add_test(tc_getset, test_pspdata_state);
+  tcase_add_test(tc_getset, test_pspdata_scheme);
+  tcase_add_test(tc_getset, test_pspdata_n_potentials);
+  tcase_add_test(tc_getset, test_pspdata_potential);
+  tcase_add_test(tc_getset, test_pspdata_n_projectors);
+  tcase_add_test(tc_getset, test_pspdata_projector);
+  tcase_add_test(tc_getset, test_pspdata_projectors_l_max);
+  tcase_add_test(tc_getset, test_pspdata_l_local);
+  tcase_add_test(tc_getset, test_pspdata_vlocal);
+  tcase_add_test(tc_getset, test_pspdata_xc);
+  tcase_add_test(tc_getset, test_pspdata_rho_valence);
   suite_add_tcase(s, tc_getset);
-    
+
   return s;
 }
 
