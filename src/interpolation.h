@@ -76,7 +76,6 @@ typedef struct{
  */
 int interpolation_alloc(interpolation_t **interp, const int method, const int np);
 
-
 /**
  * Duplicates an interpolation structure
  * 
@@ -90,7 +89,6 @@ int interpolation_alloc(interpolation_t **interp, const int method, const int np
  */
 int interpolation_copy(interpolation_t **dst, const interpolation_t *src);
 
-
 /**
  * Initializes the interpolation object.
  * @param[in,out] interp: interpolation structure to be initialized.
@@ -99,7 +97,6 @@ int interpolation_copy(interpolation_t **dst, const interpolation_t *src);
  * @return error code
  */
 int interpolation_init(interpolation_t *interp, const pspio_mesh_t *mesh, const double *f);
-
 
 /**
  * Frees all memory associated with the interpolation structure
@@ -115,7 +112,6 @@ void interpolation_free(interpolation_t *interp);
  * Atomic routines                                                    *
  **********************************************************************/
 
-
 /**
  * Evaluates the interpolated function at a given point
  * 
@@ -125,7 +121,6 @@ void interpolation_free(interpolation_t *interp);
  */
 double interpolation_eval(const interpolation_t *interp, const double r);
 
-
 /**
  * Evaluates the derivative of the interpolated function at arbitrary points
  * 
@@ -134,7 +129,6 @@ double interpolation_eval(const interpolation_t *interp, const double r);
  * @return value of the derivative
  */
 double interpolation_eval_deriv(const interpolation_t *interp, const double r);
-
 
 /**
  * Returns the value of the second derivative of a function at arbitrary points

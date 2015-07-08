@@ -37,7 +37,6 @@
  */
 void pspio_version(int *major, int *minor, int *micro);
 
-
 /**
  * Provide the package string of the library.
  * @param[out] info: package name and version

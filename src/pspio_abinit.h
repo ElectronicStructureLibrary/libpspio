@@ -45,7 +45,6 @@
  */
 int pspio_abinit_read(FILE *fp, pspio_pspdata_t *pspdata, const int format);
 
-
 /**
  * Write the data contained in the psp_data structure to a file using an Abinit format
  * @param[in] fp a stream of the input file
@@ -54,6 +53,5 @@ int pspio_abinit_read(FILE *fp, pspio_pspdata_t *pspdata, const int format);
  * @return error code
  */
 int pspio_abinit_write(FILE *fp, const pspio_pspdata_t *pspdata, const int format);
-
 
 #endif

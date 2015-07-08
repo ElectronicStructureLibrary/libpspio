@@ -72,7 +72,6 @@ int libxc_to_abinit(const int exchange, const int correlation, int *pspxc);
  */
 int abinit_read_header(FILE *fp, const int format, pspio_pspdata_t *pspdata);
 
-
 /**
  * Write the ABINIT header
  * @param[in] fp: a stream of the input file
@@ -81,6 +80,5 @@ int abinit_read_header(FILE *fp, const int format, pspio_pspdata_t *pspdata);
  * @return error code
  */
 int abinit_write_header(FILE *fp, const int format, const pspio_pspdata_t *pspdata);
-
 
 #endif

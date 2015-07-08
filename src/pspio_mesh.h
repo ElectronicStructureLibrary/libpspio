@@ -59,7 +59,6 @@ typedef struct{
  */
 int pspio_mesh_alloc(pspio_mesh_t **mesh, const int np);
 
-
 /**
  * Initializes the mesh data.
  * @param[in,out] mesh: mesh structure to be initialized
@@ -76,7 +75,6 @@ int pspio_mesh_alloc(pspio_mesh_t **mesh, const int np);
 int pspio_mesh_init(pspio_mesh_t *mesh, const int type, const double a, 
        const double b, const double *r, const double *rab);
 
-
 /**
  * Sets the mesh data from a list of points. The function will try to determine
  * the type of mesh. If it is not able to do it it will set it to
@@ -91,9 +89,7 @@ int pspio_mesh_init(pspio_mesh_t *mesh, const int type, const double a,
  * @note If rab is null it will be determined automatically, otherwise 
  *       consistency will be checked between r and rab.
  */
-void pspio_mesh_init_from_points(pspio_mesh_t *mesh, const double *r, 
-				const double *rab);
-
+void pspio_mesh_init_from_points(pspio_mesh_t *mesh, const double *r, const double *rab);
 
 /**
  * Generates the mesh from the mesh type and parameters.
@@ -104,9 +100,7 @@ void pspio_mesh_init_from_points(pspio_mesh_t *mesh, const double *r,
  * @note The mesh pointer has to be allocated first with the pspio_mesh_alloc
  *       method.
  */
-void pspio_mesh_init_from_parameters(pspio_mesh_t *mesh, const int type, 
-				    const double a, const double b);
-
+void pspio_mesh_init_from_parameters(pspio_mesh_t *mesh, const int type, const double a, const double b);
 
 /**
  * Duplicates a mesh structure
@@ -121,7 +115,6 @@ void pspio_mesh_init_from_parameters(pspio_mesh_t *mesh, const int type,
  */
 int pspio_mesh_copy(pspio_mesh_t **dst, const pspio_mesh_t *src);
 
-
 /**
  * Frees all memory associated with mesh structure
  * 
@@ -130,7 +123,6 @@ int pspio_mesh_copy(pspio_mesh_t **dst, const pspio_mesh_t *src);
  *       compoments have not been allocated.
  */
 void pspio_mesh_free(pspio_mesh_t *mesh);
-
 
 
 /**********************************************************************
@@ -145,7 +137,6 @@ void pspio_mesh_free(pspio_mesh_t *mesh);
  */
 int pspio_mesh_get_np(const pspio_mesh_t *mesh);
 
-
 /**
  * Returns the a and b parameters of the mesh
  * 
@@ -153,7 +144,6 @@ int pspio_mesh_get_np(const pspio_mesh_t *mesh);
  * @return the a parameter (depends on mesh type)
  */
 double pspio_mesh_get_a(const pspio_mesh_t *mesh);
-
 
 /**
  * Returns the a and b parameters of the mesh
@@ -164,7 +154,6 @@ double pspio_mesh_get_a(const pspio_mesh_t *mesh);
  */
 double pspio_mesh_get_b(const pspio_mesh_t *mesh);
 
-
 /**
  * Returns a pointer to the points of the mesh
  * 
@@ -173,7 +162,6 @@ double pspio_mesh_get_b(const pspio_mesh_t *mesh);
  */
 double *pspio_mesh_get_r(const pspio_mesh_t *mesh);
 
-
 /**
  * Returns a pointer to the di/dr of the mesh
  * 
@@ -181,6 +169,7 @@ double *pspio_mesh_get_r(const pspio_mesh_t *mesh);
  * @return pointer to array of di/dr points
  */
 double *pspio_mesh_get_rab(const pspio_mesh_t *mesh);
+
 
 /**********************************************************************
  * Utility routines                                                   *

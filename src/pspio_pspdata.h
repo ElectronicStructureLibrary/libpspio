@@ -94,7 +94,6 @@ typedef struct{
  */
 int pspio_pspdata_alloc(pspio_pspdata_t **pspdata);
 
-
 /**
  * Frees all memory associated with pspdata structure
  * @param[in,out] pspdata: pointer to pspdata structure to be
@@ -110,8 +109,7 @@ void pspio_pspdata_free(pspio_pspdata_t *pspdata);
  * @note The file format might be UNKNOWN. In that case all the other
  *       formats are tried until the correct one is found.
  */
-int pspio_pspdata_read(pspio_pspdata_t *pspdata, const int file_format, 
-      const char *file_name);
+int pspio_pspdata_read(pspio_pspdata_t *pspdata, const int file_format, const char *file_name);
 
 /**
  * Writes the pspdata to a given file. If the specified file format is equal
@@ -122,8 +120,7 @@ int pspio_pspdata_read(pspio_pspdata_t *pspdata, const int file_format,
  * @param[in,out] file_format: the format of file_name.
  * @return error code.
  */
-int pspio_pspdata_write(pspio_pspdata_t *pspdata, const int file_format,
-      const char *file_name);
+int pspio_pspdata_write(pspio_pspdata_t *pspdata, const int file_format, const char *file_name);
 
 /**
  * Reset all the pspdata structure data

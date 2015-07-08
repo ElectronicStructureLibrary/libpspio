@@ -58,7 +58,6 @@ typedef struct{
  */
 int pspio_potential_alloc(pspio_potential_t **potential, const int np);
 
-
 /**
  * Initializes the potential data.
  * @param[in,out] potential: potential structure to be initialized
@@ -69,9 +68,7 @@ int pspio_potential_alloc(pspio_potential_t **potential, const int np);
  * @note The potential pointer has to be allocated first with the
  *       pspio_potential_alloc method.
  */
-int pspio_potential_init(pspio_potential_t *potential, const pspio_qn_t *qn, 
-			const pspio_mesh_t *mesh, const double *vofr);
-
+int pspio_potential_init(pspio_potential_t *potential, const pspio_qn_t *qn, const pspio_mesh_t *mesh, const double *vofr);
 
 /**
  * Duplicates a potential structure.
@@ -84,7 +81,6 @@ int pspio_potential_init(pspio_potential_t *potential, const pspio_qn_t *qn,
  *        then it is allocated here.
  */
 int pspio_potential_copy(pspio_potential_t **dst, const pspio_potential_t *src);
-
 
 /**
  * Frees all memory associated with potential structure
@@ -110,7 +106,6 @@ void pspio_potential_free(pspio_potential_t *potential);
  */
 double pspio_potential_eval(const pspio_potential_t *potential, double r);
 
-
 /**
  * Returns the value of the derivative of the potential at an arbitrary point
  * 
@@ -121,7 +116,6 @@ double pspio_potential_eval(const pspio_potential_t *potential, double r);
  */
 double pspio_potential_eval_deriv(const pspio_potential_t *potential, double r);
 
-
 /**
  * Returns the value of the second derivative of the potential at an arbitrary point
  * 
@@ -131,7 +125,6 @@ double pspio_potential_eval_deriv(const pspio_potential_t *potential, double r);
  * @note The potential pointer has to be fully set.
  */
 double pspio_potential_eval_deriv2(const pspio_potential_t *potential, double r);
-
 
 /**
  * Returns the quantum numbers of the potential

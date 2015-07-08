@@ -59,7 +59,6 @@ typedef struct{
  */
 int pspio_projector_alloc(pspio_projector_t **projector, const int np);
 
-
 /**
  * Initializes the projector data.
  * @param[in,out] projector: projector structure to be initialized
@@ -74,7 +73,6 @@ int pspio_projector_alloc(pspio_projector_t **projector, const int np);
 int pspio_projector_init(pspio_projector_t *projector, const pspio_qn_t *qn, 
       const double energy, const pspio_mesh_t *mesh, const double *pofr);
 
-
 /**
  * Duplicates a projector structure.
  * @param[out] dst: destination projector structure pointer
@@ -86,7 +84,6 @@ int pspio_projector_init(pspio_projector_t *projector, const pspio_qn_t *qn,
  *        then it is allocated here.
  */
 int pspio_projector_copy(pspio_projector_t **dst, const pspio_projector_t *src);
-
 
 /**
  * Frees all memory associated with a projector structure
@@ -112,7 +109,6 @@ void pspio_projector_free(pspio_projector_t *projector);
  */
 double pspio_projector_eval(const pspio_projector_t *projector, const double r);
 
-
 /**
  * Returns the value of the derivative of the projector at an arbitrary point
  * 
@@ -122,7 +118,6 @@ double pspio_projector_eval(const pspio_projector_t *projector, const double r);
  * @note The projector pointer has to be fully set.
  */
 double pspio_projector_eval_deriv(const pspio_projector_t *projector, double r);
-
 
 /**
  * Returns the value of the second derivative of the projector at an arbitrary point
@@ -134,7 +129,6 @@ double pspio_projector_eval_deriv(const pspio_projector_t *projector, double r);
  */
 double pspio_projector_eval_deriv2(const pspio_projector_t *projector, double r);
 
-
 /**
  * Returns the energy of the projector
  * 
@@ -143,7 +137,6 @@ double pspio_projector_eval_deriv2(const pspio_projector_t *projector, double r)
  * @note The projector pointer has to be fully set.
  */
 double pspio_projector_get_energy(const pspio_projector_t *projector);
-
 
 /**
  * Returns the quantum numbers of the projector

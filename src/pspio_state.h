@@ -60,7 +60,6 @@ typedef struct{
  */
 int pspio_state_alloc(pspio_state_t **state, const int np);
 
-
 /**
  * Initializes all the parameters of a state.
  * @param[in,out] state: state structure pointer to be initialized
@@ -76,10 +75,8 @@ int pspio_state_alloc(pspio_state_t **state, const int np);
  *       with pspio_state_alloc.
  * @note If label is set to NULL, then the quantum numbers are used to construct the state label.
  */
-int pspio_state_init(pspio_state_t *state, const double eigenval,
-		    const pspio_qn_t *qn, const double occ, const double rc, 
-		    const pspio_mesh_t *mesh, const double *wf, const char *label);
-
+int pspio_state_init(pspio_state_t *state, const double eigenval, const pspio_qn_t *qn, const double occ,
+		     const double rc, const pspio_mesh_t *mesh, const double *wf, const char *label);
 
 /**
  * Duplicates a state structure.
@@ -93,7 +90,6 @@ int pspio_state_init(pspio_state_t *state, const double eigenval,
  */
 int pspio_state_copy(pspio_state_t **dst, const pspio_state_t *src);
 
-
 /**
  * Creates a lookup table where are stored the indexes of the states corresponding to 
  * some quantum numbers.
@@ -105,9 +101,7 @@ int pspio_state_copy(pspio_state_t **dst, const pspio_state_t *src);
  * table[state->qn->n][state->qn->l + (int)states->qn->j]
  * @note The table is allocated inside this function.
  */
-int pspio_states_lookup_table(const int n_states, pspio_state_t **states,
-			      int ***table);
-
+int pspio_states_lookup_table(const int n_states, pspio_state_t **states, int ***table);
 
 /**
  * Deallocates a state structure pointer.
@@ -131,7 +125,6 @@ void pspio_state_free(pspio_state_t *state);
  */
 double pspio_state_wf_eval(const pspio_state_t *state, const double r);
 
-
 /**
  * Returns the value of derivative of the states wavefunction at an arbitrary point
  *
@@ -140,7 +133,6 @@ double pspio_state_wf_eval(const pspio_state_t *state, const double r);
  * @return value of the wavefunction derivative at r
  */
 double pspio_state_wf_eval_deriv(const pspio_state_t *state, const double r);
-
 
 /**
  * Returns the value of second derivative of the states wavefunction at an arbitrary point
@@ -151,14 +143,12 @@ double pspio_state_wf_eval_deriv(const pspio_state_t *state, const double r);
  */
 double pspio_state_wf_eval_deriv2(const pspio_state_t *state, const double r);
 
-
 /**
  * Returns the state label
  * @param[in] state: state structure
  * @param[out] label
  */
 char *pspio_state_get_label(const pspio_state_t *state);
-
 
 /**
  * Returns the quantum numbers of the state
@@ -169,7 +159,6 @@ char *pspio_state_get_label(const pspio_state_t *state);
  */
 pspio_qn_t *pspio_state_get_qn(const pspio_state_t *state);
 
-
 /**
  * Returns the state occupancies
  * @param[in] state: state structure
@@ -177,14 +166,12 @@ pspio_qn_t *pspio_state_get_qn(const pspio_state_t *state);
  */
 double pspio_state_get_occ(const pspio_state_t *state);
 
-
 /**
  * Returns the state eigenvalue
  * @param[in] state: state structure
  * @return the eigenvalue
  */
 double pspio_state_get_ev(const pspio_state_t *state);
-
 
 /**
  * Returns the state cut-off radius

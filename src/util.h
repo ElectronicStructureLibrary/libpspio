@@ -25,6 +25,7 @@
  * @brief include file with some useful macros and defines 
  */
 
+
 /**********************************************************************
  * Defines                                                            *
  **********************************************************************/
@@ -56,7 +57,6 @@
  */
 int z_to_symbol(const double z, char *symbol);
 
-
 /**
  * Given the symbol, returns the atomic number
  *
@@ -65,7 +65,6 @@ int z_to_symbol(const double z, char *symbol);
  * @return error code
  */
 int symbol_to_z(const char *symbol, double *z);
-
 
 /**
  * Given the values of a function at two points, uses a linear extrapolation to evaluate

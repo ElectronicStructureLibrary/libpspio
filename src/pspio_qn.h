@@ -54,7 +54,6 @@ typedef struct{
  */
 int pspio_qn_alloc(pspio_qn_t **qn);
 
-
 /**
  * Sets the quantum numbers of a state.
  * @param[in,out] qn: quantum number structure pointer to set
@@ -67,7 +66,6 @@ int pspio_qn_alloc(pspio_qn_t **qn);
  */
 int pspio_qn_init(pspio_qn_t *qn, const int n, const int l, const double j);
 
-
 /**
  * Duplicates a quantum number structure.
  * @param[out] dst: destination quantum number structure pointer
@@ -79,7 +77,6 @@ int pspio_qn_init(pspio_qn_t *qn, const int n, const int l, const double j);
  *        then it is allocated here.
  */
 int pspio_qn_copy(pspio_qn_t **dst, const pspio_qn_t *src);
-
 
 /**
  * Frees the memory occupied by a quantum number structure.
@@ -129,7 +126,6 @@ double pspio_qn_get_j(const pspio_qn_t *qn);
  *         PSPIO_ERROR if a problem occured
  */
 int pspio_qn_cmp(const pspio_qn_t *qn1, const pspio_qn_t *qn2);
-
 
 /**
  * Returns a label that identifies the set of quantum numbers

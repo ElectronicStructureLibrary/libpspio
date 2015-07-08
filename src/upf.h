@@ -108,7 +108,6 @@ int upf_read_pswfc(FILE *fp, const int np, pspio_pspdata_t *pspdata);
 int upf_read_rhoatom(FILE *fp, const int np, pspio_pspdata_t *pspdata);
 
 
-
 /**********************************************************************
  * upf_write routines                                                 *
  **********************************************************************/
@@ -222,7 +221,6 @@ int upf_tag_isdef(FILE * fp, const char * tag);
  * @return error code
  */
 int upf_to_libxc(const char *xc_string, int *exchange, int *correlation);
-
 
 /**
  * Converts libxc codes to pwcf xc names
