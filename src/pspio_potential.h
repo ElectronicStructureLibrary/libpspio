@@ -93,7 +93,21 @@ void pspio_potential_free(pspio_potential_t *potential);
 
 
 /**********************************************************************
- * Atomic routines                                                    *
+ * Getters                                                            *
+ **********************************************************************/
+
+/**
+ * Returns the quantum numbers of the potential
+ * 
+ * @param[in] potential: potential structure
+ * @return pointer to the potential quantum numbers
+ * @note The potential pointer has to be fully set.
+ */
+pspio_qn_t *pspio_potential_get_qn(const pspio_potential_t *potential);
+
+
+/**********************************************************************
+ * Utility routines                                                   *
  **********************************************************************/
 
 /**
@@ -125,15 +139,6 @@ double pspio_potential_eval_deriv(const pspio_potential_t *potential, double r);
  * @note The potential pointer has to be fully set.
  */
 double pspio_potential_eval_deriv2(const pspio_potential_t *potential, double r);
-
-/**
- * Returns the quantum numbers of the potential
- * 
- * @param[in] potential: potential structure
- * @return pointer to the potential quantum numbers
- * @note The potential pointer has to be fully set.
- */
-pspio_qn_t *pspio_potential_get_qn(const pspio_potential_t *potential);
 
 
 #endif

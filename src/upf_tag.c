@@ -32,7 +32,8 @@
 #endif
 
 
-int upf_tag_init(FILE * fp, const char * tag, const int go_back) {
+int upf_tag_init(FILE * fp, const char * tag, const int go_back)
+{
   char line[PSPIO_STRLEN_LINE];
   char * init_tag = NULL;
   char * read_string = NULL;
@@ -70,8 +71,8 @@ int upf_tag_init(FILE * fp, const char * tag, const int go_back) {
   return PSPIO_EFILE_CORRUPT;
 }
 
-
-int upf_tag_check_end(FILE * fp, const char * tag) {
+int upf_tag_check_end(FILE * fp, const char * tag)
+{
   char line[PSPIO_STRLEN_LINE];
   char * ending_tag = NULL;
   char * read_string = NULL;
@@ -109,7 +110,8 @@ int upf_tag_check_end(FILE * fp, const char * tag) {
 }
 
 
-int upf_tag_isdef(FILE * fp, const char * tag) {
+int upf_tag_isdef(FILE * fp, const char * tag)
+{
   char line[PSPIO_STRLEN_LINE];
   char * init_tag = NULL; 
   char * read_string = NULL;

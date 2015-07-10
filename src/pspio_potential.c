@@ -31,7 +31,8 @@
  * Global routines                                                    *
  **********************************************************************/
 
-int pspio_potential_alloc(pspio_potential_t **potential, const int np) {
+int pspio_potential_alloc(pspio_potential_t **potential, const int np)
+{
   int ierr;
 
   assert(potential != NULL);
@@ -60,10 +61,9 @@ int pspio_potential_alloc(pspio_potential_t **potential, const int np) {
   return PSPIO_SUCCESS;
 }
 
-
 int pspio_potential_init(pspio_potential_t *potential, const pspio_qn_t *qn,
-      const pspio_mesh_t *mesh, const double *vofr) {
-
+			 const pspio_mesh_t *mesh, const double *vofr)
+{
   assert(potential != NULL);
   assert(qn != NULL);
   assert(mesh != NULL);
@@ -74,7 +74,6 @@ int pspio_potential_init(pspio_potential_t *potential, const pspio_qn_t *qn,
 
   return PSPIO_SUCCESS;
 }
-
 
 int pspio_potential_copy(pspio_potential_t **dst, const pspio_potential_t *src) {
   int np;
@@ -87,7 +86,10 @@ int pspio_potential_copy(pspio_potential_t **dst, const pspio_potential_t *src) 
     SUCCEED_OR_RETURN( pspio_potential_alloc(dst, np) );
   }
 
-  /* The mesh of the destination potential must have the same number of points as the mesh of the source potential */
+  /* 
+   * The mesh of the destination potential must have the same number
+   * of points as the mesh of the source potential
+   */
   if ( pspio_mesh_get_np((*dst)->v->mesh) != np ) {
     pspio_potential_free(*dst);
     *dst = NULL;
@@ -101,8 +103,8 @@ int pspio_potential_copy(pspio_potential_t **dst, const pspio_potential_t *src) 
 }
 
 
-void pspio_potential_free(pspio_potential_t *potential){
-
+void pspio_potential_free(pspio_potential_t *potential)
+{
   if (potential != NULL) {
     pspio_meshfunc_free(potential->v);
     pspio_qn_free(potential->qn);
@@ -112,32 +114,38 @@ void pspio_potential_free(pspio_potential_t *potential){
 
 
 /**********************************************************************
- * Atomic routines                                                    *
+ * Getters                                                            *
  **********************************************************************/
 
-double pspio_potential_eval(const pspio_potential_t *potential, const double r) {
+pspio_qn_t *pspio_potential_get_qn(const pspio_potential_t *potential)
+{
+  assert(potential != NULL);
+
+  return potential->qn;
+}
+
+
+/**********************************************************************
+ * Utility routines                                                   *
+ **********************************************************************/
+
+double pspio_potential_eval(const pspio_potential_t *potential, const double r)
+{
   assert(potential != NULL);
 
   return pspio_meshfunc_eval(potential->v, r);
 }
 
-
-double pspio_potential_eval_deriv(const pspio_potential_t *potential, const double r) {
+double pspio_potential_eval_deriv(const pspio_potential_t *potential, const double r)
+{
   assert(potential != NULL);
 
   return pspio_meshfunc_eval_deriv(potential->v, r);
 }
 
-
-double pspio_potential_eval_deriv2(const pspio_potential_t *potential, const double r) {
+double pspio_potential_eval_deriv2(const pspio_potential_t *potential, const double r)
+{
   assert(potential != NULL);
 
   return pspio_meshfunc_eval_deriv2(potential->v, r);
-}
-
-
-pspio_qn_t *pspio_potential_get_qn(const pspio_potential_t *potential) {
-  assert(potential != NULL);
-
-  return potential->qn;
 }

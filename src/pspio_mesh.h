@@ -126,7 +126,7 @@ void pspio_mesh_free(pspio_mesh_t *mesh);
 
 
 /**********************************************************************
- * Atomic routines                                                    *
+ * Getters                                                            *
  **********************************************************************/
 
 /**
@@ -186,6 +186,5 @@ double *pspio_mesh_get_rab(const pspio_mesh_t *mesh);
  *         occured.
  */
 int pspio_mesh_cmp(const pspio_mesh_t *mesh1, const pspio_mesh_t *mesh2);
-
 
 #endif

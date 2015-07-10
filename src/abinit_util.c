@@ -40,7 +40,8 @@
 static char *my_strndup (char const *s, size_t n);
 
 
-int abinit_read_header(FILE *fp, const int format, pspio_pspdata_t *pspdata) {
+int abinit_read_header(FILE *fp, const int format, pspio_pspdata_t *pspdata)
+{
   char line[PSPIO_STRLEN_LINE];
   char *line4;
   int format_read, pspcod, pspxc, lmax, lloc, mmax;
@@ -108,53 +109,52 @@ int abinit_read_header(FILE *fp, const int format, pspio_pspdata_t *pspdata) {
 
   /* Check that the format found is the one we expected */
   switch (pspcod) {
-    case 1:
-      format_read = PSPIO_FMT_ABINIT_1;
-      break;
-    case 2:
-      format_read = PSPIO_FMT_ABINIT_2;
-      break;
-    case 3:
-      format_read = PSPIO_FMT_ABINIT_3;
-      break;
-    case 4:
-      format_read = PSPIO_FMT_ABINIT_4;
-      break;
-    case 5:
-      format_read = PSPIO_FMT_ABINIT_5;
-      break;
-    case 6:
-      format_read = PSPIO_FMT_ABINIT_6;
-      break;
-    case 7:
-      format_read = PSPIO_FMT_ABINIT_7;
-      break;
-    case 8:
-      format_read = PSPIO_FMT_ABINIT_8;
-      break;
-    case 9:
-      format_read = PSPIO_FMT_ABINIT_9;
-      break;
-    case 10:
-      format_read = PSPIO_FMT_ABINIT_10;
-      break;
-    case 11:
-      format_read = PSPIO_FMT_ABINIT_11;
-      break;
-    case 17:
-      format_read = PSPIO_FMT_ABINIT_17;
-      break;
-    default:
-      format_read = PSPIO_FMT_UNKNOWN;
+  case 1:
+    format_read = PSPIO_FMT_ABINIT_1;
+    break;
+  case 2:
+    format_read = PSPIO_FMT_ABINIT_2;
+    break;
+  case 3:
+    format_read = PSPIO_FMT_ABINIT_3;
+    break;
+  case 4:
+    format_read = PSPIO_FMT_ABINIT_4;
+    break;
+  case 5:
+    format_read = PSPIO_FMT_ABINIT_5;
+    break;
+  case 6:
+    format_read = PSPIO_FMT_ABINIT_6;
+    break;
+  case 7:
+    format_read = PSPIO_FMT_ABINIT_7;
+    break;
+  case 8:
+    format_read = PSPIO_FMT_ABINIT_8;
+    break;
+  case 9:
+    format_read = PSPIO_FMT_ABINIT_9;
+    break;
+  case 10:
+    format_read = PSPIO_FMT_ABINIT_10;
+    break;
+  case 11:
+    format_read = PSPIO_FMT_ABINIT_11;
+    break;
+  case 17:
+    format_read = PSPIO_FMT_ABINIT_17;
+    break;
+  default:
+    format_read = PSPIO_FMT_UNKNOWN;
   }
   FULFILL_OR_RETURN( format_read == format, PSPIO_EFILE_FORMAT );
 
   return PSPIO_SUCCESS;
 }
 
-
-int abinit_write_header(FILE *fp, const int format,
-      const pspio_pspdata_t *pspdata) {
+int abinit_write_header(FILE *fp, const int format, const pspio_pspdata_t *pspdata)
+{
   char pspdate[7];
   int pspxc, have_nlcc;
   double rchrg, fchrg, qchrg;
@@ -186,37 +186,36 @@ int abinit_write_header(FILE *fp, const int format,
   /* Line 4: write rchrg, fchrg, qchrg if NLCC */
   /* Lines 5-7: free comments, unused */
   switch ( format ) {
-    case 4:
-    case 5:
-    case 6:
-      FULFILL_OR_RETURN(
+  case 4:
+  case 5:
+  case 6:
+    FULFILL_OR_RETURN(
         fprintf(fp, "   %d   %d   %d   %d   %d   %8.3lf   pspcod, pspxc, lmax, lloc, mmax, r2well\n",
         format, pspxc, pspdata->l_max, pspdata->l_local,
         pspdata->mesh->np, 0.0) > 0, PSPIO_EIO );
 
-      /* FIXME: write something relevant (bug lp:1348721) */
-      if ( have_nlcc ) {
-        rchrg = 0.0;
-        fchrg = 0.0;
-        qchrg = 0.0;
-      } else {
-        rchrg = 0.0;
-        fchrg = 0.0;
-        qchrg = 0.0;
-      }
-      FULFILL_OR_RETURN(
+    /* FIXME: write something relevant (bug lp:1348721) */
+    if ( have_nlcc ) {
+      rchrg = 0.0;
+      fchrg = 0.0;
+      qchrg = 0.0;
+    } else {
+      rchrg = 0.0;
+      fchrg = 0.0;
+      qchrg = 0.0;
+    }
+    FULFILL_OR_RETURN(
         fprintf(fp, "%8.3lf   %8.3lf   %8.3lf   rchrg, fchrg, qchrg\n",
         rchrg, fchrg, qchrg) > 0, PSPIO_EIO );
-      FULFILL_OR_RETURN( fprintf(fp, "5--- These two lines are available for giving more information, later\n6\n") > 0, PSPIO_EIO );
-      FULFILL_OR_RETURN( fprintf(fp, "7-Here follows the cpi file from the fhi98pp code-\n") > 0, PSPIO_EIO );
-      break;
-    default:
-      return PSPIO_EFILE_FORMAT;
+    FULFILL_OR_RETURN( fprintf(fp, "5--- These two lines are available for giving more information, later\n6\n") > 0, PSPIO_EIO );
+    FULFILL_OR_RETURN( fprintf(fp, "7-Here follows the cpi file from the fhi98pp code-\n") > 0, PSPIO_EIO );
+    break;
+  default:
+    return PSPIO_EFILE_FORMAT;
   }
 
   return PSPIO_SUCCESS;
 }
-
 
 /**
  * A replacement function for systems that lack strndup (MacOSX).

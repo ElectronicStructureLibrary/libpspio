@@ -31,7 +31,8 @@
  * Global routines                                                    *
  **********************************************************************/
 
-int pspio_projector_alloc(pspio_projector_t **projector, const int np) {
+int pspio_projector_alloc(pspio_projector_t **projector, const int np)
+{
   int ierr;
 
   assert(projector != NULL);
@@ -60,9 +61,10 @@ int pspio_projector_alloc(pspio_projector_t **projector, const int np) {
   return PSPIO_SUCCESS;
 }
 
-
 int pspio_projector_init(pspio_projector_t *projector, const pspio_qn_t *qn, 
-      const double energy, const pspio_mesh_t *mesh, const double *pofr) {
+			 const double energy, const pspio_mesh_t *mesh,
+			 const double *pofr)
+{
   assert(projector != NULL);
   assert(qn != NULL);
   assert(mesh != NULL);
@@ -75,8 +77,8 @@ int pspio_projector_init(pspio_projector_t *projector, const pspio_qn_t *qn,
   return PSPIO_SUCCESS;
 }
 
-
-int pspio_projector_copy(pspio_projector_t **dst, const pspio_projector_t *src) {
+int pspio_projector_copy(pspio_projector_t **dst, const pspio_projector_t *src)
+{
   int np;
 
   assert(src != NULL);
@@ -87,7 +89,10 @@ int pspio_projector_copy(pspio_projector_t **dst, const pspio_projector_t *src) 
     SUCCEED_OR_RETURN( pspio_projector_alloc(dst, np) );
   }
 
-  /* The mesh of the destination projector must have the same number of points as the mesh of the source projector */
+  /* 
+   * The mesh of the destination projector must have the same number
+   * of points as the mesh of the source projector
+   */
   if ( pspio_mesh_get_np((*dst)->proj->mesh) != np ) {
     pspio_projector_free(*dst);
     *dst = NULL;
@@ -101,9 +106,8 @@ int pspio_projector_copy(pspio_projector_t **dst, const pspio_projector_t *src) 
   return PSPIO_SUCCESS;
 }
 
-
-void pspio_projector_free(pspio_projector_t *projector) {
-
+void pspio_projector_free(pspio_projector_t *projector)
+{
   if (projector != NULL) {
     pspio_meshfunc_free(projector->proj);
     pspio_qn_free(projector->qn);
@@ -113,40 +117,45 @@ void pspio_projector_free(pspio_projector_t *projector) {
 
 
 /**********************************************************************
- * Atomic routines                                                    *
+ * Getters                                                            *
  **********************************************************************/
 
-double pspio_projector_eval(const pspio_projector_t *projector, const double r) {
-  assert(projector != NULL);
-
-  return pspio_meshfunc_eval(projector->proj, r);
-}
-
-
-double pspio_projector_eval_deriv(const pspio_projector_t *projector, const double r) {
-  assert(projector != NULL);
-
-  return pspio_meshfunc_eval_deriv(projector->proj, r);
-}
-
-
-double pspio_projector_eval_deriv2(const pspio_projector_t *projector, const double r) {
-  assert(projector != NULL);
-
-  return pspio_meshfunc_eval_deriv2(projector->proj, r);
-}
-
-
-double pspio_projector_get_energy(const pspio_projector_t *projector) {
+double pspio_projector_get_energy(const pspio_projector_t *projector)
+{
   assert(projector != NULL);
 
   return projector->energy;
 }
 
-
-pspio_qn_t *pspio_projector_get_qn(const pspio_projector_t *projector) {
+pspio_qn_t *pspio_projector_get_qn(const pspio_projector_t *projector)
+{
   assert(projector != NULL);
 
   return projector->qn;
 }
 
+
+/**********************************************************************
+ * Utility routines                                                   *
+ **********************************************************************/
+
+double pspio_projector_eval(const pspio_projector_t *projector, const double r)
+{
+  assert(projector != NULL);
+
+  return pspio_meshfunc_eval(projector->proj, r);
+}
+
+double pspio_projector_eval_deriv(const pspio_projector_t *projector, const double r)
+{
+  assert(projector != NULL);
+
+  return pspio_meshfunc_eval_deriv(projector->proj, r);
+}
+
+double pspio_projector_eval_deriv2(const pspio_projector_t *projector, const double r)
+{
+  assert(projector != NULL);
+
+  return pspio_meshfunc_eval_deriv2(projector->proj, r);
+}

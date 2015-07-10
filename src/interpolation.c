@@ -36,8 +36,8 @@
  * Global routines                                                    *
  **********************************************************************/
 
-int interpolation_alloc(interpolation_t **interp, const int method, const int np) {
-  
+int interpolation_alloc(interpolation_t **interp, const int method, const int np)
+{
   assert(interp != NULL);
   assert(np > 1);
 
@@ -69,8 +69,8 @@ int interpolation_alloc(interpolation_t **interp, const int method, const int np
   return PSPIO_SUCCESS;
 }
 
-
-int interpolation_copy(interpolation_t **dst, const interpolation_t *src) {
+int interpolation_copy(interpolation_t **dst, const interpolation_t *src)
+{
   int np;
 
   assert(src != NULL);
@@ -111,8 +111,8 @@ int interpolation_copy(interpolation_t **dst, const interpolation_t *src) {
   return PSPIO_SUCCESS;
 }
 
-
-int interpolation_init(interpolation_t *interp, const pspio_mesh_t *mesh, const double *f) {
+int interpolation_init(interpolation_t *interp, const pspio_mesh_t *mesh, const double *f)
+{
 #ifdef HAVE_GSL
   int ierr;
 #endif
@@ -140,7 +140,6 @@ int interpolation_init(interpolation_t *interp, const pspio_mesh_t *mesh, const 
   return PSPIO_SUCCESS;
 }
 
-
 void interpolation_free(interpolation_t *interp) {
 
   if (interp != NULL) {
@@ -163,10 +162,11 @@ void interpolation_free(interpolation_t *interp) {
 
 
 /**********************************************************************
- * Atomic routines                                                    *
+ * Utility routines                                                   *
  **********************************************************************/
 
-double interpolation_eval(const interpolation_t *interp, const double r) {
+double interpolation_eval(const interpolation_t *interp, const double r)
+{
   assert(interp != NULL);
 
   switch (interp->method) {
@@ -180,7 +180,8 @@ double interpolation_eval(const interpolation_t *interp, const double r) {
 
 }
 
-double interpolation_eval_deriv(const interpolation_t *interp, const double r) {
+double interpolation_eval_deriv(const interpolation_t *interp, const double r)
+{
   assert(interp != NULL);
 
   switch (interp->method) {
@@ -194,7 +195,8 @@ double interpolation_eval_deriv(const interpolation_t *interp, const double r) {
 
 }
 
-double interpolation_eval_deriv2(const interpolation_t *interp, const double r) {
+double interpolation_eval_deriv2(const interpolation_t *interp, const double r)
+{
   assert(interp != NULL);
 
   switch (interp->method) {

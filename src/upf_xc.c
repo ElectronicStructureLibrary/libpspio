@@ -28,7 +28,8 @@
 #include "config.h"
 #endif
 
-int upf_to_libxc (const char xc_string[20], int *exchange, int *correlation) {
+int upf_to_libxc (const char xc_string[20], int *exchange, int *correlation)
+{
   char exch[]  = "     ";
   char corr[]  = "     ";
   char gradx[] = "     ";
@@ -104,9 +105,9 @@ int upf_to_libxc (const char xc_string[20], int *exchange, int *correlation) {
   return PSPIO_SUCCESS;
 }
 
-
-int libxc_to_upf (const int exchange, const int correlation,
-      char longname[21], char shortname[5]) {
+int libxc_to_upf (const int exchange, const int correlation, char longname[21],
+		  char shortname[5])
+{
   char exch[5], corr[5], gradx[5], gradc[5];
 
   /* Exchange: */

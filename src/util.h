@@ -67,14 +67,15 @@ int z_to_symbol(const double z, char *symbol);
 int symbol_to_z(const char *symbol, double *z);
 
 /**
- * Given the values of a function at two points, uses a linear extrapolation to evaluate
- * the function at a third point
+ * Given the values of a function at two points, uses a linear
+ * extrapolation to evaluate the function at a third point
  *
  * @param[in] x1, x2: points where we know the values of the function
  * @param[in] f1, f2: known values of the function at x1 and x2
  * @param[in] x: point where we want to evaluate the function
  * @return value of the function at x
  */
-double linear_extrapolation(const double x1, const double x2, const double f1, const double f2, const double x);
+double linear_extrapolation(const double x1, const double x2, const double f1,
+			    const double f2, const double x);
 
 #endif

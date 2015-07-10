@@ -19,6 +19,44 @@ module fpspio_m
   use, intrinsic :: iso_c_binding
   implicit none
 
+  private
+
+  public :: fpspio_pspdata_t, &
+            fpspio_mesh_t, &
+            fpspio_state_t, &
+            fpspio_potential_t, &
+            fpspio_projector_t, &
+            fpspio_xc_t, &
+            fpspio_qn_t
+
+  public :: fpspio_pspdata_alloc, &
+            fpspio_pspdata_read, &
+            fpspio_pspdata_write, &
+            fpspio_pspdata_free, &
+            fpspio_pspdata_get_format_guessed, &
+            fpspio_pspdata_set_symbol, &
+            fpspio_pspdata_get_symbol, &
+            fpspio_pspdata_set_z, &
+            fpspio_pspdata_get_z, &
+            fpspio_pspdata_set_zvalence, &
+            fpspio_pspdata_get_zvalence, &
+            fpspio_pspdata_set_l_max, &
+            fpspio_pspdata_get_l_max, &
+            fpspio_pspdata_set_wave_eq, &
+            fpspio_pspdata_get_wave_eq, &
+            fpspio_pspdata_set_mesh, &
+            fpspio_pspdata_get_mesh
+
+  public :: fpspio_mesh_alloc, &
+            fpspio_mesh_init, &
+            fpspio_mesh_init_from_points, &
+            fpspio_mesh_init_from_parameters, &
+            fpspio_mesh_free, &
+            fpspio_mesh_get_np, &
+            fpspio_mesh_get_r, &
+            fpspio_mesh_get_rab
+
+
   ! DO NOT EDIT THE FOLLOWING SECTION - ALL CHANGES WILL BE OVERWRITTEN!
   ! Add new definitions into pspio_common.h instead
   !%%% BEGIN PSPIO CONSTANTS
@@ -91,7 +129,6 @@ module fpspio_m
   integer(c_int), parameter, public :: PSPIO_NLCC_ATOM = 5
   !%%% END PSPIO CONSTANTS
 
-
   type fpspio_pspdata_t
     private
     type(c_ptr) :: ptr = C_NULL_PTR
@@ -128,7 +165,6 @@ module fpspio_m
     real(c_double) :: j
   end type fpspio_qn_t
 
-
   interface
 
     !----------------------------------------------------------------------------!
@@ -138,7 +174,7 @@ module fpspio_m
     ! init
     integer(c_int) function pspio_pspdata_alloc(pspdata) bind(c)
       import
-      type(c_ptr) :: pspdata
+      type(c_ptr) :: pspdata      
     end function pspio_pspdata_alloc
 
     ! free
@@ -326,39 +362,52 @@ module fpspio_m
       integer(c_int), value :: index
     end function pspio_pspdata_get_potential
 
-    ! set_n_kbproj
-    integer(c_int) function pspio_pspdata_set_n_kbproj(pspdata, n_kbproj) bind(c)
+    ! set_n_projectors
+    integer(c_int) function pspio_pspdata_set_n_projectors(pspdata, n_projectors) bind(c)
       import
       type(c_ptr)           :: pspdata
-      integer(c_int), value :: n_kbproj
-    end function pspio_pspdata_set_n_kbproj
+      integer(c_int), value :: n_projectors
+    end function pspio_pspdata_set_n_projectors
 
-    ! get_n_kbproj
-    integer(c_int) function pspio_pspdata_get_n_kbproj(pspdata) bind(c)
+    ! get_n_projectors
+    integer(c_int) function pspio_pspdata_get_n_projectors(pspdata) bind(c)
       import
       type(c_ptr) :: pspdata
-    end function pspio_pspdata_get_n_kbproj
+    end function pspio_pspdata_get_n_projectors
 
-    ! set_kb_projectors
-    integer(c_int) function pspio_pspdata_set_kb_projectors(pspdata, kb_projectors) bind(c)
+    ! set_projectors
+    integer(c_int) function pspio_pspdata_set_projectors(pspdata, projectors) bind(c)
       import
       type(c_ptr) :: pspdata
-      type(c_ptr) :: kb_projectors(*)
-    end function pspio_pspdata_set_kb_projectors
+      type(c_ptr) :: projectors(*)
+    end function pspio_pspdata_set_projectors
 
-   ! get_kb_projectors
-    type(c_ptr) function pspio_pspdata_get_kb_projectors(pspdata) bind(c)
+   ! get_projectors
+    type(c_ptr) function pspio_pspdata_get_projectors(pspdata) bind(c)
       import
       type(c_ptr) :: pspdata
-    end function pspio_pspdata_get_kb_projectors
+    end function pspio_pspdata_get_projectors
 
-   ! get_kb_projector
-    type(c_ptr) function pspio_pspdata_get_kb_projector(pspdata, index) bind(c)
+   ! get_projector
+    type(c_ptr) function pspio_pspdata_get_projector(pspdata, index) bind(c)
       import
       type(c_ptr)           :: pspdata
       integer(c_int), value :: index
-    end function pspio_pspdata_get_kb_projector
+    end function pspio_pspdata_get_projector
 
+    ! set_projectors_l_max
+    integer(c_int) function pspio_pspdata_set_projectors_l_max(pspdata, l_max) bind(c)
+      import
+      type(c_ptr)           :: pspdata
+      integer(c_int), value :: l_max
+    end function pspio_pspdata_set_projectors_l_max
+
+    ! get_projectors_l_max
+    integer(c_int) function pspio_pspdata_get_projectors_l_max(pspdata) bind(c)
+      import
+      type(c_ptr) :: pspdata
+    end function pspio_pspdata_get_projectors_l_max
+    
     ! set_l_local
     integer(c_int) function pspio_pspdata_set_l_local(pspdata, l_local) bind(c)
       import
@@ -371,19 +420,6 @@ module fpspio_m
       import
       type(c_ptr)    :: pspdata
     end function pspio_pspdata_get_l_local
-    
-    ! set_kb_l_max
-    integer(c_int) function pspio_pspdata_set_kb_l_max(pspdata, kb_l_max) bind(c)
-      import
-      type(c_ptr)           :: pspdata
-      integer(c_int), value :: kb_l_max
-    end function pspio_pspdata_set_kb_l_max
-
-    ! get_kb_l_max
-    integer(c_int) function pspio_pspdata_get_kb_l_max(pspdata) bind(c)
-      import
-      type(c_ptr) :: pspdata
-    end function pspio_pspdata_get_kb_l_max
     
     ! set_vlocal
     integer(c_int) function pspio_pspdata_set_vlocal(pspdata, vlocal) bind(c)
@@ -1001,41 +1037,58 @@ contains
 
   end function fpspio_pspdata_get_potential
 
-  ! set_n_kbproj
-  integer function fpspio_pspdata_set_n_kbproj(pspdata, n_kbproj) result(ierr)
+  ! set_n_projectors
+  integer function fpspio_pspdata_set_n_projectors(pspdata, n_projectors) result(ierr)
     type(fpspio_pspdata_t), intent(inout) :: pspdata
-    integer,                intent(in)    :: n_kbproj
+    integer,                intent(in)    :: n_projectors
 
-    ierr = pspio_pspdata_set_n_kbproj(pspdata%ptr, n_kbproj)
+    ierr = pspio_pspdata_set_n_projectors(pspdata%ptr, n_projectors)
 
-  end function fpspio_pspdata_set_n_kbproj
+  end function fpspio_pspdata_set_n_projectors
 
-  ! get_n_kbproj
-  integer function fpspio_pspdata_get_n_kbproj(pspdata) result(n_kbproj) 
+  ! get_n_projectors
+  integer function fpspio_pspdata_get_n_projectors(pspdata) result(n_projectors)
     type(fpspio_pspdata_t), intent(in)  :: pspdata
 
-    n_kbproj = pspio_pspdata_get_n_kbproj(pspdata%ptr)
+    n_projectors = pspio_pspdata_get_n_projectors(pspdata%ptr)
 
-  end function fpspio_pspdata_get_n_kbproj
+  end function fpspio_pspdata_get_n_projectors
   
-  ! set_kb_projectors
-  integer function fpspio_pspdata_set_kb_projectors(pspdata, kb_projectors) result(ierr)
+  ! set_projectors
+  integer function fpspio_pspdata_set_projectors(pspdata, projectors) result(ierr)
     type(fpspio_pspdata_t),   intent(inout) :: pspdata
-    type(fpspio_projector_t), intent(in)    :: kb_projectors(*)
+    type(fpspio_projector_t), intent(in)    :: projectors(*)
 
-    ierr = pspio_pspdata_set_kb_projectors(pspdata%ptr, kb_projectors%ptr)
+    ierr = pspio_pspdata_set_projectors(pspdata%ptr, projectors%ptr)
 
-  end function fpspio_pspdata_set_kb_projectors
+  end function fpspio_pspdata_set_projectors
 
-  ! get_kb_projector
-  type(fpspio_projector_t) function fpspio_pspdata_get_kb_projector(pspdata, i) result(kb_projector)
+  ! get_projector
+  type(fpspio_projector_t) function fpspio_pspdata_get_projector(pspdata, i) result(projector)
     type(fpspio_pspdata_t), intent(in) :: pspdata
     integer,                intent(in) :: i
     
-!    kb_projector%ptr = pspio_pspdata_get_kb_projector(pspdata%ptr)
+!    projector%ptr = pspio_pspdata_get_projector(pspdata%ptr)
 
-  end function fpspio_pspdata_get_kb_projector
+  end function fpspio_pspdata_get_projector
 
+  ! set_projectors_l_max
+  integer function fpspio_pspdata_set_projectors_l_max(pspdata, l_max) result(ierr)
+    type(fpspio_pspdata_t), intent(inout) :: pspdata
+    integer,                intent(in)    :: l_max
+
+    ierr = pspio_pspdata_set_projectors_l_max(pspdata%ptr, l_max)
+
+  end function fpspio_pspdata_set_projectors_l_max
+
+  ! get_projectors_l_max
+  integer function fpspio_pspdata_get_projectors_l_max(pspdata) result(l_max)
+    type(fpspio_pspdata_t), intent(in) :: pspdata
+
+    l_max = pspio_pspdata_get_projectors_l_max(pspdata%ptr)
+
+  end function fpspio_pspdata_get_projectors_l_max
+    
   ! set_l_local
   integer function fpspio_pspdata_set_l_local(pspdata, l_local) result(ierr)
     type(fpspio_pspdata_t), intent(inout) :: pspdata
@@ -1052,23 +1105,6 @@ contains
     l_local = pspio_pspdata_get_l_local(pspdata%ptr)
 
   end function fpspio_pspdata_get_l_local
-    
-  ! set_kb_l_max
-  integer function fpspio_pspdata_set_kb_l_max(pspdata, kb_l_max) result(ierr)
-    type(fpspio_pspdata_t), intent(inout) :: pspdata
-    integer,                intent(in)    :: kb_l_max
-
-    ierr = pspio_pspdata_set_kb_l_max(pspdata%ptr, kb_l_max)
-
-  end function fpspio_pspdata_set_kb_l_max
-
-  ! get_kb_l_max
-  integer function fpspio_pspdata_get_kb_l_max(pspdata) result(kb_l_max)
-    type(fpspio_pspdata_t), intent(in) :: pspdata
-
-    kb_l_max = pspio_pspdata_get_kb_l_max(pspdata%ptr)
-
-  end function fpspio_pspdata_get_kb_l_max
     
   ! set_vlocal
   integer function fpspio_pspdata_set_vlocal(pspdata, vlocal) result(ierr)

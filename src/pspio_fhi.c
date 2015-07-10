@@ -36,7 +36,8 @@
 #endif
 
 
-int pspio_fhi_read(FILE *fp, pspio_pspdata_t *pspdata) {
+int pspio_fhi_read(FILE *fp, pspio_pspdata_t *pspdata)
+{
   char line[PSPIO_STRLEN_LINE];
   int i, l, np, ir, has_nlcc;
   double r12;
@@ -94,9 +95,9 @@ int pspio_fhi_read(FILE *fp, pspio_pspdata_t *pspdata) {
 
     if ( l == 0 ) {
       /*
-	We will use the first block to generate the mesh, as the mesh
-	is supposed to be the same for all blocks (at least this is
-	the behavior of FHI98PP)
+       * We will use the first block to generate the mesh, as the mesh
+       * is supposed to be the same for all blocks (at least this is
+       * the behavior of FHI98PP)
       */
       SKIP_FUNC_ON_ERROR( pspio_mesh_alloc(&pspdata->mesh, np) );
       SKIP_CALL_ON_ERROR( pspio_mesh_init_from_points(pspdata->mesh,
@@ -177,8 +178,8 @@ int pspio_fhi_read(FILE *fp, pspio_pspdata_t *pspdata) {
   return PSPIO_SUCCESS;
 }
 
-
-int pspio_fhi_write(FILE *fp, const pspio_pspdata_t *pspdata){
+int pspio_fhi_write(FILE *fp, const pspio_pspdata_t *pspdata)
+{
   int i, l, is, ir;
   double wf, v, r;
 
@@ -186,9 +187,10 @@ int pspio_fhi_write(FILE *fp, const pspio_pspdata_t *pspdata){
   assert(pspdata != NULL);
 
   /*
-    If one considers that the specifications of this format is the way
-    FHI98PP writes the data, then only meshes of type log1 should be
-    allowed. For the moment, we will just check that this is the case.
+   * If one considers that the specifications of this format is the
+   * way FHI98PP writes the data, then only meshes of type log1 should
+   * be allowed. For the moment, we will just check that this is the
+   * case.
   */
   assert(pspdata->mesh->type == PSPIO_MESH_LOG1);
 

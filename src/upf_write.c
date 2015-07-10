@@ -33,7 +33,8 @@
 #endif
 
 
-void upf_write_info(FILE *fp, const pspio_pspdata_t *pspdata) {
+void upf_write_info(FILE *fp, const pspio_pspdata_t *pspdata)
+{
   fprintf(fp, "<PP_INFO>\n");
   if (pspdata->info != NULL) {
     fprintf(fp, "%s", pspdata->info);
@@ -42,7 +43,8 @@ void upf_write_info(FILE *fp, const pspio_pspdata_t *pspdata) {
 }
 
 
-int upf_write_header(FILE *fp, const pspio_pspdata_t *pspdata) {
+int upf_write_header(FILE *fp, const pspio_pspdata_t *pspdata)
+{
   int is, l;
   double occ;
   char *label;
@@ -111,8 +113,8 @@ int upf_write_header(FILE *fp, const pspio_pspdata_t *pspdata) {
   return PSPIO_SUCCESS;
 }
 
-
-void upf_write_mesh(FILE *fp, const pspio_pspdata_t *pspdata) {
+void upf_write_mesh(FILE *fp, const pspio_pspdata_t *pspdata)
+{
   int i;
 
   /* Write init tag */
@@ -138,8 +140,8 @@ void upf_write_mesh(FILE *fp, const pspio_pspdata_t *pspdata) {
   fprintf(fp, "</PP_MESH>\n");
 }
 
-
-void upf_write_nlcc(FILE *fp, const pspio_pspdata_t *pspdata) {
+void upf_write_nlcc(FILE *fp, const pspio_pspdata_t *pspdata)
+{
   int i;
   double rho;
 
@@ -157,8 +159,8 @@ void upf_write_nlcc(FILE *fp, const pspio_pspdata_t *pspdata) {
   fprintf(fp, "\n</PP_NLCC>\n");
 }
 
-
-void upf_write_nonlocal(FILE *fp, const pspio_pspdata_t *pspdata) {
+void upf_write_nonlocal(FILE *fp, const pspio_pspdata_t *pspdata)
+{
   int ikb, i;
   double proj, ekb;
   pspio_qn_t *qn;
@@ -196,8 +198,8 @@ void upf_write_nonlocal(FILE *fp, const pspio_pspdata_t *pspdata) {
   fprintf(fp, "</PP_NONLOCAL>\n");
 }
 
-
-void upf_write_local(FILE *fp, const pspio_pspdata_t *pspdata) {
+void upf_write_local(FILE *fp, const pspio_pspdata_t *pspdata)
+{
   int i;
   double vlocal;
 
@@ -216,8 +218,8 @@ void upf_write_local(FILE *fp, const pspio_pspdata_t *pspdata) {
   fprintf(fp, "\n</PP_LOCAL>\n");
 }
 
-
-void upf_write_pswfc(FILE *fp, const pspio_pspdata_t *pspdata) {
+void upf_write_pswfc(FILE *fp, const pspio_pspdata_t *pspdata)
+{
   int is, i, l;
   double occ, wf;
   char *label;
@@ -244,8 +246,8 @@ void upf_write_pswfc(FILE *fp, const pspio_pspdata_t *pspdata) {
   fprintf(fp, "</PP_PSWFC>\n");
 }
 
-
-void upf_write_rhoatom(FILE *fp, const pspio_pspdata_t *pspdata) {
+void upf_write_rhoatom(FILE *fp, const pspio_pspdata_t *pspdata)
+{
   int i;
   double rho;
   
@@ -264,8 +266,8 @@ void upf_write_rhoatom(FILE *fp, const pspio_pspdata_t *pspdata) {
   fprintf(fp, "\n</PP_RHOATOM>\n");
 }
 
-
-void upf_write_addinfo(FILE *fp, const pspio_pspdata_t *pspdata) {
+void upf_write_addinfo(FILE *fp, const pspio_pspdata_t *pspdata)
+{
   int is;
   double occ;
   char *label;

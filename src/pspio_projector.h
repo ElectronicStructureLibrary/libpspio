@@ -96,9 +96,31 @@ void pspio_projector_free(pspio_projector_t *projector);
 
 
 /**********************************************************************
- * Atomic routines                                                    *
+ * Getters                                                            *
  **********************************************************************/
 
+/**
+ * Returns the energy of the projector
+ * 
+ * @param[in] projector: projector structure
+ * @return value of the projector energy
+ * @note The projector pointer has to be fully set.
+ */
+double pspio_projector_get_energy(const pspio_projector_t *projector);
+
+/**
+ * Returns the quantum numbers of the projector
+ * 
+ * @param[in] projector: projector structure
+ * @return pointer to the projector quantum numbers
+ * @note The projector pointer has to be fully set.
+ */
+pspio_qn_t *pspio_projector_get_qn(const pspio_projector_t *projector);
+
+
+/**********************************************************************
+ * Utility routines                                                   *
+ **********************************************************************/
 /**
  * Returns the value of the projector at an arbitrary point
  * 
@@ -128,24 +150,5 @@ double pspio_projector_eval_deriv(const pspio_projector_t *projector, double r);
  * @note The projector pointer has to be fully set.
  */
 double pspio_projector_eval_deriv2(const pspio_projector_t *projector, double r);
-
-/**
- * Returns the energy of the projector
- * 
- * @param[in] projector: projector structure
- * @return value of the projector energy
- * @note The projector pointer has to be fully set.
- */
-double pspio_projector_get_energy(const pspio_projector_t *projector);
-
-/**
- * Returns the quantum numbers of the projector
- * 
- * @param[in] projector: projector structure
- * @return pointer to the projector quantum numbers
- * @note The projector pointer has to be fully set.
- */
-pspio_qn_t *pspio_projector_get_qn(const pspio_projector_t *projector);
-
 
 #endif

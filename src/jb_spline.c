@@ -29,7 +29,6 @@ This code is distributed under the GNU LGPL license.
 
 int jb_spline_alloc(jb_spline_t **spline, const int np)
 {
-
   *spline = (jb_spline_t *) malloc (sizeof(jb_spline_t));
   FULFILL_OR_EXIT(*spline != NULL, PSPIO_ENOMEM);
 
@@ -47,232 +46,17 @@ int jb_spline_alloc(jb_spline_t **spline, const int np)
   return PSPIO_SUCCESS;
 }
 
-
-int jb_spline_copy(jb_spline_t **dst, const jb_spline_t *src) {
-
-  assert(src != NULL);
-  assert(src->t != NULL);
-  assert(src->y != NULL);
-  assert(src->ypp != NULL);
-
-  if ( *dst != NULL ) {
-    jb_spline_free(*dst);
-  }
-  SUCCEED_OR_RETURN( jb_spline_alloc(dst, src->np) );
-
-  (*dst)->t = (double *) malloc (src->np*sizeof(double));
-  FULFILL_OR_EXIT((*dst)->t != NULL, PSPIO_ENOMEM);
-  memcpy((*dst)->y, src->y, src->np*sizeof(double));
-
-  (*dst)->y = (double *) malloc (src->np*sizeof(double));
-  FULFILL_OR_EXIT((*dst)->y != NULL, PSPIO_ENOMEM);
-  memcpy((*dst)->t, src->t, src->np*sizeof(double));
-
-  (*dst)->ypp = (double *) malloc (src->np*sizeof(double));
-  FULFILL_OR_EXIT((*dst)->ypp != NULL, PSPIO_ENOMEM);
-  memcpy((*dst)->ypp, src->ypp, src->np*sizeof(double));
-
-  return PSPIO_SUCCESS;
-}
-
-
-int jb_spline_init(jb_spline_t **spline, const double *r, const double *f,
-  const int np)
+int jb_spline_init(jb_spline_t **spline, const double *r, const double *f, const int np) 
 {
   memcpy((*spline)->t, r, np * sizeof(double));
   memcpy((*spline)->y, f, np * sizeof(double));
   (*spline)->ypp = jb_natural_spline_cubic_init(np, r, f);
-  /* printf("here1: %f\n", (*spline)->ypp[1]); */
 
-  return 0;
+  return PSPIO_SUCCESS;
 }
 
-
-void jb_spline_free(jb_spline_t *spline)
-{
-  if (spline != NULL) {
-    free(spline->t);
-    free(spline->y);
-    free(spline->ypp);
-
-    free(spline);
-  }
-}
-
-
-/**********************************************************************
- * Atomic routines                                                    *
- **********************************************************************/
-
-double jb_spline_eval(const jb_spline_t *spline, const double r)
-{
-  double ret;
-
-  jb_spline_cubic_val( spline->np, spline->t, spline->y, spline->ypp,
-			     r, &ret, NULL, NULL);
-  
-  /* printf("jb_spline_eval at %f: %f\n", r, ret); */
-
-  return ret;
-}
-
-
-double jb_spline_eval_deriv(const jb_spline_t *spline, const double r)
-{
-  double ret;
-
-  jb_spline_cubic_val( spline->np, spline->t, spline->y, spline->ypp,
-		       r, NULL, &ret, NULL );
-
-  /* printf("jb_spline_eval_deriv: %f \n", ret); */
-
-  return ret;
-}
-
-
-double jb_spline_eval_deriv2(const jb_spline_t *spline, const double r)
-{
-  double ret;
-
-  jb_spline_cubic_val( spline->np, spline->t, spline->y, spline->ypp,
-		       r, NULL, &ret, NULL );
-
-  /* printf("jb_spline_eval_deriv2: %f \n", ret); */
-
-  return ret;
-}
-
-void jb_spline_cubic_val ( int n, const double *t, const double *y,
-      const double *ypp, double tval, double *yval, double *ypval,
-      double *yppval )
-
-/******************************************************************************/
-/*
-  Purpose:
-
-    SPLINE_CUBIC_VAL evaluates a piecewise cubic spline at a point.
-
-  Discussion:
-
-    SPLINE_CUBIC_INIT must have already been called to define the values of YPP.
-
-    For any point T in the interval T(IVAL), T(IVAL+1), the form of
-    the spline is
-
-      SPL(T) = A
-             + B * ( T - T(IVAL) )
-             + C * ( T - T(IVAL) )^2
-             + D * ( T - T(IVAL) )^3
-
-    Here:
-      A = Y(IVAL)
-      B = ( Y(IVAL+1) - Y(IVAL) ) / ( T(IVAL+1) - T(IVAL) )
-        - ( YPP(IVAL+1) + 2 * YPP(IVAL) ) * ( T(IVAL+1) - T(IVAL) ) / 6
-      C = YPP(IVAL) / 2
-      D = ( YPP(IVAL+1) - YPP(IVAL) ) / ( 6 * ( T(IVAL+1) - T(IVAL) ) )
-
-  Licensing:
-
-    This code is distributed under the GNU LGPL license. 
-
-  Modified:
-
-    25 August 2011
-
-  Author:
-
-    John Burkardt
-
-  Parameters:
-
-    Input, int N, the number of knots.
-
-    Input, double T[N], the knot values.
-
-    Input, double Y[N], the data values at the knots.
-
-    Input, double YPP[N], the second derivatives of the spline at
-    the knots.
-
-    Input, double TVAL, a point, typically between T[0] and T[N-1], at
-    which the spline is to be evalulated.  If TVAL lies outside
-    this range, extrapolation is used.
-
-    Output, double *YVAL, the value of the spline at TVAL. If YVAL is
-    NULL, the value of the spline is not computed.
-
-    Output, double *YPVAL, the derivative of the spline at TVAL. If
-    YPVAL is NULL, the derivative is not computed.
-
-    Output, double *YPPVAL, the second derivative of the spline at
-    TVAL. If YPPVAL is NULL, the second derivative is not computed.
-*/
-{
-  double dt;
-  double h;
-  int i;
-  int ival;
-/*
-  Determine the interval [ T(I), T(I+1) ] that contains TVAL.
-  Values below T[0] or above T[N-1] use extrapolation.
-*/
-  ival = n - 2;
-
-  for ( i = 0; i < n-1; i++ )
-  {
-    if ( tval < t[i+1] )
-    {
-      ival = i;
-      break;
-    }
-  }
-/*
-  In the interval I, the polynomial is in terms of a normalized
-  coordinate between 0 and 1.
-*/
-  dt = tval - t[ival];
-  h = t[ival+1] - t[ival];
-
-  if (yval != NULL) {
-    *yval = y[ival]
-    + dt * ( ( y[ival+1] - y[ival] ) / h
-           - ( ypp[ival+1] / 6.0 + ypp[ival] / 3.0 ) * h
-    + dt * ( 0.5 * ypp[ival]
-    + dt * ( ( ypp[ival+1] - ypp[ival] ) / ( 6.0 * h ) ) ) );
-  }
-
-  if (ypval != NULL) {
-    *ypval = ( y[ival+1] - y[ival] ) / h
-    - ( ypp[ival+1] / 6.0 + ypp[ival] / 3.0 ) * h
-    + dt * ( ypp[ival]
-    + dt * ( 0.5 * ( ypp[ival+1] - ypp[ival] ) / h ) );
-  }
-
-  if (yppval != NULL) {
-    *yppval = ypp[ival] + dt * ( ypp[ival+1] - ypp[ival] ) / h;
-  }
-
-}
-
-
-double *jb_natural_spline_cubic_init(int n, const double *t, const double *y)
-{
-  int ibcbeg, ibcend;
-  double ybcbeg, ybcend;
-
-  /* defining boundary conditions for the natural spline */
-  ibcbeg = 2;
-  ibcend = 2;
-  ybcbeg = 0.0;
-  ybcend = 0.0;
-
-  return jb_spline_cubic_init( n, t, y, ibcbeg, ybcbeg, ibcend, ybcend );
-}
-
-
-double *jb_spline_cubic_init ( int n, const double *t, const double *y,
-  int ibcbeg, double ybcbeg, int ibcend, double ybcend )
-
+double *jb_spline_cubic_init(int n, const double *t, const double *y, int ibcbeg,
+			     double ybcbeg, int ibcend, double ybcend)
 /******************************************************************************/
 /*
   Purpose:
@@ -552,10 +336,202 @@ double *jb_spline_cubic_init ( int n, const double *t, const double *y,
   return ypp;
 }
 
+double *jb_natural_spline_cubic_init(int n, const double *t, const double *y)
+{
+  int ibcbeg, ibcend;
+  double ybcbeg, ybcend;
 
-double *penta ( int n, double a1[], double a2[], double a3[], double a4[], 
-  double a5[], double b[] )
+  /* defining boundary conditions for the natural spline */
+  ibcbeg = 2;
+  ibcend = 2;
+  ybcbeg = 0.0;
+  ybcend = 0.0;
 
+  return jb_spline_cubic_init(n, t, y, ibcbeg, ybcbeg, ibcend, ybcend);
+}
+
+int jb_spline_copy(jb_spline_t **dst, const jb_spline_t *src)
+{
+  assert(src != NULL);
+  assert(src->t != NULL);
+  assert(src->y != NULL);
+  assert(src->ypp != NULL);
+
+  if ( *dst != NULL ) {
+    jb_spline_free(*dst);
+  }
+  SUCCEED_OR_RETURN( jb_spline_alloc(dst, src->np) );
+
+  (*dst)->t = (double *) malloc (src->np*sizeof(double));
+  FULFILL_OR_EXIT((*dst)->t != NULL, PSPIO_ENOMEM);
+  memcpy((*dst)->y, src->y, src->np*sizeof(double));
+
+  (*dst)->y = (double *) malloc (src->np*sizeof(double));
+  FULFILL_OR_EXIT((*dst)->y != NULL, PSPIO_ENOMEM);
+  memcpy((*dst)->t, src->t, src->np*sizeof(double));
+
+  (*dst)->ypp = (double *) malloc (src->np*sizeof(double));
+  FULFILL_OR_EXIT((*dst)->ypp != NULL, PSPIO_ENOMEM);
+  memcpy((*dst)->ypp, src->ypp, src->np*sizeof(double));
+
+  return PSPIO_SUCCESS;
+}
+
+void jb_spline_free(jb_spline_t *spline)
+{
+  if (spline != NULL) {
+    free(spline->t);
+    free(spline->y);
+    free(spline->ypp);
+
+    free(spline);
+  }
+}
+
+
+/**********************************************************************
+ * Atomic routines                                                    *
+ **********************************************************************/
+
+double jb_spline_eval(const jb_spline_t *spline, const double r)
+{
+  double ret;
+
+  jb_spline_cubic_val(spline->np, spline->t, spline->y, spline->ypp, r, &ret, NULL, NULL);
+
+  return ret;
+}
+
+double jb_spline_eval_deriv(const jb_spline_t *spline, const double r)
+{
+  double ret;
+
+  jb_spline_cubic_val(spline->np, spline->t, spline->y, spline->ypp, r, NULL, &ret, NULL );
+
+  return ret;
+}
+
+double jb_spline_eval_deriv2(const jb_spline_t *spline, const double r)
+{
+  double ret;
+
+  jb_spline_cubic_val(spline->np, spline->t, spline->y, spline->ypp, r, NULL, &ret, NULL );
+
+  return ret;
+}
+
+void jb_spline_cubic_val(int n, const double *t, const double *y, const double *ypp, 
+			 double tval, double *yval, double *ypval, double *yppval)
+/******************************************************************************/
+/*
+  Purpose:
+
+    SPLINE_CUBIC_VAL evaluates a piecewise cubic spline at a point.
+
+  Discussion:
+
+    SPLINE_CUBIC_INIT must have already been called to define the values of YPP.
+
+    For any point T in the interval T(IVAL), T(IVAL+1), the form of
+    the spline is
+
+      SPL(T) = A
+             + B * ( T - T(IVAL) )
+             + C * ( T - T(IVAL) )^2
+             + D * ( T - T(IVAL) )^3
+
+    Here:
+      A = Y(IVAL)
+      B = ( Y(IVAL+1) - Y(IVAL) ) / ( T(IVAL+1) - T(IVAL) )
+        - ( YPP(IVAL+1) + 2 * YPP(IVAL) ) * ( T(IVAL+1) - T(IVAL) ) / 6
+      C = YPP(IVAL) / 2
+      D = ( YPP(IVAL+1) - YPP(IVAL) ) / ( 6 * ( T(IVAL+1) - T(IVAL) ) )
+
+  Licensing:
+
+    This code is distributed under the GNU LGPL license. 
+
+  Modified:
+
+    25 August 2011
+
+  Author:
+
+    John Burkardt
+
+  Parameters:
+
+    Input, int N, the number of knots.
+
+    Input, double T[N], the knot values.
+
+    Input, double Y[N], the data values at the knots.
+
+    Input, double YPP[N], the second derivatives of the spline at
+    the knots.
+
+    Input, double TVAL, a point, typically between T[0] and T[N-1], at
+    which the spline is to be evalulated.  If TVAL lies outside
+    this range, extrapolation is used.
+
+    Output, double *YVAL, the value of the spline at TVAL. If YVAL is
+    NULL, the value of the spline is not computed.
+
+    Output, double *YPVAL, the derivative of the spline at TVAL. If
+    YPVAL is NULL, the derivative is not computed.
+
+    Output, double *YPPVAL, the second derivative of the spline at
+    TVAL. If YPPVAL is NULL, the second derivative is not computed.
+*/
+{
+  double dt;
+  double h;
+  int i;
+  int ival;
+/*
+  Determine the interval [ T(I), T(I+1) ] that contains TVAL.
+  Values below T[0] or above T[N-1] use extrapolation.
+*/
+  ival = n - 2;
+
+  for ( i = 0; i < n-1; i++ )
+  {
+    if ( tval < t[i+1] )
+    {
+      ival = i;
+      break;
+    }
+  }
+/*
+  In the interval I, the polynomial is in terms of a normalized
+  coordinate between 0 and 1.
+*/
+  dt = tval - t[ival];
+  h = t[ival+1] - t[ival];
+
+  if (yval != NULL) {
+    *yval = y[ival]
+    + dt * ( ( y[ival+1] - y[ival] ) / h
+           - ( ypp[ival+1] / 6.0 + ypp[ival] / 3.0 ) * h
+    + dt * ( 0.5 * ypp[ival]
+    + dt * ( ( ypp[ival+1] - ypp[ival] ) / ( 6.0 * h ) ) ) );
+  }
+
+  if (ypval != NULL) {
+    *ypval = ( y[ival+1] - y[ival] ) / h
+    - ( ypp[ival+1] / 6.0 + ypp[ival] / 3.0 ) * h
+    + dt * ( ypp[ival]
+    + dt * ( 0.5 * ( ypp[ival+1] - ypp[ival] ) / h ) );
+  }
+
+  if (yppval != NULL) {
+    *yppval = ypp[ival] + dt * ( ypp[ival+1] - ypp[ival] ) / h;
+  }
+
+}
+
+double *penta(int n, double a1[], double a2[], double a3[], double a4[], 
+	      double a5[], double b[])
 /******************************************************************************/
 /*
   Purpose:

@@ -35,7 +35,8 @@
  * Global routines                                                    *
  **********************************************************************/
 
-int pspio_qn_alloc(pspio_qn_t **qn) {
+int pspio_qn_alloc(pspio_qn_t **qn)
+{
   assert( *qn == NULL);
 
   *qn = (pspio_qn_t *) malloc (sizeof(pspio_qn_t));
@@ -48,8 +49,8 @@ int pspio_qn_alloc(pspio_qn_t **qn) {
   return PSPIO_SUCCESS;
 }
 
-
-int pspio_qn_init(pspio_qn_t *qn, const int n, const int l, const double j) {
+int pspio_qn_init(pspio_qn_t *qn, const int n, const int l, const double j)
+{
   assert(qn != NULL);
 
   FULFILL_OR_RETURN( l >= -1, PSPIO_EVALUE );
@@ -62,8 +63,8 @@ int pspio_qn_init(pspio_qn_t *qn, const int n, const int l, const double j) {
   return PSPIO_SUCCESS;
 }
 
-
-int pspio_qn_copy(pspio_qn_t **dst, const pspio_qn_t *src) {
+int pspio_qn_copy(pspio_qn_t **dst, const pspio_qn_t *src)
+{
   assert(src != NULL);
 
   if ( *dst == NULL ) {
@@ -77,29 +78,32 @@ int pspio_qn_copy(pspio_qn_t **dst, const pspio_qn_t *src) {
   return PSPIO_SUCCESS;
 }
 
-
-void pspio_qn_free(pspio_qn_t *qn) {
+void pspio_qn_free(pspio_qn_t *qn)
+{
   free(qn);
 }
 
 
 /**********************************************************************
- * Atomic routines                                                    *
+ * Getters                                                            *
  **********************************************************************/
 
-int pspio_qn_get_n(const pspio_qn_t *qn) {
+int pspio_qn_get_n(const pspio_qn_t *qn)
+{
   assert(qn != NULL);
 
   return qn->n;
 }
 
-int pspio_qn_get_l(const pspio_qn_t *qn) {
+int pspio_qn_get_l(const pspio_qn_t *qn)
+{
   assert(qn != NULL);
 
   return qn->l;
 }
 
-double pspio_qn_get_j(const pspio_qn_t *qn) {
+double pspio_qn_get_j(const pspio_qn_t *qn)
+{
   assert(qn != NULL);
 
   return qn->j;
@@ -110,7 +114,8 @@ double pspio_qn_get_j(const pspio_qn_t *qn) {
  * Utility routines                                                   *
  **********************************************************************/
 
-int pspio_qn_cmp(const pspio_qn_t *qn1, const pspio_qn_t *qn2) {
+int pspio_qn_cmp(const pspio_qn_t *qn1, const pspio_qn_t *qn2)
+{
   assert((qn1 != NULL) && (qn2 != NULL));
 
   if ( (qn1->n == qn2->n) && (qn1->l == qn2->l) &&
@@ -123,7 +128,8 @@ int pspio_qn_cmp(const pspio_qn_t *qn1, const pspio_qn_t *qn2) {
   }
 }
 
-void pspio_qn_label(const pspio_qn_t *qn, char *s) {
+void pspio_qn_label(const pspio_qn_t *qn, char *s)
+{
   char llabel[4] = "spdf";
 
   assert(qn != NULL);

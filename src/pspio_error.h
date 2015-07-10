@@ -61,7 +61,8 @@ typedef struct pspio_error_type pspio_error_t;
  * @param[in] routine: current routine in the source file.
  * @return the error code provided as input (for automation purposes).
  */
-int pspio_error_add(const int error_id, const char *filename, const int line, const char *routine);
+int pspio_error_add(const int error_id, const char *filename, const int line, 
+		    const char *routine);
 
 /**
  * Fetch and clear the error chain.
@@ -83,7 +84,8 @@ void pspio_error_free(void);
 
 /**
  * Get the current error status.
- * @param[in] routine: return last error of the specified routine, or the very last error if NULL.
+ * @param[in] routine: return last error of the specified routine, or the very 
+ *            last error if NULL.
  * @return error code
  */
 int pspio_error_get_last(const char *routine);
@@ -109,7 +111,8 @@ pspio_error_t *pspio_error_pop(void);
  * @param[in] routine: current routine in the source file.
  * @return string with error message.
  */
-void pspio_error_show(const int error_id, const char *filename, const int line, const char *routine);
+void pspio_error_show(const int error_id, const char *filename, const int line, 
+		      const char *routine);
 
 /**
  * Returns a string with error description.

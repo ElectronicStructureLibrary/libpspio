@@ -31,8 +31,9 @@
 /* Store successive errors in a chain */
 static pspio_error_t *pspio_error_chain = NULL;
 
-int pspio_error_add(const int error_id, const char *filename,
-       const int line, const char *routine) {
+int pspio_error_add(const int error_id, const char *filename, const int line,
+		    const char *routine)
+{
   int s;
   pspio_error_t *last_err;
 
@@ -110,8 +111,8 @@ int pspio_error_add(const int error_id, const char *filename,
   return error_id;
 }
 
-
-void pspio_error_fetchall(char **err_str) {
+void pspio_error_fetchall(char **err_str) 
+{
   char buf[8];
   char *tmp_str;
   int err_len;
@@ -156,8 +157,8 @@ void pspio_error_fetchall(char **err_str) {
   pspio_error_free();
 }
 
-
-void pspio_error_flush(FILE *fd) {
+void pspio_error_flush(FILE *fd)
+{
   char *err_str = NULL;
 
   assert(fd != NULL);
@@ -169,8 +170,8 @@ void pspio_error_flush(FILE *fd) {
   }
 }
 
-
-void pspio_error_free(void) {
+void pspio_error_free(void)
+{
   pspio_error_t *first_err;
 
   while ( pspio_error_chain != NULL ) {
@@ -182,8 +183,8 @@ void pspio_error_free(void) {
   }
 }
 
-
-int pspio_error_get_last(const char *routine) {
+int pspio_error_get_last(const char *routine)
+{
   int eid = PSPIO_SUCCESS;
   pspio_error_t *cursor = pspio_error_chain;
 
@@ -201,8 +202,8 @@ int pspio_error_get_last(const char *routine) {
   return eid;
 }
 
-
-int pspio_error_len(void) {
+int pspio_error_len(void)
+{
   int n = 0;
   pspio_error_t *cursor = pspio_error_chain;
 
@@ -214,8 +215,8 @@ int pspio_error_len(void) {
   return n;
 }
 
-
-pspio_error_t *pspio_error_pop(void) {
+pspio_error_t *pspio_error_pop(void)
+{
   pspio_error_t *first_error = NULL;
 
   if ( pspio_error_chain != NULL ) {
@@ -226,9 +227,9 @@ pspio_error_t *pspio_error_pop(void) {
   return first_error;
 }
 
-
-void pspio_error_show(const int error_id, const char *filename,
-       const int line, const char *routine) {
+void pspio_error_show(const int error_id, const char *filename, const int line,
+		      const char *routine)
+{
   fprintf(stderr, "libpspio: ERROR:\n");
   if ( (filename != NULL) && (routine != NULL) ) {
     fprintf(stderr, "  * in %s(%s):%d:\n", filename, routine, line);
@@ -236,31 +237,30 @@ void pspio_error_show(const int error_id, const char *filename,
   fprintf(stderr, "      %s\n", pspio_error_string(error_id));
 }
 
-
-const char *pspio_error_string(const int error_id) {
-  switch (error_id)
-    {
-    case PSPIO_SUCCESS:
-      return "success (PSPIO_SUCCESS)" ;
-    case PSPIO_ERROR:
-      return "error (PSPIO_ERROR)" ;
-    case PSPIO_EFILE_CORRUPT:
-      return "file corrupted (PSPIO_EFILE_CORRUPT)";
-    case PSPIO_EFILE_FORMAT:
-      return "unknown file format (PSPIO_EFILE_FORMAT)";
-    case PSPIO_EGSL:
-      return "error in GSL (PSPIO_EGSL)";
-    case PSPIO_EIO:
-      return "input/output error (PSPIO_EIO)" ;
-    case PSPIO_ENOFILE:
-      return "file does not exist (PSPIO_ENOFILE)" ;
-    case PSPIO_ENOMEM:
-      return "malloc failed (PSPIO_ENOMEM)";
-    case PSPIO_ENOSUPPORT:
-      return "unsupported option in the pseudopotential file (PSPIO_ENOSUPPORT)";
-    case PSPIO_EVALUE:
-      return "value error: bad value found (PSPIO_EVALUE)";
-    default:
-      return "unknown error code";
-    }
+const char *pspio_error_string(const int error_id)
+{
+  switch (error_id) {
+  case PSPIO_SUCCESS:
+    return "success (PSPIO_SUCCESS)" ;
+  case PSPIO_ERROR:
+    return "error (PSPIO_ERROR)" ;
+  case PSPIO_EFILE_CORRUPT:
+    return "file corrupted (PSPIO_EFILE_CORRUPT)";
+  case PSPIO_EFILE_FORMAT:
+    return "unknown file format (PSPIO_EFILE_FORMAT)";
+  case PSPIO_EGSL:
+    return "error in GSL (PSPIO_EGSL)";
+  case PSPIO_EIO:
+    return "input/output error (PSPIO_EIO)" ;
+  case PSPIO_ENOFILE:
+    return "file does not exist (PSPIO_ENOFILE)" ;
+  case PSPIO_ENOMEM:
+    return "malloc failed (PSPIO_ENOMEM)";
+  case PSPIO_ENOSUPPORT:
+    return "unsupported option in the pseudopotential file (PSPIO_ENOSUPPORT)";
+  case PSPIO_EVALUE:
+    return "value error: bad value found (PSPIO_EVALUE)";
+  default:
+    return "unknown error code";
+  }
 }

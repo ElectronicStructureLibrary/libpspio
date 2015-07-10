@@ -60,7 +60,7 @@ int libxc_to_abinit(const int exchange, const int correlation, int *pspxc);
 
 
 /**********************************************************************
- * ABINIT utility routines                                                 *
+ * ABINIT utility routines                                            *
  **********************************************************************/
 
 /**

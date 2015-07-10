@@ -39,7 +39,8 @@
  * Global routines                                                    *
  **********************************************************************/
 
-void pspio_version(int *major, int *minor, int *micro) {
+void pspio_version(int *major, int *minor, int *micro)
+{
   assert((major != NULL) && (minor != NULL) && (micro != NULL));
 #if !defined HAVE_CONFIG_H
   return PSPIO_ERROR;
@@ -53,8 +54,8 @@ void pspio_version(int *major, int *minor, int *micro) {
   sscanf(version_string,"%d.%d.%d",major,minor,micro);
 }
 
-
-void pspio_info_string(char *info) {
+void pspio_info_string(char *info)
+{
 #if !defined HAVE_CONFIG_H
 #define PACKAGE_STRING ""
 #endif

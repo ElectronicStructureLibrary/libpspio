@@ -33,7 +33,8 @@
  * Global routines                                                    *
  **********************************************************************/
 
-int pspio_meshfunc_alloc(pspio_meshfunc_t **func, const int np) {
+int pspio_meshfunc_alloc(pspio_meshfunc_t **func, const int np)
+{
   int ierr;
 
   assert(func != NULL);
@@ -75,9 +76,9 @@ int pspio_meshfunc_alloc(pspio_meshfunc_t **func, const int np) {
   return PSPIO_SUCCESS;
 }
 
-
 int pspio_meshfunc_init(pspio_meshfunc_t *func, const pspio_mesh_t *mesh, 
-      const double *f, const double *fp, const double *fpp) {
+			const double *f, const double *fp, const double *fpp)
+{
   int i;
 
   assert(func != NULL);
@@ -112,8 +113,8 @@ int pspio_meshfunc_init(pspio_meshfunc_t *func, const pspio_mesh_t *mesh,
   return PSPIO_SUCCESS;
 }
 
-
-int pspio_meshfunc_copy(pspio_meshfunc_t **dst, const pspio_meshfunc_t *src) {
+int pspio_meshfunc_copy(pspio_meshfunc_t **dst, const pspio_meshfunc_t *src)
+{
   int np;
 
   assert(src != NULL);
@@ -164,9 +165,8 @@ int pspio_meshfunc_copy(pspio_meshfunc_t **dst, const pspio_meshfunc_t *src) {
   return PSPIO_SUCCESS;
 }
 
-
-void pspio_meshfunc_free(pspio_meshfunc_t *func) {
-
+void pspio_meshfunc_free(pspio_meshfunc_t *func)
+{
   if (func != NULL) {
     pspio_mesh_free(func->mesh);
 
@@ -185,10 +185,51 @@ void pspio_meshfunc_free(pspio_meshfunc_t *func) {
 
 
 /**********************************************************************
- * Atomic routines                                                    *
+ * Getters                                                            *
  **********************************************************************/
 
-double pspio_meshfunc_eval(const pspio_meshfunc_t *func, const double r) {
+double *pspio_meshfunc_get_function(const pspio_meshfunc_t *func)
+{
+  assert(func != NULL);
+
+  return func->f;
+}
+
+double *pspio_meshfunc_get_deriv1(const pspio_meshfunc_t *func)
+{
+  assert(func != NULL);
+
+  return func->fp;
+}
+
+double *pspio_meshfunc_get_deriv2(const pspio_meshfunc_t *func)
+{
+  assert(func != NULL);
+
+  return func->fpp;
+}
+
+int pspio_meshfunc_get_interp_method(const pspio_meshfunc_t *func)
+{
+  assert(func != NULL);
+
+  return func->interp_method;
+}
+
+pspio_mesh_t *pspio_meshfunc_get_mesh(const pspio_meshfunc_t *func)
+{
+  assert(func != NULL);
+
+  return func->mesh;
+}
+
+
+/**********************************************************************
+ * Utility routines                                                   *
+ **********************************************************************/
+
+double pspio_meshfunc_eval(const pspio_meshfunc_t *func, const double r)
+{
   assert(func != NULL);
 
   /*
@@ -206,8 +247,8 @@ double pspio_meshfunc_eval(const pspio_meshfunc_t *func, const double r) {
   }
 }
 
-
-double pspio_meshfunc_eval_deriv(const pspio_meshfunc_t *func, const double r) {
+double pspio_meshfunc_eval_deriv(const pspio_meshfunc_t *func, const double r)
+{
   assert(func != NULL);
 
   /* If the value of r is smaller than the first mesh point or if
@@ -224,8 +265,8 @@ double pspio_meshfunc_eval_deriv(const pspio_meshfunc_t *func, const double r) {
   }
 }
 
-
-double pspio_meshfunc_eval_deriv2(const pspio_meshfunc_t *func, const double r) {
+double pspio_meshfunc_eval_deriv2(const pspio_meshfunc_t *func, const double r)
+{
   assert(func != NULL);
 
   /*
@@ -241,39 +282,4 @@ double pspio_meshfunc_eval_deriv2(const pspio_meshfunc_t *func, const double r) 
   } else {
     return interpolation_eval(func->fpp_interp, r);
   }
-}
-
-
-double *pspio_meshfunc_get_deriv1(const pspio_meshfunc_t *func) {
-  assert(func != NULL);
-
-  return func->fp;
-}
-
-
-double *pspio_meshfunc_get_deriv2(const pspio_meshfunc_t *func) {
-  assert(func != NULL);
-
-  return func->fpp;
-}
-
-
-double *pspio_meshfunc_get_function(const pspio_meshfunc_t *func) {
-  assert(func != NULL);
-
-  return func->f;
-}
-
-
-int pspio_meshfunc_get_interp_method(const pspio_meshfunc_t *func) {
-  assert(func != NULL);
-
-  return func->interp_method;
-}
-
-
-pspio_mesh_t *pspio_meshfunc_get_mesh(const pspio_meshfunc_t *func) {
-  assert(func != NULL);
-
-  return func->mesh;
 }

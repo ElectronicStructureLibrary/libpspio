@@ -67,7 +67,7 @@ END_TEST
 
 START_TEST(test_pspdata_format_guessed)
 {
-  /* Not set function, so we just check that the default value is correct */
+  /* No set function, so we just check that the default value is correct */
   ck_assert(pspio_pspdata_get_format_guessed(pspdata) == PSPIO_FMT_UNKNOWN);
 }
 END_TEST

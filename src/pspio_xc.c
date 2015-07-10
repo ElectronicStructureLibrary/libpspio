@@ -31,7 +31,8 @@
  * Global routines                                                    *
  **********************************************************************/
 
-int pspio_xc_alloc(pspio_xc_t **xc) {
+int pspio_xc_alloc(pspio_xc_t **xc)
+{
   assert(xc != NULL);
   assert(*xc == NULL);
 
@@ -47,9 +48,10 @@ int pspio_xc_alloc(pspio_xc_t **xc) {
   return PSPIO_SUCCESS;
 }
 
-
-int pspio_xc_init(pspio_xc_t *xc, const int exchange, const int correlation, const int nlcc_scheme,
-		  const pspio_mesh_t *mesh, const double *cd, const double *cdd, const double *cddd) {
+int pspio_xc_init(pspio_xc_t *xc, const int exchange, const int correlation, 
+		  const int nlcc_scheme, const pspio_mesh_t *mesh, 
+		  const double *cd, const double *cdd, const double *cddd)
+{
   assert(xc != NULL);  
 
   SUCCEED_OR_RETURN( pspio_xc_set_exchange(xc, exchange) );
@@ -62,8 +64,8 @@ int pspio_xc_init(pspio_xc_t *xc, const int exchange, const int correlation, con
   return PSPIO_SUCCESS;
 }
 
-
-int pspio_xc_copy(pspio_xc_t **dst, const pspio_xc_t *src) {
+int pspio_xc_copy(pspio_xc_t **dst, const pspio_xc_t *src)
+{
   assert(src != NULL);
 
   if ( *dst == NULL ) {
@@ -89,9 +91,8 @@ int pspio_xc_copy(pspio_xc_t **dst, const pspio_xc_t *src) {
   return PSPIO_SUCCESS;
 }
 
-
-void pspio_xc_free(pspio_xc_t *xc){
-
+void pspio_xc_free(pspio_xc_t *xc)
+{
   if (xc != NULL) {
     if ( xc->nlcc_dens != NULL) {
       pspio_meshfunc_free(xc->nlcc_dens);
@@ -102,10 +103,11 @@ void pspio_xc_free(pspio_xc_t *xc){
 
 
 /**********************************************************************
- * Atomic routines                                                    *
+ * Setters                                                            *
  **********************************************************************/
 
-int pspio_xc_set_exchange(pspio_xc_t *xc, const int exchange) {
+int pspio_xc_set_exchange(pspio_xc_t *xc, const int exchange)
+{
   assert(xc != NULL);
 
   xc->exchange = exchange;
@@ -113,15 +115,8 @@ int pspio_xc_set_exchange(pspio_xc_t *xc, const int exchange) {
   return PSPIO_SUCCESS;
 }
 
-
-int pspio_xc_get_exchange(const pspio_xc_t *xc) {
-  assert(xc != NULL);
-
-  return xc->exchange;
-}
-
-
-int pspio_xc_set_correlation(pspio_xc_t *xc, const int correlation) {
+int pspio_xc_set_correlation(pspio_xc_t *xc, const int correlation)
+{
   assert(xc != NULL);
 
   xc->correlation = correlation;
@@ -129,45 +124,31 @@ int pspio_xc_set_correlation(pspio_xc_t *xc, const int correlation) {
   return PSPIO_SUCCESS;
 }
 
-
-int pspio_xc_get_correlation(const pspio_xc_t *xc) {
-  assert(xc != NULL);
-
-  return xc->correlation;
-}
-
-
-int pspio_xc_set_nlcc_scheme(pspio_xc_t *xc, const int nlcc_scheme) {
+int pspio_xc_set_nlcc_scheme(pspio_xc_t *xc, const int nlcc_scheme)
+{
   assert(xc != NULL);
 
   switch (nlcc_scheme) {
-    case PSPIO_NLCC_NONE:
-    case PSPIO_NLCC_UNKNOWN:
-    case PSPIO_NLCC_LOUIE:
-    case PSPIO_NLCC_FHI:
-    case PSPIO_NLCC_TETER1:
-    case PSPIO_NLCC_TETER2:
-    case PSPIO_NLCC_ATOM:
-      break;
-
-    default:
-      return PSPIO_EVALUE;
+  case PSPIO_NLCC_NONE:
+  case PSPIO_NLCC_UNKNOWN:
+  case PSPIO_NLCC_LOUIE:
+  case PSPIO_NLCC_FHI:
+  case PSPIO_NLCC_TETER1:
+  case PSPIO_NLCC_TETER2:
+  case PSPIO_NLCC_ATOM:
+    break;    
+  default:
+    return PSPIO_EVALUE;
   }
   xc->nlcc_scheme = nlcc_scheme;
 
   return PSPIO_SUCCESS;
 }
 
-
-int pspio_xc_get_nlcc_scheme(const pspio_xc_t *xc) {
-  assert(xc != NULL);
-
-  return xc->nlcc_scheme;
-}
-
-
 int pspio_xc_set_nlcc_density(pspio_xc_t *xc, const pspio_mesh_t *mesh,
-      const double *cd, const double *cdp, const double *cdpp) {
+			      const double *cd, const double *cdp, 
+			      const double *cdpp)
+{
   int ierr;
 
   assert(xc != NULL);  
@@ -186,8 +167,33 @@ int pspio_xc_set_nlcc_density(pspio_xc_t *xc, const pspio_mesh_t *mesh,
 }
 
 
-pspio_meshfunc_t *pspio_xc_get_nlcc_density(const pspio_xc_t *xc) {
+/**********************************************************************
+ * Getters                                                            *
+ **********************************************************************/
 
+int pspio_xc_get_exchange(const pspio_xc_t *xc)
+{
+  assert(xc != NULL);
+
+  return xc->exchange;
+}
+
+int pspio_xc_get_correlation(const pspio_xc_t *xc)
+{
+  assert(xc != NULL);
+
+  return xc->correlation;
+}
+
+int pspio_xc_get_nlcc_scheme(const pspio_xc_t *xc)
+{
+  assert(xc != NULL);
+
+  return xc->nlcc_scheme;
+}
+
+pspio_meshfunc_t *pspio_xc_get_nlcc_density(const pspio_xc_t *xc)
+{
   assert(xc != NULL);
   assert(xc->nlcc_scheme != PSPIO_NLCC_NONE);
 
@@ -195,7 +201,12 @@ pspio_meshfunc_t *pspio_xc_get_nlcc_density(const pspio_xc_t *xc) {
 }
 
 
-double pspio_xc_nlcc_density_eval(const pspio_xc_t *xc, const double r) {
+/**********************************************************************
+ * Utility routines                                                   *
+ **********************************************************************/
+
+double pspio_xc_nlcc_density_eval(const pspio_xc_t *xc, const double r)
+{
   assert(xc != NULL);
 
   if (xc->nlcc_scheme != PSPIO_NLCC_NONE) {
@@ -205,8 +216,8 @@ double pspio_xc_nlcc_density_eval(const pspio_xc_t *xc, const double r) {
   }
 }
 
-
-double pspio_xc_nlcc_density_eval_deriv(const pspio_xc_t *xc, const double r) {
+double pspio_xc_nlcc_density_eval_deriv(const pspio_xc_t *xc, const double r)
+{
   assert(xc != NULL);
 
   if (xc->nlcc_scheme != PSPIO_NLCC_NONE) {
@@ -216,8 +227,8 @@ double pspio_xc_nlcc_density_eval_deriv(const pspio_xc_t *xc, const double r) {
   }
 }
 
-
-double pspio_xc_nlcc_density_eval_deriv2(const pspio_xc_t *xc, const double r) {
+double pspio_xc_nlcc_density_eval_deriv2(const pspio_xc_t *xc, const double r)
+{
   assert(xc != NULL);
 
   if (xc->nlcc_scheme != PSPIO_NLCC_NONE) {
@@ -227,8 +238,8 @@ double pspio_xc_nlcc_density_eval_deriv2(const pspio_xc_t *xc, const double r) {
   }
 }
 
-
-int pspio_xc_has_nlcc(const pspio_xc_t *xc) {
+int pspio_xc_has_nlcc(const pspio_xc_t *xc)
+{
   assert (xc != NULL);
 
   return (xc->nlcc_scheme != PSPIO_NLCC_NONE);

@@ -34,7 +34,8 @@
 #endif
 
 
-int pspio_upf_read(FILE *fp, pspio_pspdata_t *pspdata) {
+int pspio_upf_read(FILE *fp, pspio_pspdata_t *pspdata)
+{
   int np;
 
   SUCCEED_OR_RETURN( upf_read_info(fp, pspdata) );
@@ -63,7 +64,8 @@ int pspio_upf_read(FILE *fp, pspio_pspdata_t *pspdata) {
   return PSPIO_SUCCESS;
 }
 
-int pspio_upf_write(FILE *fp, const pspio_pspdata_t *pspdata) {
+int pspio_upf_write(FILE *fp, const pspio_pspdata_t *pspdata)
+{
   assert(pspdata != NULL);
 
   upf_write_info(fp, pspdata);

@@ -99,7 +99,7 @@ void pspio_xc_free(pspio_xc_t *xc);
 
 
 /**********************************************************************
- * Atomic routines                                                    *
+ * Setters                                                            *
  **********************************************************************/
 
 /**
@@ -111,13 +111,6 @@ void pspio_xc_free(pspio_xc_t *xc);
 int pspio_xc_set_exchange(pspio_xc_t *xc, const int exchange);
 
 /**
- * Returns the exchange identifier
- * @param[in] xc: xc structure
- * @return exchange identifier
- */
-int pspio_xc_get_exchange(const pspio_xc_t *xc);
-
-/**
  * Sets the correlation id.
  * @param[in,out] xc: xc structure to set
  * @param[in] correlation: identifier
@@ -126,26 +119,12 @@ int pspio_xc_get_exchange(const pspio_xc_t *xc);
 int pspio_xc_set_correlation(pspio_xc_t *xc, const int correlation);
 
 /**
- * Returns the correlation identifier
- * @param[in] xc: xc structure
- * @return correlation identifier
- */
-int pspio_xc_get_correlation(const pspio_xc_t *xc);
-
-/**
  * Sets the xc data.
  * @param[in,out] xc: xc structure to set
  * @param[in] nlcc_scheme: scheme used to obtain core density
  * @return error code
  */
 int pspio_xc_set_nlcc_scheme(pspio_xc_t *xc, const int nlcc_scheme);
-
-/**
- * Returns the scheme used to generate the NLCC core density
- * @param[in] xc: xc structure
- * @param[out] nlcc_scheme: the scheme used
- */
-int pspio_xc_get_nlcc_scheme(const pspio_xc_t *xc);
 
 /**
  * Sets the core density for NLCC.
@@ -160,12 +139,43 @@ int pspio_xc_get_nlcc_scheme(const pspio_xc_t *xc);
 int pspio_xc_set_nlcc_density(pspio_xc_t *xc, const pspio_mesh_t *mesh,
 			      const double *cd, const double *cdp, const double *cdpp);
 
+
+/**********************************************************************
+ * Getters                                                            *
+ **********************************************************************/
+
+/**
+ * Returns the exchange identifier
+ * @param[in] xc: xc structure
+ * @return exchange identifier
+ */
+int pspio_xc_get_exchange(const pspio_xc_t *xc);
+
+/**
+ * Returns the correlation identifier
+ * @param[in] xc: xc structure
+ * @return correlation identifier
+ */
+int pspio_xc_get_correlation(const pspio_xc_t *xc);
+
+/**
+ * Returns the scheme used to generate the NLCC core density
+ * @param[in] xc: xc structure
+ * @param[out] nlcc_scheme: the scheme used
+ */
+int pspio_xc_get_nlcc_scheme(const pspio_xc_t *xc);
+
 /**
  * Returns the core density function
  * @param[in] xc: xc structure
  * @param[out] *cd_func: NLCC core density function defined on the mesh
  */
 pspio_meshfunc_t *pspio_xc_get_nlcc_density(const pspio_xc_t *xc);
+
+
+/**********************************************************************
+ * Utility routines                                                   *
+ **********************************************************************/
 
 /**
  * Returns the value of the NLCC core density at an arbitrary point

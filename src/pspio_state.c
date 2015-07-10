@@ -33,7 +33,8 @@
  * Global routines                                                    *
  **********************************************************************/
 
-int pspio_state_alloc(pspio_state_t **state, const int np) {
+int pspio_state_alloc(pspio_state_t **state, const int np)
+{
   int ierr;
 
   assert(state != NULL);
@@ -67,10 +68,10 @@ int pspio_state_alloc(pspio_state_t **state, const int np) {
   return PSPIO_SUCCESS;
 }
 
-
 int pspio_state_init(pspio_state_t *state, const double eigenval, 
-      const pspio_qn_t *qn, const double occ, const double rc,
-      const pspio_mesh_t *mesh, const double *wf, const char *label) {
+		     const pspio_qn_t *qn, const double occ, const double rc,
+		     const pspio_mesh_t *mesh, const double *wf, const char *label)
+{
   int s;
   char qn_label[10];
 
@@ -98,8 +99,8 @@ int pspio_state_init(pspio_state_t *state, const double eigenval,
   return PSPIO_SUCCESS;
 }
 
-
-int pspio_state_copy(pspio_state_t **dst, const pspio_state_t *src) {
+int pspio_state_copy(pspio_state_t **dst, const pspio_state_t *src)
+{
   int np, s;
 
   assert(src != NULL);
@@ -111,7 +112,10 @@ int pspio_state_copy(pspio_state_t **dst, const pspio_state_t *src) {
     SUCCEED_OR_RETURN( pspio_state_alloc(dst, np) );
   }
 
-  /* The mesh of the destination wavefunction must have the same number of points as the mesh of the source wavefunction */
+  /* 
+   * The mesh of the destination wavefunction must have the same
+   * number of points as the mesh of the source wavefunction
+   */
   if ( pspio_mesh_get_np((*dst)->wf->mesh) != np ) {
     pspio_state_free(*dst);
     *dst = NULL;
@@ -131,9 +135,9 @@ int pspio_state_copy(pspio_state_t **dst, const pspio_state_t *src) {
   return PSPIO_SUCCESS;
 }
 
-
 int pspio_states_lookup_table(const int n_states, pspio_state_t **states, 
-      int ***table_ptr) {
+			      int ***table_ptr)
+{
   int i, nmax, lmax, rel, lsize;
   pspio_qn_t *qn;
   int **table;
@@ -173,9 +177,8 @@ int pspio_states_lookup_table(const int n_states, pspio_state_t **states,
   return PSPIO_SUCCESS;
 }
 
-
-void pspio_state_free(pspio_state_t *state) {
-
+void pspio_state_free(pspio_state_t *state)
+{
   if ( state != NULL ) {
     pspio_meshfunc_free(state->wf);
     pspio_qn_free(state->qn);
@@ -186,60 +189,66 @@ void pspio_state_free(pspio_state_t *state) {
 
 
 /**********************************************************************
- * Atomic routines                                                    *
+ * Getters                                                            *
  **********************************************************************/
 
-double pspio_state_wf_eval(const pspio_state_t *state, const double r) {
+pspio_qn_t *pspio_state_get_qn(const pspio_state_t *state)
+{
   assert(state != NULL);
-  
-  return pspio_meshfunc_eval(state->wf, r);
+
+  return state->qn;
 }
 
-
-double pspio_state_wf_eval_deriv(const pspio_state_t *state, const double r) {
+double pspio_state_get_occ(const pspio_state_t *state)
+{
   assert(state != NULL);
   
-  return pspio_meshfunc_eval_deriv(state->wf, r);
+  return state->occ;
 }
 
-
-double pspio_state_wf_eval_deriv2(const pspio_state_t *state, const double r) {
+double pspio_state_get_ev(const pspio_state_t *state)
+{
   assert(state != NULL);
-  
-  return pspio_meshfunc_eval_deriv2(state->wf, r);
+
+  return state->eigenval;
 }
 
+double pspio_state_get_rc(const pspio_state_t *state)
+{
+  assert(state != NULL);
 
-char *pspio_state_get_label(const pspio_state_t *state) {
+  return state->rc;
+}
+
+char *pspio_state_get_label(const pspio_state_t *state)
+{
   assert(state != NULL);
 
   return state->label;
 }
 
 
-pspio_qn_t *pspio_state_get_qn(const pspio_state_t *state) {
-  assert(state != NULL);
+/**********************************************************************
+ * Utility routines                                                   *
+ **********************************************************************/
 
-  return state->qn;
-}
-
-
-double pspio_state_get_occ(const pspio_state_t *state) {
+double pspio_state_wf_eval(const pspio_state_t *state, const double r)
+{
   assert(state != NULL);
   
-  return state->occ;
+  return pspio_meshfunc_eval(state->wf, r);
 }
 
-
-double pspio_state_get_ev(const pspio_state_t *state) {
+double pspio_state_wf_eval_deriv(const pspio_state_t *state, const double r)
+{
   assert(state != NULL);
-
-  return state->eigenval;
+  
+  return pspio_meshfunc_eval_deriv(state->wf, r);
 }
 
-
-double pspio_state_get_rc(const pspio_state_t *state) {
+double pspio_state_wf_eval_deriv2(const pspio_state_t *state, const double r)
+{
   assert(state != NULL);
-
-  return state->rc;
+  
+  return pspio_meshfunc_eval_deriv2(state->wf, r);
 }

@@ -34,8 +34,8 @@
  * Global routines                                                    *
  **********************************************************************/
 
-int pspio_mesh_alloc(pspio_mesh_t **mesh, const int np) {
-
+int pspio_mesh_alloc(pspio_mesh_t **mesh, const int np)
+{
   assert(mesh != NULL);
   assert(*mesh == NULL);
   assert(np > 1);
@@ -64,9 +64,9 @@ int pspio_mesh_alloc(pspio_mesh_t **mesh, const int np) {
   return PSPIO_SUCCESS;
 }
 
-
 int pspio_mesh_init(pspio_mesh_t *mesh, const int type, const double a, 
-       const double b, const double *r, const double *rab) {
+		    const double b, const double *r, const double *rab)
+{
   assert(mesh != NULL);
   assert(mesh->r != NULL);
   assert(mesh->rab != NULL);
@@ -81,7 +81,8 @@ int pspio_mesh_init(pspio_mesh_t *mesh, const int type, const double a,
 }
 
 void pspio_mesh_init_from_parameters(pspio_mesh_t *mesh, const int type, 
-       const double a, const double b) {
+				     const double a, const double b)
+{
   int i;
 
   assert(mesh != NULL);
@@ -112,7 +113,8 @@ void pspio_mesh_init_from_parameters(pspio_mesh_t *mesh, const int type,
 }
 
 void pspio_mesh_init_from_points(pspio_mesh_t *mesh, const double *r, 
-      const double *rab) {
+				 const double *rab) 
+{
   int i;
   double tol = 1.0e-10;
 
@@ -209,8 +211,8 @@ void pspio_mesh_init_from_points(pspio_mesh_t *mesh, const double *r,
   }
 }
 
-
-int pspio_mesh_copy(pspio_mesh_t **dst, const pspio_mesh_t *src) {
+int pspio_mesh_copy(pspio_mesh_t **dst, const pspio_mesh_t *src)
+{
   assert(src != NULL);
 
   if ( *dst == NULL ) {
@@ -233,9 +235,8 @@ int pspio_mesh_copy(pspio_mesh_t **dst, const pspio_mesh_t *src) {
   return PSPIO_SUCCESS;
 }
 
-
-void pspio_mesh_free(pspio_mesh_t *mesh) {
-
+void pspio_mesh_free(pspio_mesh_t *mesh)
+{
   if (mesh != NULL) {
     free (mesh->r);
     free (mesh->rab);
@@ -245,38 +246,39 @@ void pspio_mesh_free(pspio_mesh_t *mesh) {
 
 
 /**********************************************************************
- * Atomic routines                                                    *
+ * Getters                                                            *
  **********************************************************************/
 
-int pspio_mesh_get_np(const pspio_mesh_t *mesh) {
+int pspio_mesh_get_np(const pspio_mesh_t *mesh)
+{
   assert(mesh != NULL);
 
   return mesh->np;
 }
 
-
-double pspio_mesh_get_a(const pspio_mesh_t *mesh) {
+double pspio_mesh_get_a(const pspio_mesh_t *mesh)
+{
   assert(mesh != NULL);
 
   return mesh->a;
 }
 
-
-double pspio_mesh_get_b(const pspio_mesh_t *mesh) {
+double pspio_mesh_get_b(const pspio_mesh_t *mesh)
+{
   assert(mesh != NULL);
 
   return mesh->b;
 }
 
-
-double *pspio_mesh_get_r(const pspio_mesh_t *mesh) {
+double *pspio_mesh_get_r(const pspio_mesh_t *mesh)
+{
   assert(mesh != NULL);
 
   return mesh->r;
 }
 
-
-double *pspio_mesh_get_rab(const pspio_mesh_t *mesh) {
+double *pspio_mesh_get_rab(const pspio_mesh_t *mesh)
+{
   assert(mesh != NULL);
 
   return mesh->rab;
@@ -287,7 +289,8 @@ double *pspio_mesh_get_rab(const pspio_mesh_t *mesh) {
  * Utility routines                                                   *
  **********************************************************************/
 
-int pspio_mesh_cmp(const pspio_mesh_t *mesh1, const pspio_mesh_t *mesh2) {
+int pspio_mesh_cmp(const pspio_mesh_t *mesh1, const pspio_mesh_t *mesh2)
+{
   int i, np, result;
 
   assert((mesh1 != NULL) && (mesh2 != NULL));

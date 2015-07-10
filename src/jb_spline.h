@@ -39,22 +39,24 @@ typedef struct{
 
 
 /**********************************************************************
- * Routines                                                           *
+ * Global routines                                                    *
  **********************************************************************/
 
+/**
+ * 
+ */
 int jb_spline_alloc(jb_spline_t **spline, const int np);
 
+/**
+ * 
+ */
+int jb_spline_init(jb_spline_t **spline, const double *f, const double *r, 
+		   const int np);
+
+/**
+ * 
+ */
 int jb_spline_copy(jb_spline_t **dst, const jb_spline_t *src);
-
-int jb_spline_init(jb_spline_t **spline, const double *f, const double *r, const int np);
-
-void jb_spline_free(jb_spline_t *spline);
-
-double jb_spline_eval(const jb_spline_t *spline, const double r);
-
-double jb_spline_eval_deriv(const jb_spline_t *spline, const double r);
-
-double jb_spline_eval_deriv2(const jb_spline_t *spline, const double r);
 
 /**
  * Compute the second derivatives of a piecewise cubic spline using 'natural'
@@ -62,15 +64,47 @@ double jb_spline_eval_deriv2(const jb_spline_t *spline, const double r);
  */
 double *jb_natural_spline_cubic_init(int n, const double* t, const double* y);
 
-double *jb_spline_cubic_init (int n, const double *t, const double *y,
-			      int ibcbeg, double ybcbeg, int ibcend, double ybcend);
+/**
+ * 
+ */
+double *jb_spline_cubic_init (int n, const double *t, const double *y, int ibcbeg,
+			      double ybcbeg, int ibcend, double ybcend);
 
-void jb_spline_cubic_val (int n, const double *t, const double *y, const double *ypp, 
-			  double tval, double *yval, double *ypval, double *yppval);
+/**
+ * 
+ */
+void jb_spline_free(jb_spline_t *spline);
+
+
+/**********************************************************************
+ * Utility routines                                                   *
+ **********************************************************************/
+
+/**
+ * 
+ */
+double jb_spline_eval(const jb_spline_t *spline, const double r);
+
+/**
+ * 
+ */
+double jb_spline_eval_deriv(const jb_spline_t *spline, const double r);
+
+/**
+ * 
+ */
+double jb_spline_eval_deriv2(const jb_spline_t *spline, const double r);
+
+/**
+ * Evaluates a piecewise cubic spline at a point.
+ */
+void jb_spline_cubic_val(int n, const double *t, const double *y, const double *ypp, 
+			 double tval, double *yval, double *ypval, double *yppval);
 
 /**
  * Solves a pentadiagonal system of linear equations.
  */
-double *penta(int n, double a1[], double a2[], double a3[], double a4[], double a5[], double b[]);
+double *penta(int n, double a1[], double a2[], double a3[], double a4[], 
+	      double a5[], double b[]);
 
 #endif
