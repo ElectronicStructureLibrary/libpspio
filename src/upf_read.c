@@ -22,7 +22,6 @@
  * @brief routines to read UPF files 
  */
 #include <string.h>
-#include <ctype.h>
 
 #include "pspio_common.h"
 #include "pspio_error.h"

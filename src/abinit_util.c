@@ -22,13 +22,10 @@
  * @brief Utility routines to read/write Abinit files
  */
 #include <stdio.h>
-#include <assert.h>
 #include <string.h>
-#include <ctype.h>
 #include <time.h>
 
 #include "pspio_abinit.h"
-#include "pspio_error.h"
 #include "abinit.h"
 #include "util.h"
 

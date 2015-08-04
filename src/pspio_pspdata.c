@@ -19,7 +19,6 @@
 */
 
 #include <stdio.h>
-#include <assert.h>
 #include <string.h>
 
 #include "pspio_common.h"
@@ -29,7 +28,6 @@
 #include "pspio_abinit.h"
 #include "pspio_fhi.h"
 #include "pspio_upf.h"
-#include "util.h"
 
 #if defined HAVE_CONFIG_H
 #include "config.h"

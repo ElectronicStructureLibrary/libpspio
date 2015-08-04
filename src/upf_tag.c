@@ -25,7 +25,6 @@
 #include <ctype.h>
 
 #include "upf.h"
-#include "util.h"
 
 #if defined HAVE_CONFIG_H
 #include "config.h"

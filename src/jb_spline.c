@@ -12,11 +12,9 @@ This code is distributed under the GNU LGPL license.
  */
 #include <assert.h>
 # include <stdlib.h>
-# include <math.h>
 # include <string.h>
 
 #include "jb_spline.h"
-#include "pspio_error.h"
 
 #if defined HAVE_CONFIG_H
 #include "config.h"

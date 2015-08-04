@@ -23,8 +23,6 @@
  * @brief checks pspio_mesh.c and pspio_mesh.h 
  */
 
-#include <stdlib.h>
-#include <stdio.h>
 #include <math.h>
 #include <check.h>
 

@@ -22,9 +22,6 @@
  * @brief checks pspio_pspdata.c and pspio_pspdata.h
  */
 
-#include <stdlib.h>
-#include <stdio.h>
-#include <math.h>
 #include <check.h>
 
 #include "pspio_error.h"

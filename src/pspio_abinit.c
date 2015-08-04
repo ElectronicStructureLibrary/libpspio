@@ -24,14 +24,10 @@
 
 #include <stdlib.h>
 #include <string.h>
-#include <assert.h>
-#include <ctype.h>
 
 #include "pspio_abinit.h"
 #include "pspio_fhi.h"
-#include "pspio_error.h"
 #include "abinit.h"
-#include "util.h"
 
 #if defined HAVE_CONFIG_H
 #include "config.h"
@@ -100,7 +96,7 @@ int pspio_abinit_write(FILE *fp, const pspio_pspdata_t *pspdata,
   case PSPIO_FMT_ABINIT_11:
   case PSPIO_FMT_ABINIT_17:
     ierr = PSPIO_ENOSUPPORT;
-    break;     
+    break;
   default:
     ierr = PSPIO_EVALUE;
   }

@@ -23,7 +23,6 @@
  * @brief checks pspio_qn.c and pspio_qn.h 
  */
 
-#include <stdio.h>
 #include <check.h>
 
 #include "pspio_qn.h"

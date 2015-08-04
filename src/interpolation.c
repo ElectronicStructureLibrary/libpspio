@@ -151,9 +151,12 @@ void interpolation_free(interpolation_t *interp) {
       gsl_interp_accel_free(interp->gsl_acc);
       break;
 #endif
-      case PSPIO_INTERP_JB_CSPLINE:
-        jb_spline_free(interp->jb_spl);
-        break;
+    case PSPIO_INTERP_JB_CSPLINE:
+      jb_spline_free(interp->jb_spl);
+      break;
+    default:
+      /* Nothing do do */
+      break;
     }
 
     free(interp);

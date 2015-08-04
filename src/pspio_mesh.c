@@ -23,7 +23,6 @@
 #include <math.h>
 
 #include "pspio_mesh.h"
-#include "pspio_error.h"
 
 #if defined HAVE_CONFIG_H
 #include "config.h"

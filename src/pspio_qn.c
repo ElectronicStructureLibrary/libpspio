@@ -20,7 +20,6 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <assert.h>
-#include <string.h>
 #include <math.h>
 
 #include "pspio_error.h"
@@ -130,7 +129,7 @@ int pspio_qn_cmp(const pspio_qn_t *qn1, const pspio_qn_t *qn2)
 
 void pspio_qn_label(const pspio_qn_t *qn, char *s)
 {
-  char llabel[4] = "spdf";
+  char llabel[5] = "spdf";
 
   assert(qn != NULL);
 

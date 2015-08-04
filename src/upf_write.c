@@ -21,12 +21,9 @@
  * @file upf_write.c
  * @brief routines to write UPF files 
  */
-#include <string.h>
-#include <ctype.h>
 #include <math.h>
 
 #include "upf.h"
-#include "util.h"
 
 #if defined HAVE_CONFIG_H
 #include "config.h"

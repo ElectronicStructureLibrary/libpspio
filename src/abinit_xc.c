@@ -18,9 +18,6 @@
 */
 
 
-#include <stdio.h>
-#include <string.h>
-
 #include "pspio_error.h"
 #include "pspio_xc.h"
 
@@ -48,7 +45,7 @@ int abinit_to_libxc(const int pspxc, int *exchange, int *correlation)
   if ( pspxc < 0 ) {
 
     *correlation = abs(pspxc) % 1000;
-    *exchange = (int) ((abs(pspxc) - *correlation) / 1000);
+    *exchange = (abs(pspxc) - *correlation) / 1000;
 
   } else {
 

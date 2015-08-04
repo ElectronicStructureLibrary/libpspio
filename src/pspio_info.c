@@ -44,9 +44,6 @@ void pspio_version(int *major, int *minor, int *micro)
   const char *version_string = PACKAGE_VERSION;
 
   assert((major != NULL) && (minor != NULL) && (micro != NULL));
-#if !defined HAVE_CONFIG_H
-  return PSPIO_ERROR;
-#endif
 
   *major = -1;
   *minor = -1;
