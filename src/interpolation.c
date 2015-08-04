@@ -150,10 +150,10 @@ void interpolation_free(interpolation_t *interp) {
       gsl_spline_free(interp->gsl_spl);
       gsl_interp_accel_free(interp->gsl_acc);
       break;
-    case PSPIO_INTERP_JB_CSPLINE:
-      jb_spline_free(interp->jb_spl);
-      break;
 #endif
+      case PSPIO_INTERP_JB_CSPLINE:
+        jb_spline_free(interp->jb_spl);
+        break;
     }
 
     free(interp);
@@ -176,8 +176,9 @@ double interpolation_eval(const interpolation_t *interp, const double r)
 #endif
   case PSPIO_INTERP_JB_CSPLINE:
     return jb_spline_eval(interp->jb_spl, r);
+  default:
+    return 0.0;
   }
-
 }
 
 double interpolation_eval_deriv(const interpolation_t *interp, const double r)
@@ -191,8 +192,9 @@ double interpolation_eval_deriv(const interpolation_t *interp, const double r)
 #endif
   case PSPIO_INTERP_JB_CSPLINE:
     return jb_spline_eval_deriv(interp->jb_spl, r);
+  default:
+    return 0.0;
   }
-
 }
 
 double interpolation_eval_deriv2(const interpolation_t *interp, const double r)
@@ -206,6 +208,7 @@ double interpolation_eval_deriv2(const interpolation_t *interp, const double r)
 #endif
   case PSPIO_INTERP_JB_CSPLINE:
     return jb_spline_eval_deriv2(interp->jb_spl, r);
+  default:
+    return 0.0;
   }
-
 }

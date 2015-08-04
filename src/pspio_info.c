@@ -41,12 +41,12 @@
 
 void pspio_version(int *major, int *minor, int *micro)
 {
+  const char *version_string = PACKAGE_VERSION;
+
   assert((major != NULL) && (minor != NULL) && (micro != NULL));
 #if !defined HAVE_CONFIG_H
   return PSPIO_ERROR;
 #endif
-
-  const char *version_string = PACKAGE_VERSION;
 
   *major = -1;
   *minor = -1;
@@ -59,12 +59,11 @@ void pspio_info_string(char *info)
 #if !defined HAVE_CONFIG_H
 #define PACKAGE_STRING ""
 #endif
-  assert(info == NULL);
-  assert(PACKAGE_STRING != "");
-
   const char *package_string = PACKAGE_STRING;
-
   int s = strlen(package_string);
+
+  assert(info == NULL);
+
   info = (char *) malloc (s + 1);
   assert(info != NULL);
   strncpy(info, package_string, s);

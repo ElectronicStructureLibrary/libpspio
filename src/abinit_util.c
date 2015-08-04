@@ -179,7 +179,7 @@ int abinit_write_header(FILE *fp, const int format, const pspio_pspdata_t *pspda
   sprintf(pspdate, "%2.2d%2.2d%2.2d", 
     (*now).tm_year % 100, (*now).tm_mon + 1, (*now).tm_mday);
   pspdate[6] = '\0';
-  FULFILL_OR_RETURN( fprintf(fp, "%8.3lf %8.3lf   %6s   zatom, zion, pspdat\n",
+  FULFILL_OR_RETURN( fprintf(fp, "%8.3f %8.3f   %6s   zatom, zion, pspdat\n",
     pspdata->z, pspdata->zvalence, pspdate) > 0, PSPIO_EIO );
   
   /* Line 3: write pspcod, pspxc, lmax, lloc, mmax, r2well */
@@ -190,7 +190,7 @@ int abinit_write_header(FILE *fp, const int format, const pspio_pspdata_t *pspda
   case 5:
   case 6:
     FULFILL_OR_RETURN(
-        fprintf(fp, "   %d   %d   %d   %d   %d   %8.3lf   pspcod, pspxc, lmax, lloc, mmax, r2well\n",
+        fprintf(fp, "   %d   %d   %d   %d   %d   %8.3f   pspcod, pspxc, lmax, lloc, mmax, r2well\n",
         format, pspxc, pspdata->l_max, pspdata->l_local,
         pspdata->mesh->np, 0.0) > 0, PSPIO_EIO );
 
@@ -205,7 +205,7 @@ int abinit_write_header(FILE *fp, const int format, const pspio_pspdata_t *pspda
       qchrg = 0.0;
     }
     FULFILL_OR_RETURN(
-        fprintf(fp, "%8.3lf   %8.3lf   %8.3lf   rchrg, fchrg, qchrg\n",
+        fprintf(fp, "%8.3f   %8.3f   %8.3f   rchrg, fchrg, qchrg\n",
         rchrg, fchrg, qchrg) > 0, PSPIO_EIO );
     FULFILL_OR_RETURN( fprintf(fp, "5--- These two lines are available for giving more information, later\n6\n") > 0, PSPIO_EIO );
     FULFILL_OR_RETURN( fprintf(fp, "7-Here follows the cpi file from the fhi98pp code-\n") > 0, PSPIO_EIO );
