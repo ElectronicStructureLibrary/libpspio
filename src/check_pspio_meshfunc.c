@@ -289,7 +289,7 @@ Suite * make_meshfunc_suite(void)
   tcase_add_test(tc_init, test_meshfunc_init3);
   suite_add_tcase(s, tc_init);
 
-  tc_cmp = tcase_create("Comparization");
+  tc_cmp = tcase_create("Comparison");
   tcase_add_checked_fixture(tc_cmp, meshfunc_setup, meshfunc_teardown);
   tcase_add_test(tc_cmp, test_meshfunc_cmp_equal);
   tcase_add_test(tc_cmp, test_meshfunc_cmp_diff_mesh);
