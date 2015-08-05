@@ -157,6 +157,16 @@ pspio_mesh_t *pspio_meshfunc_get_mesh(const pspio_meshfunc_t *func);
  **********************************************************************/
 
 /**
+ * Compares two mesh functions.
+ * @param[in] meshfunc1: first mesh function to compare
+ * @param[in] meshfunc2: second mesh function to compare
+ * @return PSPIO_EQUAL when equal, PSPIO_DIFF when different, PSPIO_ERROR if a
+ * problem occured.
+ */
+int pspio_meshfunc_cmp(const pspio_meshfunc_t *meshfunc1, const
+                       pspio_meshfunc_t *meshfunc2);
+
+/**
  * Returns the value of the function at an arbitrary point.
  * 
  * @param[in] func: function structure

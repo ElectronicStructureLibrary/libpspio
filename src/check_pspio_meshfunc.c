@@ -169,13 +169,53 @@ START_TEST(test_meshfunc_init3)
 }
 END_TEST
 
+START_TEST(test_meshfunc_cmp_equal)
+{
+  pspio_meshfunc_init(mf11, m1, f11, f11p, f11pp);
+  pspio_meshfunc_init(mf12, m1, f11, f11p, f11pp);
+  ck_assert(pspio_meshfunc_cmp(mf11, mf12) == PSPIO_EQUAL);
+}
+END_TEST
+
+START_TEST(test_meshfunc_cmp_diff_mesh)
+{
+  pspio_meshfunc_init(mf11, m1, f11, f11p, f11pp);
+  pspio_meshfunc_init(mf2, m2, f2, f2p, f2pp);
+  ck_assert(pspio_meshfunc_cmp(mf11, mf2) == PSPIO_DIFF);
+}
+END_TEST
+
+START_TEST(test_meshfunc_cmp_diff_f)
+{
+  pspio_meshfunc_init(mf11, m1, f11, f11p, f11pp);
+  pspio_meshfunc_init(mf12, m1, f12, f11p, f11pp);
+  ck_assert(pspio_meshfunc_cmp(mf11, mf12) == PSPIO_DIFF);
+}
+END_TEST
+
+START_TEST(test_meshfunc_cmp_diff_fp)
+{
+  pspio_meshfunc_init(mf11, m1, f11, f11p, f11pp);
+  pspio_meshfunc_init(mf12, m1, f11, f12p, f11pp);
+  ck_assert(pspio_meshfunc_cmp(mf11, mf12) == PSPIO_DIFF);
+}
+END_TEST
+
+START_TEST(test_meshfunc_cmp_diff_fpp)
+{
+  pspio_meshfunc_init(mf11, m1, f11, f11p, f11pp);
+  pspio_meshfunc_init(mf12, m1, f11, f11p, f12pp);
+  ck_assert(pspio_meshfunc_cmp(mf11, mf12) == PSPIO_DIFF);
+}
+END_TEST
+
 START_TEST(test_meshfunc_copy_null)
 {
   pspio_meshfunc_init(mf11, m1, f11, f11p, f11pp);
   pspio_meshfunc_free(mf12);
   mf12 = NULL;
   ck_assert(pspio_meshfunc_copy(&mf12, mf11) == PSPIO_SUCCESS);
-  meshfunc_compare_values(m1, mf12, f11, f11p, f11pp, 1e-10);
+  ck_assert(pspio_meshfunc_cmp(mf11, mf12) == PSPIO_EQUAL);
 }
 END_TEST
 
@@ -184,7 +224,7 @@ START_TEST(test_meshfunc_copy_nonnull)
   pspio_meshfunc_init(mf11, m1, f11, f11p, f11pp);
   pspio_meshfunc_init(mf12, m1, f12, f12p, f12pp);
   ck_assert(pspio_meshfunc_copy(&mf12, mf11) == PSPIO_SUCCESS);
-  meshfunc_compare_values(m1, mf12, f11, f11p, f11pp, 1e-10);
+  ck_assert(pspio_meshfunc_cmp(mf11, mf12) == PSPIO_EQUAL);
 }
 END_TEST
 
@@ -193,7 +233,7 @@ START_TEST(test_meshfunc_copy_nonnull_size)
   pspio_meshfunc_init(mf11, m1, f11, f11p, f11pp);
   pspio_meshfunc_init(mf2, m2, f2, f2p, f2pp);
   ck_assert(pspio_meshfunc_copy(&mf2, mf11) == PSPIO_SUCCESS);
-  meshfunc_compare_values(m1, mf2, f11, f11p, f11pp, 1e-10);
+  ck_assert(pspio_meshfunc_cmp(mf11, mf2) == PSPIO_EQUAL);
 }
 END_TEST
 
@@ -233,7 +273,7 @@ END_TEST
 Suite * make_meshfunc_suite(void)
 {
   Suite *s;
-  TCase *tc_alloc, *tc_init, *tc_copy, *tc_eval;
+  TCase *tc_alloc, *tc_init, *tc_cmp, *tc_copy, *tc_eval;
 
   s = suite_create("Mesh function");
 
@@ -248,6 +288,15 @@ Suite * make_meshfunc_suite(void)
   tcase_add_test(tc_init, test_meshfunc_init2);
   tcase_add_test(tc_init, test_meshfunc_init3);
   suite_add_tcase(s, tc_init);
+
+  tc_cmp = tcase_create("Comparization");
+  tcase_add_checked_fixture(tc_cmp, meshfunc_setup, meshfunc_teardown);
+  tcase_add_test(tc_cmp, test_meshfunc_cmp_equal);
+  tcase_add_test(tc_cmp, test_meshfunc_cmp_diff_mesh);
+  tcase_add_test(tc_cmp, test_meshfunc_cmp_diff_f);
+  tcase_add_test(tc_cmp, test_meshfunc_cmp_diff_fp);
+  tcase_add_test(tc_cmp, test_meshfunc_cmp_diff_fpp);
+  suite_add_tcase(s, tc_cmp);
 
   tc_copy = tcase_create("Copy");
   tcase_add_checked_fixture(tc_copy, meshfunc_setup, meshfunc_teardown);

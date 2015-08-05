@@ -228,6 +228,27 @@ pspio_mesh_t *pspio_meshfunc_get_mesh(const pspio_meshfunc_t *func)
  * Utility routines                                                   *
  **********************************************************************/
 
+int pspio_meshfunc_cmp(const pspio_meshfunc_t *meshfunc1,
+                       const pspio_meshfunc_t *meshfunc2)
+{
+  int i;
+
+  assert(meshfunc1 != NULL);
+  assert(meshfunc2 != NULL);
+
+  if ( pspio_mesh_cmp(meshfunc1->mesh, meshfunc2->mesh) == PSPIO_EQUAL) {
+    for (i=0; i<pspio_mesh_get_np(meshfunc1->mesh); i++) {
+      if ( (meshfunc1->f[i]   != meshfunc2->f[i])  ||
+           (meshfunc1->fp[i]  != meshfunc2->fp[i]) ||
+           (meshfunc1->fpp[i] != meshfunc2->fpp[i])
+         ) return PSPIO_DIFF;
+    }
+    return PSPIO_EQUAL;
+  } else {
+    return PSPIO_DIFF;
+  }
+}
+
 double pspio_meshfunc_eval(const pspio_meshfunc_t *func, const double r)
 {
   assert(func != NULL);
