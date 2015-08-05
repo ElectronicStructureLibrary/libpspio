@@ -121,6 +121,17 @@ pspio_qn_t *pspio_projector_get_qn(const pspio_projector_t *projector);
 /**********************************************************************
  * Utility routines                                                   *
  **********************************************************************/
+
+/**
+ * Compares two projectors.
+ * @param[in] projector1: first projector to compare
+ * @param[in] projector2: second projector to compare
+ * @return PSPIO_EQUAL when equal, PSPIO_DIFF when different, PSPIO_ERROR if a
+ * problem occured.
+ */
+int pspio_projector_cmp(const pspio_projector_t *projector1, const
+                        pspio_projector_t *projector2);
+
 /**
  * Returns the value of the projector at an arbitrary point
  * 

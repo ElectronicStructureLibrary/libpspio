@@ -140,13 +140,45 @@ START_TEST(test_projector_init)
 }
 END_TEST
 
+START_TEST(test_projector_cmp_equal)
+{
+  ck_assert(pspio_projector_init(proj11, qn11, e11, m1, p11) == PSPIO_SUCCESS);
+  ck_assert(pspio_projector_init(proj12, qn11, e11, m1, p11) == PSPIO_SUCCESS);
+  ck_assert(pspio_projector_cmp(proj12, proj11) == PSPIO_EQUAL);
+}
+END_TEST
+
+START_TEST(test_projector_cmp_diff_qn)
+{
+  ck_assert(pspio_projector_init(proj11, qn11, e11, m1, p11) == PSPIO_SUCCESS);
+  ck_assert(pspio_projector_init(proj12, qn12, e11, m1, p11) == PSPIO_SUCCESS);
+  ck_assert(pspio_projector_cmp(proj12, proj11) == PSPIO_DIFF);
+}
+END_TEST
+
+START_TEST(test_projector_cmp_diff_energy)
+{
+  ck_assert(pspio_projector_init(proj11, qn11, e11, m1, p11) == PSPIO_SUCCESS);
+  ck_assert(pspio_projector_init(proj12, qn11, e12, m1, p11) == PSPIO_SUCCESS);
+  ck_assert(pspio_projector_cmp(proj12, proj11) == PSPIO_DIFF);
+}
+END_TEST
+
+START_TEST(test_projector_cmp_diff_proj)
+{
+  ck_assert(pspio_projector_init(proj11, qn11, e11, m1, p12) == PSPIO_SUCCESS);
+  ck_assert(pspio_projector_init(proj12, qn11, e11, m1, p11) == PSPIO_SUCCESS);
+  ck_assert(pspio_projector_cmp(proj12, proj11) == PSPIO_DIFF);
+}
+END_TEST
+
 START_TEST(test_projector_copy_null)
 {
   pspio_projector_init(proj11, qn11, e11, m1, p11);
   pspio_projector_free(proj12);
   proj12 = NULL;
   ck_assert(pspio_projector_copy(&proj12, proj11) == PSPIO_SUCCESS);
-  projector_compare_values(m1, proj12, qn11, e11, p11, 1e-10);
+  ck_assert(pspio_projector_cmp(proj12, proj11) == PSPIO_EQUAL);
 }
 END_TEST
 
@@ -155,7 +187,7 @@ START_TEST(test_projector_copy_nonnull)
   pspio_projector_init(proj11, qn11, e11, m1, p11);
   pspio_projector_init(proj12, qn12, e12, m1, p12);
   ck_assert(pspio_projector_copy(&proj12, proj11) == PSPIO_SUCCESS);
-  projector_compare_values(m1, proj12, qn11, e11, p11, 1e-10);
+  ck_assert(pspio_projector_cmp(proj12, proj11) == PSPIO_EQUAL);
 }
 END_TEST
 
@@ -164,7 +196,7 @@ START_TEST(test_projector_copy_nonnull_size)
   pspio_projector_init(proj11, qn11, e11, m1, p11);
   pspio_projector_init(proj2, qn2, e2, m2, p2);
   ck_assert(pspio_projector_copy(&proj2, proj11) == PSPIO_SUCCESS);
-  projector_compare_values(m1, proj2, qn11, e11, p11, 1e-10);
+  ck_assert(pspio_projector_cmp(proj2, proj11) == PSPIO_EQUAL);
 }
 END_TEST
 
@@ -205,7 +237,7 @@ END_TEST
 Suite * make_projector_suite(void)
 {
   Suite *s;
-  TCase *tc_alloc, *tc_init, *tc_copy, *tc_eval;
+  TCase *tc_alloc, *tc_init, *tc_cmp, *tc_copy, *tc_eval;
 
   s = suite_create("Projector");
 
@@ -218,6 +250,14 @@ Suite * make_projector_suite(void)
   tcase_add_checked_fixture(tc_init, projector_setup, projector_teardown);
   tcase_add_test(tc_init, test_projector_init);
   suite_add_tcase(s, tc_init);
+
+  tc_cmp = tcase_create("Comparison");
+  tcase_add_checked_fixture(tc_cmp, projector_setup, projector_teardown);
+  tcase_add_test(tc_cmp, test_projector_cmp_equal);
+  tcase_add_test(tc_cmp, test_projector_cmp_diff_qn);
+  tcase_add_test(tc_cmp, test_projector_cmp_diff_energy);
+  tcase_add_test(tc_cmp, test_projector_cmp_diff_proj);
+  suite_add_tcase(s, tc_cmp);
 
   tc_copy = tcase_create("Copy");
   tcase_add_checked_fixture(tc_copy, projector_setup, projector_teardown);

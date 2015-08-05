@@ -19,6 +19,7 @@
 
 #include <stdlib.h>
 #include <assert.h>
+#include <math.h>
 
 #include "pspio_projector.h"
 
@@ -138,6 +139,21 @@ pspio_qn_t *pspio_projector_get_qn(const pspio_projector_t *projector)
 /**********************************************************************
  * Utility routines                                                   *
  **********************************************************************/
+
+int pspio_projector_cmp(const pspio_projector_t *projector1, const
+                        pspio_projector_t *projector2)
+{
+  assert(projector1 != NULL);
+  assert(projector2 != NULL);
+
+  if ((pspio_qn_cmp(projector1->qn, projector2->qn) == PSPIO_DIFF) ||
+      (pspio_meshfunc_cmp(projector1->proj, projector2->proj) == PSPIO_DIFF) ||
+      (fabs(projector1->energy - projector2->energy) > 1e-10)) {
+    return PSPIO_DIFF;
+  } else {
+    return PSPIO_EQUAL;
+  }
+}
 
 double pspio_projector_eval(const pspio_projector_t *projector, const double r)
 {
