@@ -138,13 +138,37 @@ START_TEST(test_potential_init)
 }
 END_TEST
 
+START_TEST(test_potential_cmp_equal)
+{
+  ck_assert(pspio_potential_init(pot11, qn11, m1, v11) == PSPIO_SUCCESS);
+  ck_assert(pspio_potential_init(pot12, qn11, m1, v11) == PSPIO_SUCCESS);
+  ck_assert(pspio_potential_cmp(pot11, pot12) == PSPIO_EQUAL);
+}
+END_TEST
+
+START_TEST(test_potential_cmp_diff_v)
+{
+  ck_assert(pspio_potential_init(pot11, qn11, m1, v11) == PSPIO_SUCCESS);
+  ck_assert(pspio_potential_init(pot12, qn11, m1, v12) == PSPIO_SUCCESS);
+  ck_assert(pspio_potential_cmp(pot11, pot12) == PSPIO_DIFF);
+}
+END_TEST
+
+START_TEST(test_potential_cmp_diff_qn)
+{
+  ck_assert(pspio_potential_init(pot11, qn11, m1, v11) == PSPIO_SUCCESS);
+  ck_assert(pspio_potential_init(pot12, qn12, m1, v11) == PSPIO_SUCCESS);
+  ck_assert(pspio_potential_cmp(pot11, pot12) == PSPIO_DIFF);
+}
+END_TEST
+
 START_TEST(test_potential_copy_null)
 {
   pspio_potential_init(pot11, qn11, m1, v11);
   pspio_potential_free(pot12);
   pot12 = NULL;
   ck_assert(pspio_potential_copy(&pot12, pot11) == PSPIO_SUCCESS);
-  potential_compare_values(m1, pot12, qn11, v11, 1e-10);
+  ck_assert(pspio_potential_cmp(pot11, pot12) == PSPIO_EQUAL);
 }
 END_TEST
 
@@ -153,7 +177,7 @@ START_TEST(test_potential_copy_nonnull)
   pspio_potential_init(pot11, qn11, m1, v11);
   pspio_potential_init(pot12, qn12, m1, v12);
   ck_assert(pspio_potential_copy(&pot12, pot11) == PSPIO_SUCCESS);
-  potential_compare_values(m1, pot12, qn11, v11, 1e-10);
+  ck_assert(pspio_potential_cmp(pot11, pot12) == PSPIO_EQUAL);
 }
 END_TEST
 
@@ -162,7 +186,7 @@ START_TEST(test_potential_copy_nonnull_size)
   pspio_potential_init(pot11, qn11, m1, v11);
   pspio_potential_init(pot2, qn2, m2, v2);
   ck_assert(pspio_potential_copy(&pot2, pot11) == PSPIO_SUCCESS);
-  potential_compare_values(m1, pot2, qn11, v11, 1e-10);
+  ck_assert(pspio_potential_cmp(pot2, pot11) == PSPIO_EQUAL);
 }
 END_TEST
 
@@ -203,7 +227,7 @@ END_TEST
 Suite * make_potential_suite(void)
 {
   Suite *s;
-  TCase *tc_alloc, *tc_init, *tc_copy, *tc_eval;
+  TCase *tc_alloc, *tc_init, *tc_cmp, *tc_copy, *tc_eval;
 
   s = suite_create("Potential");
 
@@ -216,6 +240,13 @@ Suite * make_potential_suite(void)
   tcase_add_checked_fixture(tc_init, potential_setup, potential_teardown);
   tcase_add_test(tc_init, test_potential_init);
   suite_add_tcase(s, tc_init);
+
+  tc_cmp = tcase_create("Comparison");
+  tcase_add_checked_fixture(tc_cmp, potential_setup, potential_teardown);
+  tcase_add_test(tc_cmp, test_potential_cmp_equal);
+  tcase_add_test(tc_cmp, test_potential_cmp_diff_v);
+  tcase_add_test(tc_cmp, test_potential_cmp_diff_qn);
+  suite_add_tcase(s, tc_cmp);
 
   tc_copy = tcase_create("Copy");
   tcase_add_checked_fixture(tc_copy, potential_setup, potential_teardown);

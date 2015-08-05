@@ -129,6 +129,17 @@ pspio_qn_t *pspio_potential_get_qn(const pspio_potential_t *potential)
  * Utility routines                                                   *
  **********************************************************************/
 
+int pspio_potential_cmp(const pspio_potential_t *potential1, const
+                        pspio_potential_t *potential2) {
+
+  if ((pspio_qn_cmp(potential1->qn, potential2->qn) == PSPIO_DIFF) ||
+      (pspio_meshfunc_cmp(potential1->v, potential2->v) == PSPIO_DIFF)) {
+    return PSPIO_DIFF;
+  } else {
+    return PSPIO_EQUAL;
+  }
+}
+
 double pspio_potential_eval(const pspio_potential_t *potential, const double r)
 {
   assert(potential != NULL);

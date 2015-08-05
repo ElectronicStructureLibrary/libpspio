@@ -111,6 +111,16 @@ pspio_qn_t *pspio_potential_get_qn(const pspio_potential_t *potential);
  **********************************************************************/
 
 /**
+ * Compares two potentials.
+ * @param[in] potential1: first potential to compare
+ * @param[in] potential2: second potential to compare
+ * @return PSPIO_EQUAL when equal, PSPIO_DIFF when different, PSPIO_ERROR if a
+ * problem occured.
+ */
+int pspio_potential_cmp(const pspio_potential_t *potential1, const
+                        pspio_potential_t *potential2);
+
+/**
  * Returns the value of the potential at an arbitrary point
  * 
  * @param[in] potential: potential structure
