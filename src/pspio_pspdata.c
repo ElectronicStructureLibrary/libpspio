@@ -380,6 +380,8 @@ int pspio_pspdata_set_state(pspio_pspdata_t *pspdata, const int index, const psp
 {
   assert(pspdata != NULL);
 
+  SUCCEED_OR_RETURN( pspio_state_copy(&(pspdata->states[index]), state) )
+
   return PSPIO_SUCCESS;
 }
 
@@ -413,6 +415,9 @@ int pspio_pspdata_set_potential(pspio_pspdata_t *pspdata, const int index, const
 {
   assert(pspdata != NULL);
 
+  SUCCEED_OR_RETURN( pspio_potential_copy(&(pspdata->potentials[index]),
+                                          potential) )
+
   return PSPIO_SUCCESS;
 }
 
@@ -436,6 +441,8 @@ int pspio_pspdata_set_n_projectors(pspio_pspdata_t *pspdata, const int n_project
 int pspio_pspdata_set_projector(pspio_pspdata_t *pspdata, const int index, const pspio_projector_t *projector)
 {
   assert(pspdata != NULL);
+
+  SUCCEED_OR_RETURN( pspio_projector_copy(&(pspdata->projectors[index]), projector) )
 
   return PSPIO_SUCCESS;
 }
@@ -462,6 +469,8 @@ int pspio_pspdata_set_vlocal(pspio_pspdata_t *pspdata, const pspio_potential_t *
 {
   assert(pspdata != NULL);
 
+  SUCCEED_OR_RETURN( pspio_potential_copy(&(pspdata->vlocal), vlocal) )
+
   return PSPIO_SUCCESS;
 }
 
@@ -469,12 +478,16 @@ int pspio_pspdata_set_xc(pspio_pspdata_t *pspdata, const pspio_xc_t *xc)
 {
   assert(pspdata != NULL);
 
+  SUCCEED_OR_RETURN( pspio_xc_copy(&(pspdata->xc), xc) );
+
   return PSPIO_SUCCESS;
 }
 
 int pspio_pspdata_set_rho_valence(pspio_pspdata_t *pspdata, const pspio_meshfunc_t *rho_valence)
 {
   assert(pspdata != NULL);
+
+  SUCCEED_OR_RETURN( pspio_meshfunc_copy(&(pspdata->rho_valence), rho_valence) )
 
   return PSPIO_SUCCESS;
 }
