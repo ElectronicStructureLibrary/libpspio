@@ -178,6 +178,15 @@ pspio_meshfunc_t *pspio_xc_get_nlcc_density(const pspio_xc_t *xc);
  **********************************************************************/
 
 /**
+ * Compares two xcs.
+ * @param[in] xc1: first xc to compare
+ * @param[in] xc2: second xc to compare
+ * @return PSPIO_EQUAL when equal, PSPIO_DIFF when different, PSPIO_ERROR if a
+ * problem occured.
+ */
+int pspio_xc_cmp(const pspio_xc_t *xc1, const pspio_xc_t *xc2);
+
+/**
  * Returns the value of the NLCC core density at an arbitrary point
  * @param[in] xc: xc structure
  * @param[in] r: point were we want to evaluate the core density

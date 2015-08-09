@@ -205,6 +205,21 @@ pspio_meshfunc_t *pspio_xc_get_nlcc_density(const pspio_xc_t *xc)
  * Utility routines                                                   *
  **********************************************************************/
 
+int pspio_xc_cmp(const pspio_xc_t *xc1, const pspio_xc_t *xc2) {
+
+  if ((xc1->correlation != xc2->correlation) ||
+      (xc1->exchange != xc2->exchange) ||
+      (xc1->nlcc_scheme != xc2->nlcc_scheme)) {
+    return PSPIO_DIFF;
+  } else {
+    if (xc1->nlcc_scheme != PSPIO_NLCC_NONE) {
+      return pspio_meshfunc_cmp(xc1->nlcc_dens, xc2->nlcc_dens) == PSPIO_EQUAL ? PSPIO_EQUAL : PSPIO_DIFF;
+    } else {
+      return PSPIO_EQUAL;
+    }
+  }
+}
+
 double pspio_xc_nlcc_density_eval(const pspio_xc_t *xc, const double r)
 {
   assert(xc != NULL);

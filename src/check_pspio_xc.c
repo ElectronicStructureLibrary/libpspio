@@ -164,13 +164,53 @@ START_TEST(test_xc_init)
 }
 END_TEST
 
+START_TEST(test_xc_cmp_equal)
+{
+  ck_assert(pspio_xc_init(xc11, xid11, cid11, nlcc11, m1, cd11, NULL, NULL) == PSPIO_SUCCESS);
+  ck_assert(pspio_xc_init(xc12, xid11, cid11, nlcc11, m1, cd11, NULL, NULL) == PSPIO_SUCCESS);
+  ck_assert(pspio_xc_cmp(xc11, xc12) == PSPIO_EQUAL);
+}
+END_TEST
+
+START_TEST(test_xc_cmp_diff_xid)
+{
+  ck_assert(pspio_xc_init(xc11, xid11, cid11, nlcc11, m1, cd11, NULL, NULL) == PSPIO_SUCCESS);
+  ck_assert(pspio_xc_init(xc12, xid12, cid11, nlcc11, m1, cd11, NULL, NULL) == PSPIO_SUCCESS);
+  ck_assert(pspio_xc_cmp(xc11, xc12) == PSPIO_DIFF);
+}
+END_TEST
+
+START_TEST(test_xc_cmp_diff_cid)
+  {
+    ck_assert(pspio_xc_init(xc11, xid11, cid11, nlcc11, m1, cd11, NULL, NULL) == PSPIO_SUCCESS);
+    ck_assert(pspio_xc_init(xc12, xid11, cid12, nlcc11, m1, cd11, NULL, NULL) == PSPIO_SUCCESS);
+    ck_assert(pspio_xc_cmp(xc11, xc12) == PSPIO_DIFF);
+  }
+END_TEST
+
+START_TEST(test_xc_cmp_diff_nlcc_scheme)
+  {
+    ck_assert(pspio_xc_init(xc11, xid11, cid11, nlcc11, m1, cd11, NULL, NULL) == PSPIO_SUCCESS);
+    ck_assert(pspio_xc_init(xc12, xid11, cid11, nlcc12, m1, cd11, NULL, NULL) == PSPIO_SUCCESS);
+    ck_assert(pspio_xc_cmp(xc11, xc12) == PSPIO_DIFF);
+  }
+END_TEST
+
+START_TEST(test_xc_cmp_diff_nlcc_density)
+  {
+    ck_assert(pspio_xc_init(xc11, xid11, cid11, nlcc11, m1, cd11, NULL, NULL) == PSPIO_SUCCESS);
+    ck_assert(pspio_xc_init(xc12, xid11, cid11, nlcc11, m1, cd12, NULL, NULL) == PSPIO_SUCCESS);
+    ck_assert(pspio_xc_cmp(xc11, xc12) == PSPIO_DIFF);
+  }
+END_TEST
+
 START_TEST(test_xc_copy_null)
 {
   ck_assert(pspio_xc_init(xc11, xid11, cid11, nlcc11, m1, cd11, NULL, NULL) == PSPIO_SUCCESS);
   pspio_xc_free(xc12);
   xc12 = NULL;
   ck_assert(pspio_xc_copy(&xc12, xc11) == PSPIO_SUCCESS);
-  xc_compare_values(xc12, xid11, cid11, nlcc11, m1, cd11, 1e-10);
+  ck_assert(pspio_xc_cmp(xc11, xc12));
 }
 END_TEST
 
@@ -179,7 +219,7 @@ START_TEST(test_xc_copy_nonnull)
   ck_assert(pspio_xc_init(xc11, xid11, cid11, nlcc11, m1, cd11, NULL, NULL) == PSPIO_SUCCESS);
   ck_assert(pspio_xc_init(xc12, xid12, cid12, nlcc12, m1, cd12, NULL, NULL) == PSPIO_SUCCESS);
   ck_assert(pspio_xc_copy(&xc12, xc11) == PSPIO_SUCCESS);
-  xc_compare_values(xc12, xid11, cid11, nlcc11, m1, cd11, 1e-10);
+  ck_assert(pspio_xc_cmp(xc11, xc12));
 }
 END_TEST
 
@@ -188,7 +228,7 @@ START_TEST(test_xc_copy_nonnull_size)
   ck_assert(pspio_xc_init(xc11, xid11, cid11, nlcc11, m1, cd11, NULL, NULL) == PSPIO_SUCCESS);
   ck_assert(pspio_xc_init(xc2, xid2, cid2, nlcc2, m2, cd2, NULL, NULL) == PSPIO_SUCCESS);
   ck_assert(pspio_xc_copy(&xc2, xc11) == PSPIO_SUCCESS);
-  xc_compare_values(xc2, xid11, cid11, nlcc11, m1, cd11, 1e-10);
+  ck_assert(pspio_xc_cmp(xc11, xc2));
 }
 END_TEST
 
@@ -229,7 +269,7 @@ END_TEST
 Suite * make_xc_suite(void)
 {
   Suite *s;
-  TCase *tc_alloc, *tc_getset, *tc_init, *tc_copy, *tc_eval;
+  TCase *tc_alloc, *tc_getset, *tc_init, *tc_cmp, *tc_copy, *tc_eval;
 
   s = suite_create("XC");
 
@@ -250,6 +290,15 @@ Suite * make_xc_suite(void)
   tcase_add_checked_fixture(tc_init, xc_setup, xc_teardown);
   tcase_add_test(tc_init, test_xc_init);
   suite_add_tcase(s, tc_init);
+
+  tc_cmp = tcase_create("Comparison");
+  tcase_add_checked_fixture(tc_cmp, xc_setup, xc_teardown);
+  tcase_add_test(tc_cmp, test_xc_cmp_equal);
+  tcase_add_test(tc_cmp, test_xc_cmp_diff_xid);
+  tcase_add_test(tc_cmp, test_xc_cmp_diff_cid);
+  tcase_add_test(tc_cmp, test_xc_cmp_diff_nlcc_scheme);
+  tcase_add_test(tc_cmp, test_xc_cmp_diff_nlcc_density);
+  suite_add_tcase(s, tc_cmp);
 
   tc_copy = tcase_create("Copy");
   tcase_add_checked_fixture(tc_copy, xc_setup, xc_teardown);
