@@ -155,13 +155,69 @@ START_TEST(test_state_init_label)
 }
 END_TEST
 
+START_TEST(test_state_cmp_equal)
+{
+  ck_assert(pspio_state_init(state11, e11, qn11, occ11, rc11, m1, wf11, NULL) == PSPIO_SUCCESS);
+  ck_assert(pspio_state_init(state12, e11, qn11, occ11, rc11, m1, wf11, NULL) == PSPIO_SUCCESS);
+  ck_assert(pspio_state_cmp(state11, state12) == PSPIO_EQUAL);
+}
+END_TEST
+
+START_TEST(test_state_cmp_diff_qn)
+{
+  ck_assert(pspio_state_init(state11, e11, qn11, occ11, rc11, m1, wf11, NULL) == PSPIO_SUCCESS);
+  ck_assert(pspio_state_init(state12, e11, qn12, occ11, rc11, m1, wf11, NULL) == PSPIO_SUCCESS);
+  ck_assert(pspio_state_cmp(state11, state12) == PSPIO_DIFF);
+}
+END_TEST
+
+START_TEST(test_state_cmp_diff_occ)
+{
+  ck_assert(pspio_state_init(state11, e11, qn11, occ11, rc11, m1, wf11, NULL) == PSPIO_SUCCESS);
+  ck_assert(pspio_state_init(state12, e11, qn11, occ12, rc11, m1, wf11, NULL) == PSPIO_SUCCESS);
+  ck_assert(pspio_state_cmp(state11, state12) == PSPIO_DIFF);
+}
+END_TEST
+
+START_TEST(test_state_cmp_diff_eigenval)
+{
+  ck_assert(pspio_state_init(state11, e11, qn11, occ11, rc11, m1, wf11, NULL) == PSPIO_SUCCESS);
+  ck_assert(pspio_state_init(state12, e12, qn11, occ11, rc11, m1, wf11, NULL) == PSPIO_SUCCESS);
+  ck_assert(pspio_state_cmp(state11, state12) == PSPIO_DIFF);
+}
+END_TEST
+
+START_TEST(test_state_cmp_diff_label)
+{
+  ck_assert(pspio_state_init(state11, e11, qn11, occ11, rc11, m1, wf11, "1s") == PSPIO_SUCCESS);
+  ck_assert(pspio_state_init(state12, e11, qn11, occ11, rc11, m1, wf11, "2s") == PSPIO_SUCCESS);
+  ck_assert(pspio_state_cmp(state11, state12) == PSPIO_DIFF);
+}
+END_TEST
+
+START_TEST(test_state_cmp_diff_rc)
+{
+  ck_assert(pspio_state_init(state11, e11, qn11, occ11, rc11, m1, wf11, NULL) == PSPIO_SUCCESS);
+  ck_assert(pspio_state_init(state12, e11, qn11, occ11, rc12, m1, wf11, NULL) == PSPIO_SUCCESS);
+  ck_assert(pspio_state_cmp(state11, state12) == PSPIO_DIFF);
+}
+END_TEST
+
+START_TEST(test_state_cmp_diff_wf)
+{
+  ck_assert(pspio_state_init(state11, e11, qn11, occ11, rc11, m1, wf11, NULL) == PSPIO_SUCCESS);
+  ck_assert(pspio_state_init(state12, e11, qn11, occ11, rc11, m1, wf12, NULL) == PSPIO_SUCCESS);
+  ck_assert(pspio_state_cmp(state11, state12) == PSPIO_DIFF);
+}
+END_TEST
+
 START_TEST(test_state_copy_null)
 {
   ck_assert(pspio_state_init(state11, e11, qn11, occ11, rc11, m1, wf11, NULL) == PSPIO_SUCCESS);
   pspio_state_free(state12);
   state12 = NULL;
   ck_assert(pspio_state_copy(&state12, state11) == PSPIO_SUCCESS);
-  state_compare_values(state12, e11, qn11, occ11, rc11, m1, wf11, "2s0.5", 1e-10);
+  ck_assert(pspio_state_cmp(state11, state12));
 }
 END_TEST
 
@@ -170,7 +226,7 @@ START_TEST(test_state_copy_nonnull)
   ck_assert(pspio_state_init(state11, e11, qn11, occ11, rc11, m1, wf11, NULL) == PSPIO_SUCCESS);
   ck_assert(pspio_state_init(state12, e12, qn12, occ12, rc12, m1, wf12, NULL) == PSPIO_SUCCESS);
   ck_assert(pspio_state_copy(&state12, state11) == PSPIO_SUCCESS);
-  state_compare_values(state12, e11, qn11, occ11, rc11, m1, wf11, "2s0.5", 1e-10);
+  ck_assert(pspio_state_cmp(state11, state12));
 }
 END_TEST
 
@@ -179,7 +235,7 @@ START_TEST(test_state_copy_nonnull_size)
   ck_assert(pspio_state_init(state11, e11, qn11, occ11, rc11, m1, wf11, NULL) == PSPIO_SUCCESS);
   ck_assert(pspio_state_init(state2, e2, qn2, occ2, rc2, m2, wf2, NULL) == PSPIO_SUCCESS);
   ck_assert(pspio_state_copy(&state2, state11) == PSPIO_SUCCESS);
-  state_compare_values(state2, e11, qn11, occ11, rc11, m1, wf11, "2s0.5", 1e-10);
+  ck_assert(pspio_state_cmp(state11, state2));
 }
 END_TEST
 
@@ -259,7 +315,7 @@ END_TEST
 Suite * make_state_suite(void)
 {
   Suite *s;
-  TCase *tc_alloc, *tc_init, *tc_copy, *tc_lookup, *tc_eval;
+  TCase *tc_alloc, *tc_init, *tc_cmp, *tc_copy, *tc_lookup, *tc_eval;
 
   s = suite_create("State");
 
@@ -273,6 +329,17 @@ Suite * make_state_suite(void)
   tcase_add_test(tc_init, test_state_init);
   tcase_add_test(tc_init, test_state_init_label);
   suite_add_tcase(s, tc_init);
+
+  tc_cmp = tcase_create("Comparison");
+  tcase_add_checked_fixture(tc_cmp, state_setup, state_teardown);
+  tcase_add_test(tc_cmp, test_state_cmp_equal);
+  tcase_add_test(tc_cmp, test_state_cmp_diff_qn);
+  tcase_add_test(tc_cmp, test_state_cmp_diff_occ);
+  tcase_add_test(tc_cmp, test_state_cmp_diff_eigenval);
+  tcase_add_test(tc_cmp, test_state_cmp_diff_label);
+  tcase_add_test(tc_cmp, test_state_cmp_diff_rc);
+  tcase_add_test(tc_cmp, test_state_cmp_diff_wf);
+  suite_add_tcase(s, tc_cmp);
 
   tc_copy = tcase_create("Copy");
   tcase_add_checked_fixture(tc_copy, state_setup, state_teardown);

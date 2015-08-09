@@ -42,7 +42,7 @@ typedef struct{
   double occ;           /**< occupation of the electronic state */
   double eigenval;      /**< eigenvalue of electronic state*/
   char *label;          /**< string describing the electronic state - eg 2s or 4d1.5 */
-  double rc;            /**< cutoff radii used for pseudopotential generation */
+  double rc;            /**< cutoff radii used for pseudostate generation */
   pspio_meshfunc_t *wf; /**< Wavefunction */
 } pspio_state_t;
 
@@ -157,6 +157,15 @@ double pspio_state_get_rc(const pspio_state_t *state);
 /**********************************************************************
  * Utility routines                                                   *
  **********************************************************************/
+
+/**
+ * Compares two states.
+ * @param[in] state1: first state to compare
+ * @param[in] state2: second state to compare
+ * @return PSPIO_EQUAL when equal, PSPIO_DIFF when different, PSPIO_ERROR if a
+ * problem occured.
+ */
+int pspio_state_cmp(const pspio_state_t *state1, const pspio_state_t *state2);
 
 /**
  * Returns the value of the states wavefunction at an arbitrary point

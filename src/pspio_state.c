@@ -20,6 +20,7 @@
 #include <stdio.h>
 #include <assert.h>
 #include <string.h>
+#include <math.h>
 
 #include "pspio_state.h"
 #include "util.h"
@@ -231,6 +232,20 @@ char *pspio_state_get_label(const pspio_state_t *state)
 /**********************************************************************
  * Utility routines                                                   *
  **********************************************************************/
+
+int pspio_state_cmp(const pspio_state_t *state1, const pspio_state_t *state2) {
+
+  if ((pspio_qn_cmp(state1->qn, state2->qn) == PSPIO_DIFF) ||
+      (fabs(state1->occ - state2->occ) > 1e-12) ||
+      (fabs(state1->eigenval - state2->eigenval) > 1e-12) ||
+      strcmp(state1->label, state2->label) ||
+      (fabs(state1->rc - state2->rc) > 1e-12) ||
+      (pspio_meshfunc_cmp(state1->wf, state2->wf) == PSPIO_DIFF)) {
+    return PSPIO_DIFF;
+  } else {
+    return PSPIO_EQUAL;
+  }
+}
 
 double pspio_state_wf_eval(const pspio_state_t *state, const double r)
 {
