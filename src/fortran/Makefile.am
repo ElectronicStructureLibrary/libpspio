@@ -29,7 +29,27 @@
 
 # Fortran source - keep this in alphabetical order
 fpio_srcs = \
-  fpspio.f90
+  fpspio.F90
+
+fpio_hidden_hdrs = \
+  api_error_inc.F90 \
+  api_info_inc.F90 \
+  api_meshfunc_inc.F90 \
+  api_mesh_inc.F90 \
+  api_potential_inc.F90 \
+  api_projector_inc.F90 \
+  api_pspdata_inc.F90 \
+  api_state_inc.F90 \
+  api_xc_inc.F90 \
+  interface_error_inc.F90 \
+  interface_info_inc.F90 \
+  interface_meshfunc_inc.F90 \
+  interface_mesh_inc.F90 \
+  interface_potential_inc.F90 \
+  interface_projector_inc.F90 \
+  interface_pspdata_inc.F90 \
+  interface_state_inc.F90 \
+  interface_xc_inc.F90
 
 # Fortran objects
 fpio_objs = $(fpio_srcs:f90=$(LTOBJEXT))
@@ -60,6 +80,8 @@ libfpspio_la_SOURCES = $(fpio_srcs)
 
 # Headers
 nodist_include_HEADERS = $(fpio_mods)
+noinst_HEADERS = $(fpio_hidden_hdrs)
+
 
                     # ------------------------------------ #
 

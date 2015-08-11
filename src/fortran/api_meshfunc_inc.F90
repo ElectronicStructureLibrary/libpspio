@@ -1,0 +1,150 @@
+!! Copyright (C) 2012-2015 M. Oliveira
+!!
+!! This program is free software; you can redistribute it and/or modify
+!! it under the terms of the GNU Lesser General Public License as published by
+!! the Free Software Foundation; either version 3 of the License, or 
+!! (at your option) any later version.
+!!
+!! This program is distributed in the hope that it will be useful,
+!! but WITHOUT ANY WARRANTY; without even the implied warranty of
+!! MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+!! GNU Lesser General Public License for more details.
+!!
+!! You should have received a copy of the GNU Lesser General Public License
+!! along with this program; if not, write to the Free Software
+!! Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+!!
+
+
+!*********************************************************************!
+! Global routines                                                     !
+!*********************************************************************!
+
+! alloc
+integer function fpspio_meshfunc_alloc(meshfunc, np) result(ierr)
+  type(fpspio_meshfunc_t), intent(inout) :: meshfunc
+  integer,                 intent(in)    :: np
+
+  ierr = pspio_meshfunc_alloc(meshfunc%ptr, np)
+
+end function fpspio_meshfunc_alloc
+  
+! init
+integer function fpspio_meshfunc_init(meshfunc, mesh, f, fp, fpp) result(ierr)
+  type(fpspio_meshfunc_t), intent(inout) :: meshfunc
+  type(fpspio_mesh_t),     intent(in)    :: mesh
+  real(8),                 intent(in)    :: f(*)
+  real(8),                 intent(in)    :: fp(*)
+  real(8),                 intent(in)    :: fpp(*)
+
+  ierr = pspio_meshfunc_init(meshfunc%ptr, mesh%ptr, f, fp, fpp)
+
+end function fpspio_meshfunc_init
+
+! copy
+integer function fpspio_meshfunc_copy(src, dst) result(ierr)
+  type(fpspio_meshfunc_t), intent(in)    :: src
+  type(fpspio_meshfunc_t), intent(inout) :: dst
+
+  ierr = pspio_meshfunc_copy(src%ptr, dst%ptr)
+
+end function fpspio_meshfunc_copy
+
+! free
+subroutine fpspio_meshfunc_free(meshfunc)
+  type(fpspio_meshfunc_t), intent(inout) :: meshfunc
+
+  call pspio_meshfunc_free(meshfunc%ptr)
+  meshfunc%ptr = C_NULL_PTR
+
+end subroutine fpspio_meshfunc_free
+
+
+!*********************************************************************!
+! Getters                                                             !
+!*********************************************************************!
+
+! function
+function fpspio_meshfunc_get_function(meshfunc) result(func)
+  type(fpspio_meshfunc_t), intent(in)  :: meshfunc
+  real(8), pointer :: func(:)
+
+  call c_f_pointer(pspio_meshfunc_get_function(meshfunc%ptr), func, [fpspio_mesh_get_np(fpspio_meshfunc_get_mesh(meshfunc))])
+
+end function fpspio_meshfunc_get_function
+
+! deriv1
+function fpspio_meshfunc_get_deriv1(meshfunc) result(deriv1)
+  type(fpspio_meshfunc_t), intent(in)  :: meshfunc
+  real(8), pointer :: deriv1(:)
+
+  call c_f_pointer(pspio_meshfunc_get_deriv1(meshfunc%ptr), deriv1, [fpspio_mesh_get_np(fpspio_meshfunc_get_mesh(meshfunc))])
+
+end function fpspio_meshfunc_get_deriv1
+
+! deriv1
+function fpspio_meshfunc_get_deriv2(meshfunc) result(deriv2)
+  type(fpspio_meshfunc_t), intent(in)  :: meshfunc
+  real(8), pointer :: deriv2(:)
+
+  call c_f_pointer(pspio_meshfunc_get_deriv2(meshfunc%ptr), deriv2, [fpspio_mesh_get_np(fpspio_meshfunc_get_mesh(meshfunc))])
+
+end function fpspio_meshfunc_get_deriv2
+
+! interp_method
+integer function fpspio_meshfunc_get_interp_method(meshfunc) result(interp_method)
+  type(fpspio_meshfunc_t), intent(in)  :: meshfunc
+
+  interp_method = pspio_meshfunc_get_interp_method(meshfunc%ptr)
+  
+end function fpspio_meshfunc_get_interp_method
+
+! mesh
+type(fpspio_mesh_t) function fpspio_meshfunc_get_mesh(meshfunc) result(mesh)
+  type(fpspio_meshfunc_t), intent(in)  :: meshfunc
+
+  mesh%ptr = pspio_meshfunc_get_mesh(meshfunc%ptr)
+
+end function fpspio_meshfunc_get_mesh
+
+
+!*********************************************************************!
+! Utility routines                                                    !
+!*********************************************************************!
+
+! cmp
+integer function fpspio_meshfunc_cmp(meshfunc1, meshfunc2) result(cmp)
+  type(fpspio_meshfunc_t) :: meshfunc1
+  type(fpspio_meshfunc_t) :: meshfunc2
+
+  cmp = pspio_meshfunc_cmp(meshfunc1%ptr, meshfunc2%ptr)
+
+end function fpspio_meshfunc_cmp
+
+! eval
+real(8) function fpspio_meshfunc_eval(meshfunc, r) result(f)
+  type(fpspio_meshfunc_t), intent(in)  :: meshfunc
+  real(8),                 intent(in)  :: r
+
+  f = pspio_meshfunc_eval(meshfunc%ptr, r)
+
+end function fpspio_meshfunc_eval
+
+! eval_deriv
+real(8) function fpspio_meshfunc_eval_deriv(meshfunc, r) result(fp)
+  type(fpspio_meshfunc_t), intent(in)  :: meshfunc
+  real(8),                 intent(in)  :: r
+
+  fp = pspio_meshfunc_eval_deriv(meshfunc%ptr, r)
+
+end function fpspio_meshfunc_eval_deriv
+
+! eval_deriv2
+real(8) function fpspio_meshfunc_eval_deriv2(meshfunc, r) result(fpp)
+  type(fpspio_meshfunc_t), intent(in)  :: meshfunc
+  real(8),                 intent(in)  :: r
+
+  fpp = pspio_meshfunc_eval_deriv2(meshfunc%ptr, r)
+
+end function fpspio_meshfunc_eval_deriv2
+
