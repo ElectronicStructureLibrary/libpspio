@@ -32,7 +32,8 @@ int main(void)
   int number_failed;
   SRunner *sr;
 
-  sr = srunner_create(make_error_suite());
+  sr = srunner_create(make_info_suite());
+  srunner_add_suite(sr, make_error_suite());
   srunner_add_suite(sr, make_qn_suite());
   srunner_add_suite(sr, make_mesh_suite());
   srunner_add_suite(sr, make_meshfunc_suite());

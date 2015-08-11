@@ -137,6 +137,7 @@ nodist_check_SCRIPTS = \
 
 check_pspio_SOURCES = \
   check_pspio.h \
+  check_pspio_info.c \
   check_pspio_error.c \
   check_pspio_qn.c \
   check_pspio_mesh.c \
