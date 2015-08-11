@@ -39,8 +39,8 @@ void pspio_info_version(int *major, int *minor, int *micro);
 
 /**
  * Provide the package string of the library.
- * @param[out] info: package name and version. Memory is allocated inside the function.
+ * @param[out] info: package name and version.
  */
-void pspio_info_string(char **info);
+void pspio_info_string(char *info);
 
 #endif

@@ -53,14 +53,12 @@ void pspio_info_version(int *major, int *minor, int *micro)
   sscanf(version_string,"%d.%d.%d",major,minor,micro);
 }
 
-void pspio_info_string(char **info)
+void pspio_info_string(char *info)
 {
   size_t s = strlen(PACKAGE_STRING);
 
-  assert(*info == NULL);
+  assert(info != NULL);
 
-  *info = (char *) malloc (s + 1);
-  assert(*info != NULL);
-  strncpy(*info, PACKAGE_STRING, s);
+  strncpy(info, PACKAGE_STRING, s);
   info[s] = '\0';
 }

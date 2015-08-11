@@ -55,11 +55,15 @@ END_TEST
 
 START_TEST(test_info_string)
 {
-  char *version_string = NULL;
+  char *info_string;
+  size_t s = strlen(PACKAGE_STRING);
 
-  pspio_info_string(&version_string);
-  ck_assert_str_eq(version_string, PACKAGE_STRING);
-  free(version_string);
+  info_string = (char *) malloc (s+1);
+  ck_assert(info_string != NULL);
+
+  pspio_info_string(info_string);
+  ck_assert_str_eq(info_string, PACKAGE_STRING);
+  free(info_string);
 }
 END_TEST
 
