@@ -27,11 +27,13 @@
 #include <assert.h>
 #include <string.h>
 
-#include "pspio_error.h"
 #include "pspio_info.h"
 
 #if defined HAVE_CONFIG_H
 #include "config.h"
+#else
+#define PACKAGE_VERSION ""
+#define PACKAGE_STRING ""
 #endif
 
 
@@ -39,7 +41,7 @@
  * Global routines                                                    *
  **********************************************************************/
 
-void pspio_version(int *major, int *minor, int *micro)
+void pspio_info_version(int *major, int *minor, int *micro)
 {
   const char *version_string = PACKAGE_VERSION;
 
@@ -51,18 +53,14 @@ void pspio_version(int *major, int *minor, int *micro)
   sscanf(version_string,"%d.%d.%d",major,minor,micro);
 }
 
-void pspio_info_string(char *info)
+void pspio_info_string(char **info)
 {
-#if !defined HAVE_CONFIG_H
-#define PACKAGE_STRING ""
-#endif
-  const char *package_string = PACKAGE_STRING;
-  int s = strlen(package_string);
+  size_t s = strlen(PACKAGE_STRING);
 
-  assert(info == NULL);
+  assert(*info == NULL);
 
-  info = (char *) malloc (s + 1);
-  assert(info != NULL);
-  strncpy(info, package_string, s);
+  *info = (char *) malloc (s + 1);
+  assert(*info != NULL);
+  strncpy(*info, PACKAGE_STRING, s);
   info[s] = '\0';
 }
