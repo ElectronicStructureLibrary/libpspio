@@ -157,7 +157,10 @@ int pspio_pspdata_write(pspio_pspdata_t *pspdata, const int file_format,
   int ierr;
 
   assert(pspdata != NULL);
-  assert(pspdata->qn_to_istate != NULL);
+
+  if (pspdata->qn_to_istate == NULL) {
+    SUCCEED_OR_RETURN(pspio_states_lookup_table(pspdata->n_states, pspdata->states, &pspdata->qn_to_istate));
+  }
 
   /* Open file */
   fp = fopen(file_name, "w");
