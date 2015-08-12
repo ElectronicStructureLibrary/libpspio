@@ -24,8 +24,7 @@
 subroutine fpspio_info_string(info)
   character(len=*), intent(out) :: info
 
-  type(c_ptr) :: c_info
-  character(kind=c_char,len=1) :: c_info(len_trim(info)+1)
+  character(kind=c_char,len=1) :: c_info(len(info)+1)
 
   call pspio_info_string(c_info)
   call c_to_f_string(c_info, info)

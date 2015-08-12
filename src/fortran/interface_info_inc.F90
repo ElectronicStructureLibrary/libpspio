@@ -30,7 +30,7 @@ interface
   ! info
   subroutine pspio_info_string(info) bind(c)
     import
-    character(kind=c_char) :: label(*)
+    character(kind=c_char) :: info(*)
   end subroutine pspio_info_string
 
 end interface
