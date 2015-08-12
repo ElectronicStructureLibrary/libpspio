@@ -40,21 +40,21 @@ interface
   end function pspio_mesh_init
 
   ! init_from_points
-  integer(c_int) function pspio_mesh_init_from_points(mesh, r, rab) bind(c)
+  subroutine pspio_mesh_init_from_points(mesh, r, rab) bind(c)
     import
     type(c_ptr),    value :: mesh
     real(c_double)        :: r(*)
     real(c_double)        :: rab(*)
-  end function pspio_mesh_init_from_points
+  end subroutine pspio_mesh_init_from_points
 
   ! init_from_parameters
-  integer(c_int) function pspio_mesh_init_from_parameters(mesh, type, a, b) bind(c)
+  subroutine pspio_mesh_init_from_parameters(mesh, type, a, b) bind(c)
     import
     type(c_ptr),    value :: mesh
     integer(c_int), value :: type
     real(c_double), value :: a
     real(c_double), value :: b
-  end function pspio_mesh_init_from_parameters
+  end subroutine pspio_mesh_init_from_parameters
 
   ! copy
   integer(c_int) function pspio_mesh_copy(dst, src) bind(c)

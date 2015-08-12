@@ -43,25 +43,25 @@ integer function fpspio_mesh_init(mesh, type, a, b, r, rab) result(ierr)
 end function fpspio_mesh_init
 
 ! init_from_points
-integer function fpspio_mesh_init_from_points(mesh, r, rab) result(ierr)
+subroutine fpspio_mesh_init_from_points(mesh, r, rab)
   type(fpspio_mesh_t), intent(inout) :: mesh
   real(8),             intent(in)    :: r(*)
   real(8),             intent(in)    :: rab(*)
     
-  ierr = pspio_mesh_init_from_points(mesh%ptr, r, rab)
+  call pspio_mesh_init_from_points(mesh%ptr, r, rab)
 
-end function fpspio_mesh_init_from_points
+end subroutine fpspio_mesh_init_from_points
 
 ! init_from_parameters
-integer function fpspio_mesh_init_from_parameters(mesh, type, a, b) result(ierr)
+subroutine fpspio_mesh_init_from_parameters(mesh, type, a, b)
   type(fpspio_mesh_t), intent(inout) :: mesh
   integer,             intent(in)    :: type
   real(8),             intent(in)    :: a
   real(8),             intent(in)    :: b
 
-  ierr = pspio_mesh_init_from_parameters(mesh%ptr, type, a, b)
+  call pspio_mesh_init_from_parameters(mesh%ptr, type, a, b)
 
-end function fpspio_mesh_init_from_parameters
+end subroutine fpspio_mesh_init_from_parameters
 
 ! copy
 integer function fpspio_mesh_copy(src, dst) result(ierr)
