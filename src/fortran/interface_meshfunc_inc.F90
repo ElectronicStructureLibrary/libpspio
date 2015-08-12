@@ -34,8 +34,8 @@ interface
     type(c_ptr),    value :: meshfunc
     type(c_ptr),    value :: mesh
     real(c_double)        :: f(*)
-    real(c_double)        :: fp(*)
-    real(c_double)        :: fpp(*)
+    type(c_ptr),    value :: fp
+    type(c_ptr),    value :: fpp
   end function pspio_meshfunc_init
 
   ! copy

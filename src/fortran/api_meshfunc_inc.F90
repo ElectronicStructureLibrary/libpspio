@@ -28,16 +28,31 @@ integer function fpspio_meshfunc_alloc(meshfunc, np) result(ierr)
   ierr = pspio_meshfunc_alloc(meshfunc%ptr, np)
 
 end function fpspio_meshfunc_alloc
-  
+
 ! init
 integer function fpspio_meshfunc_init(meshfunc, mesh, f, fp, fpp) result(ierr)
-  type(fpspio_meshfunc_t), intent(inout) :: meshfunc
-  type(fpspio_mesh_t),     intent(in)    :: mesh
-  real(8),                 intent(in)    :: f(*)
-  real(8),                 intent(in)    :: fp(*)
-  real(8),                 intent(in)    :: fpp(*)
+  type(fpspio_meshfunc_t), intent(inout)                   :: meshfunc
+  type(fpspio_mesh_t),     intent(in)                      :: mesh
+  real(8),                 intent(in)                      :: f(*)
+  real(8),                 intent(in),    optional, target :: fp(*)
+  real(8),                 intent(in),    optional, target :: fpp(*)
 
-  ierr = pspio_meshfunc_init(meshfunc%ptr, mesh%ptr, f, fp, fpp)
+  type(c_ptr) c_fp, c_fpp
+  real(8), pointer :: f_fp(:), f_fpp(:)
+
+  if (present(fp)) then
+    f_fp => fp(1:fpspio_mesh_get_np(mesh))
+    call c_f_pointer(c_fp, f_fp, [fpspio_mesh_get_np(mesh)])
+  else
+    c_fp = C_NULL_PTR
+  end if
+  if (present(fpp)) then
+    f_fpp => fpp(1:fpspio_mesh_get_np(mesh))
+    call c_f_pointer(c_fpp, f_fpp, [fpspio_mesh_get_np(mesh)])
+  else
+    c_fpp = C_NULL_PTR
+  end if
+  ierr = pspio_meshfunc_init(meshfunc%ptr, mesh%ptr, f, c_fp, c_fpp)
 
 end function fpspio_meshfunc_init
 
