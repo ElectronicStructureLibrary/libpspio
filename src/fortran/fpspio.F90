@@ -249,7 +249,7 @@ module fpspio_m
   !%%% END PSPIO CONSTANTS
 
 
-  type, bind(c) :: fpspio_qn_t
+  type :: fpspio_qn_t
     private
     type(c_ptr) :: ptr = C_NULL_PTR
   end type fpspio_qn_t
