@@ -85,10 +85,10 @@ interface
   end function pspio_qn_cmp
 
   ! label
-  subroutine pspio_qn_label(qn, label) bind(c)
+  integer(c_int) function pspio_qn_label(qn, label) bind(c)
     import
     type(c_ptr),            value :: qn
     character(kind=c_char)        :: label(*)
-  end subroutine pspio_qn_label
+  end function pspio_qn_label
 
 end interface
