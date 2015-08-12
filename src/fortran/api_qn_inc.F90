@@ -101,13 +101,13 @@ integer function fpspio_qn_cmp(qn1, qn2) result(cmp)
 end function fpspio_qn_cmp
 
 ! label
-subroutine fpspio_qn_label(qn, label)
+integer function fpspio_qn_label(qn, label) result(ierr)
   type(fpspio_qn_t), intent(in)  :: qn
   character(len=*),  intent(out) :: label
 
   character(kind=c_char,len=1) :: c_label(len(label)+1)
 
-  call pspio_qn_label(qn%ptr, c_label)
-  call c_to_f_string(c_label, label)
+  ierr = pspio_qn_label(qn%ptr, c_label)
+  if (ierr == PSPIO_SUCCESS) call c_to_f_string(c_label, label)
 
-end subroutine fpspio_qn_label
+end function fpspio_qn_label

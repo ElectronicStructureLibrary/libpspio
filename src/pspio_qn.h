@@ -130,8 +130,9 @@ int pspio_qn_cmp(const pspio_qn_t *qn1, const pspio_qn_t *qn2);
 /**
  * Returns a label that identifies the set of quantum numbers
  * @param[in] qn: set of quantum numbers
- * @param[out] label: 
+ * @param[out] label:
+ * @return error code
  */
-void pspio_qn_label(const pspio_qn_t *qn, char *s);
+int pspio_qn_label(const pspio_qn_t *qn, char *s);
 
 #endif

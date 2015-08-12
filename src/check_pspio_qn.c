@@ -142,7 +142,7 @@ START_TEST(test_qn_label_nonrel)
   char label[10];
 
   pspio_qn_init(qn1, 1, 2, 0.0);
-  pspio_qn_label(qn1, label);
+  ck_assert(pspio_qn_label(qn1, label) == PSPIO_SUCCESS);
   ck_assert_str_eq(label, "1d");
 }
 END_TEST
@@ -152,7 +152,7 @@ START_TEST(test_qn_label_rel)
   char label[10];
 
   pspio_qn_init(qn1, 1, 2, 2.5);
-  pspio_qn_label(qn1, label);
+  ck_assert(pspio_qn_label(qn1, label) == PSPIO_SUCCESS);
   ck_assert_str_eq(label, "1d2.5");
 }
 END_TEST

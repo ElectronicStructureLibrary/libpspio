@@ -127,7 +127,7 @@ int pspio_qn_cmp(const pspio_qn_t *qn1, const pspio_qn_t *qn2)
   }
 }
 
-void pspio_qn_label(const pspio_qn_t *qn, char *s)
+int pspio_qn_label(const pspio_qn_t *qn, char *s)
 {
   char llabel[5] = "spdf";
 
@@ -138,4 +138,6 @@ void pspio_qn_label(const pspio_qn_t *qn, char *s)
   } else {
     sprintf(s, "%1d%1c%3.1f", qn->n, llabel[qn->l], qn->j);
   }
+
+  return PSPIO_SUCCESS;
 }
