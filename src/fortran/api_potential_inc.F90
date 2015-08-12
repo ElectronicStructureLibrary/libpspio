@@ -36,7 +36,7 @@ integer function fpspio_potential_init(potential, qn, mesh, v) result(ierr)
   type(fpspio_mesh_t),      intent(in)    :: mesh
   real(8),                  intent(in)    :: v(*)
 
-  ierr = pspio_potential_init(potential%ptr, qn, mesh%ptr, v)
+  ierr = pspio_potential_init(potential%ptr, qn%ptr, mesh%ptr, v)
 
 end function fpspio_potential_init
 
@@ -67,7 +67,7 @@ end subroutine fpspio_potential_free
 type(fpspio_qn_t) function fpspio_potential_get_qn(potential) result(qn)
   type(fpspio_potential_t), intent(in)  :: potential
 
-  qn = pspio_potential_get_qn(potential%ptr)
+  qn%ptr = pspio_potential_get_qn(potential%ptr)
   
 end function fpspio_potential_get_qn
 

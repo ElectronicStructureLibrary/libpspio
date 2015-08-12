@@ -30,7 +30,7 @@ interface
   ! init
   integer(c_int) function pspio_qn_init(qn, n, l, j) bind(c)
     import
-    type(c_ptr)           :: qn
+    type(c_ptr),    value :: qn
     integer(c_int), value :: n
     integer(c_int), value :: l
     real(c_double), value :: j

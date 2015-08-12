@@ -33,7 +33,7 @@ interface
     import
     type(c_ptr),           value :: state
     real(c_double),        value :: eigenval
-    type(fpspio_qn_t)            :: qn
+    type(c_ptr),           value :: qn
     real(c_double),        value :: occ
     real(c_double),        value :: rc
     type(c_ptr),           value :: mesh
@@ -66,7 +66,7 @@ interface
   end function pspio_state_get_label
 
   ! qn
-  type(fpspio_qn_t) function pspio_state_get_qn(state) bind(c)
+  type(c_ptr) function pspio_state_get_qn(state) bind(c)
     import
     type(c_ptr), value :: state
   end function pspio_state_get_qn

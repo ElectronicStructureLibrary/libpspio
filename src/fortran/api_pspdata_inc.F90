@@ -149,7 +149,7 @@ integer function fpspio_pspdata_set_state(pspdata, index, state) result(ierr)
   integer,                intent(in) :: index
   type(fpspio_state_t),   intent(in) :: state
 
-  ierr = pspio_pspdata_set_state(pspdata%ptr, index, state%ptr)
+  ierr = pspio_pspdata_set_state(pspdata%ptr, index-1, state%ptr)
 
 end function fpspio_pspdata_set_state
 
@@ -177,7 +177,7 @@ integer function fpspio_pspdata_set_potential(pspdata, index, potential) result(
   integer,                  intent(in)    :: index
   type(fpspio_potential_t), intent(in)    :: potential
 
-  ierr = pspio_pspdata_set_potential(pspdata%ptr, index, potential%ptr)
+  ierr = pspio_pspdata_set_potential(pspdata%ptr, index-1, potential%ptr)
 
 end function fpspio_pspdata_set_potential
 
@@ -196,7 +196,7 @@ integer function fpspio_pspdata_set_projector(pspdata, index, projector) result(
   integer,                  intent(in)    :: index
   type(fpspio_projector_t), intent(in)    :: projector
 
-  ierr = pspio_pspdata_set_projector(pspdata%ptr, index, projector%ptr)
+  ierr = pspio_pspdata_set_projector(pspdata%ptr, index-1, projector%ptr)
 
 end function fpspio_pspdata_set_projector
 
@@ -335,7 +335,7 @@ type(fpspio_state_t) function fpspio_pspdata_get_state(pspdata, index) result(st
   type(fpspio_pspdata_t), intent(in) :: pspdata
   integer,                intent(in) :: index
 
-  state%ptr = pspio_pspdata_get_state(pspdata%ptr, index)
+  state%ptr = pspio_pspdata_get_state(pspdata%ptr, index-1)
 
 end function fpspio_pspdata_get_state
 
@@ -360,7 +360,7 @@ type(fpspio_potential_t) function fpspio_pspdata_get_potential(pspdata, index) r
   type(fpspio_pspdata_t), intent(in) :: pspdata
   integer,                intent(in) :: index
     
-  potential%ptr = pspio_pspdata_get_potential(pspdata%ptr, index)
+  potential%ptr = pspio_pspdata_get_potential(pspdata%ptr, index-1)
 
 end function fpspio_pspdata_get_potential
 
@@ -377,7 +377,7 @@ type(fpspio_projector_t) function fpspio_pspdata_get_projector(pspdata, index) r
   type(fpspio_pspdata_t), intent(in) :: pspdata
   integer,                intent(in) :: index
     
-  projector%ptr = pspio_pspdata_get_projector(pspdata%ptr, index)
+  projector%ptr = pspio_pspdata_get_projector(pspdata%ptr, index-1)
 
 end function fpspio_pspdata_get_projector
 

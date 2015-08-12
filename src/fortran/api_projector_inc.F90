@@ -37,7 +37,7 @@ integer function fpspio_projector_init(projector, qn, energy, mesh, proj) result
   type(fpspio_mesh_t),      intent(in)    :: mesh
   real(8),                  intent(in)    :: proj(*)
 
-  ierr = pspio_projector_init(projector%ptr, qn, energy, mesh%ptr, proj)
+  ierr = pspio_projector_init(projector%ptr, qn%ptr, energy, mesh%ptr, proj)
 
 end function fpspio_projector_init
 
@@ -76,7 +76,7 @@ end function fpspio_projector_get_energy
 type(fpspio_qn_t) function fpspio_projector_get_qn(projector) result(qn)
   type(fpspio_projector_t), intent(in)  :: projector
 
-  qn = pspio_projector_get_qn(projector%ptr)
+  qn%ptr = pspio_projector_get_qn(projector%ptr)
 
 end function fpspio_projector_get_qn
 

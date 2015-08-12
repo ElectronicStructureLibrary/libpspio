@@ -32,7 +32,7 @@ interface
   integer(c_int) function pspio_projector_init(projector, qn, energy, mesh, proj) bind(c)
     import
     type(c_ptr),      value :: projector
-    type(fpspio_qn_t)       :: qn
+    type(c_ptr),      value :: qn
     real(c_double),   value :: energy
     type(c_ptr),      value :: mesh
     real(c_double)          :: proj(*)
@@ -63,7 +63,7 @@ interface
   end function pspio_projector_get_energy
 
   ! qn
-  type(fpspio_qn_t) function pspio_projector_get_qn(projector) bind(c)
+  type(c_ptr) function pspio_projector_get_qn(projector) bind(c)
     import
     type(c_ptr), value :: projector      
   end function pspio_projector_get_qn

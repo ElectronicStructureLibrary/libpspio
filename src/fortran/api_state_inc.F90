@@ -40,7 +40,7 @@ integer function fpspio_state_init(state, eigenval, qn, occ, rc, mesh, wf, label
   real(8),              intent(in)    :: wf(*)
   character(len=*),     intent(in)    :: label
 
-  ierr = pspio_state_init(state%ptr, eigenval, qn, occ, rc, mesh%ptr, wf, f_to_c_string(label))
+  ierr = pspio_state_init(state%ptr, eigenval, qn%ptr, occ, rc, mesh%ptr, wf, f_to_c_string(label))
 
 end function fpspio_state_init
 
@@ -79,7 +79,7 @@ end function fpspio_state_get_label
 type(fpspio_qn_t) function fpspio_state_get_qn(state) result(qn)
   type(fpspio_state_t), intent(in)  :: state
 
-  qn = pspio_state_get_qn(state%ptr)
+  qn%ptr = pspio_state_get_qn(state%ptr)
 
 end function fpspio_state_get_qn
 

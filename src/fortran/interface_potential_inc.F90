@@ -32,7 +32,7 @@ interface
   integer(c_int) function pspio_potential_init(potential, qn, mesh, v) bind(c)
     import
     type(c_ptr),      value :: potential
-    type(fpspio_qn_t)       :: qn
+    type(c_ptr),      value :: qn
     type(c_ptr),      value :: mesh
     real(c_double)          :: v(*)
   end function pspio_potential_init
@@ -56,7 +56,7 @@ interface
   !*********************************************************************!
 
   ! qn
-  type(fpspio_qn_t) function pspio_potential_get_qn(potential) bind(c)
+  type(c_ptr) function pspio_potential_get_qn(potential) bind(c)
     import
     type(c_ptr), value :: potential
   end function pspio_potential_get_qn
