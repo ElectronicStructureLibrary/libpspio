@@ -83,10 +83,26 @@ integer function fpspio_xc_set_nlcc_density(xc, mesh, cd, cdp, cdpp) result(ierr
   type(fpspio_xc_t),   intent(inout) :: xc
   type(fpspio_mesh_t), intent(in)    :: mesh
   real(8),             intent(in)    :: cd(*)
-  real(8),             intent(in)    :: cdp(*)
-  real(8),             intent(in)    :: cdpp(*)
+  real(8),             intent(in),    optional, target :: cdp(*)
+  real(8),             intent(in),    optional, target :: cdpp(*)
 
-  ierr = pspio_xc_set_nlcc_density(xc%ptr, mesh%ptr, cd, cdp, cdpp)
+  type(c_ptr) c_cdp, c_cdpp
+  real(8), pointer :: f_cdp(:), f_cdpp(:)
+
+  if (present(cdp)) then
+    f_cdp => cdp(1:fpspio_mesh_get_np(mesh))
+    call c_f_pointer(c_cdp, f_cdp, [fpspio_mesh_get_np(mesh)])
+  else
+    c_cdp = C_NULL_PTR
+  end if
+  if (present(cdpp)) then
+    f_cdpp => cdpp(1:fpspio_mesh_get_np(mesh))
+    call c_f_pointer(c_cdpp, f_cdpp, [fpspio_mesh_get_np(mesh)])
+  else
+    c_cdpp = C_NULL_PTR
+  end if
+
+  ierr = pspio_xc_set_nlcc_density(xc%ptr, mesh%ptr, cd, c_cdp, c_cdpp)
 
 end function fpspio_xc_set_nlcc_density
 

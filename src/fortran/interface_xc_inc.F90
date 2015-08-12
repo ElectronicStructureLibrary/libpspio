@@ -72,8 +72,8 @@ interface
     type(c_ptr),    value :: xc
     type(c_ptr),    value :: mesh
     real(c_double)        :: cd(*)
-    real(c_double)        :: cdp(*)
-    real(c_double)        :: cdpp(*)
+    type(c_ptr),    value :: cdp
+    type(c_ptr),    value :: cdpp
   end function pspio_xc_set_nlcc_density
 
 
