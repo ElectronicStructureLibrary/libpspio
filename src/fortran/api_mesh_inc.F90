@@ -44,11 +44,21 @@ end function fpspio_mesh_init
 
 ! init_from_points
 subroutine fpspio_mesh_init_from_points(mesh, r, rab)
-  type(fpspio_mesh_t), intent(inout) :: mesh
-  real(8),             intent(in)    :: r(*)
-  real(8),             intent(in)    :: rab(*)
-    
-  call pspio_mesh_init_from_points(mesh%ptr, r, rab)
+  type(fpspio_mesh_t), intent(inout)                   :: mesh
+  real(8),             intent(in)                      :: r(*)
+  real(8),             intent(in),    optional, target :: rab(*)
+
+  type(c_ptr) c_rab
+  real(8), pointer :: f_rab(:)
+
+  if (present(rab)) then
+    f_rab => rab(1:fpspio_mesh_get_np(mesh))
+    call c_f_pointer(c_rab, f_rab, [fpspio_mesh_get_np(mesh)])
+  else
+    c_rab = C_NULL_PTR
+  end if
+
+  call pspio_mesh_init_from_points(mesh%ptr, r, c_rab)
 
 end subroutine fpspio_mesh_init_from_points
 

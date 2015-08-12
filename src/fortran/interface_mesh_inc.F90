@@ -44,7 +44,7 @@ interface
     import
     type(c_ptr),    value :: mesh
     real(c_double)        :: r(*)
-    real(c_double)        :: rab(*)
+    type(c_ptr),    value :: rab
   end subroutine pspio_mesh_init_from_points
 
   ! init_from_parameters
