@@ -39,6 +39,7 @@ fpio_hidden_hdrs = \
   api_potential_inc.F90 \
   api_projector_inc.F90 \
   api_pspdata_inc.F90 \
+  api_qn_inc.F90 \
   api_state_inc.F90 \
   api_xc_inc.F90 \
   interface_error_inc.F90 \
@@ -48,6 +49,7 @@ fpio_hidden_hdrs = \
   interface_potential_inc.F90 \
   interface_projector_inc.F90 \
   interface_pspdata_inc.F90 \
+  interface_qn_inc.F90 \
   interface_state_inc.F90 \
   interface_xc_inc.F90
 

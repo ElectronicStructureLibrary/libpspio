@@ -133,6 +133,15 @@ module fpspio_m
     fpspio_pspdata_get_rho_valence, &
     ! qn
     fpspio_qn_t, &
+    fpspio_qn_alloc, &
+    fpspio_qn_init, &
+    fpspio_qn_copy, &
+    fpspio_qn_free, &
+    fpspio_qn_get_n, &
+    fpspio_qn_get_l, &
+    fpspio_qn_get_j, &
+    fpspio_qn_cmp, &
+    fpspio_qn_label, &
     ! state
     fpspio_state_t, &
     fpspio_state_alloc, &
@@ -241,9 +250,8 @@ module fpspio_m
 
 
   type, bind(c) :: fpspio_qn_t
-    integer(c_int) :: n
-    integer(c_int) :: l
-    real(c_double) :: j
+    private
+    type(c_ptr) :: ptr = C_NULL_PTR
   end type fpspio_qn_t
 
   type fpspio_mesh_t
@@ -283,6 +291,7 @@ module fpspio_m
 
 #include "interface_info_inc.F90"
 #include "interface_error_inc.F90"
+#include "interface_qn_inc.F90"
 #include "interface_mesh_inc.F90"
 #include "interface_meshfunc_inc.F90"
 #include "interface_state_inc.F90"
@@ -295,6 +304,7 @@ contains
 
 #include "api_info_inc.F90"
 #include "api_error_inc.F90"
+#include "api_qn_inc.F90"
 #include "api_mesh_inc.F90"
 #include "api_meshfunc_inc.F90"
 #include "api_state_inc.F90"
