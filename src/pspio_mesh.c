@@ -111,12 +111,12 @@ void pspio_mesh_init_from_parameters(pspio_mesh_t *mesh, const int type,
   }
 }
 
-void pspio_mesh_init_from_points(pspio_mesh_t *mesh, const double *r, 
-				 const double *rab) 
+void pspio_mesh_init_from_points(pspio_mesh_t *mesh, const double *r, const double *rab)
 {
   int i;
   double tol = 1.0e-10;
 
+  assert(r != NULL);
   assert(mesh != NULL);
   assert(mesh->r != NULL);
   assert(mesh->rab != NULL);
@@ -135,20 +135,20 @@ void pspio_mesh_init_from_points(pspio_mesh_t *mesh, const double *r,
     mesh->type = PSPIO_MESH_LINEAR;
     for (i=0; i<mesh->np; i++) {
       if ( fabs( (r[i] - (mesh->a*(i+1) + mesh->b))/r[i] ) > tol ) {
-	mesh->type = PSPIO_MESH_UNKNOWN;
-	break;
+      	mesh->type = PSPIO_MESH_UNKNOWN;
+        break;
       }
     }
     if ( rab != NULL ) {
       for (i=0; i<mesh->np; i++) {
-	if ( fabs( (rab[i] - mesh->a)/rab[i] ) > tol ) {
-	  mesh->type = PSPIO_MESH_UNKNOWN;
-	  break;
-	}
+	      if ( fabs( (rab[i] - mesh->a)/rab[i] ) > tol ) {
+	        mesh->type = PSPIO_MESH_UNKNOWN;
+	        break;
+	      }
       }
     } else if (mesh->type == PSPIO_MESH_LINEAR) {
       for (i=0; i<mesh->np; i++) {
-	mesh->rab[i] = mesh->a;
+	      mesh->rab[i] = mesh->a;
       }
     }
   }
@@ -160,20 +160,20 @@ void pspio_mesh_init_from_points(pspio_mesh_t *mesh, const double *r,
     mesh->type = PSPIO_MESH_LOG1;
     for (i=0; i<mesh->np; i++) {
       if ( fabs( (r[i] - (mesh->b*exp(mesh->a*(i+1))))/r[i] ) > tol ) {
-	mesh->type = PSPIO_MESH_UNKNOWN;
-	break;
+      	mesh->type = PSPIO_MESH_UNKNOWN;
+	      break;
       }
     }
     if ( rab != NULL ) {
       for (i=0; i<mesh->np; i++) {
-	if ( fabs( (rab[i] - mesh->a*mesh->r[i])/rab[i] ) > tol ) {
-	  mesh->type = PSPIO_MESH_UNKNOWN;
-	  break;
-	}
+	      if ( fabs( (rab[i] - mesh->a*mesh->r[i])/rab[i] ) > tol ) {
+	        mesh->type = PSPIO_MESH_UNKNOWN;
+	        break;
+	      }
       }
     } else if ( mesh->type == PSPIO_MESH_LOG1 ) {
       for (i=0; i<mesh->np; i++) {
-	mesh->rab[i] = mesh->a*mesh->r[i];
+	      mesh->rab[i] = mesh->a*mesh->r[i];
       }
     }
   }
@@ -185,20 +185,20 @@ void pspio_mesh_init_from_points(pspio_mesh_t *mesh, const double *r,
     mesh->type = PSPIO_MESH_LOG2;
     for (i=0; i<mesh->np; i++) {
       if ( fabs( (r[i] - (mesh->b*(exp(mesh->a*(i+1)) - 1.0)))/r[i] ) > tol ) {
-	mesh->type = PSPIO_MESH_UNKNOWN;
-	break;
+      	mesh->type = PSPIO_MESH_UNKNOWN;
+	      break;
       }
     }
     if ( rab != NULL ) {
       for (i=0; i<mesh->np; i++) {
-	if ( fabs( (rab[i] - (mesh->a*mesh->r[i] + mesh->a*mesh->b))/rab[i] ) > tol ) {
-	  mesh->type = PSPIO_MESH_UNKNOWN;
-	  break;
-	}
+	      if ( fabs( (rab[i] - (mesh->a*mesh->r[i] + mesh->a*mesh->b))/rab[i] ) > tol ) {
+	        mesh->type = PSPIO_MESH_UNKNOWN;
+	        break;
+	      }
       }
     } else if ( mesh->type == PSPIO_MESH_LOG2 ) {
       for (i=0; i<mesh->np; i++) {
-	mesh->rab[i] = mesh->a*mesh->r[i] + mesh->a*mesh->b;
+	      mesh->rab[i] = mesh->a*mesh->r[i] + mesh->a*mesh->b;
       }
     }
   }
