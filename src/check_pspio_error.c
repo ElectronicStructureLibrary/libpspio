@@ -28,6 +28,7 @@
 
 #include "pspio_error.h"
 
+static char *err_str;
 
 void error_setup(void)
 {
@@ -37,15 +38,26 @@ void error_setup(void)
 void error_teardown(void)
 {
   pspio_error_free();
+  free(err_str);
 }
 
+START_TEST(test_error_fetch_all)
+{
+  ck_assert(pspio_error_add(PSPIO_EVALUE, "test_1_1.c", 1234, "dummy1") == PSPIO_EVALUE);
+  pspio_error_fetchall(&err_str);
+  ck_assert_str_eq(err_str, "libpspio: ERROR:\n"
+          "  * in test_1_1.c(dummy1):1234:\n"
+          "      value error: bad value found (PSPIO_EVALUE)\n");
+}
+END_TEST
 
 START_TEST(test_error_empty)
 {
   ck_assert_int_eq(pspio_error_get_last(NULL), PSPIO_SUCCESS);
   ck_assert_int_eq(pspio_error_len(), 0);
 
-  pspio_error_flush(stdout);
+  pspio_error_fetchall(&err_str);
+  ck_assert(err_str == NULL);
 
   ck_assert_int_eq(pspio_error_get_last(NULL), PSPIO_SUCCESS);
   ck_assert_int_eq(pspio_error_len(), 0);
@@ -59,7 +71,10 @@ START_TEST(test_error_single)
   ck_assert(pspio_error_get_last(NULL) == PSPIO_EVALUE);
   ck_assert(pspio_error_len() == 1);
 
-  pspio_error_flush(stdout);
+  pspio_error_fetchall(&err_str);
+  ck_assert_str_eq(err_str, "libpspio: ERROR:\n"
+          "  * in test_1_1.c(dummy1):1234:\n"
+          "      value error: bad value found (PSPIO_EVALUE)\n");
 
   ck_assert(pspio_error_get_last(NULL) == PSPIO_SUCCESS);
   ck_assert(pspio_error_len() == 0);
@@ -76,8 +91,12 @@ START_TEST(test_error_double)
   ck_assert(pspio_error_get_last(NULL) == PSPIO_ENOSUPPORT);
   ck_assert(pspio_error_len() == 2);
 
-  pspio_error_flush(stdout);
-
+  pspio_error_fetchall(&err_str);
+  ck_assert_str_eq(err_str, "libpspio: ERROR:\n"
+          "  * in test_2_1.c(dummy21):1234:\n"
+          "      error in GSL (PSPIO_EGSL)\n"
+          "  * in test_2_2.c(dummy22):202:\n"
+          "      unsupported option in the pseudopotential file (PSPIO_ENOSUPPORT)\n");
   ck_assert(pspio_error_get_last(NULL) == PSPIO_SUCCESS);
   ck_assert(pspio_error_len() == 0);
 }
@@ -85,6 +104,8 @@ END_TEST
 
 START_TEST(test_error_triple)
 {
+  char result[579];
+
   ck_assert(pspio_error_add(PSPIO_EVALUE, "test_3_1.c", 311, "dummy31") == PSPIO_EVALUE);
   ck_assert(pspio_error_get_last(NULL) == PSPIO_EVALUE);
   ck_assert(pspio_error_len() == 1);
@@ -97,7 +118,15 @@ START_TEST(test_error_triple)
   ck_assert(pspio_error_get_last(NULL) == PSPIO_ERROR);
   ck_assert(pspio_error_len() == 3);
 
-  pspio_error_flush(stdout);
+  sprintf(result, "libpspio: ERROR:\n");
+  sprintf(result, "%s  * in test_3_1.c(dummy31):311:\n"
+          "      value error: bad value found (PSPIO_EVALUE)\n", result);
+  sprintf(result, "%s  * in test_3_2.c(dummy32):322:\n"
+          "      file does not exist (PSPIO_ENOFILE)\n", result);
+  sprintf(result, "%s  * in test_3_3.c(dummy33):333:\n"
+          "      error (PSPIO_ERROR)\n", result);
+  pspio_error_fetchall(&err_str);
+  ck_assert_str_eq(err_str, result);
 
   ck_assert(pspio_error_get_last(NULL) == PSPIO_SUCCESS);
   ck_assert(pspio_error_len() == 0);
@@ -122,9 +151,14 @@ END_TEST
 Suite * make_error_suite(void)
 {
   Suite *s;
-  TCase *tc_empty, *tc_single, *tc_double, *tc_triple, *tc_last;
+  TCase *tc_fetch, *tc_empty, *tc_single, *tc_double, *tc_triple, *tc_last;
 
   s = suite_create("Error");
+
+  tc_fetch = tcase_create("Fetch all");
+  tcase_add_checked_fixture(tc_fetch, error_setup, error_teardown);
+  tcase_add_test(tc_fetch, test_error_fetch_all);
+  suite_add_tcase(s, tc_fetch);
 
   tc_empty = tcase_create("Empty chain");
   tcase_add_checked_fixture(tc_empty, error_setup, error_teardown);
