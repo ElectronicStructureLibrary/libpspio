@@ -38,8 +38,8 @@
 int pspio_fhi_read(FILE *fp, pspio_pspdata_t *pspdata)
 {
   char line[PSPIO_STRLEN_LINE];
-  int i, l, np, ir, has_nlcc;
-  double r12;
+  int i, l, np, n_potentials, ir, has_nlcc;
+  double zvalence, r12;
   double *wf, *r, *v;
   pspio_qn_t *qn = NULL;
 
@@ -48,28 +48,17 @@ int pspio_fhi_read(FILE *fp, pspio_pspdata_t *pspdata)
 
   /* Read header */
   FULFILL_OR_RETURN( fgets(line, PSPIO_STRLEN_LINE, fp) != NULL, PSPIO_EIO );
-  FULFILL_OR_RETURN( sscanf(line, "%lf %d", &pspdata->zvalence, &pspdata->n_potentials ) == 2, PSPIO_EFILE_CORRUPT );
-  for (i=0; i<10; i++) { 
+  FULFILL_OR_RETURN( sscanf(line, "%lf %d", &zvalence, &n_potentials ) == 2, PSPIO_EFILE_CORRUPT );
+  SUCCEED_OR_RETURN( pspio_pspdata_set_zvalence(pspdata, zvalence) );
+  SUCCEED_OR_RETURN( pspio_pspdata_set_n_potentials(pspdata, n_potentials) );
+  for (i=0; i<10; i++) {
     /* We ignore the next 10 lines, as they contain no information */
     FULFILL_OR_RETURN( fgets(line, PSPIO_STRLEN_LINE, fp) != NULL, PSPIO_EIO );
   }
-  pspdata->l_max = pspdata->n_potentials - 1;
-  pspdata->n_states = pspdata->n_potentials;
+  SUCCEED_OR_RETURN( pspio_pspdata_set_l_max(pspdata, n_potentials-1) );
+  SUCCEED_OR_RETURN( pspio_pspdata_set_n_states(pspdata, n_potentials) );
 
 
-  /* Allocate states and potentials */
-  pspdata->states = (pspio_state_t **) malloc ( pspdata->n_states*sizeof(pspio_state_t *));
-  FULFILL_OR_EXIT( pspdata->states != NULL, PSPIO_ENOMEM );
-  for (i=0; i<pspdata->n_states; i++) {
-    pspdata->states[i] = NULL;
-  }
-  pspdata->potentials = (pspio_potential_t **) malloc ( pspdata->n_potentials*sizeof(pspio_potential_t *));
-  FULFILL_OR_EXIT( pspdata->potentials != NULL, PSPIO_ENOMEM );
-  for (i=0; i<pspdata->n_potentials; i++) {
-    pspdata->potentials[i] = NULL;
-  }
-
-  
   /* Read mesh, potentials and wavefunctions */
   for (l=0; l < pspdata->l_max+1; l++) {
     FULFILL_OR_RETURN( fgets(line, PSPIO_STRLEN_LINE, fp) != NULL, PSPIO_EIO );
@@ -99,8 +88,7 @@ int pspio_fhi_read(FILE *fp, pspio_pspdata_t *pspdata)
        * the behavior of FHI98PP)
       */
       SKIP_FUNC_ON_ERROR( pspio_mesh_alloc(&pspdata->mesh, np) );
-      SKIP_CALL_ON_ERROR( pspio_mesh_init_from_points(pspdata->mesh,
-        r, NULL) );
+      SKIP_CALL_ON_ERROR( pspio_mesh_init_from_points(pspdata->mesh, r, NULL) );
     }
 
     /* Set pseudopotential and wavefunction */
@@ -169,9 +157,7 @@ int pspio_fhi_read(FILE *fp, pspio_pspdata_t *pspdata)
   
   /* We do not know the symbol (note that it might have been set somewhere else) */
   if ( pspdata->symbol == NULL ) {
-    pspdata->symbol = (char *) malloc (3*sizeof(char));
-    FULFILL_OR_RETURN( pspdata->symbol != NULL, PSPIO_ENOMEM );
-    sprintf(pspdata->symbol, "N/D");
+    SUCCEED_OR_RETURN( pspio_pspdata_set_symbol(pspdata, "N/D") );
   }
 
   return PSPIO_SUCCESS;

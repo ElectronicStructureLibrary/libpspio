@@ -74,9 +74,9 @@ int upf_read_header(FILE *fp, int *np, pspio_pspdata_t *pspdata)
 {
   char line[PSPIO_STRLEN_LINE];
   int version_number, i;
-  char nlcc_flag[2];
-  char xc_string[23];
-  int exchange, correlation;
+  char symbol[3], nlcc_flag[2], xc_string[23];
+  int exchange, correlation, l_max, n_states, n_projectors;
+  double z, zvalence, total_energy;
   double wfc_cutoff, rho_cutoff;
 
   /* Find init tag */
@@ -89,15 +89,15 @@ int upf_read_header(FILE *fp, int *np, pspio_pspdata_t *pspdata)
  
   /* Read the atomic symbol */
   FULFILL_OR_RETURN( fgets(line, PSPIO_STRLEN_LINE, fp) != NULL, PSPIO_EIO );
-  pspdata->symbol = (char *) malloc (3*sizeof(char));
-  FULFILL_OR_EXIT(pspdata->symbol != NULL, PSPIO_ENOMEM);
-  strcpy(pspdata->symbol, strtok(line," "));
-  SUCCEED_OR_RETURN( symbol_to_z(pspdata->symbol, &pspdata->z) );
+  strcpy(symbol, strtok(line," "));
+  SUCCEED_OR_RETURN( pspio_pspdata_set_symbol(pspdata, symbol) );
+  SUCCEED_OR_RETURN( symbol_to_z(symbol, &z) );
+  SUCCEED_OR_RETURN( pspio_pspdata_set_z(pspdata, z) );
 
   /* Read the kind of pseudo-potentials US|NC|PAW */
   FULFILL_OR_RETURN( fgets(line, PSPIO_STRLEN_LINE, fp) != NULL, PSPIO_EIO );
   /* At the moment LIBPSP_IO can only read norm-conserving pseudo-potentials */
-  FULFILL_OR_RETURN( strncmp(strtok(line," "),"NC",2) == 0, PSPIO_ENOSUPPORT );
+  FULFILL_OR_RETURN( strncmp(strtok(line," "), "NC", 2) == 0, PSPIO_ENOSUPPORT );
 
   /* Read the nonlinear core correction */
   FULFILL_OR_RETURN( fgets(line, PSPIO_STRLEN_LINE, fp) != NULL, PSPIO_EIO );
@@ -112,27 +112,32 @@ int upf_read_header(FILE *fp, int *np, pspio_pspdata_t *pspdata)
 
   /* Read the Z valence */
   FULFILL_OR_RETURN( fgets(line, PSPIO_STRLEN_LINE, fp) != NULL, PSPIO_EIO );
-  FULFILL_OR_RETURN( sscanf(line, "%lf",&pspdata->zvalence) == 1, PSPIO_EFILE_CORRUPT );
+  FULFILL_OR_RETURN( sscanf(line, "%lf", &zvalence) == 1, PSPIO_EFILE_CORRUPT );
+  SUCCEED_OR_RETURN( pspio_pspdata_set_zvalence(pspdata, zvalence) );
 
   /* Read the total energy */
   FULFILL_OR_RETURN( fgets(line, PSPIO_STRLEN_LINE, fp) != NULL, PSPIO_EIO );
-  FULFILL_OR_RETURN( sscanf(line, "%lf",&pspdata->total_energy) == 1, PSPIO_EFILE_CORRUPT );
-  
+  FULFILL_OR_RETURN( sscanf(line, "%lf", &total_energy) == 1, PSPIO_EFILE_CORRUPT );
+  SUCCEED_OR_RETURN( pspio_pspdata_set_total_energy(pspdata, total_energy) );
+
   /* Read the suggested cutoff for wfc and rho */
   FULFILL_OR_RETURN( fgets(line, PSPIO_STRLEN_LINE, fp) != NULL, PSPIO_EIO );
-  FULFILL_OR_RETURN( sscanf(line, "%lf %lf",&wfc_cutoff,&rho_cutoff) == 2, PSPIO_EFILE_CORRUPT );
+  FULFILL_OR_RETURN( sscanf(line, "%lf %lf", &wfc_cutoff, &rho_cutoff) == 2, PSPIO_EFILE_CORRUPT );
   
   /* Read the max angular momentun component of the KB projectors */
   FULFILL_OR_RETURN( fgets(line, PSPIO_STRLEN_LINE, fp) != NULL, PSPIO_EIO );
-  FULFILL_OR_RETURN( sscanf(line, "%d",&pspdata->projectors_l_max) == 1, PSPIO_EFILE_CORRUPT );
-  
+  FULFILL_OR_RETURN( sscanf(line, "%d", &l_max) == 1, PSPIO_EFILE_CORRUPT );
+  SUCCEED_OR_RETURN( pspio_pspdata_set_l_max(pspdata, l_max) );
+
   /* Read the number of points in mesh */
   FULFILL_OR_RETURN( fgets(line, PSPIO_STRLEN_LINE, fp) != NULL, PSPIO_EIO );
-  FULFILL_OR_RETURN( sscanf(line, "%d",np) == 1, PSPIO_EFILE_CORRUPT );
+  FULFILL_OR_RETURN( sscanf(line, "%d", np) == 1, PSPIO_EFILE_CORRUPT );
   
   /* Read the number of wavefunctions and projectors */
   FULFILL_OR_RETURN( fgets(line, PSPIO_STRLEN_LINE, fp) != NULL, PSPIO_EIO );
-  FULFILL_OR_RETURN( sscanf(line, "%d %d", &pspdata->n_states, &pspdata->n_projectors) == 2, PSPIO_EFILE_CORRUPT );
+  FULFILL_OR_RETURN( sscanf(line, "%d %d", &n_states, &n_projectors) == 2, PSPIO_EFILE_CORRUPT );
+  SUCCEED_OR_RETURN( pspio_pspdata_set_n_states(pspdata, n_states) );
+  SUCCEED_OR_RETURN( pspio_pspdata_set_n_projectors(pspdata, n_projectors) );
 
   /* Skip info on wavefunctions, as it is repeated in the PP_PSWFC block */
   for (i=0; i<pspdata->n_states+1; i++) {
@@ -180,7 +185,7 @@ int upf_read_mesh(FILE *fp, const int np, pspio_pspdata_t *pspdata)
   if ( pspio_error_get_last(__func__) == PSPIO_SUCCESS ) {
     for (i=0; i<np; i+=4) {
       FULFILL_OR_BREAK( fgets(line, PSPIO_STRLEN_LINE, fp) != NULL, PSPIO_EIO );
-      nargs = sscanf(line,"%lf %lf %lf %lf",&tmp[0],&tmp[1],&tmp[2],&tmp[3]);
+      nargs = sscanf(line, "%lf %lf %lf %lf", &tmp[0], &tmp[1], &tmp[2], &tmp[3]);
       FULFILL_OR_BREAK( nargs < 5 && nargs > 0, PSPIO_EFILE_CORRUPT );
       for (j=0; j<nargs; j++) r[i+j] = tmp[j];
     }
@@ -190,7 +195,7 @@ int upf_read_mesh(FILE *fp, const int np, pspio_pspdata_t *pspdata)
     SKIP_FUNC_ON_ERROR( upf_tag_init(fp, "PP_RAB", NO_GO_BACK) );
     for (i=0; i<np; i+=4) {
       FULFILL_OR_BREAK( fgets(line, PSPIO_STRLEN_LINE, fp) != NULL, PSPIO_EIO );
-      nargs = sscanf(line,"%lf %lf %lf %lf",&tmp[0],&tmp[1],&tmp[2],&tmp[3]);
+      nargs = sscanf(line, "%lf %lf %lf %lf", &tmp[0], &tmp[1], &tmp[2], &tmp[3]);
       FULFILL_OR_BREAK( nargs < 5 && nargs > 0, PSPIO_EFILE_CORRUPT );
       for (j=0; j<nargs; j++) drdi[i+j] = tmp[j];
     }
@@ -274,10 +279,6 @@ int upf_read_nonlocal(FILE *fp, const int np, pspio_pspdata_t *pspdata)
 
   projector_read = (double *) malloc (np * sizeof(double));
   FULFILL_OR_EXIT(projector_read != NULL, PSPIO_ENOMEM);
-
-  pspdata->projectors = (pspio_projector_t **) malloc ( pspdata->n_projectors*sizeof(pspio_projector_t *));
-  FULFILL_OR_EXIT(pspdata->projectors != NULL, PSPIO_ENOMEM);
-  for (i=0; i<pspdata->n_projectors; i++) pspdata->projectors[i] = NULL;
 
   ekb = (double *) malloc (pspdata->n_projectors*sizeof(double));
   FULFILL_OR_EXIT(ekb != NULL, PSPIO_ENOMEM);
@@ -460,12 +461,6 @@ int upf_read_pswfc(FILE *fp, const int np, pspio_pspdata_t *pspdata)
 
   j = (double *) malloc (pspdata->n_states*sizeof(double));
   FULFILL_OR_EXIT(j != NULL, PSPIO_ENOMEM);
-
-  pspdata->states = (pspio_state_t **) malloc ( pspdata->n_states*sizeof(pspio_state_t *));
-  FULFILL_OR_EXIT(pspdata->states != NULL, PSPIO_ENOMEM);
-  for (is=0; is<pspdata->n_states; is++) {
-    pspdata->states[is] = NULL;
-  }
 
   /* In the case of a fully-relativistic calculation, there is extra
      information in the ADDINFO tag */

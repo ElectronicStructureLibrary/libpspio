@@ -31,10 +31,9 @@
 /* Store successive errors in a chain */
 static pspio_error_t *pspio_error_chain = NULL;
 
-int pspio_error_add(const int error_id, const char *filename, const int line,
-		    const char *routine)
+int pspio_error_add(const int error_id, const char *filename, const int line, const char *routine)
 {
-  int s;
+  size_t s;
   pspio_error_t *last_err;
 
   /* Notes:
@@ -47,7 +46,8 @@ int pspio_error_add(const int error_id, const char *filename, const int line,
          purposes.
    */
 
-  if ( error_id == PSPIO_SUCCESS ) return error_id;
+  if ( error_id == PSPIO_SUCCESS )
+    return error_id;
 
   if ( pspio_error_chain == NULL ) {
     pspio_error_chain = malloc (sizeof(pspio_error_t));
@@ -60,7 +60,7 @@ int pspio_error_add(const int error_id, const char *filename, const int line,
     pspio_error_chain->line = line;
     pspio_error_chain->next = NULL;
     s = strlen(filename);
-    pspio_error_chain->filename = (char *) malloc (s + 1);
+    pspio_error_chain->filename = (char *) malloc((s+1)*sizeof(char));
     if ( pspio_error_chain->filename == NULL ) {
       pspio_error_show(PSPIO_ENOMEM, __FILE__, __LINE__, __func__);
       exit(1);
@@ -68,7 +68,7 @@ int pspio_error_add(const int error_id, const char *filename, const int line,
     memcpy(pspio_error_chain->filename, filename, s);
     pspio_error_chain->filename[s] = '\0';
     s = strlen(routine);
-    pspio_error_chain->routine = (char *) malloc (s + 1);
+    pspio_error_chain->routine = (char *) malloc((s+1)*sizeof(char));
     if ( pspio_error_chain->routine == NULL ) {
       pspio_error_show(PSPIO_ENOMEM, __FILE__, __LINE__, __func__);
       exit(1);
@@ -91,7 +91,7 @@ int pspio_error_add(const int error_id, const char *filename, const int line,
     last_err->line = line;
     last_err->next = NULL;
     s = strlen(filename);
-    last_err->filename = (char *) malloc (s + 1);
+    last_err->filename = (char *) malloc((s+1)*sizeof(char));
     if ( last_err->filename == NULL ) {
       pspio_error_show(PSPIO_ENOMEM, __FILE__, __LINE__, __func__);
       exit(1);
@@ -99,7 +99,7 @@ int pspio_error_add(const int error_id, const char *filename, const int line,
     memcpy(last_err->filename, filename, s);
     last_err->filename[s] = '\0';
     s = strlen(routine);
-    last_err->routine = (char *) malloc (s + 1);
+    last_err->routine = (char *) malloc((s+1)*sizeof(char));
     if ( last_err->routine == NULL ) {
       pspio_error_show(PSPIO_ENOMEM, __FILE__, __LINE__, __func__);
       exit(1);
@@ -167,6 +167,7 @@ void pspio_error_flush(FILE *fd)
   if ( err_str != NULL ) {
     fprintf(fd, "%s", err_str);
     fflush(fd);
+    free(err_str);
   }
 }
 

@@ -43,10 +43,7 @@ int upf_tag_init(FILE * fp, const char * tag, const int go_back)
   /* Prepare base string */
   init_tag = (char *) malloc ((strlen(tag)+3) * sizeof(char));
   FULFILL_OR_EXIT(init_tag != NULL, PSPIO_ENOMEM);
-  init_tag[0] = '\0';
-  strcat(init_tag,"<");
-  strncat(init_tag,tag,strlen(tag));
-  strcat(init_tag,">");
+  sprintf(init_tag, "<%s>", tag);
   for (i=0;init_tag[i]; i++)
     init_tag[i] = tolower(init_tag[i]);
 
@@ -60,7 +57,7 @@ int upf_tag_init(FILE * fp, const char * tag, const int go_back)
     for (i=0;read_string[i]; i++)
       read_string[i] = tolower(read_string[i]);
     
-    if ( strncmp(read_string,init_tag,strlen(init_tag))==0 ) {
+    if ( strncmp(read_string, init_tag, strlen(init_tag))==0 ) {
       free(init_tag);
       return PSPIO_SUCCESS;
     }
@@ -80,10 +77,7 @@ int upf_tag_check_end(FILE * fp, const char * tag)
   /* Prepare base string */
   ending_tag = (char *) malloc ((strlen(tag)+4) * sizeof(char));
   FULFILL_OR_EXIT(ending_tag != NULL, PSPIO_ENOMEM);
-  ending_tag[0] = '\0';
-  strcat(ending_tag,"</");
-  strncat(ending_tag,tag,strlen(tag));
-  strcat(ending_tag,">");
+  sprintf(ending_tag, "</%s>", tag);
   for (i=0;ending_tag[i]; i++)
     ending_tag[i] = tolower(ending_tag[i]);
   
@@ -98,7 +92,7 @@ int upf_tag_check_end(FILE * fp, const char * tag)
     read_string[i] = tolower(read_string[i]);
 
   /* Compare with the ending tag */
-  if ( strncmp(read_string,ending_tag,strlen(ending_tag)) == 0 ) { 
+  if ( strncmp(read_string, ending_tag, strlen(ending_tag)) == 0 ) {
     status = PSPIO_SUCCESS;
   } else {
     status = PSPIO_EFILE_CORRUPT;
@@ -122,10 +116,7 @@ int upf_tag_isdef(FILE * fp, const char * tag)
   /* Prepare base string */
   init_tag = (char *) malloc ((strlen(tag)+3) * sizeof(char));
   FULFILL_OR_EXIT(init_tag != NULL, PSPIO_ENOMEM);
-  init_tag[0] = '\0';
-  strcat(init_tag,"<");
-  strncat(init_tag,tag,strlen(tag));
-  strcat(init_tag,">");
+  sprintf(init_tag, "<%s>", tag);
   for (i=0;init_tag[i]; i++)
     init_tag[i] = tolower(init_tag[i]);
 
