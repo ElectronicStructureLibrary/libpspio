@@ -29,5 +29,6 @@ SUBDIRS = src
 
 # Source tarball
 EXTRA_DIST = \
+  Doxyfile
 
 DISTCLEANFILES = libpspio-fortran-*.tar.gz

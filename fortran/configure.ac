@@ -334,14 +334,10 @@ AC_CONFIG_COMMANDS([script-perms],
 AC_CONFIG_FILES([
   Makefile
   src/Makefile
+  src/gcov_check_coverage
   src/gcov_fortran_clean
   src/gcov_fortran_report
-  src/test_fortran_memory
   src/test_fortran_io_multiple
-  src/gcov_check_coverage
-  src/gcov_clean
-  src/gcov_report
-  src/test_io_multiple
-  src/test_memory])
+  src/test_fortran_memory])
 
 AC_OUTPUT
