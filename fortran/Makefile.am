@@ -18,7 +18,7 @@
 #
 
 #
-# Top makefile for Libpspio
+# Top makefile for Libpspio-Fortran
 #
 
 # Autotools parameters
@@ -29,7 +29,5 @@ SUBDIRS = src
 
 # Source tarball
 EXTRA_DIST = \
-  Doxyfile \
-  psp_references
 
-DISTCLEANFILES = libpspio-*.tar.gz
+DISTCLEANFILES = libpspio-fortran-*.tar.gz

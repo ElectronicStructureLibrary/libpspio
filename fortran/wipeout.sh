@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-# Copyright (C) 2011 J. Alberdi, M. Oliveira, Y. Pouillon, and M. Verstraete
+# Copyright (C) 2015 Y. Pouillon
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as published by
@@ -28,7 +28,7 @@
 #
 
 # Check that we are in the right directory
-if test ! -s "./configure.ac" -o ! -d "psp_references"; then
+if test ! -s "./configure.ac" -o ! -s "src/fpspio.F90"; then
   echo "wipeout: Cowardly refusing to remove something from here!"
   exit 1
 fi
@@ -57,7 +57,7 @@ find . -name Makefile -exec rm {} \;
 find . -name Makefile.in -exec rm {} \;
 find . -name '*.log' -exec rm {} \;
 find . -name '*.trs' -exec rm {} \;
-rm -rf libpspio-*.tar.gz
+rm -rf libpspio-fortran-*.tar.gz
 echo "done."
 
 # Remove object files, libraries and programs
@@ -71,4 +71,4 @@ find . -name '*.o' -exec rm {} \;
 echo "done."
 
 # Remove test programs
-rm -f src/test_io
+rm -f src/test_fortran src/test_fortran_error

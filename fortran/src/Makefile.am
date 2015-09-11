@@ -23,6 +23,7 @@
 
 # Autotools parameters
 ACLOCAL_AMFLAGS = -I config/m4
+AM_DISTCHECK_CONFIGURE_FLAGS = --enable-fortran
 
 # Main tasks
 SUBDIRS = src

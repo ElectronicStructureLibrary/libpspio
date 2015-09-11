@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-# Copyright (C) 2011-2015 J. Alberdi, M. Oliveira, Y. Pouillon, and M. Verstraete
+# Copyright (C) 2015 Y. Pouillon
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as published by
@@ -22,10 +22,13 @@
 set -e
 
 # Check that we are in the right directory
-if test ! -s "./configure.ac" -o ! -d "psp_references"; then
+if test ! -s "./configure.ac" -o ! -s "src/fpspio.F90"; then
   echo "This is not a Libpspio source tree - aborting now"
   exit 1
 fi
+
+# Update source code
+python scripts/make-fortran-constants.py
 
 # Create possibly missing directories
 mkdir -p config/gnu config/m4

@@ -3,10 +3,10 @@
 # Copyright (C) 2014-2015 Yann Pouillon
 
 """\
-This script generates Fortran constants in src/fortran/pspio_f90_types.F90
-from those declared in src/pspio_common.h, to ensure a perfect match between
-C and Fortran namespaces and avoid the inclusion of pspio_common.h in Fortran
-files.
+This script generates Fortran constants in src/fpspio.F90 from those
+declared in src/pspio_common.h, to ensure a perfect match between C
+and Fortran namespaces and avoid the inclusion of pspio_common.h in
+Fortran files.
 """
 
 __author__ = "Yann Pouillon"
@@ -24,7 +24,7 @@ re_cst_f90 = re.compile("  !%%% BEGIN PSPIO CONSTANTS.*  !%%% END PSPIO CONSTANT
 
 # Translate C definitions into Fortran
 f90_defs = "  !%%% BEGIN PSPIO CONSTANTS\n"
-for line in file("src/pspio_common.h", "r").readlines():
+for line in file("../src/pspio_common.h", "r").readlines():
   if ( re_cst_def.match(line) ):
     line = re.sub(re_c_cmts, "", line)
     line = line.split()
@@ -42,6 +42,6 @@ for line in file("src/pspio_common.h", "r").readlines():
 f90_defs += "  !%%% END PSPIO CONSTANTS"
 
 # Replace existing Fortran definitions
-f90_file = "src/fortran/fpspio.F90"
+f90_file = "src/fpspio.F90"
 f90_src  = file(f90_file, "r").read()
 file(f90_file, "w").write(re.sub(re_cst_f90, f90_defs, f90_src))

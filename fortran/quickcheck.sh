@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-# Copyright (C) 2012 Y. Pouillon
+# Copyright (C) 2015 Y. Pouillon
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as published by
@@ -24,11 +24,11 @@
 set -ev
 
 # Check that we are in the correct directory
-test -s "configure.ac" -a -s "src/pspio.h" || exit 0
+test -s "configure.ac" -a -s "src/fpspio.F90" || exit 0
 
 # Init build parameters
-export CC="gcc"
-export CFLAGS="-O0 -g3 -ggdb -Wall -Wextra -fbounds-check -fno-inline"
+export FC="gfortran"
+export FCFLAGS="-O0 -g3 -ggdb -Wall -Wextra -fbounds-check -fno-inline"
 
 # Prepare source tree
 ./wipeout.sh
