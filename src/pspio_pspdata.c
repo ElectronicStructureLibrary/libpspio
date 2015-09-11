@@ -91,6 +91,9 @@ int pspio_pspdata_read(pspio_pspdata_t *pspdata, const int file_format,
 
   assert(pspdata != NULL);
 
+  /* Stop if pspdata already contains some information */
+  assert(pspdata->format_guessed == PSPIO_FMT_UNKNOWN);
+
   /* Open file */
   fp = fopen(file_name, "r");
   FULFILL_OR_RETURN(fp != NULL, PSPIO_ENOFILE);
