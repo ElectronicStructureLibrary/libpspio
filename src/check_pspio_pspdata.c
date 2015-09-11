@@ -40,6 +40,9 @@ static pspio_projector_t *projector = NULL;
 static pspio_xc_t *xc = NULL;
 static pspio_meshfunc_t *rho_valence = NULL;
 
+char filename[200];
+
+
 void pspdata_minimal_setup(void)
 {
   pspio_pspdata_free(pspdata);
@@ -281,10 +284,8 @@ START_TEST(test_pspdata_rho_valence)
 END_TEST
 
 
-START_TEST(test_pspdata_io_fhi)
+START_TEST(test_pspdata_fhi_io)
 {
-  char filename[200];
-
   sprintf(filename, "%s/%s", PSPIO_CHK_DATADIR, "fhi/Li.cpi");
   ck_assert(pspio_pspdata_read(pspdata, PSPIO_FMT_FHI98PP, filename) == PSPIO_SUCCESS);
   sprintf(filename, "test_io_%d.tmp", PSPIO_FMT_FHI98PP);
@@ -292,10 +293,16 @@ START_TEST(test_pspdata_io_fhi)
 }
 END_TEST
 
-START_TEST(test_pspdata_io_abinit6)
-{
-  char filename[200];
+START_TEST(test_pspdata_fhi_guess)
+  {
+    sprintf(filename, "%s/%s", PSPIO_CHK_DATADIR, "fhi/Li.cpi");
+    ck_assert(pspio_pspdata_read(pspdata, PSPIO_FMT_UNKNOWN, filename) == PSPIO_SUCCESS);
+    ck_assert(pspio_pspdata_get_format_guessed(pspdata) == PSPIO_FMT_FHI98PP);
+  }
+END_TEST
 
+START_TEST(test_pspdata_abinit6_io)
+{
   sprintf(filename, "%s/%s", PSPIO_CHK_DATADIR, "abinit6/03-Li.LDA.fhi");
   ck_assert(pspio_pspdata_read(pspdata, PSPIO_FMT_ABINIT_6, filename) == PSPIO_SUCCESS);
   sprintf(filename, "test_io_%d.tmp", PSPIO_FMT_ABINIT_6);
@@ -303,10 +310,16 @@ START_TEST(test_pspdata_io_abinit6)
 }
 END_TEST
 
-START_TEST(test_pspdata_io_upf)
+START_TEST(test_pspdata_abinit6_guess)
 {
-  char filename[200];
+  sprintf(filename, "%s/%s", PSPIO_CHK_DATADIR, "abinit6/03-Li.LDA.fhi");
+  ck_assert(pspio_pspdata_read(pspdata, PSPIO_FMT_UNKNOWN, filename) == PSPIO_SUCCESS);
+  ck_assert(pspio_pspdata_get_format_guessed(pspdata) == PSPIO_FMT_ABINIT_6);
+}
+END_TEST
 
+START_TEST(test_pspdata_upf_io)
+{
   sprintf(filename, "%s/%s", PSPIO_CHK_DATADIR, "UPF/Li.UPF");
   ck_assert(pspio_pspdata_read(pspdata, PSPIO_FMT_UPF, filename) == PSPIO_SUCCESS);
   sprintf(filename, "test_io_%d.tmp", PSPIO_FMT_UPF);
@@ -314,11 +327,19 @@ START_TEST(test_pspdata_io_upf)
 }
 END_TEST
 
+START_TEST(test_pspdata_upf_guess)
+{
+  sprintf(filename, "%s/%s", PSPIO_CHK_DATADIR, "UPF/Li.UPF");
+  ck_assert(pspio_pspdata_read(pspdata, PSPIO_FMT_UNKNOWN, filename) == PSPIO_SUCCESS);
+  ck_assert(pspio_pspdata_get_format_guessed(pspdata) == PSPIO_FMT_UPF);
+}
+END_TEST
+
 
 Suite * make_pspdata_suite(void)
 {
   Suite *s;
-  TCase *tc_alloc, *tc_getset, *tc_io, *tc_io_multiple;
+  TCase *tc_alloc, *tc_getset, *tc_io;
 
   s = suite_create("Pspdata");
 
@@ -354,18 +375,13 @@ Suite * make_pspdata_suite(void)
 
   tc_io = tcase_create("File parsing and writing");
   tcase_add_checked_fixture(tc_io, pspdata_minimal_setup, pspdata_minimal_teardown);
-  tcase_add_test(tc_io, test_pspdata_io_fhi);
-  tcase_add_test(tc_io, test_pspdata_io_abinit6);
-  tcase_add_test(tc_io, test_pspdata_io_upf);
+  tcase_add_test(tc_io, test_pspdata_fhi_io);
+  tcase_add_test(tc_io, test_pspdata_fhi_guess);
+  tcase_add_test(tc_io, test_pspdata_abinit6_io);
+  tcase_add_test(tc_io, test_pspdata_abinit6_guess);
+  tcase_add_test(tc_io, test_pspdata_upf_io);
+  tcase_add_test(tc_io, test_pspdata_upf_guess);
   suite_add_tcase(s, tc_io);
-
-  /* NOTE: The following test case does not free the pspdata structure between files */
-  tc_io_multiple = tcase_create("Consecutive file parsing and writing");
-  tcase_add_unchecked_fixture(tc_io_multiple, pspdata_minimal_setup, pspdata_minimal_teardown);
-  tcase_add_test(tc_io_multiple, test_pspdata_io_fhi);
-  tcase_add_test(tc_io_multiple, test_pspdata_io_abinit6);
-  tcase_add_test(tc_io_multiple, test_pspdata_io_upf);
-  suite_add_tcase(s, tc_io_multiple);
 
   return s;
 }
