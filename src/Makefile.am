@@ -79,7 +79,6 @@ pio_hidden_hdrs = \
   check_pspio.h \
   interpolation.h \
   jb_spline.h \
-  test_common.h \
   upf.h \
   util.h
 
@@ -117,10 +116,6 @@ endif
 
 pio_basic_tests = \
   check_pspio
-pio_xfail_tests = \
-  test_io
-pio_wrapped_tests = \
-  test_io_multiple
 pio_gcov_pre_tests = \
   gcov_clean
 pio_gcov_post_tests = \
@@ -128,10 +123,9 @@ pio_gcov_post_tests = \
 pio_memprof_tests = \
   test_memory
 
-check_PROGRAMS = $(pio_basic_tests) $(pio_xfail_tests)
+check_PROGRAMS = $(pio_basic_tests)
 nodist_check_SCRIPTS = \
   $(pio_gcov_pre_tests) \
-  $(pio_wrapped_tests) \
   $(pio_gcov_post_tests) \
   $(pio_memprof_tests)
 
@@ -153,20 +147,11 @@ check_pspio_CFLAGS = @CHECK_CFLAGS@
 check_pspio_CPPFLAGS = -I$(top_srcdir)/src
 check_pspio_DEPENDENCIES = libpspio.la
 
-test_io_SOURCES = test_io.c
-test_io_LDADD = -lpspio $(LIBS_COVERAGE)
-test_io_CPPFLAGS = -I$(srcdir)/../src
-test_io_DEPENDENCIES = libpspio.la
-
 TESTS = \
   $(pio_gcov_pre_tests) \
   $(pio_basic_tests) \
-  $(pio_xfail_tests) \
-  $(pio_wrapped_tests) \
   $(pio_gcov_post_tests) \
   $(pio_memprof_tests)
-XFAIL_TESTS = \
-  $(pio_xfail_tests)
 
                     # ------------------------------------ #
 

@@ -27,6 +27,9 @@
 #include "pspio_error.h"
 #include "pspio_pspdata.h"
 
+#if defined HAVE_CONFIG_H
+#include "config.h"
+#endif
 
 static pspio_pspdata_t *pspdata;
 static pspio_mesh_t *mesh = NULL;
@@ -37,12 +40,20 @@ static pspio_projector_t *projector = NULL;
 static pspio_xc_t *xc = NULL;
 static pspio_meshfunc_t *rho_valence = NULL;
 
-void pspdata_setup(void)
+void pspdata_minimal_setup(void)
+{
+  pspio_pspdata_free(pspdata);
+  pspio_pspdata_alloc(&pspdata);
+}
+
+void pspdata_full_setup(void)
 {
   int i;
   const double a = 1.0;
   const double b = 2.0;
   double *func = NULL, *r = NULL;
+
+  pspdata_minimal_setup();
 
   pspio_mesh_free(mesh);
   pspio_mesh_alloc(&mesh, 8);
@@ -77,13 +88,15 @@ void pspdata_setup(void)
   pspio_meshfunc_free(rho_valence);
   pspio_meshfunc_alloc(&rho_valence, 8);
   pspio_meshfunc_init(rho_valence, mesh, func, NULL, NULL);
-
-  pspio_pspdata_free(pspdata);
-  pspio_pspdata_alloc(&pspdata);
-
 }
 
-void pspdata_teardown(void)
+void pspdata_minimal_teardown(void)
+{
+  pspio_pspdata_free(pspdata);
+  pspdata = NULL;
+}
+
+void pspdata_full_teardown(void)
 {
   pspio_mesh_free(mesh);
   mesh = NULL;
@@ -106,8 +119,7 @@ void pspdata_teardown(void)
   pspio_meshfunc_free(rho_valence);
   rho_valence = NULL;
 
-  pspio_pspdata_free(pspdata);
-  pspdata = NULL;
+  pspdata_minimal_teardown();
 }
 
 
@@ -269,20 +281,54 @@ START_TEST(test_pspdata_rho_valence)
 END_TEST
 
 
+START_TEST(test_pspdata_io_fhi)
+{
+  char filename[200];
+
+  sprintf(filename, "%s/%s", PSPIO_CHK_DATADIR, "fhi/Li.cpi");
+  ck_assert(pspio_pspdata_read(pspdata, PSPIO_FMT_FHI98PP, filename) == PSPIO_SUCCESS);
+  sprintf(filename, "test_io_%d.tmp", PSPIO_FMT_FHI98PP);
+  ck_assert(pspio_pspdata_write(pspdata, PSPIO_FMT_FHI98PP, filename) == PSPIO_SUCCESS);
+}
+END_TEST
+
+START_TEST(test_pspdata_io_abinit6)
+{
+  char filename[200];
+
+  sprintf(filename, "%s/%s", PSPIO_CHK_DATADIR, "abinit6/03-Li.LDA.fhi");
+  ck_assert(pspio_pspdata_read(pspdata, PSPIO_FMT_ABINIT_6, filename) == PSPIO_SUCCESS);
+  sprintf(filename, "test_io_%d.tmp", PSPIO_FMT_ABINIT_6);
+  ck_assert(pspio_pspdata_write(pspdata, PSPIO_FMT_ABINIT_6, filename) == PSPIO_SUCCESS);
+}
+END_TEST
+
+START_TEST(test_pspdata_io_upf)
+{
+  char filename[200];
+
+  sprintf(filename, "%s/%s", PSPIO_CHK_DATADIR, "UPF/Li.UPF");
+  ck_assert(pspio_pspdata_read(pspdata, PSPIO_FMT_UPF, filename) == PSPIO_SUCCESS);
+  sprintf(filename, "test_io_%d.tmp", PSPIO_FMT_UPF);
+  ck_assert(pspio_pspdata_write(pspdata, PSPIO_FMT_UPF, filename) == PSPIO_SUCCESS);
+}
+END_TEST
+
+
 Suite * make_pspdata_suite(void)
 {
   Suite *s;
-  TCase *tc_alloc, *tc_getset;
+  TCase *tc_alloc, *tc_getset, *tc_io, *tc_io_multiple;
 
   s = suite_create("Pspdata");
 
   tc_alloc = tcase_create("Allocation");
-  tcase_add_checked_fixture(tc_alloc, NULL, pspdata_teardown);
+  tcase_add_checked_fixture(tc_alloc, NULL, pspdata_full_teardown);
   tcase_add_test(tc_alloc, test_pspdata_alloc);
   suite_add_tcase(s, tc_alloc);
 
   tc_getset = tcase_create("Setters and getters");
-  tcase_add_checked_fixture(tc_getset, pspdata_setup, pspdata_teardown);
+  tcase_add_checked_fixture(tc_getset, pspdata_full_setup, pspdata_full_teardown);
   tcase_add_test(tc_getset, test_pspdata_format_guessed);
   tcase_add_test(tc_getset, test_pspdata_symbol);
   tcase_add_test(tc_getset, test_pspdata_z);
@@ -305,6 +351,21 @@ Suite * make_pspdata_suite(void)
   tcase_add_test(tc_getset, test_pspdata_xc);
   tcase_add_test(tc_getset, test_pspdata_rho_valence);
   suite_add_tcase(s, tc_getset);
+
+  tc_io = tcase_create("File parsing and writing");
+  tcase_add_checked_fixture(tc_io, pspdata_minimal_setup, pspdata_minimal_teardown);
+  tcase_add_test(tc_io, test_pspdata_io_fhi);
+  tcase_add_test(tc_io, test_pspdata_io_abinit6);
+  tcase_add_test(tc_io, test_pspdata_io_upf);
+  suite_add_tcase(s, tc_io);
+
+  /* NOTE: The following test case does not free the pspdata structure between files */
+  tc_io_multiple = tcase_create("Consecutive file parsing and writing");
+  tcase_add_unchecked_fixture(tc_io_multiple, pspdata_minimal_setup, pspdata_minimal_teardown);
+  tcase_add_test(tc_io_multiple, test_pspdata_io_fhi);
+  tcase_add_test(tc_io_multiple, test_pspdata_io_abinit6);
+  tcase_add_test(tc_io_multiple, test_pspdata_io_upf);
+  suite_add_tcase(s, tc_io_multiple);
 
   return s;
 }
