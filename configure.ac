@@ -383,7 +383,7 @@ AC_SUBST(LIBS_COVERAGE)
 #
 
 # Make data location available to check
-AC_DEFINE([PSPIO_CHK_DATADIR], [${ac_top_srcdir}/psp_references],
+AC_DEFINE_UNQUOTED([PSPIO_CHK_DATADIR], "${ac_abs_top_srcdir}/psp_references",
   [Directory containing pseudopotential files for the tests.])
 
 # Make sure the required build directories exist
