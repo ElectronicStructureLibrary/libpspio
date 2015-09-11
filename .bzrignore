@@ -65,12 +65,4 @@ tmp-*
 /fortran/src/test_fortran_error
 /src/.deps
 /src/.libs
-/src/test_error
 /src/test_io
-/src/test_mesh
-/src/test_meshfunc
-/src/test_potential
-/src/test_projector
-/src/test_qn
-/src/test_state
-/src/test_xc
