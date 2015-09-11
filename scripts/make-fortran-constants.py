@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 #
-# Copyright (C) 2014 Yann Pouillon
+# Copyright (C) 2014-2015 Yann Pouillon
 
 """\
 This script generates Fortran constants in src/fortran/pspio_f90_types.F90
@@ -10,7 +10,7 @@ files.
 """
 
 __author__ = "Yann Pouillon"
-__copyright__ = "Copyright (C) 2014 Yann Pouillon"
+__copyright__ = "Copyright (C) 2014-2015 Yann Pouillon"
 __license__ = "LGPL version 3"
 __version__ = "0.1"
 
@@ -42,6 +42,6 @@ for line in file("src/pspio_common.h", "r").readlines():
 f90_defs += "  !%%% END PSPIO CONSTANTS"
 
 # Replace existing Fortran definitions
-f90_file = "src/fortran/pspio_fortran.F90"
+f90_file = "src/fortran/fpspio.F90"
 f90_src  = file(f90_file, "r").read()
 file(f90_file, "w").write(re.sub(re_cst_f90, f90_defs, f90_src))

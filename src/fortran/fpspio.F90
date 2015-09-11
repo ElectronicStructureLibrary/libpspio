@@ -234,9 +234,9 @@ module fpspio_m
   integer(c_int), parameter, public :: PSPIO_MESH_LOG1 = 1
   integer(c_int), parameter, public :: PSPIO_MESH_LOG2 = 2
   integer(c_int), parameter, public :: PSPIO_MESH_LINEAR = 3
-  integer(c_int), parameter, public :: PSPIO_QN_DIFF = -1
-  integer(c_int), parameter, public :: PSPIO_QN_EQUAL = -2
-  integer(c_int), parameter, public :: PSPIO_QN_MTEQUAL = -3
+  integer(c_int), parameter, public :: PSPIO_DIFF = -1
+  integer(c_int), parameter, public :: PSPIO_EQUAL = -2
+  integer(c_int), parameter, public :: PSPIO_MTEQUAL = -3
   integer(c_int), parameter, public :: PSPIO_INTERP_GSL_CSPLINE = 1
   integer(c_int), parameter, public :: PSPIO_INTERP_JB_CSPLINE = 2
   integer(c_int), parameter, public :: PSPIO_NLCC_UNKNOWN = -1

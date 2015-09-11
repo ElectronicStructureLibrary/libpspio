@@ -31,7 +31,7 @@
 fpio_srcs = \
   fpspio.F90
 
-fpio_hidden_hdrs = \
+fpio_inc_srcs = \
   api_error_inc.F90 \
   api_info_inc.F90 \
   api_meshfunc_inc.F90 \
@@ -63,6 +63,9 @@ else
   fpio_mods = fpspio_m.@ax_cv_f90_modext@
 endif
 
+# Included Fortran files are not distributed by default
+EXTRA_DIST = $(fpio_inc_srcs)
+
                     # ------------------------------------ #
 
 #
@@ -82,8 +85,6 @@ libfpspio_la_SOURCES = $(fpio_srcs)
 
 # Headers
 nodist_include_HEADERS = $(fpio_mods)
-noinst_HEADERS = $(fpio_hidden_hdrs)
-
 
                     # ------------------------------------ #
 
@@ -134,6 +135,14 @@ XFAIL_TESTS = \
 #
 # Explicit dependencies
 #
+
+# Fortran
+fpspio.$(LTOBJEXT): $(fpio_inc_srcs)
+
+$(fpio_mods): fpspio.$(LTOBJEXT)
+	@echo "Modules already built"
+
+# Code coverage
 -include gcov-fortran-tests-deps.mf
 
                     # ------------------------------------ #
