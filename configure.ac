@@ -382,6 +382,10 @@ AC_SUBST(LIBS_COVERAGE)
 # Prepare data for the test suite
 #
 
+# Make data location available to check
+AC_DEFINE([PSPIO_CHK_DATADIR], [${ac_top_srcdir}/psp_references],
+  [Directory containing pseudopotential files for the tests.])
+
 # Make sure the required build directories exist
 ${MKDIR_P} src/fortran
 
