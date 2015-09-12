@@ -413,7 +413,7 @@ double jb_spline_eval_deriv2(const jb_spline_t *spline, const double r)
 {
   double ret;
 
-  jb_spline_cubic_val(spline->np, spline->t, spline->y, spline->ypp, r, NULL, &ret, NULL );
+  jb_spline_cubic_val(spline->np, spline->t, spline->y, spline->ypp, r, NULL, NULL, &ret);
 
   return ret;
 }
