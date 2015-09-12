@@ -200,6 +200,20 @@ START_TEST(test_projector_copy_nonnull_size)
 }
 END_TEST
 
+START_TEST(test_projector_get_energy)
+{
+  pspio_projector_init(proj11, qn11, e11, m1, p11);
+  ck_assert(pspio_projector_get_energy(proj11) == e11);
+}
+END_TEST
+
+START_TEST(test_projector_get_qn)
+{
+  pspio_projector_init(proj11, qn11, e11, m1, p11);
+  ck_assert(pspio_qn_cmp(pspio_projector_get_qn(proj11), qn11) == PSPIO_EQUAL);
+}
+END_TEST
+
 START_TEST(test_projector_eval)
 {
   double eval, expect;
@@ -237,7 +251,7 @@ END_TEST
 Suite * make_projector_suite(void)
 {
   Suite *s;
-  TCase *tc_alloc, *tc_init, *tc_cmp, *tc_copy, *tc_eval;
+  TCase *tc_alloc, *tc_init, *tc_cmp, *tc_copy, *tc_get, *tc_eval;
 
   s = suite_create("Projector");
 
@@ -265,6 +279,12 @@ Suite * make_projector_suite(void)
   tcase_add_test(tc_copy, test_projector_copy_nonnull);
   tcase_add_test(tc_copy, test_projector_copy_nonnull_size);
   suite_add_tcase(s, tc_copy);
+
+  tc_get = tcase_create("Getters");
+  tcase_add_checked_fixture(tc_get, projector_setup, projector_teardown);
+  tcase_add_test(tc_get, test_projector_get_energy);
+  tcase_add_test(tc_get, test_projector_get_qn);
+  suite_add_tcase(s, tc_get);
 
   tc_eval = tcase_create("Evaluation");
   tcase_add_checked_fixture(tc_eval, projector_setup, projector_teardown);

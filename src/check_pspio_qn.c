@@ -136,6 +136,26 @@ START_TEST(test_qn_copy_nonnull)
 }
 END_TEST
 
+START_TEST(test_qn_get_n)
+{
+  pspio_qn_init(qn1, 1, 2, 0.0);
+  ck_assert(pspio_qn_get_n(qn1) == 1);
+}
+END_TEST
+
+START_TEST(test_qn_get_l)
+{
+  pspio_qn_init(qn1, 1, 2, 0.0);
+  ck_assert(pspio_qn_get_l(qn1) == 2);
+}
+END_TEST
+
+START_TEST(test_qn_get_j)
+{
+  pspio_qn_init(qn1, 1, 2, 0.0);
+  ck_assert(pspio_qn_get_j(qn1) == 0.0);
+}
+END_TEST
 
 START_TEST(test_qn_label_nonrel)
 {
@@ -160,7 +180,7 @@ END_TEST
 Suite * make_qn_suite(void)
 {
   Suite *s;
-  TCase *tc_alloc, *tc_init, *tc_cmp, *tc_copy, *tc_labels;
+  TCase *tc_alloc, *tc_init, *tc_cmp, *tc_copy, *tc_get, *tc_labels;
 
   s = suite_create("Quantum numbers");
 
@@ -190,6 +210,13 @@ Suite * make_qn_suite(void)
   tcase_add_test(tc_copy, test_qn_copy_null);
   tcase_add_test(tc_copy, test_qn_copy_nonnull);
   suite_add_tcase(s, tc_copy);
+
+  tc_get = tcase_create("Getters");
+  tcase_add_checked_fixture(tc_get, qn_setup, qn_teardown);
+  tcase_add_test(tc_get, test_qn_get_n);
+  tcase_add_test(tc_get, test_qn_get_l);
+  tcase_add_test(tc_get, test_qn_get_j);
+  suite_add_tcase(s, tc_get);
 
   tc_labels = tcase_create("Labels");
   tcase_add_checked_fixture(tc_labels, qn_setup, qn_teardown);

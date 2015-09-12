@@ -190,6 +190,13 @@ START_TEST(test_potential_copy_nonnull_size)
 }
 END_TEST
 
+START_TEST(test_potential_get_qn)
+{
+  pspio_potential_init(pot11, qn11, m1, v11);
+  ck_assert(pspio_qn_cmp(pspio_potential_get_qn(pot11), qn11) == PSPIO_EQUAL);
+}
+END_TEST
+
 START_TEST(test_potential_eval)
 {
   double eval, expect;
@@ -227,7 +234,7 @@ END_TEST
 Suite * make_potential_suite(void)
 {
   Suite *s;
-  TCase *tc_alloc, *tc_init, *tc_cmp, *tc_copy, *tc_eval;
+  TCase *tc_alloc, *tc_init, *tc_cmp, *tc_copy, *tc_get, *tc_eval;
 
   s = suite_create("Potential");
 
@@ -254,6 +261,11 @@ Suite * make_potential_suite(void)
   tcase_add_test(tc_copy, test_potential_copy_nonnull);
   tcase_add_test(tc_copy, test_potential_copy_nonnull_size);
   suite_add_tcase(s, tc_copy);
+
+  tc_get = tcase_create("Getters");
+  tcase_add_checked_fixture(tc_get, potential_setup, potential_teardown);
+  tcase_add_test(tc_get, test_potential_get_qn);
+  suite_add_tcase(s, tc_get);
 
   tc_eval = tcase_create("Evaluation");
   tcase_add_checked_fixture(tc_eval, potential_setup, potential_teardown);

@@ -239,6 +239,41 @@ START_TEST(test_state_copy_nonnull_size)
 }
 END_TEST
 
+START_TEST(test_state_get_label)
+{
+  ck_assert(pspio_state_init(state11, e11, qn11, occ11, rc11, m1, wf11, NULL) == PSPIO_SUCCESS);
+  ck_assert_str_eq(pspio_state_get_label(state11), "2s0.5");
+}
+END_TEST
+
+START_TEST(test_state_get_qn)
+{
+  ck_assert(pspio_state_init(state11, e11, qn11, occ11, rc11, m1, wf11, NULL) == PSPIO_SUCCESS);
+  ck_assert(pspio_qn_cmp(pspio_state_get_qn(state11), qn11) == PSPIO_EQUAL);
+}
+END_TEST
+
+START_TEST(test_state_get_occ)
+{
+  ck_assert(pspio_state_init(state11, e11, qn11, occ11, rc11, m1, wf11, NULL) == PSPIO_SUCCESS);
+  ck_assert(pspio_state_get_occ(state11) == occ11);
+}
+END_TEST
+
+START_TEST(test_state_get_ev)
+{
+  ck_assert(pspio_state_init(state11, e11, qn11, occ11, rc11, m1, wf11, NULL) == PSPIO_SUCCESS);
+  ck_assert(pspio_state_get_ev(state11) == e11);
+}
+END_TEST
+
+START_TEST(test_state_get_rc)
+{
+  ck_assert(pspio_state_init(state11, e11, qn11, occ11, rc11, m1, wf11, NULL) == PSPIO_SUCCESS);
+  ck_assert(pspio_state_get_rc(state11) == rc11);
+}
+END_TEST
+
 START_TEST(test_state_lookup_table)
 {
   int i;
@@ -315,7 +350,7 @@ END_TEST
 Suite * make_state_suite(void)
 {
   Suite *s;
-  TCase *tc_alloc, *tc_init, *tc_cmp, *tc_copy, *tc_lookup, *tc_eval;
+  TCase *tc_alloc, *tc_init, *tc_cmp, *tc_copy, *tc_get, *tc_lookup, *tc_eval;
 
   s = suite_create("State");
 
@@ -347,6 +382,15 @@ Suite * make_state_suite(void)
   tcase_add_test(tc_copy, test_state_copy_nonnull);
   tcase_add_test(tc_copy, test_state_copy_nonnull_size);
   suite_add_tcase(s, tc_copy);
+
+  tc_get = tcase_create("Getters");
+  tcase_add_checked_fixture(tc_get, state_setup, state_teardown);
+  tcase_add_test(tc_get, test_state_get_label);
+  tcase_add_test(tc_get, test_state_get_qn);
+  tcase_add_test(tc_get, test_state_get_occ);
+  tcase_add_test(tc_get, test_state_get_ev);
+  tcase_add_test(tc_get, test_state_get_rc);
+  suite_add_tcase(s, tc_get);
 
   tc_lookup = tcase_create("Lookup table");
   tcase_add_checked_fixture(tc_lookup, state_setup, state_teardown);
