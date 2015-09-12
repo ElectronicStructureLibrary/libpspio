@@ -18,7 +18,7 @@
 #
 
 #
-# Makefile for the Fortran sources of Libpspio
+# Makefile for the sources of Libpspio-Fortran
 #
 
                     # ------------------------------------ #
@@ -73,7 +73,6 @@ EXTRA_DIST = $(fpio_inc_srcs)
 #
 
 # Essential build parameters
-AM_CPPFLAGS = @pio_core_incs@ -I$(srcdir)/..
 AM_CFLAGS = @CFLAGS_COVERAGE@
 AM_FCFLAGS = @FCFLAGS_COVERAGE@
 
@@ -113,9 +112,7 @@ nodist_check_SCRIPTS = \
 test_fortran_io_SOURCES = test_fortran_io.F90
 test_fortran_io_LDADD = \
   -lfpspio \
-  -L$(builddir)/../.libs -lpspio \
   $(LIBS_COVERAGE)
-test_fortran_io_CPPFLAGS = -I$(srcdir)/..
 test_fortran_io_DEPENDENCIES = \
   ../libpspio.la \
   libfpspio.la \

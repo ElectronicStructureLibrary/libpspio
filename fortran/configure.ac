@@ -78,6 +78,13 @@ AC_ARG_ENABLE([memprof],
   [enable_memprof="no"])
 AC_SUBST(enable_memprof)
 
+                    # ------------------------------------ #
+
+# Libpspio prefix
+AC_ARG_WITH([libpspio],
+  AC_HELP_STRING([--with-libpspio],
+    [Install prefix of Libpspio]))
+
 # ---------------------------------------------------------------------------- #
 
 #
@@ -185,6 +192,18 @@ AC_PATH_PROGS([PYTHON], [python python2.7])
 # Inform Automake
 AM_CONDITIONAL([F90_MOD_UPPERCASE],
   [test "${enable_fortran}" = "yes" -a "${ax_cv_f90_mod_uppercase}" = "yes"])
+
+# ---------------------------------------------------------------------------- #
+
+#
+# Look for Libpspio
+#
+
+AX_SEARCH_LIBPSPIO
+
+if test "${pio_libpspio_ok}" != "yes"; then
+  AC_MSG_ERROR([Libpspio not found])
+fi
 
 # ---------------------------------------------------------------------------- #
 
@@ -320,16 +339,11 @@ AC_MSG_NOTICE([LIBS     = ${LIBS}])
 
 AC_CONFIG_COMMANDS([script-perms],
   [chmod u+x \
+    src/gcov_check_coverage \
     src/gcov_fortran_clean \
     src/gcov_fortran_report \
-    src/test_fortran_memory \
     src/test_fortran_io_multiple \
-    src/gcov_check_coverage \
-    src/gcov_clean \
-    src/gcov_report \
-    src/test_io_multiple \
-    src/test_memory
-  ])
+    src/test_fortran_memory])
 
 AC_CONFIG_FILES([
   Makefile
