@@ -36,6 +36,9 @@ fi
 # Make sure the whole directory tree is writable
 chmod -R u+w .
 
+# Wipe-out subsystems
+cd fortran && ./wipeout.sh
+
 # Remove temporary directories and files
 echo "Removing temporary directories and files..."
 find . -depth -name 'tmp*' -exec rm -rf {} \;

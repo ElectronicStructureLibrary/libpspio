@@ -63,6 +63,14 @@ AC_ARG_ENABLE([debug],
   [enable_debug="yes"])
 AC_SUBST(enable_debug)
 
+# Fortran - Optional support
+AC_ARG_ENABLE([fortran],
+  AC_HELP_STRING([--enable-fortran],
+    [Enable Fortran bindings (default: disabled)]),
+  [],
+  [enable_fortran="no"])
+AC_SUBST(enable_fortran)
+
 # GCOV - Optional support
 AC_ARG_ENABLE([gcov],
   AC_HELP_STRING([--enable-gcov],
@@ -325,6 +333,7 @@ fi
 # Output configuration
 #
 
+AC_MSG_NOTICE([Fortran   : ${enable_fortran}])
 AC_MSG_NOTICE([GSL       : ${enable_gsl}])
 AC_MSG_NOTICE([XML       : ${enable_xml}])
 AC_MSG_NOTICE([])
@@ -338,6 +347,10 @@ AC_MSG_NOTICE([CC       = ${CC}])
 AC_MSG_NOTICE([CFLAGS   = ${CFLAGS}])
 AC_MSG_NOTICE([LDFLAGS  = ${LDFLAGS}])
 AC_MSG_NOTICE([LIBS     = ${LIBS}])
+
+if test "${enable_fortran}" = "yes"; then
+  AC_CONFIG_SUBDIRS([fortran])
+fi
 
 AC_CONFIG_COMMANDS([script-perms],
   [chmod u+x \

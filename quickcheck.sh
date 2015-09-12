@@ -55,4 +55,5 @@ make distcheck -j4
 make distcleancheck
 
 # Clean-up the mess
+cd ..
 rm -rf tmp-minimal tmp-distcheck

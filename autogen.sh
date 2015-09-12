@@ -27,6 +27,11 @@ if test ! -s "./configure.ac" -o ! -d "psp_references"; then
   exit 1
 fi
 
+# Banner
+echo "Main build system"
+echo "-----------------"
+echo ""
+
 # Create possibly missing directories
 mkdir -p config/gnu config/m4
 
@@ -73,3 +78,11 @@ echo "done."
 echo "Generating Makefile.in for each directory..."
 automake --add-missing --copy
 echo "done."
+
+# Generate subsystems
+echo ""
+echo ""
+echo "Fortran build system"
+echo "--------------------"
+echo ""
+cd fortran && ./autogen.sh
