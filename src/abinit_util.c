@@ -26,7 +26,6 @@
 #include <time.h>
 #include <math.h>
 
-#include "pspio_abinit.h"
 #include "abinit.h"
 #include "util.h"
 

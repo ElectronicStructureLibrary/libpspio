@@ -1,5 +1,5 @@
 /*
- Copyright (C) 2012 M. Oliveira, Y. Pouillon
+ Copyright (C) 2011-2012 M. Oliveira
  
  This program is free software; you can redistribute it and/or modify
  it under the terms of the GNU Lesser General Public License as published by
@@ -15,15 +15,15 @@
  along with this program; if not, write to the Free Software
  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  
- */
+*/
 
 /**
- * @file pspio_abinit.h
- * @brief header file for the Abinit routines accessible to the other parts of the library
+ * @file fhi.h
+ * @brief header file for the FHI routines accessible to the other parts of the library
  */
 
-#if !defined PSPIO_ABINIT_H
-#define PSPIO_ABINIT_H
+#if !defined PSPIO_FHI_H
+#define PSPIO_FHI_H
 
 #include <stdio.h>
 #include <assert.h>
@@ -36,22 +36,19 @@
  **********************************************************************/
 
 /**
- * Read the data contained in a Abinit-formatted file and store it in the
- * psp_data structure
+ * Read the data contained in a FHI file and store it in the psp_data structure
  * @param[in] fp a stream of the input file
  * @param[in,out] pspdata the data structure
- * @param[in] format: the Abinit format number
  * @return error code
  */
-int pspio_abinit_read(FILE *fp, pspio_pspdata_t *pspdata, const int format);
+int pspio_fhi_read(FILE * fp, pspio_pspdata_t *pspdata);
 
 /**
- * Write the data contained in the psp_data structure to a file using an Abinit format
+ * Write the data contained in the psp_data structure to a file using the FHI format
  * @param[in] fp a stream of the input file
  * @param[in] pspdata the data structure
- * @param[in] format: the Abinit format number
  * @return error code
  */
-int pspio_abinit_write(FILE *fp, const pspio_pspdata_t *pspdata, const int format);
+int pspio_fhi_write(FILE * fp, const pspio_pspdata_t *pspdata);
 
 #endif

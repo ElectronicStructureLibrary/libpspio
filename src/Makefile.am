@@ -29,13 +29,13 @@
 
 # C source - keep this in alphabetical order
 pio_core_srcs = \
+  abinit.c \
   abinit_util.c \
   abinit_xc.c \
+  fhi.c \
   interpolation.c \
   jb_spline.c \
-  pspio_abinit.c \
   pspio_error.c \
-  pspio_fhi.c \
   pspio_info.c \
   pspio_mesh.c \
   pspio_meshfunc.c \
@@ -44,8 +44,8 @@ pio_core_srcs = \
   pspio_pspdata.c \
   pspio_qn.c \
   pspio_state.c \
-  pspio_upf.c \
   pspio_xc.c \
+  upf.c \
   upf_read.c \
   upf_tag.c \
   upf_write.c \
@@ -56,10 +56,8 @@ pio_core_srcs = \
 # Exported C headers - keep this in alphabetical order
 pio_core_hdrs = \
   pspio.h \
-  pspio_abinit.h \
   pspio_common.h \
   pspio_error.h \
-  pspio_fhi.h \
   pspio_info.h \
   pspio_mesh.h \
   pspio_meshfunc.h \
@@ -68,7 +66,6 @@ pio_core_hdrs = \
   pspio_pspdata.h \
   pspio_qn.h \
   pspio_state.h \
-  pspio_upf.h \
   pspio_xc_funcs.h \
   pspio_xc.h
 
@@ -77,6 +74,7 @@ pio_core_hdrs = \
 pio_hidden_hdrs = \
   abinit.h \
   check_pspio.h \
+  fhi.h \
   interpolation.h \
   jb_spline.h \
   upf.h \

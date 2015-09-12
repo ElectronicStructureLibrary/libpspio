@@ -25,8 +25,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "pspio_abinit.h"
-#include "pspio_fhi.h"
+#include "fhi.h"
 #include "abinit.h"
 
 #if defined HAVE_CONFIG_H
@@ -60,7 +59,7 @@ int pspio_abinit_read(FILE *fp, pspio_pspdata_t *pspdata, const int format)
   case PSPIO_FMT_ABINIT_11:
   case PSPIO_FMT_ABINIT_17:
     ierr = PSPIO_ENOSUPPORT;
-    break;      
+    break;
   default:
     ierr = PSPIO_EVALUE;
   }

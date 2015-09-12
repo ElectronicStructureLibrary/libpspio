@@ -18,7 +18,7 @@
 */
 
 /** 
- * @file pspio_fhi.c
+ * @file fhi.c
  * @brief implementation to read and write in FHI files 
  */
 #include <string.h>
