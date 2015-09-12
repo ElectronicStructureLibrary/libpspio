@@ -32,6 +32,10 @@
 #include "pspio_mesh.h"
 #include "pspio_meshfunc.h"
 
+#if defined HAVE_CONFIG_H
+#include "config.h"
+#endif
+
 static pspio_mesh_t *m1 = NULL, *m2 = NULL;
 static pspio_meshfunc_t *mf11 = NULL, *mf12 = NULL, *mf2 = NULL;
 static double *f11, *f11p, *f11pp;
@@ -119,10 +123,8 @@ void meshfunc_compare_values(const pspio_mesh_t *mesh, const pspio_meshfunc_t *m
 {
   int i;
   double *ff, *ffp, *ffpp;
-  pspio_mesh_t *m;
-  
-  m = pspio_meshfunc_get_mesh(meshfunc);
-  ck_assert(pspio_mesh_cmp(m, mesh) == PSPIO_EQUAL);
+
+  ck_assert(pspio_mesh_cmp(pspio_meshfunc_get_mesh(meshfunc), mesh) == PSPIO_EQUAL);
   ff   = pspio_meshfunc_get_function(meshfunc);
   ffp  = pspio_meshfunc_get_deriv1(meshfunc);
   ffpp = pspio_meshfunc_get_deriv2(meshfunc);
@@ -133,7 +135,6 @@ void meshfunc_compare_values(const pspio_mesh_t *mesh, const pspio_meshfunc_t *m
   }
 }
 
-
 START_TEST(test_meshfunc_alloc)
 {
   ck_assert(pspio_meshfunc_alloc(&mf11, 3) == PSPIO_SUCCESS);
@@ -142,10 +143,10 @@ END_TEST
 
 START_TEST(test_meshfunc_init1)
 {
-  const double fp[] = {2.8981947526e-02, 9.2036104948e-02, 2.0287363268e-01, 3.9868599401e-01, 
-		       8.0213677058e-01, 1.2920270399e+00, 1.7269932400e+00, 1.9115033800e+00};
-  const double fpp[] = {0.0, 2.5221662969e+00, 1.9113348125e+00, 2.0049124140e+00, 
-			2.0295953518e+00, 1.8895268024e+00, 2.4601351993e+00, 0.0};
+  const double fp[] = {2.8981947526e-02, 9.2036104948e-02, 2.0287363268e-01, 3.9868599401e-01,
+                       8.0213677058e-01, 1.2920270399e+00, 1.7269932400e+00, 1.9115033800e+00};
+  const double fpp[] = {0.0, 2.5221662969e+00, 1.9113348125e+00, 2.0049124140e+00,
+                        2.0295953518e+00, 1.8895268024e+00, 2.4601351993e+00, 0.0};
 
   ck_assert(pspio_meshfunc_init(mf11, m1, f11, NULL, NULL) == PSPIO_SUCCESS);
   meshfunc_compare_values(m1, mf11, f11, fp, fpp, 1e-10);
@@ -154,8 +155,8 @@ END_TEST
 
 START_TEST(test_meshfunc_init2)
 {
-  const double fpp[] = {0.0, 2.5221662969e+00, 1.9113348125e+00, 2.0049124140e+00, 
-			2.0295953518e+00, 1.8895268024e+00, 2.4601351993e+00, 0.0};
+  const double fpp[] = {0.0, 2.5221662969e+00, 1.9113348125e+00, 2.0049124140e+00,
+                        2.0295953518e+00, 1.8895268024e+00, 2.4601351993e+00, 0.0};
 
   ck_assert(pspio_meshfunc_init(mf11, m1, f11, f11p, NULL) == PSPIO_SUCCESS);
   meshfunc_compare_values(m1, mf11, f11, f11p, fpp, 1e-10);
@@ -237,6 +238,68 @@ START_TEST(test_meshfunc_copy_nonnull_size)
 }
 END_TEST
 
+START_TEST(test_meshfunc_get_func)
+{
+  int i;
+  double *f;
+
+  pspio_meshfunc_init(mf11, m1, f11, f11p, f11pp);
+
+  f = pspio_meshfunc_get_function(mf11);
+  for (i=0; i<pspio_mesh_get_np(m1); i++) {
+    ck_assert(f[i] == f11[i]);
+  }
+}
+END_TEST
+
+START_TEST(test_meshfunc_get_deriv1)
+{
+  int i;
+  double *fp;
+
+  pspio_meshfunc_init(mf11, m1, f11, f11p, f11pp);
+
+  fp = pspio_meshfunc_get_deriv1(mf11);
+  for (i=0; i<pspio_mesh_get_np(m1); i++) {
+    ck_assert(fp[i] == f11p[i]);
+  }
+}
+END_TEST
+
+START_TEST(test_meshfunc_get_deriv2)
+{
+  int i;
+  double *fpp;
+
+  pspio_meshfunc_init(mf11, m1, f11, f11p, f11pp);
+
+  fpp = pspio_meshfunc_get_deriv2(mf11);
+  for (i=0; i<pspio_mesh_get_np(m1); i++) {
+    ck_assert(fpp[i] == f11pp[i]);
+  }
+}
+END_TEST
+
+START_TEST(test_meshfunc_get_interp_method)
+{
+  pspio_meshfunc_init(mf11, m1, f11, f11p, f11pp);
+
+#ifdef HAVE_GSL
+  ck_assert(pspio_meshfunc_get_interp_method(mf11) == PSPIO_INTERP_GSL_CSPLINE);
+#else
+  ck_assert(pspio_meshfunc_get_interp_method(mf11) == PSPIO_INTERP_JB_CSPLINE);
+#endif
+}
+END_TEST
+
+START_TEST(test_meshfunc_get_mesh)
+  {
+    pspio_meshfunc_init(mf11, m1, f11, f11p, f11pp);
+
+    ck_assert(pspio_mesh_cmp(pspio_meshfunc_get_mesh(mf11), m1) == PSPIO_EQUAL);
+  }
+END_TEST
+
 START_TEST(test_meshfunc_eval)
 {
   pspio_meshfunc_init(mf11, m1, f12, f12p, f12pp);
@@ -270,10 +333,11 @@ START_TEST(test_meshfunc_eval_deriv2)
 }
 END_TEST
 
+
 Suite * make_meshfunc_suite(void)
 {
   Suite *s;
-  TCase *tc_alloc, *tc_init, *tc_cmp, *tc_copy, *tc_eval;
+  TCase *tc_alloc, *tc_init, *tc_cmp, *tc_copy, *tc_get, *tc_eval;
 
   s = suite_create("Mesh function");
 
@@ -304,6 +368,15 @@ Suite * make_meshfunc_suite(void)
   tcase_add_test(tc_copy, test_meshfunc_copy_nonnull);
   tcase_add_test(tc_copy, test_meshfunc_copy_nonnull_size);
   suite_add_tcase(s, tc_copy);
+
+  tc_get = tcase_create("Getters");
+  tcase_add_checked_fixture(tc_get, meshfunc_setup, meshfunc_teardown);
+  tcase_add_test(tc_get, test_meshfunc_get_func);
+  tcase_add_test(tc_get, test_meshfunc_get_deriv1);
+  tcase_add_test(tc_get, test_meshfunc_get_deriv2);
+  tcase_add_test(tc_get, test_meshfunc_get_interp_method);
+  tcase_add_test(tc_get, test_meshfunc_get_mesh);
+  suite_add_tcase(s, tc_get);
 
   tc_eval = tcase_create("Evaluation");
   tcase_add_checked_fixture(tc_eval, meshfunc_setup, meshfunc_teardown);
