@@ -27,7 +27,7 @@ AC_DEFUN([AX_SEARCH_LIBPSPIO],[
   dnl Init
   tmp_libpspio_has_hdrs="unknown"
   tmp_libpspio_has_libs="unknown"
-  tmp_libpspio_version="unknown"
+  tmp_libpspio_has_version="unknown"
   pio_libpspio_ok="unknown"
   pio_libpspio_incs=""
   pio_libpspio_libs=""
@@ -37,7 +37,7 @@ AC_DEFUN([AX_SEARCH_LIBPSPIO],[
   fi
 
   dnl Display input parameters
-  AC_MSG_CHECKING([for Libpspio includes have been specified])
+  AC_MSG_CHECKING([whether Libpspio includes have been specified])
   if test "${pio_libpspio_incs}" = ""; then
     AC_MSG_RESULT([no])
   else
@@ -68,12 +68,12 @@ AC_DEFUN([AX_SEARCH_LIBPSPIO],[
   if test "${tmp_libpspio_has_hdrs}" = "yes"; then
     if test "${pio_libpspio_libs}" = ""; then
       AC_LANG_PUSH([C])
-      AC_SEARCH_LIBS([pspio_init],[pspio],
+      AC_SEARCH_LIBS([pspio_pspdata_alloc],[pspio],
         [tmp_libpspio_has_libs="yes"], [tmp_libpspio_has_libs="no"])
       AC_LANG_POP([C])
-      if test "${ac_cv_search_pspio_init}" != "no"; then
-        if test "${ac_cv_search_pspio_init}" != "none required"; then
-          pio_libpspio_libs="${ac_cv_search_pspio_init}"
+      if test "${ac_cv_search_pspio_pspdata_alloc}" != "no"; then
+        if test "${ac_cv_search_pspio_pspdata_alloc}" != "none required"; then
+          pio_libpspio_libs="${ac_cv_search_pspio_pspdata_alloc}"
         fi
       fi
     else
@@ -90,66 +90,74 @@ AC_DEFUN([AX_SEARCH_LIBPSPIO],[
 #include <pspio.h>
       ]],
       [[
-        struct pspio_t *p;
-        pspio_init(p, 0, 1);
-        return 0;
+        pspio_pspdata_t *p;
+        return pspio_pspdata_read(p, 0, "conftest.dat");
       ]])], [tmp_libpspio_has_libs="yes"], [tmp_libpspio_has_libs="no"])
     AC_MSG_RESULT([${tmp_libpspio_has_libs}])
     AC_LANG_POP([C])
   fi
 
-  dnl Check that we have the correct Libpspio version
-  if test "${tmp_libpspio_has_libs}" = "yes"; then
-    AC_MSG_CHECKING([whether this is Libpspio version $1.$2])
-    LDFLAGS="${CC_LDFLAGS}"
-    AC_LANG_PUSH([C])
-    AC_RUN_IFELSE([AC_LANG_PROGRAM(
-      [[
-#include "xc.h"
-      ]],
-      [[
-        int major = -1, minor = -1;
-        xc_version(&major, &minor);
-        if ( (major != $1) || (minor < $2) || (minor > $3) ) {
-          return 1; }
-      ]])], [tmp_libpspio_version="yes"], [tmp_libpspio_version="no"])
-    AC_LANG_POP([C])
-    AC_MSG_RESULT([${tmp_libpspio_version}])
-  fi
-
-  dnl Take decision
-  if test "${tmp_libpspio_has_hdrs}" = "yes" -a \
-          "${tmp_libpspio_has_libs}" = "yes" -a \
-          "${tmp_libpspio_has_hdrs}" = "yes"; then
-    pio_libpspio_ok="yes"
-  else
-    pio_libpspio_ok="no"
-  fi
-
-  dnl Look for alternate locations
-  if test "${pio_libpspio_ok}" != "yes" -a \
-          "${pio_libpspio_incs}" = "" -a \
-          "${pio_libpspio_libs}" = ""; then
+  dnl Look for alternate locations if needed
+  if test \( "${tmp_libpspio_has_hdrs}" != "yes" -o \
+             "${tmp_libpspio_has_libs}" != "yes" \) -a \
+          \( "${pio_libpspio_incs}" = "" -a \
+             "${pio_libpspio_libs}" = "" \); then
     for tmp_incdir in "${ac_top_srcdir}/src" "${ac_top_srcdir}/../src"; do
+      AC_MSG_CHECKING([for pspio.h in ${tmp_incdir}])
       if test -s "${tmp_incdir}/pspio.h"; then
         pio_libpspio_incs="-I${tmp_incdir}"
+        tmp_libpspio_has_hdrs="yes"
+        AC_MSG_RESULT([${tmp_libpspio_has_hdrs}])
         break
       fi
+      AC_MSG_RESULT([no])
     done
     for tmp_libdir in "${ac_top_builddir}/src/.libs" \
                       "${ac_top_builddir}/../src/.libs"; do
+      AC_MSG_CHECKING([for libpspio.la in ${tmp_libdir}])
       if test -s "${tmp_libdir}/libpspio.la"; then
         pio_libpspio_libs="${tmp_libdir}/libpspio.la"
+        tmp_libpspio_has_libs="yes"
+        AC_MSG_RESULT([${tmp_libpspio_has_libs}])
         break
       fi
+      AC_MSG_RESULT([no])
     done
 
     if test "${pio_libpspio_incs}" != "" -a \
             "${pio_libpspio_libs}" != ""; then
-      pio_libpspio_ok="yes"
       FCFLAGS="${FCFLAGS} ${pio_libpspio_incs}"
       LIBS="${pio_libpspio_incs} ${LIBS}"
     fi
+  fi
+
+  dnl Check that we have the correct Libpspio version
+  if test "${tmp_libpspio_has_hdrs}" = "yes" -a \
+          "${tmp_libpspio_has_libs}" = "yes"; then
+    AC_MSG_CHECKING([whether Libpspio version is between $1.$2 and $1.$3])
+    LDFLAGS="${CC_LDFLAGS}"
+    AC_LANG_PUSH([C])
+    AC_RUN_IFELSE([AC_LANG_PROGRAM(
+      [[
+#include "pspio.h"
+      ]],
+      [[
+        int major = -1, minor = -1, micro = -1;
+        pspio_info_version(&major, &minor, &micro);
+        if ( (major != $1) || (minor < $2) || (minor > $3) ) {
+          return 1; }
+      ]])], [tmp_libpspio_has_version="yes"], [tmp_libpspio_has_version="no"])
+    AC_LANG_POP([C])
+    AC_MSG_RESULT([${tmp_libpspio_has_version}])
+  fi
+
+  dnl Take final decision
+  if test "${tmp_libpspio_has_hdrs}" = "yes" -a \
+          "${tmp_libpspio_has_libs}" = "yes" -a \
+          "${tmp_libpspio_has_version}" = "yes"; then
+    pio_libpspio_ok="yes"
+  else
+    pio_libpspio_ok="no"
   fi
 
   dnl Restore build environment

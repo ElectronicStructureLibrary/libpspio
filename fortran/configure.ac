@@ -199,7 +199,7 @@ AM_CONDITIONAL([F90_MOD_UPPERCASE],
 # Look for Libpspio
 #
 
-AX_SEARCH_LIBPSPIO
+AX_SEARCH_LIBPSPIO(0,0,0)
 
 if test "${pio_libpspio_ok}" != "yes"; then
   AC_MSG_ERROR([Libpspio not found])
