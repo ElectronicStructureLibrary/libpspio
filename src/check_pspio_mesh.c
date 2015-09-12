@@ -258,10 +258,66 @@ START_TEST(test_mesh_copy_nonnull_size)
 }
 END_TEST
 
+START_TEST(test_mesh_get_np)
+{
+  pspio_mesh_init_from_parameters(m1, PSPIO_MESH_LOG1, 1.0, 2.0);
+
+  ck_assert(pspio_mesh_get_np(m1) == 8);
+}
+END_TEST
+
+START_TEST(test_mesh_get_a)
+{
+  pspio_mesh_init_from_parameters(m1, PSPIO_MESH_LOG1, 1.0, 2.0);
+
+  ck_assert(pspio_mesh_get_a(m1) == 1.0);
+}
+END_TEST
+
+START_TEST(test_mesh_get_b)
+{
+  pspio_mesh_init_from_parameters(m1, PSPIO_MESH_LOG1, 1.0, 2.0);
+
+  ck_assert(pspio_mesh_get_b(m1) == 2.0);
+}
+END_TEST
+
+START_TEST(test_mesh_get_r)
+{
+  int i;
+  double r[8] = {0.0, 0.05, 0.10, 0.20, 0.40, 0.65, 0.85, 1.00};
+  double *r_get;
+
+  pspio_mesh_init_from_points(m1, r, NULL);
+
+  r_get = pspio_mesh_get_r(m1);
+  for (i=0; i<pspio_mesh_get_np(m1); i++) {
+    ck_assert(r_get[i] == r[i]);
+  }
+}
+END_TEST
+
+START_TEST(test_mesh_get_rab)
+{
+  int i;
+  double r[8] = {0.0, 0.05, 0.10, 0.20, 0.40, 0.65, 0.85, 1.00};
+  double rab[8] = {0.05, 0.05, 0.20, 0.20, 0.20, 0.20, 0.05, 0.05};
+  double *rab_get;
+
+  pspio_mesh_init_from_points(m1, r, rab);
+
+  rab_get = pspio_mesh_get_rab(m1);
+  for (i=0; i<pspio_mesh_get_np(m1); i++) {
+    ck_assert(rab_get[i] == rab[i]);
+  }
+}
+END_TEST
+
+
 Suite * make_mesh_suite(void)
 {
   Suite *s;
-  TCase *tc_alloc, *tc_init, *tc_cmp, *tc_copy;
+  TCase *tc_alloc, *tc_init, *tc_cmp, *tc_copy, *tc_get;
 
   s = suite_create("Mesh");
 
@@ -297,6 +353,15 @@ Suite * make_mesh_suite(void)
   tcase_add_test(tc_copy, test_mesh_copy_nonnull);
   tcase_add_test(tc_copy, test_mesh_copy_nonnull_size);
   suite_add_tcase(s, tc_copy);
+
+  tc_get = tcase_create("Getters");
+  tcase_add_checked_fixture(tc_get, mesh_setup, mesh_teardown);
+  tcase_add_test(tc_get, test_mesh_get_np);
+  tcase_add_test(tc_get, test_mesh_get_a);
+  tcase_add_test(tc_get, test_mesh_get_b);
+  tcase_add_test(tc_get, test_mesh_get_r);
+  tcase_add_test(tc_get, test_mesh_get_rab);
+  suite_add_tcase(s, tc_get);
 
   return s;
 }
