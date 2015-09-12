@@ -133,77 +133,77 @@ START_TEST(test_pspdata_alloc)
 END_TEST
 
 
-START_TEST(test_pspdata_format_guessed)
+START_TEST(test_pspdata_setget_format_guessed)
 {
   /* No set function, so we just check that the default value is correct */
   ck_assert(pspio_pspdata_get_format_guessed(pspdata) == PSPIO_FMT_UNKNOWN);
 }
 END_TEST
 
-START_TEST(test_pspdata_symbol)
+START_TEST(test_pspdata_setget_symbol)
 {
   ck_assert(pspio_pspdata_set_symbol(pspdata, "Al") == PSPIO_SUCCESS);
   ck_assert_str_eq(pspio_pspdata_get_symbol(pspdata), "Al");
 }
 END_TEST
 
-START_TEST(test_pspdata_z)
+START_TEST(test_pspdata_setget_z)
 {
   ck_assert(pspio_pspdata_set_z(pspdata, 2.0) == PSPIO_SUCCESS);
   ck_assert(pspio_pspdata_get_z(pspdata) == 2.0);
 }
 END_TEST
 
-START_TEST(test_pspdata_zvalence)
+START_TEST(test_pspdata_setget_zvalence)
 {
   ck_assert(pspio_pspdata_set_zvalence(pspdata, 3.0) == PSPIO_SUCCESS);
   ck_assert(pspio_pspdata_get_zvalence(pspdata) == 3.0);
 }
 END_TEST
 
-START_TEST(test_pspdata_nelvalence)
+START_TEST(test_pspdata_setget_nelvalence)
 {
   ck_assert(pspio_pspdata_set_nelvalence(pspdata, 4.0) == PSPIO_SUCCESS);
   ck_assert(pspio_pspdata_get_nelvalence(pspdata) == 4.0);
 }
 END_TEST
 
-START_TEST(test_pspdata_l_max)
+START_TEST(test_pspdata_setget_l_max)
 {
   ck_assert(pspio_pspdata_set_l_max(pspdata, 2) == PSPIO_SUCCESS);
   ck_assert(pspio_pspdata_get_l_max(pspdata) == 2);
 }
 END_TEST
 
-START_TEST(test_pspdata_wave_eq)
+START_TEST(test_pspdata_setget_wave_eq)
 {
   ck_assert(pspio_pspdata_set_wave_eq(pspdata, PSPIO_EQN_SCHRODINGER) == PSPIO_SUCCESS);
   ck_assert(pspio_pspdata_get_wave_eq(pspdata) == PSPIO_EQN_SCHRODINGER);
 }
 END_TEST
 
-START_TEST(test_pspdata_total_energy)
+START_TEST(test_pspdata_setget_total_energy)
 {
   ck_assert(pspio_pspdata_set_total_energy(pspdata, 4.5) == PSPIO_SUCCESS);
   ck_assert(pspio_pspdata_get_total_energy(pspdata) == 4.5);
 }
 END_TEST
 
-START_TEST(test_pspdata_mesh)
+START_TEST(test_pspdata_setget_mesh)
 {
   ck_assert(pspio_pspdata_set_mesh(pspdata, mesh) == PSPIO_SUCCESS);
   ck_assert(pspio_mesh_cmp(pspio_pspdata_get_mesh(pspdata), mesh) == PSPIO_EQUAL);
 }
 END_TEST
 
-START_TEST(test_pspdata_n_states)
+START_TEST(test_pspdata_setget_n_states)
 {
   ck_assert(pspio_pspdata_set_n_states(pspdata, 3) == PSPIO_SUCCESS);
   ck_assert(pspio_pspdata_get_n_states(pspdata) == 3);
 }
 END_TEST
 
-START_TEST(test_pspdata_state)
+START_TEST(test_pspdata_setget_state)
 {
   ck_assert(pspio_pspdata_set_n_states(pspdata, 1) == PSPIO_SUCCESS);
   ck_assert(pspio_pspdata_set_state(pspdata, 0, state) == PSPIO_SUCCESS);
@@ -211,21 +211,21 @@ START_TEST(test_pspdata_state)
 }
 END_TEST
 
-START_TEST(test_pspdata_scheme)
+START_TEST(test_pspdata_setget_scheme)
 {
   ck_assert(pspio_pspdata_set_scheme(pspdata, PSPIO_SCM_MRPP) == PSPIO_SUCCESS);
   ck_assert(pspio_pspdata_get_scheme(pspdata) == PSPIO_SCM_MRPP);
 }
 END_TEST
 
-START_TEST(test_pspdata_n_potentials)
+START_TEST(test_pspdata_setget_n_potentials)
   {
     ck_assert(pspio_pspdata_set_n_potentials(pspdata, 2) == PSPIO_SUCCESS);
     ck_assert(pspio_pspdata_get_n_potentials(pspdata) == 2);
   }
 END_TEST
 
-START_TEST(test_pspdata_potential)
+START_TEST(test_pspdata_setget_potential)
 {
   ck_assert(pspio_pspdata_set_n_potentials(pspdata, 1) == PSPIO_SUCCESS);
   ck_assert(pspio_pspdata_set_potential(pspdata, 0, potential) == PSPIO_SUCCESS);
@@ -233,14 +233,14 @@ START_TEST(test_pspdata_potential)
 }
 END_TEST
 
-START_TEST(test_pspdata_n_projectors)
+START_TEST(test_pspdata_setget_n_projectors)
 {
   ck_assert(pspio_pspdata_set_n_projectors(pspdata, 4) == PSPIO_SUCCESS);
   ck_assert(pspio_pspdata_get_n_projectors(pspdata) == 4);
 }
 END_TEST
 
-START_TEST(test_pspdata_projector)
+START_TEST(test_pspdata_setget_projector)
 {
   ck_assert(pspio_pspdata_set_n_projectors(pspdata, 1) == PSPIO_SUCCESS);
   ck_assert(pspio_pspdata_set_projector(pspdata, 0, projector) == PSPIO_SUCCESS);
@@ -248,35 +248,35 @@ START_TEST(test_pspdata_projector)
 }
 END_TEST
 
-START_TEST(test_pspdata_projectors_l_max)
+START_TEST(test_pspdata_setget_projectors_l_max)
 {
   ck_assert(pspio_pspdata_set_projectors_l_max(pspdata, 1) == PSPIO_SUCCESS);
   ck_assert(pspio_pspdata_get_projectors_l_max(pspdata) == 1);
 }
 END_TEST
 
-START_TEST(test_pspdata_l_local)
+START_TEST(test_pspdata_setget_l_local)
 {
   ck_assert(pspio_pspdata_set_l_local(pspdata, -1) == PSPIO_SUCCESS);
   ck_assert(pspio_pspdata_get_l_local(pspdata) == -1);
 }
 END_TEST
 
-START_TEST(test_pspdata_vlocal)
+START_TEST(test_pspdata_setget_vlocal)
 {
   ck_assert(pspio_pspdata_set_vlocal(pspdata, potential) == PSPIO_SUCCESS);
   ck_assert(pspio_potential_cmp(pspio_pspdata_get_vlocal(pspdata), potential) == PSPIO_EQUAL);
 }
 END_TEST
 
-START_TEST(test_pspdata_xc)
+START_TEST(test_pspdata_setget_xc)
 {
   ck_assert(pspio_pspdata_set_xc(pspdata, xc) == PSPIO_SUCCESS);
   ck_assert(pspio_xc_cmp(pspio_pspdata_get_xc(pspdata), xc) == PSPIO_EQUAL);
 }
 END_TEST
 
-START_TEST(test_pspdata_rho_valence)
+START_TEST(test_pspdata_setget_rho_valence)
 {
   ck_assert(pspio_pspdata_set_rho_valence(pspdata, rho_valence) == PSPIO_SUCCESS);
   ck_assert(pspio_meshfunc_cmp(pspio_pspdata_get_rho_valence(pspdata),rho_valence) == PSPIO_EQUAL);
@@ -339,7 +339,7 @@ END_TEST
 Suite * make_pspdata_suite(void)
 {
   Suite *s;
-  TCase *tc_alloc, *tc_getset, *tc_io;
+  TCase *tc_alloc, *tc_setget, *tc_io;
 
   s = suite_create("Pspdata");
 
@@ -348,30 +348,30 @@ Suite * make_pspdata_suite(void)
   tcase_add_test(tc_alloc, test_pspdata_alloc);
   suite_add_tcase(s, tc_alloc);
 
-  tc_getset = tcase_create("Setters and getters");
-  tcase_add_checked_fixture(tc_getset, pspdata_full_setup, pspdata_full_teardown);
-  tcase_add_test(tc_getset, test_pspdata_format_guessed);
-  tcase_add_test(tc_getset, test_pspdata_symbol);
-  tcase_add_test(tc_getset, test_pspdata_z);
-  tcase_add_test(tc_getset, test_pspdata_zvalence);
-  tcase_add_test(tc_getset, test_pspdata_nelvalence);
-  tcase_add_test(tc_getset, test_pspdata_l_max);
-  tcase_add_test(tc_getset, test_pspdata_wave_eq);
-  tcase_add_test(tc_getset, test_pspdata_total_energy);
-  tcase_add_test(tc_getset, test_pspdata_mesh);
-  tcase_add_test(tc_getset, test_pspdata_n_states);
-  tcase_add_test(tc_getset, test_pspdata_state);
-  tcase_add_test(tc_getset, test_pspdata_scheme);
-  tcase_add_test(tc_getset, test_pspdata_n_potentials);
-  tcase_add_test(tc_getset, test_pspdata_potential);
-  tcase_add_test(tc_getset, test_pspdata_n_projectors);
-  tcase_add_test(tc_getset, test_pspdata_projector);
-  tcase_add_test(tc_getset, test_pspdata_projectors_l_max);
-  tcase_add_test(tc_getset, test_pspdata_l_local);
-  tcase_add_test(tc_getset, test_pspdata_vlocal);
-  tcase_add_test(tc_getset, test_pspdata_xc);
-  tcase_add_test(tc_getset, test_pspdata_rho_valence);
-  suite_add_tcase(s, tc_getset);
+  tc_setget = tcase_create("Setters and getters");
+  tcase_add_checked_fixture(tc_setget, pspdata_full_setup, pspdata_full_teardown);
+  tcase_add_test(tc_setget, test_pspdata_setget_format_guessed);
+  tcase_add_test(tc_setget, test_pspdata_setget_symbol);
+  tcase_add_test(tc_setget, test_pspdata_setget_z);
+  tcase_add_test(tc_setget, test_pspdata_setget_zvalence);
+  tcase_add_test(tc_setget, test_pspdata_setget_nelvalence);
+  tcase_add_test(tc_setget, test_pspdata_setget_l_max);
+  tcase_add_test(tc_setget, test_pspdata_setget_wave_eq);
+  tcase_add_test(tc_setget, test_pspdata_setget_total_energy);
+  tcase_add_test(tc_setget, test_pspdata_setget_mesh);
+  tcase_add_test(tc_setget, test_pspdata_setget_n_states);
+  tcase_add_test(tc_setget, test_pspdata_setget_state);
+  tcase_add_test(tc_setget, test_pspdata_setget_scheme);
+  tcase_add_test(tc_setget, test_pspdata_setget_n_potentials);
+  tcase_add_test(tc_setget, test_pspdata_setget_potential);
+  tcase_add_test(tc_setget, test_pspdata_setget_n_projectors);
+  tcase_add_test(tc_setget, test_pspdata_setget_projector);
+  tcase_add_test(tc_setget, test_pspdata_setget_projectors_l_max);
+  tcase_add_test(tc_setget, test_pspdata_setget_l_local);
+  tcase_add_test(tc_setget, test_pspdata_setget_vlocal);
+  tcase_add_test(tc_setget, test_pspdata_setget_xc);
+  tcase_add_test(tc_setget, test_pspdata_setget_rho_valence);
+  suite_add_tcase(s, tc_setget);
 
   tc_io = tcase_create("File parsing and writing");
   tcase_add_checked_fixture(tc_io, pspdata_minimal_setup, pspdata_minimal_teardown);

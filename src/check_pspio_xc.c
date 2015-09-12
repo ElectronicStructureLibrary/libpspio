@@ -121,21 +121,21 @@ START_TEST(test_xc_alloc)
 }
 END_TEST
 
-START_TEST(test_xc_exchange)
+START_TEST(test_xc_setget_exchange)
 {
   ck_assert(pspio_xc_set_exchange(xc11, xid11) == PSPIO_SUCCESS);
   ck_assert(pspio_xc_get_exchange(xc11) == xid11);
 }
 END_TEST
 
-START_TEST(test_xc_correlation)
+START_TEST(test_xc_setget_correlation)
 {
   ck_assert(pspio_xc_set_correlation(xc11, cid11) == PSPIO_SUCCESS);
   ck_assert(pspio_xc_get_correlation(xc11) == cid11);
 }
 END_TEST
 
-START_TEST(test_xc_nlcc_scheme)
+START_TEST(test_xc_setget_nlcc_scheme)
 {
   ck_assert(pspio_xc_set_nlcc_scheme(xc11, -1000) == PSPIO_EVALUE);
   ck_assert(pspio_xc_set_nlcc_scheme(xc11, nlcc11) == PSPIO_SUCCESS);
@@ -143,7 +143,7 @@ START_TEST(test_xc_nlcc_scheme)
 }
 END_TEST
 
-START_TEST(test_xc_nlcc_density)
+START_TEST(test_xc_setget_nlcc_density)
 {
   int i;
   double *cd;
@@ -269,7 +269,7 @@ END_TEST
 Suite * make_xc_suite(void)
 {
   Suite *s;
-  TCase *tc_alloc, *tc_getset, *tc_init, *tc_cmp, *tc_copy, *tc_eval;
+  TCase *tc_alloc, *tc_setget, *tc_init, *tc_cmp, *tc_copy, *tc_eval;
 
   s = suite_create("XC");
 
@@ -278,13 +278,13 @@ Suite * make_xc_suite(void)
   tcase_add_test(tc_alloc, test_xc_alloc);
   suite_add_tcase(s, tc_alloc);
 
-  tc_getset = tcase_create("Setters and getters");
-  tcase_add_checked_fixture(tc_getset, xc_setup, xc_teardown);
-  tcase_add_test(tc_getset, test_xc_exchange);
-  tcase_add_test(tc_getset, test_xc_correlation);
-  tcase_add_test(tc_getset, test_xc_nlcc_scheme);
-  tcase_add_test(tc_getset, test_xc_nlcc_density);
-  suite_add_tcase(s, tc_getset);
+  tc_setget = tcase_create("Setters and getters");
+  tcase_add_checked_fixture(tc_setget, xc_setup, xc_teardown);
+  tcase_add_test(tc_setget, test_xc_setget_exchange);
+  tcase_add_test(tc_setget, test_xc_setget_correlation);
+  tcase_add_test(tc_setget, test_xc_setget_nlcc_scheme);
+  tcase_add_test(tc_setget, test_xc_setget_nlcc_density);
+  suite_add_tcase(s, tc_setget);
 
   tc_init = tcase_create("Initialization");
   tcase_add_checked_fixture(tc_init, xc_setup, xc_teardown);
