@@ -133,12 +133,12 @@ void pspio_mesh_free(pspio_mesh_t *mesh);
  * Returns the number of points in the mesh
  * 
  * @param[in] mesh: mesh structure
- * @return the number of points
+ * @return np: the number of points
  */
 int pspio_mesh_get_np(const pspio_mesh_t *mesh);
 
 /**
- * Returns the a parameter of the mesh
+ * Returns the a and b parameters of the mesh
  * 
  * @param[in] mesh: mesh structure
  * @return the a parameter (depends on mesh type)
@@ -149,70 +149,26 @@ double pspio_mesh_get_a(const pspio_mesh_t *mesh);
  * Returns the a and b parameters of the mesh
  * 
  * @param[in] mesh: mesh structure
+ * @param[out] a: the a parameter (depends on mesh type)
  * @return the b parameter (depends on mesh type)
  */
 double pspio_mesh_get_b(const pspio_mesh_t *mesh);
 
 /**
- * Returns a copy of the mesh points
+ * Returns a pointer to the points of the mesh
  * 
  * @param[in] mesh: mesh structure
- * @return pointer to a copy of the array of points
+ * @return pointer to array of points
  */
 double *pspio_mesh_get_r(const pspio_mesh_t *mesh);
 
 /**
- * Returns a copy of the mesh di/dr
- * 
- * @param[in] mesh: mesh structure
- * @return pointer to a copy of the array of di/dr points
- */
-double *pspio_mesh_get_rab(const pspio_mesh_t *mesh);
-
-
-/**********************************************************************
- * Pointers                                                           *
- **********************************************************************/
-
-/**
- * Returns a pointer to the number of points in the mesh
- *
- * @param[in] mesh: mesh structure
- * @return pointer to a copy of the number of points
- */
-const int *pspio_mesh_ptr_np(const pspio_mesh_t *mesh);
-
-/**
- * Returns a pointer to the a parameter of the mesh
- *
- * @param[in] mesh: mesh structure
- * @return pointer to the a parameter (depends on mesh type)
- */
-const double *pspio_mesh_ptr_a(const pspio_mesh_t *mesh);
-
-/**
- * Returns a pointer to the b parameter of the mesh
- *
- * @param[in] mesh: mesh structure
- * @return pointer to the b parameter (depends on mesh type)
- */
-const double *pspio_mesh_ptr_b(const pspio_mesh_t *mesh);
-
-/**
- * Returns a pointer to the points of the mesh
- *
- * @param[in] mesh: mesh structure
- * @return pointer to array of points
- */
-const double *pspio_mesh_ptr_r(const pspio_mesh_t *mesh);
-
-/**
  * Returns a pointer to the di/dr of the mesh
- *
+ * 
  * @param[in] mesh: mesh structure
  * @return pointer to array of di/dr points
  */
-const double *pspio_mesh_ptr_rab(const pspio_mesh_t *mesh);
+double *pspio_mesh_get_rab(const pspio_mesh_t *mesh);
 
 
 /**********************************************************************
