@@ -58,7 +58,7 @@ typedef struct{
   /* Objects to be used with jb_spline */
   jb_spline_t *jb_spl;       /**< JB spline structure */
 
-} interpolation_t;
+} pspio_interp_t;
 
 
 /**********************************************************************
@@ -74,7 +74,7 @@ typedef struct{
  * @return error code
  * @note np should be larger than 1.
  */
-int interpolation_alloc(interpolation_t **interp, const int method, const int np);
+int pspio_interp_alloc(pspio_interp_t **interp, const int method, const int np);
 
 /**
  * Duplicates an interpolation structure
@@ -83,11 +83,11 @@ int interpolation_alloc(interpolation_t **interp, const int method, const int np
  * @param[in] src: source interpolation structure pointer
  * @return error code
  * @note The src pointer has to be allocated first with the
- *       interpolation_alloc  method.
+ *       pspio_interp_alloc  method.
  * @note The dst pointer might or might not be allocated. If it is not, then it
  *       is allocate here.
  */
-int interpolation_copy(interpolation_t **dst, const interpolation_t *src);
+int pspio_interp_copy(pspio_interp_t **dst, const pspio_interp_t *src);
 
 /**
  * Initializes the interpolation object.
@@ -96,7 +96,7 @@ int interpolation_copy(interpolation_t **dst, const interpolation_t *src);
  * @param[in] f: values of the function on the mesh.
  * @return error code
  */
-int interpolation_init(interpolation_t *interp, const pspio_mesh_t *mesh, const double *f);
+int pspio_interp_init(pspio_interp_t *interp, const pspio_mesh_t *mesh, const double *f);
 
 /**
  * Frees all memory associated with the interpolation structure
@@ -105,7 +105,7 @@ int interpolation_init(interpolation_t *interp, const pspio_mesh_t *mesh, const 
  * @note This function can be safelly called even if some or all of the interp
  *       compoments have not been allocated.
  */
-void interpolation_free(interpolation_t *interp);
+void pspio_interp_free(pspio_interp_t *interp);
 
 
 /**********************************************************************
@@ -119,7 +119,7 @@ void interpolation_free(interpolation_t *interp);
  * @param[in] r:  point were we want to evaluate the function
  * @return value of the function
  */
-double interpolation_eval(const interpolation_t *interp, const double r);
+double pspio_interp_eval(const pspio_interp_t *interp, const double r);
 
 /**
  * Evaluates the derivative of the interpolated function at arbitrary points
@@ -128,7 +128,7 @@ double interpolation_eval(const interpolation_t *interp, const double r);
  * @param[in] r: point were we want to evaluate the function
  * @return value of the derivative
  */
-double interpolation_eval_deriv(const interpolation_t *interp, const double r);
+double pspio_interp_eval_deriv(const pspio_interp_t *interp, const double r);
 
 /**
  * Returns the value of the second derivative of a function at arbitrary points
@@ -137,6 +137,6 @@ double interpolation_eval_deriv(const interpolation_t *interp, const double r);
  * @param[in] r: point were we want to evaluate the function
  * @return value of the second derivative
  */
-double interpolation_eval_deriv2(const interpolation_t *interp, const double r);
+double pspio_interp_eval_deriv2(const pspio_interp_t *interp, const double r);
 
 #endif
