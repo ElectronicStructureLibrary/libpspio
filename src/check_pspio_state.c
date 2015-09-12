@@ -46,7 +46,7 @@ static double *wf11, *wf12, *wf2;
 void state_setup(void)
 {
   int i;
-  double *r;
+  const double *r;
   const double a = 1.0;
   const double b = 2.0;
 
@@ -120,7 +120,7 @@ void state_compare_values(const pspio_state_t *state, const double eigenval, con
 			  const double rc, const pspio_mesh_t *mesh, const double *wf, const char *label, const double tol)
 {
   int i;
-  double *wf2;
+  const double *wf2;
 
   ck_assert( fabs(eigenval - pspio_state_get_ev(state)) < tol );
   ck_assert( pspio_qn_cmp(pspio_state_get_qn(state), qn) == PSPIO_EQUAL );

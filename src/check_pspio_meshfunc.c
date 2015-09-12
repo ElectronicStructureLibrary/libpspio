@@ -45,7 +45,7 @@ static double *f2,  *f2p,  *f2pp;
 void meshfunc_setup(void)
 {
   int i;
-  double *r2;
+  const double *r2;
   const double r1[] = {0.0, 0.05, 0.10, 0.20, 0.40, 0.65, 0.85, 1.00};
   const double r1ab[] = {0.05, 0.05, 0.20, 0.20, 0.20, 0.20, 0.05, 0.05};
   const double a = 1.0;
@@ -122,7 +122,7 @@ void meshfunc_teardown(void)
 void meshfunc_compare_values(const pspio_mesh_t *mesh, const pspio_meshfunc_t *meshfunc, const double *f, const double *fp, const double *fpp, const double tol)
 {
   int i;
-  double *ff, *ffp, *ffpp;
+  const double *ff, *ffp, *ffpp;
 
   ck_assert(pspio_mesh_cmp(pspio_meshfunc_get_mesh(meshfunc), mesh) == PSPIO_EQUAL);
   ff   = pspio_meshfunc_get_function(meshfunc);
@@ -241,7 +241,7 @@ END_TEST
 START_TEST(test_meshfunc_get_func)
 {
   int i;
-  double *f;
+  const double *f;
 
   pspio_meshfunc_init(mf11, m1, f11, f11p, f11pp);
 
@@ -255,7 +255,7 @@ END_TEST
 START_TEST(test_meshfunc_get_deriv1)
 {
   int i;
-  double *fp;
+  const double *fp;
 
   pspio_meshfunc_init(mf11, m1, f11, f11p, f11pp);
 
@@ -269,7 +269,7 @@ END_TEST
 START_TEST(test_meshfunc_get_deriv2)
 {
   int i;
-  double *fpp;
+  const double *fpp;
 
   pspio_meshfunc_init(mf11, m1, f11, f11p, f11pp);
 

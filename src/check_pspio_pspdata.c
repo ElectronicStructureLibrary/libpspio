@@ -54,7 +54,8 @@ void pspdata_full_setup(void)
   int i;
   const double a = 1.0;
   const double b = 2.0;
-  double *func = NULL, *r = NULL;
+  double *func = NULL;
+  const double *r;
 
   pspdata_minimal_setup();
 

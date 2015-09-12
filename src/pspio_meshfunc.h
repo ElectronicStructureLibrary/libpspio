@@ -112,28 +112,28 @@ void pspio_meshfunc_free(pspio_meshfunc_t *func);
  **********************************************************************/
 
 /**
- * Returns the function.
+ * Returns a pointer to the function.
  * 
  * @param[in] func: function structure
  * @return pointer to the function
  */
-double *pspio_meshfunc_get_function(const pspio_meshfunc_t *func);
+const double *pspio_meshfunc_get_function(const pspio_meshfunc_t *func);
 
 /**
- * Returns the first derivative of the function.
+ * Returns a pointer to the first derivative of the function.
  * 
  * @param[in] func: function structure
  * @return pointer to the first derivative
  */
-double *pspio_meshfunc_get_deriv1(const pspio_meshfunc_t *func);
+const double *pspio_meshfunc_get_deriv1(const pspio_meshfunc_t *func);
 
 /**
- * Returns the second derivative of the function.
+ * Returns a pointer to the second derivative of the function.
  * 
  * @param[in] func: function structure
  * @return pointer to the second derivative
  */
-double *pspio_meshfunc_get_deriv2(const pspio_meshfunc_t *func);
+const double *pspio_meshfunc_get_deriv2(const pspio_meshfunc_t *func);
 
 /**
  * Returns the interpolation method.
@@ -144,12 +144,12 @@ double *pspio_meshfunc_get_deriv2(const pspio_meshfunc_t *func);
 int pspio_meshfunc_get_interp_method(const pspio_meshfunc_t *func);
 
 /**
- * Returns the mesh.
+ * Returns a pointer to the mesh.
  * 
  * @param[in] func: function structure
  * @return pointer to the mesh
  */
-pspio_mesh_t *pspio_meshfunc_get_mesh(const pspio_meshfunc_t *func);
+const pspio_mesh_t *pspio_meshfunc_get_mesh(const pspio_meshfunc_t *func);
 
 
 /**********************************************************************

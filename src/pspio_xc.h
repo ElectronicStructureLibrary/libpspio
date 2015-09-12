@@ -170,7 +170,7 @@ int pspio_xc_get_nlcc_scheme(const pspio_xc_t *xc);
  * @param[in] xc: xc structure
  * @param[out] *cd_func: NLCC core density function defined on the mesh
  */
-pspio_meshfunc_t *pspio_xc_get_nlcc_density(const pspio_xc_t *xc);
+const pspio_meshfunc_t *pspio_xc_get_nlcc_density(const pspio_xc_t *xc);
 
 
 /**********************************************************************

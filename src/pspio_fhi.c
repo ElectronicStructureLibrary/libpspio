@@ -214,7 +214,7 @@ int pspio_fhi_write(FILE *fp, const pspio_pspdata_t *pspdata)
 
   /* Write non-linear core corrections */
   if (pspio_xc_has_nlcc(pspdata->xc)) {
-    pspio_meshfunc_t *nlcc_dens = NULL;
+    const pspio_meshfunc_t *nlcc_dens = NULL;
     double cd, cdp, cdpp;
 
     nlcc_dens = pspio_xc_get_nlcc_density(pspdata->xc);

@@ -128,7 +128,7 @@ double pspio_projector_get_energy(const pspio_projector_t *projector)
   return projector->energy;
 }
 
-pspio_qn_t *pspio_projector_get_qn(const pspio_projector_t *projector)
+const pspio_qn_t *pspio_projector_get_qn(const pspio_projector_t *projector)
 {
   assert(projector != NULL);
 

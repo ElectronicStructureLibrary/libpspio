@@ -119,9 +119,9 @@ void pspio_state_free(pspio_state_t *state);
 /**
  * Returns the state label
  * @param[in] state: state structure
- * @param[out] label
+ * @return pointer to label
  */
-char *pspio_state_get_label(const pspio_state_t *state);
+const char *pspio_state_get_label(const pspio_state_t *state);
 
 /**
  * Returns the quantum numbers of the state
@@ -130,7 +130,7 @@ char *pspio_state_get_label(const pspio_state_t *state);
  * @return pointer to the state quantum numbers
  * @note The state pointer has to be fully set.
  */
-pspio_qn_t *pspio_state_get_qn(const pspio_state_t *state);
+const pspio_qn_t *pspio_state_get_qn(const pspio_state_t *state);
 
 /**
  * Returns the state occupancies

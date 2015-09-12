@@ -42,7 +42,7 @@ static double *p11, *p12, *p2;
 void projector_setup(void)
 {
   int i;
-  double *r;
+  const double *r;
   const double a = 1.0;
   const double b = 2.0;
 
@@ -115,7 +115,7 @@ void projector_teardown(void)
 void projector_compare_values(const pspio_mesh_t *mesh, const pspio_projector_t *proj, const pspio_qn_t *qn, const double energy, const double *p, const double tol)
 {
   int i;
-  double *pp;
+  const double *pp;
 
   ck_assert(pspio_mesh_cmp(pspio_meshfunc_get_mesh(proj->proj), mesh) == PSPIO_EQUAL);
   ck_assert(pspio_qn_cmp(pspio_projector_get_qn(proj), qn) == PSPIO_EQUAL);

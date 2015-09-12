@@ -44,7 +44,7 @@ int upf_write_header(FILE *fp, const pspio_pspdata_t *pspdata)
 {
   int is, l;
   double occ;
-  char *label;
+  const char *label;
   int exchange, correlation;
   char shortname[5], longname[21];
 
@@ -160,7 +160,7 @@ void upf_write_nonlocal(FILE *fp, const pspio_pspdata_t *pspdata)
 {
   int ikb, i;
   double proj, ekb;
-  pspio_qn_t *qn;
+  const pspio_qn_t *qn;
 
   /* Write init tag */
   fprintf(fp, "<PP_NONLOCAL>\n");
@@ -219,7 +219,7 @@ void upf_write_pswfc(FILE *fp, const pspio_pspdata_t *pspdata)
 {
   int is, i, l;
   double occ, wf;
-  char *label;
+  const char *label;
 
   /* Write init tag */
   fprintf(fp, "<PP_PSWFC>\n");
@@ -267,8 +267,8 @@ void upf_write_addinfo(FILE *fp, const pspio_pspdata_t *pspdata)
 {
   int is;
   double occ;
-  char *label;
-  pspio_qn_t *qn;
+  const char *label;
+  const pspio_qn_t *qn;
 
   /* Write init tag */
   fprintf(fp, "<PP_ADDINFO>\n");

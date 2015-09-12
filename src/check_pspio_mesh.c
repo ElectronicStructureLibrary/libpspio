@@ -51,7 +51,7 @@ void mesh_teardown(void)
 void mesh_compare_values(pspio_mesh_t *mesh, const double a, const double b, const double r[8], const double rab[8], const double tol)
 {
   int i;
-  double *r2, *rab2;
+  const double *r2, *rab2;
 
   ck_assert(pspio_mesh_get_np(mesh) == 8);
   ck_assert(pspio_mesh_get_a(mesh) == a);
@@ -286,7 +286,7 @@ START_TEST(test_mesh_get_r)
 {
   int i;
   double r[8] = {0.0, 0.05, 0.10, 0.20, 0.40, 0.65, 0.85, 1.00};
-  double *r_get;
+  const double *r_get;
 
   pspio_mesh_init_from_points(m1, r, NULL);
 
@@ -302,7 +302,7 @@ START_TEST(test_mesh_get_rab)
   int i;
   double r[8] = {0.0, 0.05, 0.10, 0.20, 0.40, 0.65, 0.85, 1.00};
   double rab[8] = {0.05, 0.05, 0.20, 0.20, 0.20, 0.20, 0.05, 0.05};
-  double *rab_get;
+  const double *rab_get;
 
   pspio_mesh_init_from_points(m1, r, rab);
 

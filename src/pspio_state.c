@@ -194,7 +194,7 @@ void pspio_state_free(pspio_state_t *state)
  * Getters                                                            *
  **********************************************************************/
 
-pspio_qn_t *pspio_state_get_qn(const pspio_state_t *state)
+const pspio_qn_t *pspio_state_get_qn(const pspio_state_t *state)
 {
   assert(state != NULL);
 
@@ -222,7 +222,7 @@ double pspio_state_get_rc(const pspio_state_t *state)
   return state->rc;
 }
 
-char *pspio_state_get_label(const pspio_state_t *state)
+const char *pspio_state_get_label(const pspio_state_t *state)
 {
   assert(state != NULL);
 

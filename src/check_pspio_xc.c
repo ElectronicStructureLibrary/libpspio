@@ -45,7 +45,7 @@ static int nlcc11 = PSPIO_NLCC_FHI, nlcc12 = PSPIO_NLCC_LOUIE, nlcc2 = PSPIO_NLC
 void xc_setup(void)
 {
   int i;
-  double *r;
+  const double *r;
   const double a = 1.0;
   const double b = 2.0;
 
@@ -102,7 +102,7 @@ void xc_compare_values(const pspio_xc_t *xc, const int exchange, const int corre
 		       const pspio_mesh_t *mesh, const double *cd, const double tol)
 {
   int i;
-  double *cdp;
+  const double *cdp;
 
   ck_assert( pspio_xc_get_exchange(xc) == exchange );
   ck_assert( pspio_xc_get_correlation(xc) == correlation );
@@ -146,7 +146,7 @@ END_TEST
 START_TEST(test_xc_setget_nlcc_density)
 {
   int i;
-  double *cd;
+  const double *cd;
 
   ck_assert(pspio_xc_set_nlcc_scheme(xc11, PSPIO_NLCC_UNKNOWN) == PSPIO_SUCCESS);
   ck_assert(pspio_xc_set_nlcc_density(xc11, m1, cd11, NULL, NULL) == PSPIO_SUCCESS);

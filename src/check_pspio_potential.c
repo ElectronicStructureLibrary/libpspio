@@ -41,7 +41,7 @@ static double *v11, *v12, *v2;
 void potential_setup(void)
 {
   int i;
-  double *r;
+  const double *r;
   const double a = 1.0;
   const double b = 2.0;
 
@@ -114,7 +114,7 @@ void potential_teardown(void)
 void potential_compare_values(const pspio_mesh_t *mesh, const pspio_potential_t *pot, const pspio_qn_t *qn, const double *v, const double tol)
 {
   int i;
-  double *vv;
+  const double *vv;
 
   ck_assert(pspio_mesh_cmp(pspio_meshfunc_get_mesh(pot->v), mesh) == PSPIO_EQUAL);
   ck_assert(pspio_qn_cmp(pspio_potential_get_qn(pot), qn) == PSPIO_EQUAL);

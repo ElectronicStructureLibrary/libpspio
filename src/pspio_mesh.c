@@ -269,14 +269,14 @@ double pspio_mesh_get_b(const pspio_mesh_t *mesh)
   return mesh->b;
 }
 
-double *pspio_mesh_get_r(const pspio_mesh_t *mesh)
+const double *pspio_mesh_get_r(const pspio_mesh_t *mesh)
 {
   assert(mesh != NULL);
 
   return mesh->r;
 }
 
-double *pspio_mesh_get_rab(const pspio_mesh_t *mesh)
+const double *pspio_mesh_get_rab(const pspio_mesh_t *mesh)
 {
   assert(mesh != NULL);
 

@@ -503,147 +503,147 @@ int pspio_pspdata_set_rho_valence(pspio_pspdata_t *pspdata, const pspio_meshfunc
  * Getters                                                            *
  **********************************************************************/
 
-int pspio_pspdata_get_format_guessed(pspio_pspdata_t *pspdata)
+int pspio_pspdata_get_format_guessed(const pspio_pspdata_t *pspdata)
 {
   assert(pspdata != NULL);
 
   return pspdata->format_guessed;
 }
 
-char * pspio_pspdata_get_symbol(pspio_pspdata_t *pspdata)
+const char * pspio_pspdata_get_symbol(const pspio_pspdata_t *pspdata)
 {
   assert(pspdata != NULL);
 
   return pspdata->symbol;
 }
 
-double pspio_pspdata_get_z(pspio_pspdata_t *pspdata)
+double pspio_pspdata_get_z(const pspio_pspdata_t *pspdata)
 {
   assert(pspdata != NULL);
 
   return pspdata->z;
 }
 
-double pspio_pspdata_get_zvalence(pspio_pspdata_t *pspdata)
+double pspio_pspdata_get_zvalence(const pspio_pspdata_t *pspdata)
 {
   assert(pspdata != NULL);
 
   return pspdata->zvalence;
 }
 
-double pspio_pspdata_get_nelvalence(pspio_pspdata_t *pspdata)
+double pspio_pspdata_get_nelvalence(const pspio_pspdata_t *pspdata)
 {
   assert(pspdata != NULL);
 
   return pspdata->nelvalence;
 }
 
-int pspio_pspdata_get_l_max(pspio_pspdata_t *pspdata)
+int pspio_pspdata_get_l_max(const pspio_pspdata_t *pspdata)
 {
   assert(pspdata != NULL);
 
   return pspdata->l_max;
 }
 
-int pspio_pspdata_get_wave_eq(pspio_pspdata_t *pspdata)
+int pspio_pspdata_get_wave_eq(const pspio_pspdata_t *pspdata)
 {
   assert(pspdata != NULL);
 
   return pspdata->wave_eq;
 }
 
-double pspio_pspdata_get_total_energy(pspio_pspdata_t *pspdata)
+double pspio_pspdata_get_total_energy(const pspio_pspdata_t *pspdata)
 {
   assert(pspdata != NULL);
 
   return pspdata->total_energy;
 }
 
-pspio_mesh_t * pspio_pspdata_get_mesh(pspio_pspdata_t *pspdata)
+const pspio_mesh_t * pspio_pspdata_get_mesh(const pspio_pspdata_t *pspdata)
 {
   assert(pspdata != NULL);
 
   return pspdata->mesh;
 }
 
-int pspio_pspdata_get_n_states(pspio_pspdata_t *pspdata)
+int pspio_pspdata_get_n_states(const pspio_pspdata_t *pspdata)
 {
   assert(pspdata != NULL);
 
   return pspdata->n_states;
 }
 
-pspio_state_t * pspio_pspdata_get_state(pspio_pspdata_t *pspdata, const int index)
+const pspio_state_t * pspio_pspdata_get_state(const pspio_pspdata_t *pspdata, const int index)
 {
   assert(pspdata != NULL);
 
   return pspdata->states[index];
 }
 
-int pspio_pspdata_get_scheme(pspio_pspdata_t *pspdata)
+int pspio_pspdata_get_scheme(const pspio_pspdata_t *pspdata)
 {
   assert(pspdata != NULL);
 
   return pspdata->scheme;
 }
 
-int pspio_pspdata_get_n_potentials(pspio_pspdata_t *pspdata)
+int pspio_pspdata_get_n_potentials(const pspio_pspdata_t *pspdata)
 {
   assert(pspdata != NULL);
 
   return pspdata->n_potentials;
 }
 
-pspio_potential_t * pspio_pspdata_get_potential(pspio_pspdata_t *pspdata, const int index)
+const pspio_potential_t * pspio_pspdata_get_potential(const pspio_pspdata_t *pspdata, const int index)
 {
   assert(pspdata != NULL);
 
   return pspdata->potentials[index];
 }
 
-int pspio_pspdata_get_n_projectors(pspio_pspdata_t *pspdata)
+int pspio_pspdata_get_n_projectors(const pspio_pspdata_t *pspdata)
 {
   assert(pspdata != NULL);
 
   return pspdata->n_projectors;
 }
 
-pspio_projector_t * pspio_pspdata_get_projector(pspio_pspdata_t *pspdata, const int index)
+const pspio_projector_t * pspio_pspdata_get_projector(const pspio_pspdata_t *pspdata, const int index)
 {
   assert(pspdata != NULL);
 
   return pspdata->projectors[index];
 }
 
-int pspio_pspdata_get_projectors_l_max(pspio_pspdata_t *pspdata)
+int pspio_pspdata_get_projectors_l_max(const pspio_pspdata_t *pspdata)
 {
   assert(pspdata != NULL);
 
   return pspdata->projectors_l_max;
 }
 
-int pspio_pspdata_get_l_local(pspio_pspdata_t *pspdata)
+int pspio_pspdata_get_l_local(const pspio_pspdata_t *pspdata)
 {
   assert(pspdata != NULL);
 
   return pspdata->l_local;
 }
 
-pspio_potential_t * pspio_pspdata_get_vlocal(pspio_pspdata_t *pspdata)
+const pspio_potential_t * pspio_pspdata_get_vlocal(const pspio_pspdata_t *pspdata)
 {
   assert(pspdata != NULL);
 
   return pspdata->vlocal;
 }
 
-pspio_xc_t * pspio_pspdata_get_xc(pspio_pspdata_t *pspdata)
+const pspio_xc_t * pspio_pspdata_get_xc(const pspio_pspdata_t *pspdata)
 {
   assert(pspdata != NULL);
 
   return pspdata->xc;
 }
 
-pspio_meshfunc_t * pspio_pspdata_get_rho_valence(pspio_pspdata_t *pspdata)
+const pspio_meshfunc_t * pspio_pspdata_get_rho_valence(const pspio_pspdata_t *pspdata)
 {
   assert(pspdata != NULL);
 

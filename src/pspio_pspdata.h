@@ -285,129 +285,129 @@ int pspio_pspdata_set_rho_valence(pspio_pspdata_t *pspdata, const pspio_meshfunc
  * @param[in] pspdata: pointer to pspdata structure
  * @return format guessed
  */
-int pspio_pspdata_get_format_guessed(pspio_pspdata_t *pspdata);
+int pspio_pspdata_get_format_guessed(const pspio_pspdata_t *pspdata);
 
 /**
  * @param[in] pspdata: pointer to pspdata structure
  * @return pointer to atomic symbol
  */
-char * pspio_pspdata_get_symbol(pspio_pspdata_t *pspdata);
+const char * pspio_pspdata_get_symbol(const pspio_pspdata_t *pspdata);
 
 /**
  * @param[in] pspdata: pointer to pspdata structure
  * @return atomic number
  */
-double pspio_pspdata_get_z(pspio_pspdata_t *pspdata);
+double pspio_pspdata_get_z(const pspio_pspdata_t *pspdata);
 
 /**
  * @param[in] pspdata: pointer to pspdata structure
  * @return valence charge
  */
-double pspio_pspdata_get_zvalence(pspio_pspdata_t *pspdata);
+double pspio_pspdata_get_zvalence(const pspio_pspdata_t *pspdata);
 
 /**
  * @param[in] pspdata: pointer to pspdata structure
  * @return number of electrons
  */
-double pspio_pspdata_get_nelvalence(pspio_pspdata_t *pspdata);
+double pspio_pspdata_get_nelvalence(const pspio_pspdata_t *pspdata);
 
 /**
  * @param[in] pspdata: pointer to pspdata structure
  * @return maximal angular momentum channel.
  */
-int pspio_pspdata_get_l_max(pspio_pspdata_t *pspdata);
+int pspio_pspdata_get_l_max(const pspio_pspdata_t *pspdata);
 
 /**
  * @param[in] pspdata: pointer to pspdata structure
  * @return type of wave-equation solved
  */
-int pspio_pspdata_get_wave_eq(pspio_pspdata_t *pspdata);
+int pspio_pspdata_get_wave_eq(const pspio_pspdata_t *pspdata);
 
 /**
  * @param[in] pspdata: pointer to pspdata structure
  * @return total energy of pseudo-atom
  */
-double pspio_pspdata_get_total_energy(pspio_pspdata_t *pspdata);
+double pspio_pspdata_get_total_energy(const pspio_pspdata_t *pspdata);
 
 /**
  * @param[in] pspdata: pointer to pspdata structure
  * @return pointer to mesh
  */
-pspio_mesh_t * pspio_pspdata_get_mesh(pspio_pspdata_t *pspdata);
+const pspio_mesh_t * pspio_pspdata_get_mesh(const pspio_pspdata_t *pspdata);
 
 /**
  * @param[in] pspdata: pointer to pspdata structure
  * @return number of states
  */
-int pspio_pspdata_get_n_states(pspio_pspdata_t *pspdata);
+int pspio_pspdata_get_n_states(const pspio_pspdata_t *pspdata);
 
 /**
  * @param[in] pspdata: pointer to pspdata structure
  * @param[in] index: index of state to get
  * @return pointer to state
  */
-pspio_state_t * pspio_pspdata_get_state(pspio_pspdata_t *pspdata, const int index);
+const pspio_state_t * pspio_pspdata_get_state(const pspio_pspdata_t *pspdata, const int index);
 
 /**
  * @param[in] pspdata: pointer to pspdata structure
  * @return scheme used to generate the pseudopotentials
  */
-int pspio_pspdata_get_scheme(pspio_pspdata_t *pspdata);
+int pspio_pspdata_get_scheme(const pspio_pspdata_t *pspdata);
 
 /**
  * @param[in] pspdata: pointer to pspdata structure
  * @return number of potentials
  */
-int pspio_pspdata_get_n_potentials(pspio_pspdata_t *pspdata);
+int pspio_pspdata_get_n_potentials(const pspio_pspdata_t *pspdata);
 
 /**
  * @param[in] pspdata: pointer to pspdata structure
  * @param[in] index: index of potential to get
  * @return pointer to potential
  */
-pspio_potential_t * pspio_pspdata_get_potential(pspio_pspdata_t *pspdata, const int index);
+const pspio_potential_t * pspio_pspdata_get_potential(const pspio_pspdata_t *pspdata, const int index);
 
 /**
  * @param[in] pspdata: pointer to pspdata structure
  * @return number of projectors
  */
-int pspio_pspdata_get_n_projectors(pspio_pspdata_t *pspdata);
+int pspio_pspdata_get_n_projectors(const pspio_pspdata_t *pspdata);
 
 /**
  * @param[in] pspdata: pointer to pspdata structure
  * @param[in] index: index of projector to get
  * @return pointer to projector
  */
-pspio_projector_t * pspio_pspdata_get_projector(pspio_pspdata_t *pspdata, const int index);
+const pspio_projector_t * pspio_pspdata_get_projector(const pspio_pspdata_t *pspdata, const int index);
 
 /**
  * @param[in] pspdata: pointer to pspdata structure
  * @return maximal angular momentum of projectors.
  */
-int pspio_pspdata_get_projectors_l_max(pspio_pspdata_t *pspdata);
+int pspio_pspdata_get_projectors_l_max(const pspio_pspdata_t *pspdata);
 
 /**
  * @param[in] pspdata: pointer to pspdata structure
  * @return angular momentum channel of local potential
  */
-int pspio_pspdata_get_l_local(pspio_pspdata_t *pspdata);
+int pspio_pspdata_get_l_local(const pspio_pspdata_t *pspdata);
 
 /**
  * @param[in] pspdata: pointer to pspdata structure
  * @return pointer to the local potential
  */
-pspio_potential_t * pspio_pspdata_get_vlocal(pspio_pspdata_t *pspdata);
+const pspio_potential_t * pspio_pspdata_get_vlocal(const pspio_pspdata_t *pspdata);
 
 /**
  * @param[in] pspdata: pointer to pspdata structure
  * @return pointer to the xc data
  */
-pspio_xc_t * pspio_pspdata_get_xc(pspio_pspdata_t *pspdata);
+const pspio_xc_t * pspio_pspdata_get_xc(const pspio_pspdata_t *pspdata);
 
 /**
  * @param[in] pspdata: pointer to pspdata structure
  * @return pointer to the valence density
  */
-pspio_meshfunc_t * pspio_pspdata_get_rho_valence(pspio_pspdata_t *pspdata);
+const pspio_meshfunc_t * pspio_pspdata_get_rho_valence(const pspio_pspdata_t *pspdata);
 
 #endif

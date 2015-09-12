@@ -188,21 +188,21 @@ void pspio_meshfunc_free(pspio_meshfunc_t *func)
  * Getters                                                            *
  **********************************************************************/
 
-double *pspio_meshfunc_get_function(const pspio_meshfunc_t *func)
+const double *pspio_meshfunc_get_function(const pspio_meshfunc_t *func)
 {
   assert(func != NULL);
 
   return func->f;
 }
 
-double *pspio_meshfunc_get_deriv1(const pspio_meshfunc_t *func)
+const double *pspio_meshfunc_get_deriv1(const pspio_meshfunc_t *func)
 {
   assert(func != NULL);
 
   return func->fp;
 }
 
-double *pspio_meshfunc_get_deriv2(const pspio_meshfunc_t *func)
+const double *pspio_meshfunc_get_deriv2(const pspio_meshfunc_t *func)
 {
   assert(func != NULL);
 
@@ -216,7 +216,7 @@ int pspio_meshfunc_get_interp_method(const pspio_meshfunc_t *func)
   return func->interp_method;
 }
 
-pspio_mesh_t *pspio_meshfunc_get_mesh(const pspio_meshfunc_t *func)
+const pspio_mesh_t *pspio_meshfunc_get_mesh(const pspio_meshfunc_t *func)
 {
   assert(func != NULL);
 

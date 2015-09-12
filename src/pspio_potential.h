@@ -97,13 +97,13 @@ void pspio_potential_free(pspio_potential_t *potential);
  **********************************************************************/
 
 /**
- * Returns the quantum numbers of the potential
+ * Returns a pointer to the quantum numbers of the potential
  * 
  * @param[in] potential: potential structure
  * @return pointer to the potential quantum numbers
  * @note The potential pointer has to be fully set.
  */
-pspio_qn_t *pspio_potential_get_qn(const pspio_potential_t *potential);
+const pspio_qn_t *pspio_potential_get_qn(const pspio_potential_t *potential);
 
 
 /**********************************************************************

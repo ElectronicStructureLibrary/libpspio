@@ -117,7 +117,7 @@ void pspio_potential_free(pspio_potential_t *potential)
  * Getters                                                            *
  **********************************************************************/
 
-pspio_qn_t *pspio_potential_get_qn(const pspio_potential_t *potential)
+const pspio_qn_t *pspio_potential_get_qn(const pspio_potential_t *potential)
 {
   assert(potential != NULL);
 

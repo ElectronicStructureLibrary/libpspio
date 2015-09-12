@@ -109,13 +109,13 @@ void pspio_projector_free(pspio_projector_t *projector);
 double pspio_projector_get_energy(const pspio_projector_t *projector);
 
 /**
- * Returns the quantum numbers of the projector
+ * Returns a pointer to the quantum numbers of the projector
  * 
  * @param[in] projector: projector structure
  * @return pointer to the projector quantum numbers
  * @note The projector pointer has to be fully set.
  */
-pspio_qn_t *pspio_projector_get_qn(const pspio_projector_t *projector);
+const pspio_qn_t *pspio_projector_get_qn(const pspio_projector_t *projector);
 
 
 /**********************************************************************
