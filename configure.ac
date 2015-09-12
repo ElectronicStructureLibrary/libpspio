@@ -167,7 +167,15 @@ AC_CHECK_HEADERS([time.h])
 # Required functions
 AC_CHECK_FUNCS([strndup])
 
-PKG_CHECK_MODULES([CHECK], [check >= 0.9.4])
+# Required libraries
+pio_math_ok="unknown"
+AC_SEARCH_LIBS([expl], [m ml], [pio_math_ok="yes"], [pio_math_ok="no"])
+if test "${pio_math_ok}" != "yes"; then
+  AC_MSG_WARN([math libraries do not provide double precision functions])
+fi
+
+# Unit test framework: the Check package
+PIO_SEARCH_CHECK
 
                     # ------------------------------------ #
 
