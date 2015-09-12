@@ -27,8 +27,8 @@
 
 #include "pspio_common.h"
 #include "pspio_error.h"
+#include "pspio_jb_spline.h"
 #include "pspio_mesh.h"
-#include "jb_spline.h"
 
 #if defined HAVE_CONFIG_H
 #include "config.h"

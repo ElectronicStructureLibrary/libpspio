@@ -31,12 +31,12 @@
 pio_core_srcs = \
   abinit_util.c \
   abinit_xc.c \
-  jb_spline.c \
   pspio_abinit.c \
   pspio_error.c \
   pspio_fhi.c \
   pspio_info.c \
   pspio_interp.c \
+  pspio_jb_spline.c \
   pspio_mesh.c \
   pspio_meshfunc.c \
   pspio_potential.c \
@@ -62,6 +62,7 @@ pio_core_hdrs = \
   pspio_fhi.h \
   pspio_info.h \
   pspio_interp.h \
+  pspio_jb_spline.h \
   pspio_mesh.h \
   pspio_meshfunc.h \
   pspio_potential.h \
@@ -78,7 +79,6 @@ pio_core_hdrs = \
 pio_hidden_hdrs = \
   abinit.h \
   check_pspio.h \
-  jb_spline.h \
   test_common.h \
   upf.h \
   util.h
