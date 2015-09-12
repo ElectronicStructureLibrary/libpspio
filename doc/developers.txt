@@ -53,13 +53,13 @@
  *  - copy
  *  - free
  * 
- * They should also provide setter and getter methods for all components that 
+ * They should also provide setter, getter, and ptr methods for all components that 
  * are meant to be accessible outside the library.
  * 
- * The alloc, init, copy, and setter methods should all return an error code.
- * The free method should return void. The getter methods should return the
- * value of the component and, if the component is a pointer, then it should
- * also return a pointer.
+ * The alloc, init, copy, and setter methods should all return an
+ * error code.  The free method should return void. The getter methods
+ * should return a copy of the component. The ptr methods should
+ * return a pointer to the component.
  *
  *
  * @section indexes Indexes of states, pseudopotentials, and projectors

@@ -271,12 +271,65 @@ double pspio_mesh_get_b(const pspio_mesh_t *mesh)
 
 double *pspio_mesh_get_r(const pspio_mesh_t *mesh)
 {
+  double *r;
+  assert(mesh != NULL);
+
+  r = (double *) malloc (mesh->np * sizeof(double));
+  FULFILL_OR_EXIT( r != NULL, PSPIO_ENOMEM );
+
+  memcpy(r, mesh->r, mesh->np * sizeof(double));
+
+  return r;
+}
+
+double *pspio_mesh_get_rab(const pspio_mesh_t *mesh)
+{
+  double *rab;
+
+  assert(mesh != NULL);
+
+  rab = (double *) malloc (mesh->np * sizeof(double));
+  FULFILL_OR_EXIT( rab != NULL, PSPIO_ENOMEM );
+
+  memcpy(rab, mesh->rab, mesh->np * sizeof(double));
+
+  return rab;
+}
+
+
+/**********************************************************************
+ * Pointers                                                           *
+ **********************************************************************/
+
+const int *pspio_mesh_ptr_np(const pspio_mesh_t *mesh)
+{
+  assert(mesh != NULL);
+
+  return &mesh->np;
+}
+
+const double *pspio_mesh_ptr_a(const pspio_mesh_t *mesh)
+{
+  assert(mesh != NULL);
+
+  return &mesh->a;
+}
+
+const double *pspio_mesh_ptr_b(const pspio_mesh_t *mesh)
+{
+  assert(mesh != NULL);
+
+  return &mesh->b;
+}
+
+const double *pspio_mesh_ptr_r(const pspio_mesh_t *mesh)
+{
   assert(mesh != NULL);
 
   return mesh->r;
 }
 
-double *pspio_mesh_get_rab(const pspio_mesh_t *mesh)
+const double *pspio_mesh_ptr_rab(const pspio_mesh_t *mesh)
 {
   assert(mesh != NULL);
 

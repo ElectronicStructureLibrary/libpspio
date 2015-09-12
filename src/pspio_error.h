@@ -175,7 +175,7 @@ const char *pspio_error_string(const int error_id);
     pspio_error_add(error_id, __FILE__, __LINE__, __func__); \
     pspio_error_flush(stderr); \
     exit(1); \
-  } 
+  }
 
 /**
  * Macro to return from a routine when a condition is unsatisfied
