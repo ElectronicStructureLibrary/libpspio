@@ -37,7 +37,9 @@ fi
 chmod -R u+w .
 
 # Wipe-out subsystems
-cd fortran && ./wipeout.sh
+cd fortran
+./wipeout.sh
+cd ..
 
 # Remove temporary directories and files
 echo "Removing temporary directories and files..."
