@@ -112,6 +112,7 @@ nodist_check_SCRIPTS = \
 test_fortran_io_SOURCES = test_fortran_io.F90
 test_fortran_io_LDADD = \
   -lfpspio \
+  @pio_pspio_libs@ \
   $(LIBS_COVERAGE)
 test_fortran_io_DEPENDENCIES = \
   ../libpspio.la \

@@ -53,9 +53,9 @@ AC_DEFUN([AX_SEARCH_LIBPSPIO],[
   fi
 
   dnl Prepare environment
-  #tmp_saved_CPPFLAGS="${CPPFLAGS}"
-  #tmp_saved_FCFLAGS="${FCFLAGS}"
-  #tmp_saved_LIBS="${LIBS}"
+  tmp_saved_CPPFLAGS="${CPPFLAGS}"
+  tmp_saved_FCFLAGS="${FCFLAGS}"
+  tmp_saved_LIBS="${LIBS}"
   CPPFLAGS="${CPPFLAGS} ${pio_pspio_incs}"
   FCFLAGS="${FCFLAGS} ${pio_pspio_incs}"
   LIBS="${pio_pspio_libs} ${LIBS}"
@@ -128,9 +128,6 @@ AC_DEFUN([AX_SEARCH_LIBPSPIO],[
 
     if test "${pio_pspio_incs}" != "" -a \
             "${pio_pspio_libs}" != ""; then
-      AC_MSG_NOTICE([adding '${pio_pspio_incs}' to CPPFLAGS])
-      AC_MSG_NOTICE([adding '${pio_pspio_incs}' to FCFLAGS])
-      AC_MSG_NOTICE([adding '${pio_pspio_libs}' to LIBS])
       CPPFLAGS="${CPPFLAGS} ${pio_pspio_incs}"
       FCFLAGS="${FCFLAGS} ${pio_pspio_incs}"
       LIBS="${pio_pspio_libs} ${LIBS}"
@@ -166,7 +163,7 @@ AC_DEFUN([AX_SEARCH_LIBPSPIO],[
     pio_pspio_ok="no"
   fi
 
-  dnl Allow using soon-to-be-built Libpspio
+  dnl Allow for slave mode
   if test "${pio_pspio_ok}" != "yes"; then
     if test "${with_pspio}" = "" -a \
             "${with_pspio_incs}" = "" -a \
@@ -175,19 +172,13 @@ AC_DEFUN([AX_SEARCH_LIBPSPIO],[
       pio_pspio_ok="yes"
       pio_pspio_incs="-I${ac_abs_top_srcdir}/src"
       pio_pspio_libs="${ac_abs_top_builddir}/src/.libs/libpspio.a"
-      AC_MSG_NOTICE([adding '${pio_pspio_incs}' to CPPFLAGS])
-      AC_MSG_NOTICE([adding '${pio_pspio_incs}' to FCFLAGS])
-      AC_MSG_NOTICE([adding '${pio_pspio_libs}' to LIBS])
-      CPPFLAGS="${CPPFLAGS} ${pio_pspio_incs}"
-      FCFLAGS="${FCFLAGS} ${pio_pspio_incs}"
-      LIBS="${pio_pspio_libs} ${LIBS}"
     fi
   fi
 
   dnl Restore build environment
-  #CPPFLAGS="${tmp_saved_CPPFLAGS}"
-  #FCFLAGS="${tmp_saved_FCFLAGS}"
-  #LIBS="${tmp_saved_LIBS}"
+  CPPFLAGS="${tmp_saved_CPPFLAGS}"
+  FCFLAGS="${tmp_saved_FCFLAGS}"
+  LIBS="${tmp_saved_LIBS}"
 
   dnl Substitute variables needed for the use of the libraries
   AC_SUBST(pio_pspio_incs)
