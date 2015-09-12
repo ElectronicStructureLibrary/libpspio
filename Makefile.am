@@ -26,6 +26,9 @@ ACLOCAL_AMFLAGS = -I config/m4
 
 # Main tasks
 SUBDIRS = src
+if DO_BUILD_FORTRAN
+  SUBDIRS += fortran
+endif
 
 # Source tarball
 EXTRA_DIST = \

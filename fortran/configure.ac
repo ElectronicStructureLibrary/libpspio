@@ -41,6 +41,7 @@ AC_REVISION([Autotools support for Libpspio-Fortran])
 AC_CONFIG_AUX_DIR([config/gnu])
 AC_CONFIG_MACRO_DIR([config/m4])
 AC_CONFIG_SRCDIR([.])
+_AC_SRCDIRS(["."])
 
 # Initialize Automake
 AC_CANONICAL_TARGET
@@ -81,9 +82,34 @@ AC_SUBST(enable_memprof)
                     # ------------------------------------ #
 
 # Libpspio prefix
-AC_ARG_WITH([libpspio],
-  AC_HELP_STRING([--with-libpspio],
+AC_ARG_WITH([pspio],
+  AC_HELP_STRING([--with-pspio],
     [Install prefix of Libpspio]))
+
+# Libpspio includes
+AC_ARG_WITH([pspio-incs],
+  AC_HELP_STRING([--with-pspio-incs],
+    [Include flags for Libpspio]))
+
+# Libpspio libraries
+AC_ARG_WITH([pspio-libs],
+  AC_HELP_STRING([--with-pspio-libs],
+    [Library flags for Libpspio]))
+
+# ---------------------------------------------------------------------------- #
+
+#
+# Option consistency checking
+#
+
+if test "${with_pspio}" != ""; then
+  if test "${with_pspio_incs}" != ""; then
+    AC_MSG_ERROR([please use '--with-pspio' or '--with-pspio-incs', not both])
+  fi
+  if test "${with_pspio_libs}" != ""; then
+    AC_MSG_ERROR([please use '--with-pspio' or '--with-pspio-libs', not both])
+  fi
+fi
 
 # ---------------------------------------------------------------------------- #
 
@@ -199,9 +225,10 @@ AM_CONDITIONAL([F90_MOD_UPPERCASE],
 # Look for Libpspio
 #
 
+pio_pspio_ok="unknown"
 AX_SEARCH_LIBPSPIO(0,0,0)
 
-if test "${pio_libpspio_ok}" != "yes"; then
+if test "${pio_pspio_ok}" != "yes"; then
   AC_MSG_ERROR([Libpspio not found])
 fi
 

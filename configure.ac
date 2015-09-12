@@ -348,9 +348,8 @@ AC_MSG_NOTICE([CFLAGS   = ${CFLAGS}])
 AC_MSG_NOTICE([LDFLAGS  = ${LDFLAGS}])
 AC_MSG_NOTICE([LIBS     = ${LIBS}])
 
-if test "${enable_fortran}" = "yes"; then
-  AC_CONFIG_SUBDIRS([fortran])
-fi
+AC_CONFIG_SUBDIRS([fortran])
+AM_CONDITIONAL([DO_BUILD_FORTRAN], [test "${enable_fortran}" = "yes"])
 
 AC_CONFIG_COMMANDS([script-perms],
   [chmod u+x \
