@@ -31,7 +31,7 @@
 #include "config.h"
 #endif
 
-static pspio_pspdata_t *pspdata;
+static pspio_pspdata_t *pspdata = NULL;
 static pspio_mesh_t *mesh = NULL;
 static pspio_qn_t *qn = NULL;
 static pspio_state_t *state = NULL;
@@ -49,6 +49,12 @@ void pspdata_minimal_setup(void)
   pspio_pspdata_alloc(&pspdata);
 }
 
+void pspdata_minimal_teardown(void)
+{
+  pspio_pspdata_free(pspdata);
+  pspdata = NULL;
+}
+
 void pspdata_full_setup(void)
 {
   int i;
@@ -57,7 +63,8 @@ void pspdata_full_setup(void)
   double *func = NULL;
   const double *r;
 
-  pspdata_minimal_setup();
+  pspio_pspdata_free(pspdata);
+  pspio_pspdata_alloc(&pspdata);
 
   pspio_mesh_free(mesh);
   pspio_mesh_alloc(&mesh, 8);
@@ -92,12 +99,8 @@ void pspdata_full_setup(void)
   pspio_meshfunc_free(rho_valence);
   pspio_meshfunc_alloc(&rho_valence, 8);
   pspio_meshfunc_init(rho_valence, mesh, func, NULL, NULL);
-}
 
-void pspdata_minimal_teardown(void)
-{
-  pspio_pspdata_free(pspdata);
-  pspdata = NULL;
+  free(func);
 }
 
 void pspdata_full_teardown(void)
@@ -123,7 +126,8 @@ void pspdata_full_teardown(void)
   pspio_meshfunc_free(rho_valence);
   rho_valence = NULL;
 
-  pspdata_minimal_teardown();
+  pspio_pspdata_free(pspdata);
+  pspdata = NULL;
 }
 
 
@@ -220,10 +224,10 @@ START_TEST(test_pspdata_setget_scheme)
 END_TEST
 
 START_TEST(test_pspdata_setget_n_potentials)
-  {
-    ck_assert(pspio_pspdata_set_n_potentials(pspdata, 2) == PSPIO_SUCCESS);
-    ck_assert(pspio_pspdata_get_n_potentials(pspdata) == 2);
-  }
+{
+  ck_assert(pspio_pspdata_set_n_potentials(pspdata, 2) == PSPIO_SUCCESS);
+  ck_assert(pspio_pspdata_get_n_potentials(pspdata) == 2);
+}
 END_TEST
 
 START_TEST(test_pspdata_setget_potential)
@@ -345,7 +349,7 @@ Suite * make_pspdata_suite(void)
   s = suite_create("Pspdata");
 
   tc_alloc = tcase_create("Allocation");
-  tcase_add_checked_fixture(tc_alloc, NULL, pspdata_full_teardown);
+  tcase_add_checked_fixture(tc_alloc, NULL, pspdata_minimal_teardown);
   tcase_add_test(tc_alloc, test_pspdata_alloc);
   suite_add_tcase(s, tc_alloc);
 
