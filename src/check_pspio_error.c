@@ -38,7 +38,6 @@ void error_setup(void)
 void error_teardown(void)
 {
   pspio_error_free();
-  free(err_str);
 }
 
 START_TEST(test_error_fetch_all)
@@ -48,6 +47,7 @@ START_TEST(test_error_fetch_all)
   ck_assert_str_eq(err_str, "libpspio: ERROR:\n"
           "  * in test_1_1.c(dummy1):1234:\n"
           "      value error: bad value found (PSPIO_EVALUE)\n");
+  free(err_str);
 }
 END_TEST
 
@@ -58,6 +58,7 @@ START_TEST(test_error_empty)
 
   pspio_error_fetchall(&err_str);
   ck_assert(err_str == NULL);
+  free(err_str);
 
   ck_assert_int_eq(pspio_error_get_last(NULL), PSPIO_SUCCESS);
   ck_assert_int_eq(pspio_error_len(), 0);
@@ -75,6 +76,7 @@ START_TEST(test_error_single)
   ck_assert_str_eq(err_str, "libpspio: ERROR:\n"
           "  * in test_1_1.c(dummy1):1234:\n"
           "      value error: bad value found (PSPIO_EVALUE)\n");
+  free(err_str);
 
   ck_assert(pspio_error_get_last(NULL) == PSPIO_SUCCESS);
   ck_assert(pspio_error_len() == 0);
@@ -97,6 +99,8 @@ START_TEST(test_error_double)
           "      error in GSL (PSPIO_EGSL)\n"
           "  * in test_2_2.c(dummy22):202:\n"
           "      unsupported option in the pseudopotential file (PSPIO_ENOSUPPORT)\n");
+  free(err_str);
+
   ck_assert(pspio_error_get_last(NULL) == PSPIO_SUCCESS);
   ck_assert(pspio_error_len() == 0);
 }
@@ -127,6 +131,7 @@ START_TEST(test_error_triple)
           "      error (PSPIO_ERROR)\n", result);
   pspio_error_fetchall(&err_str);
   ck_assert_str_eq(err_str, result);
+  free(err_str);
 
   ck_assert(pspio_error_get_last(NULL) == PSPIO_SUCCESS);
   ck_assert(pspio_error_len() == 0);
