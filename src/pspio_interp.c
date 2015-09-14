@@ -22,6 +22,7 @@
 #include <string.h>
 
 #include "pspio_interp.h"
+#include "pspio_jb_spline.h"
 
 #if defined HAVE_CONFIG_H
 #include "config.h"
@@ -36,7 +37,7 @@
  * Data structures                                                    *
  **********************************************************************/
 
-struct interpolation {
+struct pspio_interp_t {
   int method; /**< Interpolation method */
 
 #ifdef HAVE_GSL

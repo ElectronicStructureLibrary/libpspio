@@ -22,8 +22,8 @@
  * @brief header file for the handling of interpolation methods
  */
 
-#ifndef INTERPOLATION_H
-#define INTERPOLATION_H
+#ifndef PSPIO_INTERP__H
+#define PSPIO_INTERP_H
 
 #include "pspio_common.h"
 #include "pspio_error.h"
@@ -46,8 +46,7 @@
 /**
 * Interpolation data structure
 */
-typedef struct interpolation interpolation_t;
-} pspio_interp_t;
+typedef struct pspio_interp_t pspio_interp_t;
 
 
 /**********************************************************************

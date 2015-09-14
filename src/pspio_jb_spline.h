@@ -13,8 +13,8 @@ This code is distributed under the GNU LGPL license.
  */
 
 
-#ifndef JB_SPLINE
-#define JB_SPLINE
+#ifndef PSPIO_JB_SPLINE
+#define PSPIO_JB_SPLINE
 
 #include "pspio_error.h"
 
@@ -30,7 +30,7 @@ This code is distributed under the GNU LGPL license.
 /**
  * Interpolation data structure
  */
-typedef struct jb_spline jb_spline_t;
+typedef struct jb_spline_t jb_spline_t;
 
 
 /**********************************************************************

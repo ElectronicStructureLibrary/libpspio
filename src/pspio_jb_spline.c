@@ -29,7 +29,7 @@ This code is distributed under the GNU LGPL license.
 /**
  * Interpolation data structure
  */
-struct jb_spline {
+struct jb_spline_t {
     /* Objects to be used with jb_spline */
     int np;       /**< JB spline structure */
     double* t;
