@@ -129,6 +129,7 @@ int pspio_state_copy(pspio_state_t **dst, const pspio_state_t *src)
   (*dst)->eigenval = src->eigenval;
   (*dst)->occ = src->occ;
   (*dst)->rc = src->rc;
+  free((*dst)->label);
   s = strlen(src->label);
   (*dst)->label = (char *) malloc((s+1)*sizeof(char));
   memcpy((*dst)->label, src->label, s);
