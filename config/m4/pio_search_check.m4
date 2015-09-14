@@ -25,32 +25,42 @@ AC_DEFUN([PIO_SEARCH_CHECK],[
   pio_check_has_hdrs="unknown"
   pio_check_has_libs="unknown"
   pio_check_ok="unknown"
-  pio_check_cflags="${with_check_cflags}"
-  pio_check_incs="${with_check_incs}"
-  pio_check_libs="${with_check_libs}"
+  pio_check_cflags="${PSPIO_CHECK_CFLAGS}"
+  pio_check_incs="${PSPIO_CHECK_INCS}"
+  pio_check_ldflags="${PSPIO_CHECK_LDFLAGS}"
+  pio_check_libs="${PSPIO_CHECK_LIBS}"
   pio_pthread_ok="unknown"
   pio_rt_ok="unknown"
+
+  dnl Define missing environment variables
+  AC_ARG_VAR([PSPIO_CHECK_INCS],
+    [Include flags for the Check unit test framework])
+  AC_ARG_VAR([PSPIO_CHECK_LDFLAGS],
+    [C flags for the Check unit test framework])
 
   dnl Backup environment
   pio_saved_CPPFLAGS="${CPPFLAGS}"
   pio_saved_CFLAGS="${CFLAGS}"
+  pio_saved_LDFLAGS="${LDFLAGS}"
   pio_saved_LIBS="${LIBS}"
 
   dnl Init build parameters
   CPPFLAGS="${CPPFLAGS} ${pio_check_incs}"
   CFLAGS="${CFLAGS} ${pio_check_cflags}"
+  LDFLAGS="${LDFLAGS} ${pio_check_ldflags}"
   LIBS="${pio_check_libs} ${LIBS}"
 
   dnl Search first with pkg-config, then manually
   if test "${pio_check_cflags}" = "" -a \
           "${pio_check_incs}" = "" -a \
+          "${pio_check_ldflags}" = "" -a \
           "${pio_check_libs}" = ""; then
-    PKG_CHECK_MODULES([PIO_CHECK], [check >= 0.9.4],
+    PKG_CHECK_MODULES([PSPIO_CHECK], [check >= 0.9.4],
       [pio_pkg_check="yes"; pio_check_has_hdrs="yes"; pio_check_has_libs="yes"],
       [pio_pkg_check="no"])
     if test "${pio_pkg_check}" = "yes"; then
-      pio_check_cflags="${PIO_CHECK_CFLAGS}"
-      pio_check_libs="${PIO_CHECK_LIBS}"
+      pio_check_cflags="${PSPIO_CHECK_CFLAGS}"
+      pio_check_libs="${PSPIO_CHECK_LIBS}"
     else
       AX_PTHREAD([pio_pthread_ok="yes"], [pio_pthread_ok="no"])
       if test "${pio_pthread_ok}" = "yes"; then
@@ -106,16 +116,20 @@ AC_DEFUN([PIO_SEARCH_CHECK],[
   AC_MSG_RESULT([${pio_check_cflags}])
   AC_MSG_CHECKING([for Check include flags])
   AC_MSG_RESULT([${pio_check_incs}])
+  AC_MSG_CHECKING([for Check link flags])
+  AC_MSG_RESULT([${pio_check_ldflags}])
   AC_MSG_CHECKING([for Check libraries])
   AC_MSG_RESULT([${pio_check_libs}])
 
   dnl Restore environment
   CPPFLAGS="${pio_saved_CPPFLAGS}"
   CFLAGS="${pio_saved_CFLAGS}"
+  LDFLAGS="${pio_saved_LDFLAGS}"
   LIBS="${pio_saved_LIBS}"
 
   dnl Substitute variables
   AC_SUBST(pio_check_cflags)
   AC_SUBST(pio_check_incs)
+  AC_SUBST(pio_check_ldflags)
   AC_SUBST(pio_check_libs)
 ]) # PIO_SEARCH_CHECK

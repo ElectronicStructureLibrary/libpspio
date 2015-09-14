@@ -143,9 +143,10 @@ check_pspio_SOURCES = \
   check_pspio_xc.c \
   check_pspio_pspdata.c \
   check_pspio.c
-check_pspio_LDADD = -lpspio $(LIBS_COVERAGE) @CHECK_LIBS@
-check_pspio_CFLAGS = @CHECK_CFLAGS@
-check_pspio_CPPFLAGS = -I$(top_srcdir)/src
+check_pspio_CPPFLAGS = -I$(top_srcdir)/src @pio_check_incs@
+check_pspio_CFLAGS = @pio_check_cflags@
+check_pspio_LDFLAGS = @pio_check_ldflags@
+check_pspio_LDADD = -lpspio $(LIBS_COVERAGE) @pio_check_libs@
 check_pspio_DEPENDENCIES = libpspio.la
 
 test_io_SOURCES = test_io.c

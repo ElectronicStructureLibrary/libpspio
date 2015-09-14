@@ -341,6 +341,9 @@ fi
 # Output configuration
 #
 
+AM_CONDITIONAL([DO_BUILD_FORTRAN], [test "${enable_fortran}" = "yes"])
+AC_CONFIG_SUBDIRS([fortran])
+
 AC_MSG_NOTICE([Fortran   : ${enable_fortran}])
 AC_MSG_NOTICE([GSL       : ${enable_gsl}])
 AC_MSG_NOTICE([XML       : ${enable_xml}])
@@ -355,9 +358,6 @@ AC_MSG_NOTICE([CC       = ${CC}])
 AC_MSG_NOTICE([CFLAGS   = ${CFLAGS}])
 AC_MSG_NOTICE([LDFLAGS  = ${LDFLAGS}])
 AC_MSG_NOTICE([LIBS     = ${LIBS}])
-
-AC_CONFIG_SUBDIRS([fortran])
-AM_CONDITIONAL([DO_BUILD_FORTRAN], [test "${enable_fortran}" = "yes"])
 
 AC_CONFIG_COMMANDS([script-perms],
   [chmod u+x \
