@@ -50,7 +50,7 @@ void pspio_info_version(int *major, int *minor, int *micro)
   *major = -1;
   *minor = -1;
   *micro = -1;
-  sscanf(version_string,"%d.%d.%d",major,minor,micro);
+  sscanf(version_string,"%d.%d.%d", major, minor, micro);
 }
 
 void pspio_info_string(char *info)

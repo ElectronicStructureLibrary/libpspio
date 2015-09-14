@@ -18,7 +18,7 @@
 #
 
 #
-# Top makefile for Libpspio
+# Top makefile for Libpspio-Fortran
 #
 
 # Autotools parameters
@@ -26,13 +26,9 @@ ACLOCAL_AMFLAGS = -I config/m4
 
 # Main tasks
 SUBDIRS = src
-if DO_BUILD_FORTRAN
-  SUBDIRS += fortran
-endif
 
 # Source tarball
 EXTRA_DIST = \
-  Doxyfile \
-  psp_references
+  Doxyfile
 
-DISTCLEANFILES = libpspio-*.tar.gz
+DISTCLEANFILES = libpspio-fortran-*.tar.gz

@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2011-2012 J. Alberdi, M. Oliveira, Y. Pouillon, and M. Verstraete
+# Copyright (C) 2011-2015 J. Alberdi, M. Oliveira, Y. Pouillon, and M. Verstraete
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as published by
@@ -33,10 +33,10 @@ pio_core_srcs = \
   abinit_util.c \
   abinit_xc.c \
   fhi.c \
-  interpolation.c \
-  jb_spline.c \
   pspio_error.c \
   pspio_info.c \
+  pspio_interp.c \
+  pspio_jb_spline.c \
   pspio_mesh.c \
   pspio_meshfunc.c \
   pspio_potential.c \
@@ -59,6 +59,8 @@ pio_core_hdrs = \
   pspio_common.h \
   pspio_error.h \
   pspio_info.h \
+  pspio_interp.h \
+  pspio_jb_spline.h \
   pspio_mesh.h \
   pspio_meshfunc.h \
   pspio_potential.h \
@@ -75,8 +77,6 @@ pio_hidden_hdrs = \
   abinit.h \
   check_pspio.h \
   fhi.h \
-  interpolation.h \
-  jb_spline.h \
   upf.h \
   util.h
 
@@ -100,11 +100,6 @@ libpspio_la_SOURCES = $(pio_core_srcs)
 # Headers
 include_HEADERS = $(pio_core_hdrs)
 noinst_HEADERS = $(pio_hidden_hdrs)
-
-# Fortran
-if DO_BUILD_FORTRAN
-  SUBDIRS = . fortran
-endif
 
                     # ------------------------------------ #
 
@@ -140,9 +135,10 @@ check_pspio_SOURCES = \
   check_pspio_xc.c \
   check_pspio_pspdata.c \
   check_pspio.c
-check_pspio_LDADD = -lpspio $(LIBS_COVERAGE) @CHECK_LIBS@
-check_pspio_CFLAGS = @CHECK_CFLAGS@
-check_pspio_CPPFLAGS = -I$(top_srcdir)/src
+check_pspio_CPPFLAGS = -I$(top_srcdir)/src @pio_check_incs@
+check_pspio_CFLAGS = @pio_check_cflags@
+check_pspio_LDFLAGS = @pio_check_ldflags@
+check_pspio_LDADD = -lpspio $(LIBS_COVERAGE) @pio_check_libs@
 check_pspio_DEPENDENCIES = libpspio.la
 
 TESTS = \

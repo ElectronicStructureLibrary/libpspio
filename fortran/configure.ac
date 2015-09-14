@@ -1,6 +1,5 @@
 #
-# Copyright (C) 2011-2015 J. Alberdi, M. Oliveira, Y. Pouillon,
-#                         and M. Verstraete
+# Copyright (C) 2015 Y. Pouillon
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as published by
@@ -36,12 +35,13 @@
 
 # Initialize Autoconf
 AC_PREREQ(2.62)
-AC_INIT([Libpspio], [0.0.0],
-  [https://bugs.launchpad.net/libpspio/], [libpspio])
-AC_REVISION([Autotools support for Libpspio])
+AC_INIT([Libpspio-Fortran], [0.0.0],
+  [https://bugs.launchpad.net/libpspio/], [libpspio-fortran])
+AC_REVISION([Autotools support for Libpspio-Fortran])
 AC_CONFIG_AUX_DIR([config/gnu])
 AC_CONFIG_MACRO_DIR([config/m4])
 AC_CONFIG_SRCDIR([.])
+_AC_SRCDIRS(["."])
 
 # Initialize Automake
 AC_CANONICAL_TARGET
@@ -63,14 +63,6 @@ AC_ARG_ENABLE([debug],
   [enable_debug="yes"])
 AC_SUBST(enable_debug)
 
-# Fortran - Optional support
-AC_ARG_ENABLE([fortran],
-  AC_HELP_STRING([--enable-fortran],
-    [Enable Fortran bindings (default: disabled)]),
-  [],
-  [enable_fortran="no"])
-AC_SUBST(enable_fortran)
-
 # GCOV - Optional support
 AC_ARG_ENABLE([gcov],
   AC_HELP_STRING([--enable-gcov],
@@ -78,20 +70,6 @@ AC_ARG_ENABLE([gcov],
   [],
   [enable_gcov="no"])
 AC_SUBST(enable_gcov)
-
-# GSL - Optional support (because of licensing issues)
-AC_ARG_ENABLE([gsl],
-  AC_HELP_STRING([--enable-gsl],
-    [Enable support for GSL (default: enabled)]),
-  [],
-  [enable_gsl="yes"])
-AC_ARG_WITH([gsl-incs],
-  AC_HELP_STRING([--with-gsl-incs],
-    [Includes for the GSL library]))
-AC_ARG_WITH([gsl-libs],
-  AC_HELP_STRING([--with-gsl-libs],
-    [Link flags for the GSL library]))
-AC_SUBST(enable_gsl)
 
 # Memory profiling - Optional support
 AC_ARG_ENABLE([memprof],
@@ -101,19 +79,37 @@ AC_ARG_ENABLE([memprof],
   [enable_memprof="no"])
 AC_SUBST(enable_memprof)
 
-# XML - Optional support
-AC_ARG_ENABLE([xml],
-  AC_HELP_STRING([--enable-xml],
-    [Enable support for XML (default: disabled)]),
-  [],
-  [enable_xml="no"])
-AC_ARG_WITH([xml-incs],
-  AC_HELP_STRING([--with-xml-incs],
-    [Includes for the XML library]))
-AC_ARG_WITH([xml-libs],
-  AC_HELP_STRING([--with-xml-libs],
-    [Link flags for the XML library]))
-AC_SUBST(enable_xml)
+                    # ------------------------------------ #
+
+# Libpspio prefix
+AC_ARG_WITH([pspio],
+  AC_HELP_STRING([--with-pspio],
+    [Install prefix of Libpspio]))
+
+# Libpspio includes
+AC_ARG_WITH([pspio-incs],
+  AC_HELP_STRING([--with-pspio-incs],
+    [Include flags for Libpspio]))
+
+# Libpspio libraries
+AC_ARG_WITH([pspio-libs],
+  AC_HELP_STRING([--with-pspio-libs],
+    [Library flags for Libpspio]))
+
+# ---------------------------------------------------------------------------- #
+
+#
+# Option consistency checking
+#
+
+if test "${with_pspio}" != ""; then
+  if test "${with_pspio_incs}" != ""; then
+    AC_MSG_ERROR([please use '--with-pspio' or '--with-pspio-incs', not both])
+  fi
+  if test "${with_pspio_libs}" != ""; then
+    AC_MSG_ERROR([please use '--with-pspio' or '--with-pspio-libs', not both])
+  fi
+fi
 
 # ---------------------------------------------------------------------------- #
 
@@ -158,30 +154,83 @@ fi
 AC_PROG_CC
 AC_PROG_CPP
 
-# C compiler peculiarities
-AM_PROG_CC_C_O
+                    # ------------------------------------ #
 
-# Required headers
-AC_CHECK_HEADERS([time.h])
+# Look for the Fortran compiler
+if test "${FC}" != "" -a ! -x "${FC}"; then
+  pio_fc_probe=`echo "${FC}" | sed -e 's/ .*//'`
+  if test ! -x "${pio_fc_probe}"; then
+    AC_PATH_PROG([pio_fc_path], [${pio_fc_probe}])
+    if test "${pio_fc_path}" = ""; then
+      AC_MSG_ERROR([could not run Fortran compiler "${FC}"])
+    fi
+  fi
+fi
+AC_PROG_FC
 
-# Required functions
-AC_CHECK_FUNCS([strndup])
-
-# Required libraries
-pio_math_ok="unknown"
-AC_SEARCH_LIBS([expl], [m ml], [pio_math_ok="yes"], [pio_math_ok="no"])
-if test "${pio_math_ok}" != "yes"; then
-  AC_MSG_WARN([math libraries do not provide double precision functions])
+# Enforce strict file extensions
+pio_fc_src_ok="unknown"
+AC_FC_SRCEXT([F90], [pio_fc_src_ok="yes"], [pio_fc_src_ok="no"])
+if test "${pio_fc_src_ok}" != "yes"; then
+  AC_MSG_WARN([Fortran file extension could not be changed])
+  AC_MSG_WARN([Fortran tests may fail])
 fi
 
-# Unit test framework: the Check package
-PIO_SEARCH_CHECK
+# Look for the iso_c_binding module
+pio_fc_iso_c_binding="unknown"
+AC_MSG_CHECKING([for the iso_c_binding Fortran module])
+AC_LANG_PUSH([Fortran])
+AC_COMPILE_IFELSE(
+  [AC_LANG_PROGRAM([], [[use iso_c_binding]])],
+  [pio_fc_iso_c_binding="yes"],
+  [pio_fc_iso_c_binding="no"])
+AC_LANG_POP([Fortran])
+AC_MSG_RESULT([${pio_fc_iso_c_binding}])
+if test "${pio_fc_iso_c_binding}" != "yes"; then
+  AC_MSG_ERROR([the Fortran compiler does not provide
+                the iso_c_binding module
+                This probably happens because this compiler
+                is an antiquity
+                Please disable Fortran support or use a modern
+                Fortran compiler])
+fi
+
+# Fortran compiler peculiarities
+AX_F90_MODULE_EXTENSION
+AC_SUBST(ax_cv_f90_modext)
+AX_F90_MODULE_CASE
+
+# Language mixing
+AC_FC_WRAPPERS
+
+# Need to know the size of a Fortran integer
+ACX_FC_INTEGER_SIZE
+ACX_CC_FORTRAN_INT
 
                     # ------------------------------------ #
 
 # Perl and Python
 AC_PATH_PROGS([PERL], [perl perl6])
 AC_PATH_PROGS([PYTHON], [python python2.7])
+
+                    # ------------------------------------ #
+
+# Inform Automake
+AM_CONDITIONAL([F90_MOD_UPPERCASE],
+  [test "${enable_fortran}" = "yes" -a "${ax_cv_f90_mod_uppercase}" = "yes"])
+
+# ---------------------------------------------------------------------------- #
+
+#
+# Look for Libpspio
+#
+
+pio_pspio_ok="unknown"
+AX_SEARCH_LIBPSPIO(0,0,0)
+
+if test "${pio_pspio_ok}" != "yes"; then
+  AC_MSG_ERROR([Libpspio not found])
+fi
 
 # ---------------------------------------------------------------------------- #
 
@@ -194,47 +243,6 @@ LT_INIT
 LT_PREREQ([2.4])
 LTOBJEXT="lo"
 AC_SUBST(LTOBJEXT)
-
-# ---------------------------------------------------------------------------- #
-
-#
-# Check that all required features are there
-#
-
-# GNU Scientific Library (optional)
-if test "${enable_gsl}" = "yes"; then
-  PIO_CHECK_GSL
-  if test "${pio_gsl_ok}" = "yes"; then
-    AC_DEFINE([HAVE_GSL], 1,
-      [Define to 1 if you have GSL support.])
-    CPPFLAGS="${CPPFLAGS} ${pio_gsl_incs}"
-    LIBS="${pio_gsl_libs} ${LIBS}"
-  else
-    AC_ERROR([GSL support does not work])
-  fi
-fi
-
-# Math libraries (if GSL is disabled)
-if test "${enable_gsl}" = "no"; then
-  AC_SEARCH_LIBS([exp], [m], [pio_math_ok="yes"], [pio_math_ok="no"], [])
-  if test "${pio_math_ok}" = "no"; then
-    AC_MSG_ERROR([no mathematical library found
-      please set the LIBS environment variable adequately when configuring])
-  fi
-fi
-
-# XML (optional)
-if test "${enable_xml}" = "yes"; then
-  PIO_CHECK_XML
-  if test "${pio_xml_ok}" = "yes"; then
-    AC_DEFINE([HAVE_XML], 1,
-      [Define to 1 if you have XML support.])
-    CPPFLAGS="${CPPFLAGS} ${pio_xml_incs}"
-    LIBS="${pio_xml_libs} ${LIBS}"
-  else
-    AC_ERROR([XML support does not work])
-  fi
-fi
 
 # ---------------------------------------------------------------------------- #
 
@@ -256,7 +264,7 @@ fi
 # ---------------------------------------------------------------------------- #
 
 #
-# Instrumentation
+# Profiling
 #
 
 # Memory profiling
@@ -285,7 +293,7 @@ if test "${enable_gcov}" = "yes"; then
   if test "${ac_cv_c_compiler_gnu}" != "yes" -o \
           "${lt_cv_prog_gnu_ld}" != "yes"; then
     AC_MSG_ERROR([code coverage requires GNU compilers
-      please re-run configure using GCC compilers])
+      please re-run configure using GCC compilers for both C and Fortran])
   fi
 
   AC_CHECK_PROGS([GCOV], [gcov])
@@ -295,6 +303,7 @@ if test "${enable_gcov}" = "yes"; then
   fi
 
   CFLAGS_COVERAGE="--coverage --no-inline"
+  FCFLAGS_COVERAGE="--coverage --no-inline"
   LDFLAGS_COVERAGE="--coverage"
   LIBS_COVERAGE="-lgcov"
 fi
@@ -314,25 +323,26 @@ AC_SUBST(LIBS_COVERAGE)
 #
 
 # Make data location available to check
-AC_DEFINE_UNQUOTED([PSPIO_CHK_DATADIR], "${ac_abs_top_srcdir}/psp_references",
+AC_DEFINE_UNQUOTED([PSPIO_CHK_DATADIR],
+  "${ac_abs_top_srcdir}/../psp_references",
   [Directory containing pseudopotential files for the tests.])
 
 # Generate explicit dependencies for GCOV tests
 if test "${enable_gcov}" = "yes"; then
   echo "# Script-generated makefile targets for GCOV tests" \
-    >src/gcov-tests-deps.mf
-  for src in ${ac_top_srcdir}/src/test_*.c; do
-    exe=`basename "${src}" | sed -e 's/\.c//'`
-    echo "" >>src/gcov-tests-deps.mf
-    echo "${exe}.log: gcov_clean.log" >>src/gcov-tests-deps.mf
+    >src/gcov-fortran-tests-deps.mf
+  for src in ${ac_top_srcdir}/src/test_*.F90; do
+    exe=`basename "${src}" | sed -e 's/\.F90//'`
+    echo "" >>src/gcov-fortran-tests-deps.mf
+    echo "${exe}.log: gcov_fortran_clean.log" >>src/gcov-fortran-tests-deps.mf
   done
   for src in ${ac_top_srcdir}/src/test_*.in; do
     exe=`basename "${src}" | sed -e 's/\.in//'`
-    echo "" >>src/gcov-tests-deps.mf
-    echo "${exe}.log: gcov_clean.log" >>src/gcov-tests-deps.mf
+    echo "" >>src/gcov-fortran-tests-deps.mf
+    echo "${exe}.log: gcov_fortran_clean.log" >>src/gcov-fortran-tests-deps.mf
   done
-  echo "" >>src/gcov-tests-deps.mf
-  echo "gcov_report.log: gcov_clean.log" >>src/gcov-tests-deps.mf
+  echo "" >>src/gcov-fortran-tests-deps.mf
+  echo "gcov_report.log: gcov_clean.log" >>src/gcov-fortran-tests-deps.mf
 fi
 
 # ---------------------------------------------------------------------------- #
@@ -341,13 +351,6 @@ fi
 # Output configuration
 #
 
-AM_CONDITIONAL([DO_BUILD_FORTRAN], [test "${enable_fortran}" = "yes"])
-AC_CONFIG_SUBDIRS([fortran])
-
-AC_MSG_NOTICE([Fortran   : ${enable_fortran}])
-AC_MSG_NOTICE([GSL       : ${enable_gsl}])
-AC_MSG_NOTICE([XML       : ${enable_xml}])
-AC_MSG_NOTICE([])
 AC_MSG_NOTICE([Debugging : ${enable_debug}])
 AC_MSG_NOTICE([Profiling : ${enable_memprof}])
 AC_MSG_NOTICE([Coverage  : ${enable_gcov}])
@@ -356,23 +359,26 @@ AC_MSG_NOTICE([CPP      = ${CPP}])
 AC_MSG_NOTICE([CPPFLAGS = ${CPPFLAGS}])
 AC_MSG_NOTICE([CC       = ${CC}])
 AC_MSG_NOTICE([CFLAGS   = ${CFLAGS}])
+AC_MSG_NOTICE([FC       = ${FC}])
+AC_MSG_NOTICE([FCFLAGS  = ${FCFLAGS}])
 AC_MSG_NOTICE([LDFLAGS  = ${LDFLAGS}])
 AC_MSG_NOTICE([LIBS     = ${LIBS}])
 
 AC_CONFIG_COMMANDS([script-perms],
   [chmod u+x \
     src/gcov_check_coverage \
-    src/gcov_clean \
-    src/gcov_report \
-    src/test_memory
-  ])
+    src/gcov_fortran_clean \
+    src/gcov_fortran_report \
+    src/test_fortran_io_multiple \
+    src/test_fortran_memory])
 
 AC_CONFIG_FILES([
   Makefile
   src/Makefile
   src/gcov_check_coverage
-  src/gcov_clean
-  src/gcov_report
-  src/test_memory])
+  src/gcov_fortran_clean
+  src/gcov_fortran_report
+  src/test_fortran_io_multiple
+  src/test_fortran_memory])
 
 AC_OUTPUT

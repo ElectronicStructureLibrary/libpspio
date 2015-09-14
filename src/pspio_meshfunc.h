@@ -27,7 +27,7 @@
 
 #include "pspio_error.h"
 #include "pspio_mesh.h"
-#include "interpolation.h"
+#include "pspio_interp.h"
 
 
 /**********************************************************************
@@ -43,15 +43,15 @@ typedef struct{
 
   /* Function */
   double *f;                  /**< function values on the mesh */
-  interpolation_t *f_interp;  /**< function interpolation object */
+  pspio_interp_t *f_interp;  /**< function interpolation object */
 
   /* Function first derivative */
   double *fp;                 /**< first derivative values on the mesh */
-  interpolation_t *fp_interp; /**< first derivative interpolation object */
+  pspio_interp_t *fp_interp; /**< first derivative interpolation object */
 
   /* Function second derivative */
   double *fpp;                 /**< second derivative on the mesh */
-  interpolation_t *fpp_interp; /**< second derivative interpolation object */
+  pspio_interp_t *fpp_interp; /**< second derivative interpolation object */
 
 } pspio_meshfunc_t;
 

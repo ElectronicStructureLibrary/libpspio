@@ -15,7 +15,7 @@ This code is distributed under the GNU LGPL license.
 # include <stdlib.h>
 # include <string.h>
 
-#include "jb_spline.h"
+#include "pspio_jb_spline.h"
 
 #if defined HAVE_CONFIG_H
 #include "config.h"

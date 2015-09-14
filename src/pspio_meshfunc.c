@@ -61,17 +61,17 @@ int pspio_meshfunc_alloc(pspio_meshfunc_t **func, const int np)
   (*func)->f = (double *) malloc (np * sizeof(double));
   FULFILL_OR_EXIT( (*func)->f != NULL, PSPIO_ENOMEM );
   memset((*func)->f, 0, np*sizeof(double));
-  SUCCEED_OR_RETURN( interpolation_alloc(&(*func)->f_interp, (*func)->interp_method, np) );
+  SUCCEED_OR_RETURN( pspio_interp_alloc(&(*func)->f_interp, (*func)->interp_method, np) );
 
   (*func)->fp = (double *) malloc (np * sizeof(double));
   FULFILL_OR_EXIT( (*func)->fp != NULL, PSPIO_ENOMEM );
   memset((*func)->fp, 0, np*sizeof(double));
-  SUCCEED_OR_RETURN( interpolation_alloc(&(*func)->fp_interp, (*func)->interp_method, np) );
+  SUCCEED_OR_RETURN( pspio_interp_alloc(&(*func)->fp_interp, (*func)->interp_method, np) );
 
   (*func)->fpp = (double *) malloc (np * sizeof(double));
   FULFILL_OR_EXIT( (*func)->fpp != NULL, PSPIO_ENOMEM );
   memset((*func)->fpp, 0, np*sizeof(double));
-  SUCCEED_OR_RETURN( interpolation_alloc(&(*func)->fpp_interp, (*func)->interp_method, np) );
+  SUCCEED_OR_RETURN( pspio_interp_alloc(&(*func)->fpp_interp, (*func)->interp_method, np) );
 
   return PSPIO_SUCCESS;
 }
@@ -90,25 +90,25 @@ int pspio_meshfunc_init(pspio_meshfunc_t *func, const pspio_mesh_t *mesh,
 
   /* Function */
   memcpy(func->f, f, mesh->np * sizeof(double));
-  SUCCEED_OR_RETURN( interpolation_init(func->f_interp, mesh, func->f) );
+  SUCCEED_OR_RETURN( pspio_interp_init(func->f_interp, mesh, func->f) );
 
   /* First derivative */
   if ( fp != NULL ) {
     memcpy(func->fp, fp, mesh->np * sizeof(double));
   } else {
     for (i=0; i<mesh->np; i++) 
-      func->fp[i] = interpolation_eval_deriv(func->f_interp, mesh->r[i]);
+      func->fp[i] = pspio_interp_eval_deriv(func->f_interp, mesh->r[i]);
   }
-  SUCCEED_OR_RETURN( interpolation_init(func->fp_interp, mesh, func->fp) );
+  SUCCEED_OR_RETURN( pspio_interp_init(func->fp_interp, mesh, func->fp) );
 
   /* Second derivative */
   if ( fpp != NULL ) {
     memcpy(func->fpp, fpp, mesh->np * sizeof(double));
   } else {
     for (i=0; i<mesh->np; i++)
-      func->fpp[i] = interpolation_eval_deriv2(func->f_interp, mesh->r[i]);
+      func->fpp[i] = pspio_interp_eval_deriv2(func->f_interp, mesh->r[i]);
   }
-  SUCCEED_OR_RETURN( interpolation_init(func->fpp_interp, mesh, func->fpp) );
+  SUCCEED_OR_RETURN( pspio_interp_init(func->fpp_interp, mesh, func->fpp) );
 
   return PSPIO_SUCCESS;
 }
@@ -136,31 +136,31 @@ int pspio_meshfunc_copy(pspio_meshfunc_t **dst, const pspio_meshfunc_t *src)
      we might have memory leaks if the interpolation method used
      previously in dst in not the same as in src. */
   if ( (*dst)->f_interp != NULL ) {
-    interpolation_free((*dst)->f_interp);
+    pspio_interp_free((*dst)->f_interp);
     (*dst)->f_interp = NULL;
   }
   if ( (*dst)->fp_interp != NULL ) {
-    interpolation_free((*dst)->fp_interp);
+    pspio_interp_free((*dst)->fp_interp);
     (*dst)->fp_interp = NULL;
   }
   if ( (*dst)->fpp_interp != NULL ) {
-    interpolation_free((*dst)->fpp_interp);
+    pspio_interp_free((*dst)->fpp_interp);
     (*dst)->fpp_interp = NULL;
   }
 
   SUCCEED_OR_RETURN( pspio_mesh_copy(&(*dst)->mesh, src->mesh) );
 
   memcpy((*dst)->f, src->f, np * sizeof(double));
-  SUCCEED_OR_RETURN( interpolation_alloc(&(*dst)->f_interp, src->interp_method, np) );
-  SUCCEED_OR_RETURN( interpolation_init((*dst)->f_interp, (*dst)->mesh, (*dst)->f) );
+  SUCCEED_OR_RETURN( pspio_interp_alloc(&(*dst)->f_interp, src->interp_method, np) );
+  SUCCEED_OR_RETURN( pspio_interp_init((*dst)->f_interp, (*dst)->mesh, (*dst)->f) );
 
   memcpy((*dst)->fp, src->fp, np * sizeof(double));
-  SUCCEED_OR_RETURN( interpolation_alloc(&(*dst)->fp_interp, src->interp_method, np) );
-  SUCCEED_OR_RETURN( interpolation_init((*dst)->fp_interp, (*dst)->mesh, (*dst)->fp) );
+  SUCCEED_OR_RETURN( pspio_interp_alloc(&(*dst)->fp_interp, src->interp_method, np) );
+  SUCCEED_OR_RETURN( pspio_interp_init((*dst)->fp_interp, (*dst)->mesh, (*dst)->fp) );
 
   memcpy((*dst)->fpp, src->fpp, np * sizeof(double));
-  SUCCEED_OR_RETURN( interpolation_alloc(&(*dst)->fpp_interp, src->interp_method, np) );
-  SUCCEED_OR_RETURN( interpolation_init((*dst)->fpp_interp, (*dst)->mesh, (*dst)->fpp) );
+  SUCCEED_OR_RETURN( pspio_interp_alloc(&(*dst)->fpp_interp, src->interp_method, np) );
+  SUCCEED_OR_RETURN( pspio_interp_init((*dst)->fpp_interp, (*dst)->mesh, (*dst)->fpp) );
 
   return PSPIO_SUCCESS;
 }
@@ -171,13 +171,13 @@ void pspio_meshfunc_free(pspio_meshfunc_t *func)
     pspio_mesh_free(func->mesh);
 
     free(func->f);
-    interpolation_free(func->f_interp);
+    pspio_interp_free(func->f_interp);
 
     free(func->fp);
-    interpolation_free(func->fp_interp);
+    pspio_interp_free(func->fp_interp);
 
     free(func->fpp);
-    interpolation_free(func->fpp_interp);
+    pspio_interp_free(func->fpp_interp);
 
     free(func);
   }
@@ -264,7 +264,7 @@ double pspio_meshfunc_eval(const pspio_meshfunc_t *func, const double r)
     return linear_extrapolation(func->mesh->r[func->mesh->np-2], func->mesh->r[func->mesh->np-1], 
 				func->f[func->mesh->np-2], func->f[func->mesh->np-1], r);
   } else {
-    return interpolation_eval(func->f_interp, r);
+    return pspio_interp_eval(func->f_interp, r);
   }
 }
 
@@ -282,7 +282,7 @@ double pspio_meshfunc_eval_deriv(const pspio_meshfunc_t *func, const double r)
     return linear_extrapolation(func->mesh->r[func->mesh->np-2], func->mesh->r[func->mesh->np-1], 
 				func->fp[func->mesh->np-2], func->fp[func->mesh->np-1], r);
   } else {
-    return interpolation_eval(func->fp_interp, r);
+    return pspio_interp_eval(func->fp_interp, r);
   }
 }
 
@@ -301,6 +301,6 @@ double pspio_meshfunc_eval_deriv2(const pspio_meshfunc_t *func, const double r)
     return linear_extrapolation(func->mesh->r[func->mesh->np-2], func->mesh->r[func->mesh->np-1], 
 				func->fpp[func->mesh->np-2], func->fpp[func->mesh->np-1], r);
   } else {
-    return interpolation_eval(func->fpp_interp, r);
+    return pspio_interp_eval(func->fpp_interp, r);
   }
 }

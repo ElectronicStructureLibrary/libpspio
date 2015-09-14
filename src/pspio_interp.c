@@ -21,7 +21,7 @@
 #include <assert.h>
 #include <string.h>
 
-#include "interpolation.h"
+#include "pspio_interp.h"
 
 #if defined HAVE_CONFIG_H
 #include "config.h"
@@ -53,12 +53,12 @@ struct interpolation {
  * Global routines                                                    *
  **********************************************************************/
 
-int interpolation_alloc(interpolation_t **interp, const int method, const int np)
+int pspio_interp_alloc(pspio_interp_t **interp, const int method, const int np)
 {
   assert(interp != NULL);
   assert(np > 1);
 
-  *interp = (interpolation_t *) malloc (sizeof(interpolation_t));
+  *interp = (pspio_interp_t *) malloc (sizeof(pspio_interp_t));
   FULFILL_OR_EXIT(*interp != NULL, PSPIO_ENOMEM);
 
   /* Make sure all pointers are initialized to NULL, as only some of them will be used */
@@ -86,7 +86,7 @@ int interpolation_alloc(interpolation_t **interp, const int method, const int np
   return PSPIO_SUCCESS;
 }
 
-int interpolation_copy(interpolation_t **dst, const interpolation_t *src)
+int pspio_interp_copy(pspio_interp_t **dst, const pspio_interp_t *src)
 {
   int np;
 
@@ -99,9 +99,9 @@ int interpolation_copy(interpolation_t **dst, const interpolation_t *src)
 #endif
 
   if ( *dst != NULL ) {
-    interpolation_free(*dst);
+    pspio_interp_free(*dst);
   }
-  SUCCEED_OR_RETURN(interpolation_alloc(dst, src->method, np));
+  SUCCEED_OR_RETURN(pspio_interp_alloc(dst, src->method, np));
 
   switch (src->method) {
 #ifdef HAVE_GSL
@@ -128,7 +128,7 @@ int interpolation_copy(interpolation_t **dst, const interpolation_t *src)
   return PSPIO_SUCCESS;
 }
 
-int interpolation_init(interpolation_t *interp, const pspio_mesh_t *mesh, const double *f)
+int pspio_interp_init(pspio_interp_t *interp, const pspio_mesh_t *mesh, const double *f)
 {
 #ifdef HAVE_GSL
   int ierr;
@@ -157,7 +157,7 @@ int interpolation_init(interpolation_t *interp, const pspio_mesh_t *mesh, const 
   return PSPIO_SUCCESS;
 }
 
-void interpolation_free(interpolation_t *interp) {
+void pspio_interp_free(pspio_interp_t *interp) {
 
   if (interp != NULL) {
 
@@ -185,7 +185,7 @@ void interpolation_free(interpolation_t *interp) {
  * Utility routines                                                   *
  **********************************************************************/
 
-double interpolation_eval(const interpolation_t *interp, const double r)
+double pspio_interp_eval(const pspio_interp_t *interp, const double r)
 {
   assert(interp != NULL);
 
@@ -201,7 +201,7 @@ double interpolation_eval(const interpolation_t *interp, const double r)
   }
 }
 
-double interpolation_eval_deriv(const interpolation_t *interp, const double r)
+double pspio_interp_eval_deriv(const pspio_interp_t *interp, const double r)
 {
   assert(interp != NULL);
 
@@ -217,7 +217,7 @@ double interpolation_eval_deriv(const interpolation_t *interp, const double r)
   }
 }
 
-double interpolation_eval_deriv2(const interpolation_t *interp, const double r)
+double pspio_interp_eval_deriv2(const pspio_interp_t *interp, const double r)
 {
   assert(interp != NULL);
 
