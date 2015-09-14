@@ -46,19 +46,7 @@
 /**
 * Interpolation data structure
 */
-typedef struct{
-  int method; /**< Interpolation method */
-
-#ifdef HAVE_GSL
-  /* Objects to the used with GSL interpolation */
-  gsl_spline *gsl_spl;       /**< gsl spline structure */
-  gsl_interp_accel *gsl_acc; /**< gsl accelerator for interpolation lookups */
-#endif
-
-  /* Objects to be used with jb_spline */
-  jb_spline_t *jb_spl;       /**< JB spline structure */
-
-} interpolation_t;
+typedef struct interpolation interpolation_t;
 
 
 /**********************************************************************
