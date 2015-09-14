@@ -310,6 +310,10 @@ START_TEST(test_state_lookup_table)
   }
   free(st);
 
+  for (i=0; table[i]!=NULL; i++) {
+    free(table[i]);
+  }
+  free(table);
 }
 END_TEST
 
