@@ -50,9 +50,7 @@ int pspio_pspdata_alloc(pspio_pspdata_t **pspdata)
   /* Nullify pointers and initialize all values to 0 */
   (*pspdata)->format_guessed = PSPIO_FMT_UNKNOWN;
   (*pspdata)->info = NULL;
-  (*pspdata)->symbol = (char *) malloc (3*sizeof(char)); /* This string has a fixed lenght, so we allocate the memory here */
-  FULFILL_OR_EXIT((*pspdata)->symbol != NULL, PSPIO_ENOMEM);
-  sprintf((*pspdata)->symbol, "   ");
+  (*pspdata)->symbol = NULL;
   (*pspdata)->z = 0.0;
   (*pspdata)->zvalence = 0.0;
   (*pspdata)->nelvalence = 0.0;
@@ -205,7 +203,10 @@ void pspio_pspdata_reset(pspio_pspdata_t *pspdata)
     free(pspdata->info);
     pspdata->info = NULL;
   }
-  sprintf(pspdata->symbol, "   ");
+  if (pspdata->symbol != NULL) {
+    free(pspdata->symbol);
+    pspdata->symbol = NULL;
+  }
   pspdata->z = 0.0;
   pspdata->zvalence = 0.0;
   pspdata->nelvalence = 0.0;
