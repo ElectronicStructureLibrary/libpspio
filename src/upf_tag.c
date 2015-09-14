@@ -34,18 +34,13 @@
 int upf_tag_init(FILE * fp, const char * tag, const int go_back)
 {
   char line[PSPIO_STRLEN_LINE];
-  char * init_tag = NULL;
+  char init_tag[PSPIO_STRLEN_LINE];
   char * read_string = NULL;
-  int i;
 
   if ( go_back ) rewind(fp);
   
   /* Prepare base string */
-  init_tag = (char *) malloc ((strlen(tag)+3) * sizeof(char));
-  FULFILL_OR_EXIT(init_tag != NULL, PSPIO_ENOMEM);
   sprintf(init_tag, "<%s>", tag);
-  for (i=0;init_tag[i]; i++)
-    init_tag[i] = tolower(init_tag[i]);
 
   while ( fgets(line, sizeof line, fp) != NULL ) {
     /* Skip white spaces */
@@ -53,51 +48,38 @@ int upf_tag_init(FILE * fp, const char * tag, const int go_back)
       read_string = strtok(line," ");
     else 
       read_string = line;
-    /* Lowercase line */
-    for (i=0;read_string[i]; i++)
-      read_string[i] = tolower(read_string[i]);
-    
-    if ( strncmp(read_string, init_tag, strlen(init_tag))==0 ) {
-      free(init_tag);
+
+    if ( strncasecmp(read_string, init_tag, strlen(init_tag)) == 0 ) {
       return PSPIO_SUCCESS;
     }
   }
 
-  free(init_tag);
   return PSPIO_EFILE_CORRUPT;
 }
 
 int upf_tag_check_end(FILE * fp, const char * tag)
 {
   char line[PSPIO_STRLEN_LINE];
-  char * ending_tag = NULL;
+  char end_tag[PSPIO_STRLEN_LINE];
   char * read_string = NULL;
-  int i, status;
-  
+  int status;
+
   /* Prepare base string */
-  ending_tag = (char *) malloc ((strlen(tag)+4) * sizeof(char));
-  FULFILL_OR_EXIT(ending_tag != NULL, PSPIO_ENOMEM);
-  sprintf(ending_tag, "</%s>", tag);
-  for (i=0;ending_tag[i]; i++)
-    ending_tag[i] = tolower(ending_tag[i]);
-  
+  sprintf(end_tag, "</%s>", tag);
+
   FULFILL_OR_RETURN( fgets(line, sizeof line, fp) != NULL, PSPIO_EIO );
   /* Skip white spaces */
   if (line[0] == ' ')
     read_string = strtok(line," ");
-  else 
+  else
     read_string = line;
-  /* Lowercase line */
-  for (i=0;read_string[i]; i++)
-    read_string[i] = tolower(read_string[i]);
 
   /* Compare with the ending tag */
-  if ( strncmp(read_string, ending_tag, strlen(ending_tag)) == 0 ) {
+  if ( strncasecmp(read_string, end_tag, strlen(end_tag)) == 0 ) {
     status = PSPIO_SUCCESS;
   } else {
     status = PSPIO_EFILE_CORRUPT;
   }
-  free(ending_tag);
 
   return status;
 }
@@ -106,19 +88,14 @@ int upf_tag_check_end(FILE * fp, const char * tag)
 int upf_tag_isdef(FILE * fp, const char * tag)
 {
   char line[PSPIO_STRLEN_LINE];
-  char * init_tag = NULL; 
+  char init_tag[PSPIO_STRLEN_LINE];
   char * read_string = NULL;
-  int i;
-  
+
   /* Go to the beginning of the buffer */
   rewind(fp);
   
   /* Prepare base string */
-  init_tag = (char *) malloc ((strlen(tag)+3) * sizeof(char));
-  FULFILL_OR_EXIT(init_tag != NULL, PSPIO_ENOMEM);
   sprintf(init_tag, "<%s>", tag);
-  for (i=0;init_tag[i]; i++)
-    init_tag[i] = tolower(init_tag[i]);
 
   while ( fgets(line, sizeof line, fp) != NULL ) {
     /* Skip white spaces */
@@ -126,17 +103,12 @@ int upf_tag_isdef(FILE * fp, const char * tag)
       read_string = strtok(line," ");
     else 
       read_string = line;
-    /* Lowercase line */
-    for (i=0;line[i]; i++)
-      line[i] = tolower(line[i]);
 
-    if ( strncmp(read_string,init_tag,strlen(init_tag))==0 ) {
-      free(init_tag);
+    if ( strncasecmp(read_string, init_tag, strlen(init_tag)) == 0 ) {
       return 1;
     }
   }
 
-  free(init_tag);
   /* End of the buffer reached; so return false */
   return 0;
 }
