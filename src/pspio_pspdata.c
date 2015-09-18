@@ -373,8 +373,8 @@ int pspio_pspdata_set_n_states(pspio_pspdata_t *pspdata, const int n_states)
   assert(pspdata != NULL);
 
   if (pspdata->n_states >= 0) {
-    for (ip=0; ip<pspdata->n_states; ip++) {
-      pspio_state_free(pspdata->states[ip]);
+    for (is=0; is<pspdata->n_states; is++) {
+      pspio_state_free(pspdata->states[is]);
     }
     free(pspdata->states);
   }
