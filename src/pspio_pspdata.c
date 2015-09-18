@@ -372,6 +372,13 @@ int pspio_pspdata_set_n_states(pspio_pspdata_t *pspdata, const int n_states)
 
   assert(pspdata != NULL);
 
+  if (pspdata->n_states >= 0) {
+    for (ip=0; ip<pspdata->n_states; ip++) {
+      pspio_state_free(pspdata->states[ip]);
+    }
+    free(pspdata->states);
+  }
+
   pspdata->n_states = n_states;
 
   pspdata->states = (pspio_state_t **) malloc ( pspdata->n_states*sizeof(pspio_state_t *));
@@ -407,6 +414,13 @@ int pspio_pspdata_set_n_potentials(pspio_pspdata_t *pspdata, const int n_potenti
 
   assert(pspdata != NULL);
 
+  if (pspdata->n_potentials >= 0) {
+    for (ip=0; ip<pspdata->n_potentials; ip++) {
+      pspio_potential_free(pspdata->potentials[ip]);
+    }
+    free(pspdata->potentials);
+  }
+
   pspdata->n_potentials = n_potentials;
 
   pspdata->potentials = (pspio_potential_t **) malloc ( pspdata->n_potentials*sizeof(pspio_potential_t *));
@@ -433,6 +447,13 @@ int pspio_pspdata_set_n_projectors(pspio_pspdata_t *pspdata, const int n_project
   int ip;
 
   assert(pspdata != NULL);
+
+  if (pspdata->n_projectors >= 0) {
+    for (ip=0; ip<pspdata->n_projectors; ip++) {
+      pspio_projector_free(pspdata->projectors[ip]);
+    }
+    free(pspdata->projectors);
+  }
 
   pspdata->n_projectors = n_projectors;
 
