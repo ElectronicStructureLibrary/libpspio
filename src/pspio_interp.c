@@ -39,6 +39,7 @@
 
 struct pspio_interp_t {
   int method; /**< Interpolation method */
+  int size; /**< Interpolation size */
 
 #ifdef HAVE_GSL
   /* Objects to the used with GSL interpolation */
@@ -54,10 +55,10 @@ struct pspio_interp_t {
  * Global routines                                                    *
  **********************************************************************/
 
-int pspio_interp_alloc(pspio_interp_t **interp, const int method, const int np)
+int pspio_interp_alloc(pspio_interp_t **interp, const int method, const int size)
 {
   assert(interp != NULL);
-  assert(np > 1);
+  assert(size > 1);
 
   *interp = (pspio_interp_t *) malloc (sizeof(pspio_interp_t));
   FULFILL_OR_EXIT(*interp != NULL, PSPIO_ENOMEM);
@@ -70,15 +71,16 @@ int pspio_interp_alloc(pspio_interp_t **interp, const int method, const int np)
   (*interp)->jb_spl = NULL;
 
   (*interp)->method = method;
+  (*interp)->size = size;
   switch (method) {
 #ifdef HAVE_GSL
   case PSPIO_INTERP_GSL_CSPLINE:
-    (*interp)->gsl_spl = gsl_spline_alloc(gsl_interp_cspline, np);
+    (*interp)->gsl_spl = gsl_spline_alloc(gsl_interp_cspline, (*interp)->size);
     (*interp)->gsl_acc = gsl_interp_accel_alloc();
     break;
 #endif
   case PSPIO_INTERP_JB_CSPLINE:
-    SUCCEED_OR_RETURN( jb_spline_alloc(&((*interp)->jb_spl), np) );
+    SUCCEED_OR_RETURN( jb_spline_alloc(&((*interp)->jb_spl), (*interp)->size) );
     break;
   default:
     RETURN_WITH_ERROR( PSPIO_ENOSUPPORT );
@@ -89,20 +91,12 @@ int pspio_interp_alloc(pspio_interp_t **interp, const int method, const int np)
 
 int pspio_interp_copy(pspio_interp_t **dst, const pspio_interp_t *src)
 {
-  int np;
-
   assert(src != NULL);
-
-#ifdef HAVE_GSL
-  np = src->gsl_spl->size;
-#else
-  np = src->jb_spl->np;
-#endif
 
   if ( *dst != NULL ) {
     pspio_interp_free(*dst);
   }
-  SUCCEED_OR_RETURN(pspio_interp_alloc(dst, src->method, np));
+  SUCCEED_OR_RETURN(pspio_interp_alloc(dst, src->method, src->size));
 
   switch (src->method) {
 #ifdef HAVE_GSL
