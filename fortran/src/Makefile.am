@@ -115,7 +115,7 @@ test_fortran_io_LDADD = \
   @pio_pspio_libs@ \
   $(LIBS_COVERAGE)
 test_fortran_io_DEPENDENCIES = \
-  ../libpspio.la \
+  @pio_pspio_libs@ \
   libfpspio.la \
   $(fpio_objs)
 
