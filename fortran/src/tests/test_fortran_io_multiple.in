@@ -1,7 +1,7 @@
 #!/bin/sh
 
 # Init
-pspdir="@top_srcdir@/psp_references"
+pspdir="@top_srcdir@/../psp_references"
 test_program="./test_fortran_io"
 
 # Check environment

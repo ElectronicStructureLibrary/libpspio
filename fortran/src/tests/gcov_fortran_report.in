@@ -4,7 +4,7 @@ GCOV="@GCOV@"
 LN_S="@LN_S@"
 OBJEXT="@OBJEXT@"
 enable_gcov="@enable_gcov@"
-srcdir="@top_srcdir@/src/fortran"
+srcdir="@top_srcdir@/fortran/src"
 my_name=`basename $0`
 
 if test "${enable_gcov}" = "yes"; then
@@ -23,7 +23,7 @@ if test "${enable_gcov}" = "yes"; then
       ${gcov_src} >/dev/null 2>/dev/null
   done
 
-  if ../gcov_check_coverage *.gcov; then
+  if ./gcov_check_coverage *.gcov; then
     exit 0
   else
     grep -E -A3 -B3 '(#####)|(SNH)' *.gcov

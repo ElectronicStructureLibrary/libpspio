@@ -21,6 +21,8 @@
 # Makefile for the sources of Libpspio-Fortran
 #
 
+SUBDIRS = . tests
+
                     # ------------------------------------ #
 
 #
@@ -53,9 +55,6 @@ fpio_inc_srcs = \
   interface_state_inc.F90 \
   interface_xc_inc.F90
 
-# Fortran objects
-fpio_objs = $(fpio_srcs:f90=$(LTOBJEXT))
-
 # Fortran modules
 if F90_MOD_UPPERCASE
   fpio_mods = FPSPIO_M.@ax_cv_f90_modext@
@@ -85,48 +84,8 @@ libfpspio_la_SOURCES = $(fpio_srcs)
 # Headers
 nodist_include_HEADERS = $(fpio_mods)
 
-                    # ------------------------------------ #
-
-#
-# Test programs
-#
-
-fpio_xfail_tests = \
-  test_fortran_io
-fpio_wrapped_tests = \
-  test_fortran_io_multiple
-fpio_gcov_pre_tests = \
-  gcov_fortran_clean
-fpio_gcov_post_tests = \
-  gcov_fortran_report
-fpio_memprof_tests = \
-  test_fortran_memory
-
-check_PROGRAMS = $(fpio_xfail_tests)
-nodist_check_SCRIPTS = \
-  $(fpio_gcov_pre_tests) \
-  $(fpio_wrapped_tests) \
-  $(fpio_gcov_post_tests) \
-  $(fpio_memprof_tests)
-
-test_fortran_io_SOURCES = test_fortran_io.F90
-test_fortran_io_LDADD = \
-  -lfpspio \
-  @pio_pspio_libs@ \
-  $(LIBS_COVERAGE)
-test_fortran_io_DEPENDENCIES = \
-  ../libpspio.la \
-  libfpspio.la \
-  $(fpio_objs)
-
-TESTS = \
-  $(fpio_gcov_pre_tests) \
-  $(fpio_xfail_tests) \
-  $(fpio_wrapped_tests) \
-  $(fpio_gcov_post_tests) \
-  $(fpio_memprof_tests)
-XFAIL_TESTS = \
-  $(fpio_xfail_tests)
+# Force check to build the library first
+check-local: libfpspio.la
 
                     # ------------------------------------ #
 
@@ -140,17 +99,11 @@ fpspio.$(LTOBJEXT): $(fpio_inc_srcs)
 $(fpio_mods): fpspio.$(LTOBJEXT)
 	@echo "Modules already built"
 
-# Code coverage
--include gcov-fortran-tests-deps.mf
-
                     # ------------------------------------ #
 
 #
 # Explicit targets
 #
-
-# Temporary test outputs
-MOSTLYCLEANFILES = *.gcda *.gcno *.gcov test_*.tmp
 
 # Fortran modules have to be cleaned explicitely
 CLEANFILES = $(fpio_mods)
