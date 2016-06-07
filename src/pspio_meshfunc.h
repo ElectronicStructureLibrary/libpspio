@@ -68,7 +68,7 @@ typedef struct{
  * @return error code
  * @note np should be larger than 1.
  */
-int pspio_meshfunc_alloc(pspio_meshfunc_t **func, const int np);
+int pspio_meshfunc_alloc(pspio_meshfunc_t **func, int np);
 
 /**
  * Initializes the function data.
@@ -173,7 +173,7 @@ int pspio_meshfunc_cmp(const pspio_meshfunc_t *meshfunc1, const
  * @param[in] r: point were we want to evaluate the function
  * @return value of the function
  */
-double pspio_meshfunc_eval(const pspio_meshfunc_t *func, const double r);
+double pspio_meshfunc_eval(const pspio_meshfunc_t *func, double r);
 
 /**
  * Returns the value of the derivative of the function at an arbitrary
@@ -183,7 +183,7 @@ double pspio_meshfunc_eval(const pspio_meshfunc_t *func, const double r);
  * @param[in] r: point were we want to evaluate the function
  * @return value of the derivative
  */
-double pspio_meshfunc_eval_deriv(const pspio_meshfunc_t *func, const double r);
+double pspio_meshfunc_eval_deriv(const pspio_meshfunc_t *func, double r);
 
 /**
  * Returns the value of the second derivative of the function at an
@@ -193,7 +193,7 @@ double pspio_meshfunc_eval_deriv(const pspio_meshfunc_t *func, const double r);
  * @param[in] r: point were we want to evaluate the function
  * @return value of the second derivative
  */
-double pspio_meshfunc_eval_deriv2(const pspio_meshfunc_t *func, const double r);
+double pspio_meshfunc_eval_deriv2(const pspio_meshfunc_t *func, double r);
 
 
 #endif

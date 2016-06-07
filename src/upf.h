@@ -86,7 +86,7 @@ int upf_read_header(FILE *fp, int *np, pspio_pspdata_t *pspdata);
  * @param[inout] pspdata the data structure
  * @return error code
  */
-int upf_read_mesh(FILE *fp, const int np, pspio_pspdata_t *pspdata);
+int upf_read_mesh(FILE *fp, int np, pspio_pspdata_t *pspdata);
 
 /**
  * Read the non-linear core-corrections
@@ -94,7 +94,7 @@ int upf_read_mesh(FILE *fp, const int np, pspio_pspdata_t *pspdata);
  * @param[inout] pspdata the data structure
  * @return error code
  */
-int upf_read_nlcc(FILE *fp, const int np, pspio_pspdata_t *pspdata);
+int upf_read_nlcc(FILE *fp, int np, pspio_pspdata_t *pspdata);
 
 /**
  * Read the non-local projectors
@@ -102,7 +102,7 @@ int upf_read_nlcc(FILE *fp, const int np, pspio_pspdata_t *pspdata);
  * @param[inout] pspdata the data structure
  * @return error code
  */
-int upf_read_nonlocal(FILE *fp, const int np, pspio_pspdata_t *pspdata);
+int upf_read_nonlocal(FILE *fp, int np, pspio_pspdata_t *pspdata);
 
 /**
  * Read the local part of the pseudos
@@ -110,7 +110,7 @@ int upf_read_nonlocal(FILE *fp, const int np, pspio_pspdata_t *pspdata);
  * @param[inout] pspdata the data structure
  * @return error code
  */
-int upf_read_local(FILE *fp, const int np, pspio_pspdata_t *pspdata);
+int upf_read_local(FILE *fp, int np, pspio_pspdata_t *pspdata);
 
 /**
  * Read the pseudo-wavefunctions
@@ -118,7 +118,7 @@ int upf_read_local(FILE *fp, const int np, pspio_pspdata_t *pspdata);
  * @param[inout] pspdata the data structure
  * @return error code
  */
-int upf_read_pswfc(FILE *fp, const int np, pspio_pspdata_t *pspdata);
+int upf_read_pswfc(FILE *fp, int np, pspio_pspdata_t *pspdata);
 
 /**
  * Read the valence electronic charge
@@ -126,7 +126,7 @@ int upf_read_pswfc(FILE *fp, const int np, pspio_pspdata_t *pspdata);
  * @param[inout] pspdata the data structure
  * @return error code
  */
-int upf_read_rhoatom(FILE *fp, const int np, pspio_pspdata_t *pspdata);
+int upf_read_rhoatom(FILE *fp, int np, pspio_pspdata_t *pspdata);
 
 
 /**********************************************************************
@@ -211,7 +211,7 @@ void upf_write_addinfo(FILE *fp, const pspio_pspdata_t *pspdata);
  * @param[in] go_back decides if it has to go to the beginning of the file
  * @return error code
  */
-int upf_tag_init(FILE * fp, const char * tag, const int go_back);
+int upf_tag_init(FILE *fp, const char *tag, int go_back);
 
 /**
  * Evaluates if a tag is correctly closed
@@ -219,7 +219,7 @@ int upf_tag_init(FILE * fp, const char * tag, const int go_back);
  * @param[in] tag the tag. It is case-insensitive
  * @return 0 if correct, 1 otherwise
  */
-int upf_tag_check_end(FILE * fp, const char * tag);
+int upf_tag_check_end(FILE *fp, const char *tag);
 
 /**
  * Evaluates if a tag is defined
@@ -227,7 +227,7 @@ int upf_tag_check_end(FILE * fp, const char * tag);
  * @param[in] tag the tag. It is case-insensitive
  * @return 0 if defined, 1 otherwise
  */
-int upf_tag_isdef(FILE * fp, const char * tag);
+int upf_tag_isdef(FILE *fp, const char *tag);
 
 
 /**********************************************************************
@@ -251,6 +251,6 @@ int upf_to_libxc(const char *xc_string, int *exchange, int *correlation);
  * @param[out] shortname: pwscf xc short name
  * @return error code
  */
-int libxc_to_upf(const int exchange, const int correlation, char *longname, char *shortname);
+int libxc_to_upf(int exchange, int correlation, char *longname, char *shortname);
 
 #endif

@@ -73,7 +73,7 @@ int pspio_xc_alloc(pspio_xc_t **xc);
  * @note The xc pointer is supposed to have been already allocated
  *       with pspio_xc_alloc.
  */
-int pspio_xc_init(pspio_xc_t *xc, const int exchange, const int correlation, const int nlcc_scheme,
+int pspio_xc_init(pspio_xc_t *xc, int exchange, int correlation, int nlcc_scheme,
 		  const pspio_mesh_t *mesh, const double *cd, const double *cdd, const double *cddd);
 
 /**
@@ -108,7 +108,7 @@ void pspio_xc_free(pspio_xc_t *xc);
  * @param[in] exchange: identifier
  * @return error code
  */
-int pspio_xc_set_exchange(pspio_xc_t *xc, const int exchange);
+int pspio_xc_set_exchange(pspio_xc_t *xc, int exchange);
 
 /**
  * Sets the correlation id.
@@ -116,7 +116,7 @@ int pspio_xc_set_exchange(pspio_xc_t *xc, const int exchange);
  * @param[in] correlation: identifier
  * @return error code
  */
-int pspio_xc_set_correlation(pspio_xc_t *xc, const int correlation);
+int pspio_xc_set_correlation(pspio_xc_t *xc, int correlation);
 
 /**
  * Sets the xc data.
@@ -124,7 +124,7 @@ int pspio_xc_set_correlation(pspio_xc_t *xc, const int correlation);
  * @param[in] nlcc_scheme: scheme used to obtain core density
  * @return error code
  */
-int pspio_xc_set_nlcc_scheme(pspio_xc_t *xc, const int nlcc_scheme);
+int pspio_xc_set_nlcc_scheme(pspio_xc_t *xc, int nlcc_scheme);
 
 /**
  * Sets the core density for NLCC.
@@ -193,7 +193,7 @@ int pspio_xc_cmp(const pspio_xc_t *xc1, const pspio_xc_t *xc2);
  * @return value of the core density at r
  * @note The xc pointer has to be fully set.
  */
-double pspio_xc_nlcc_density_eval(const pspio_xc_t *xc, const double r);
+double pspio_xc_nlcc_density_eval(const pspio_xc_t *xc, double r);
 
 /**
  * Returns the value of the derivative of the NLCC core density at an arbitrary point
@@ -202,7 +202,7 @@ double pspio_xc_nlcc_density_eval(const pspio_xc_t *xc, const double r);
  * @return value of the core density derivative at r
  * @note The xc pointer has to be fully set.
  */
-double pspio_xc_nlcc_density_eval_deriv(const pspio_xc_t *xc, const double r);
+double pspio_xc_nlcc_density_eval_deriv(const pspio_xc_t *xc, double r);
 
 /**
  * Returns the value of the second derivative of the NLCC core density at an arbitrary point
@@ -211,7 +211,7 @@ double pspio_xc_nlcc_density_eval_deriv(const pspio_xc_t *xc, const double r);
  * @return value of the core density second derivative at r
  * @note The xc pointer has to be fully set.
  */
-double pspio_xc_nlcc_density_eval_deriv2(const pspio_xc_t *xc, const double r);
+double pspio_xc_nlcc_density_eval_deriv2(const pspio_xc_t *xc, double r);
 
 /**
  * Returns if xc has non-linear core-corrections

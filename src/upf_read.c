@@ -161,7 +161,7 @@ int upf_read_header(FILE *fp, int *np, pspio_pspdata_t *pspdata)
 }
 
 
-int upf_read_mesh(FILE *fp, const int np, pspio_pspdata_t *pspdata)
+int upf_read_mesh(FILE *fp, int np, pspio_pspdata_t *pspdata)
 {
   char line[PSPIO_STRLEN_LINE];
   int i, j, nargs;
@@ -219,7 +219,7 @@ int upf_read_mesh(FILE *fp, const int np, pspio_pspdata_t *pspdata)
   return PSPIO_SUCCESS;
 }
 
-int upf_read_nlcc(FILE *fp, const int np, pspio_pspdata_t *pspdata)
+int upf_read_nlcc(FILE *fp, int np, pspio_pspdata_t *pspdata)
 {
   char line[PSPIO_STRLEN_LINE];
   int i, j, nargs;
@@ -257,7 +257,7 @@ int upf_read_nlcc(FILE *fp, const int np, pspio_pspdata_t *pspdata)
 }
 
 
-int upf_read_nonlocal(FILE *fp, const int np, pspio_pspdata_t *pspdata)
+int upf_read_nonlocal(FILE *fp, int np, pspio_pspdata_t *pspdata)
 {
   char line[PSPIO_STRLEN_LINE];
   int proj_np = 0;
@@ -384,7 +384,7 @@ int upf_read_nonlocal(FILE *fp, const int np, pspio_pspdata_t *pspdata)
   return PSPIO_SUCCESS;
 }
 
-int upf_read_local(FILE *fp, const int np, pspio_pspdata_t *pspdata)
+int upf_read_local(FILE *fp, int np, pspio_pspdata_t *pspdata)
 {
   char line[PSPIO_STRLEN_LINE];
   int i, j, nargs, n;
@@ -442,7 +442,7 @@ int upf_read_local(FILE *fp, const int np, pspio_pspdata_t *pspdata)
   return PSPIO_SUCCESS;
 }
 
-int upf_read_pswfc(FILE *fp, const int np, pspio_pspdata_t *pspdata)
+int upf_read_pswfc(FILE *fp, int np, pspio_pspdata_t *pspdata)
 {
   char line[PSPIO_STRLEN_LINE];
   int is, ir, i;
@@ -523,7 +523,7 @@ int upf_read_pswfc(FILE *fp, const int np, pspio_pspdata_t *pspdata)
   return PSPIO_SUCCESS;
 }
 
-int upf_read_rhoatom(FILE *fp, const int np, pspio_pspdata_t *pspdata)
+int upf_read_rhoatom(FILE *fp, int np, pspio_pspdata_t *pspdata)
 {
   char line[PSPIO_STRLEN_LINE];
   int i, j, nargs;

@@ -31,7 +31,7 @@
  * Global routines                                                    *
  **********************************************************************/
 
-int pspio_potential_alloc(pspio_potential_t **potential, const int np)
+int pspio_potential_alloc(pspio_potential_t **potential, int np)
 {
   int ierr;
 
@@ -140,21 +140,21 @@ int pspio_potential_cmp(const pspio_potential_t *potential1, const
   }
 }
 
-double pspio_potential_eval(const pspio_potential_t *potential, const double r)
+double pspio_potential_eval(const pspio_potential_t *potential, double r)
 {
   assert(potential != NULL);
 
   return pspio_meshfunc_eval(potential->v, r);
 }
 
-double pspio_potential_eval_deriv(const pspio_potential_t *potential, const double r)
+double pspio_potential_eval_deriv(const pspio_potential_t *potential, double r)
 {
   assert(potential != NULL);
 
   return pspio_meshfunc_eval_deriv(potential->v, r);
 }
 
-double pspio_potential_eval_deriv2(const pspio_potential_t *potential, const double r)
+double pspio_potential_eval_deriv2(const pspio_potential_t *potential, double r)
 {
   assert(potential != NULL);
 

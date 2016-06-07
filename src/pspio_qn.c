@@ -48,7 +48,7 @@ int pspio_qn_alloc(pspio_qn_t **qn)
   return PSPIO_SUCCESS;
 }
 
-int pspio_qn_init(pspio_qn_t *qn, const int n, const int l, const double j)
+int pspio_qn_init(pspio_qn_t *qn, int n, int l, double j)
 {
   assert(qn != NULL);
 

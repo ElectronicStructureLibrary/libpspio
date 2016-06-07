@@ -40,13 +40,13 @@ typedef struct jb_spline_t jb_spline_t;
 /**
  * 
  */
-int jb_spline_alloc(jb_spline_t **spline, const int np);
+int jb_spline_alloc(jb_spline_t **spline, int np);
 
 /**
  * 
  */
 int jb_spline_init(jb_spline_t **spline, const double *f, const double *r, 
-		   const int np);
+		   int np);
 
 /**
  * 
@@ -78,17 +78,17 @@ void jb_spline_free(jb_spline_t *spline);
 /**
  * 
  */
-double jb_spline_eval(const jb_spline_t *spline, const double r);
+double jb_spline_eval(const jb_spline_t *spline, double r);
 
 /**
  * 
  */
-double jb_spline_eval_deriv(const jb_spline_t *spline, const double r);
+double jb_spline_eval_deriv(const jb_spline_t *spline, double r);
 
 /**
  * 
  */
-double jb_spline_eval_deriv2(const jb_spline_t *spline, const double r);
+double jb_spline_eval_deriv2(const jb_spline_t *spline, double r);
 
 /**
  * Evaluates a piecewise cubic spline at a point.

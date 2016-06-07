@@ -33,7 +33,7 @@
 #endif
 
 
-int pspio_abinit_read(FILE *fp, pspio_pspdata_t *pspdata, const int format)
+int pspio_abinit_read(FILE *fp, pspio_pspdata_t *pspdata, int format)
 {
   int ierr;
 
@@ -68,7 +68,7 @@ int pspio_abinit_read(FILE *fp, pspio_pspdata_t *pspdata, const int format)
 }
 
 
-int pspio_abinit_write(FILE *fp, const pspio_pspdata_t *pspdata, const int format)
+int pspio_abinit_write(FILE *fp, const pspio_pspdata_t *pspdata, int format)
 {
   int ierr = PSPIO_ERROR;
 

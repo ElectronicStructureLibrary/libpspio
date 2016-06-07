@@ -33,7 +33,7 @@
  * Global routines                                                    *
  **********************************************************************/
 
-int pspio_meshfunc_alloc(pspio_meshfunc_t **func, const int np)
+int pspio_meshfunc_alloc(pspio_meshfunc_t **func, int np)
 {
   int ierr;
 
@@ -249,7 +249,7 @@ int pspio_meshfunc_cmp(const pspio_meshfunc_t *meshfunc1,
   }
 }
 
-double pspio_meshfunc_eval(const pspio_meshfunc_t *func, const double r)
+double pspio_meshfunc_eval(const pspio_meshfunc_t *func, double r)
 {
   assert(func != NULL);
 
@@ -268,7 +268,7 @@ double pspio_meshfunc_eval(const pspio_meshfunc_t *func, const double r)
   }
 }
 
-double pspio_meshfunc_eval_deriv(const pspio_meshfunc_t *func, const double r)
+double pspio_meshfunc_eval_deriv(const pspio_meshfunc_t *func, double r)
 {
   assert(func != NULL);
 
@@ -286,7 +286,7 @@ double pspio_meshfunc_eval_deriv(const pspio_meshfunc_t *func, const double r)
   }
 }
 
-double pspio_meshfunc_eval_deriv2(const pspio_meshfunc_t *func, const double r)
+double pspio_meshfunc_eval_deriv2(const pspio_meshfunc_t *func, double r)
 {
   assert(func != NULL);
 

@@ -58,7 +58,7 @@ typedef struct{
  * @return error code
   * @note np should be larger than 1.
  */
-int pspio_state_alloc(pspio_state_t **state, const int np);
+int pspio_state_alloc(pspio_state_t **state, int np);
 
 /**
  * Initializes all the parameters of a state.
@@ -75,8 +75,8 @@ int pspio_state_alloc(pspio_state_t **state, const int np);
  *       with pspio_state_alloc.
  * @note If label is set to NULL, then the quantum numbers are used to construct the state label.
  */
-int pspio_state_init(pspio_state_t *state, const double eigenval, const pspio_qn_t *qn, const double occ,
-		     const double rc, const pspio_mesh_t *mesh, const double *wf, const char *label);
+int pspio_state_init(pspio_state_t *state, double eigenval, const pspio_qn_t *qn, double occ,
+		     double rc, const pspio_mesh_t *mesh, const double *wf, const char *label);
 
 /**
  * Duplicates a state structure.
@@ -101,7 +101,7 @@ int pspio_state_copy(pspio_state_t **dst, const pspio_state_t *src);
  * table[state->qn->n][state->qn->l + (int)states->qn->j]
  * @note The table is allocated inside this function.
  */
-int pspio_states_lookup_table(const int n_states, pspio_state_t **states, int ***table);
+int pspio_states_lookup_table(int n_states, pspio_state_t **states, int ***table);
 
 /**
  * Deallocates a state structure pointer.
@@ -174,7 +174,7 @@ int pspio_state_cmp(const pspio_state_t *state1, const pspio_state_t *state2);
  * @param[in] r: point were we want to evaluate the wavefunction
  * @return value of the wavefunction at r
  */
-double pspio_state_wf_eval(const pspio_state_t *state, const double r);
+double pspio_state_wf_eval(const pspio_state_t *state, double r);
 
 /**
  * Returns the value of derivative of the states wavefunction at an arbitrary point
@@ -183,7 +183,7 @@ double pspio_state_wf_eval(const pspio_state_t *state, const double r);
  * @param[in] r: point were we want to evaluate the derivative of the wavefunction
  * @return value of the wavefunction derivative at r
  */
-double pspio_state_wf_eval_deriv(const pspio_state_t *state, const double r);
+double pspio_state_wf_eval_deriv(const pspio_state_t *state, double r);
 
 /**
  * Returns the value of second derivative of the states wavefunction at an arbitrary point
@@ -192,6 +192,6 @@ double pspio_state_wf_eval_deriv(const pspio_state_t *state, const double r);
  * @param[in] r: point were we want to evaluate the second derivative of the wavefunction
  * @return value of the wavefunction second derivative at r
  */
-double pspio_state_wf_eval_deriv2(const pspio_state_t *state, const double r);
+double pspio_state_wf_eval_deriv2(const pspio_state_t *state, double r);
 
 #endif

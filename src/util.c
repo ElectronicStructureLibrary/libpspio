@@ -58,7 +58,7 @@ int symbol_to_z(const char *symbol, double *z)
 }
 
 
-int z_to_symbol(const double z, char *symbol)
+int z_to_symbol(double z, char *symbol)
 {
   FULFILL_OR_RETURN(z < 113.0 && z > 0.0, PSPIO_EVALUE);
 
@@ -68,8 +68,8 @@ int z_to_symbol(const double z, char *symbol)
 }
   
 
-double linear_extrapolation(const double x1, const double x2, const double f1,
-			    const double f2, const double x)
+double linear_extrapolation(double x1, double x2, double f1,
+			    double f2, double x)
 {
   double mm, f;
 

@@ -40,7 +40,7 @@
  * undetermined and this is up to the codes to check the physics.
  * Here we use the same correlation as in Abinit, i.e. PW91.
  */
-int abinit_to_libxc(const int pspxc, int *exchange, int *correlation)
+int abinit_to_libxc(int pspxc, int *exchange, int *correlation)
 {
   if ( pspxc < 0 ) {
 
@@ -155,7 +155,7 @@ int abinit_to_libxc(const int pspxc, int *exchange, int *correlation)
 }
 
 
-int libxc_to_abinit(const int exchange, const int correlation, int *pspxc)
+int libxc_to_abinit(int exchange, int correlation, int *pspxc)
 {
   *pspxc = -(exchange * 1000 + correlation);
 

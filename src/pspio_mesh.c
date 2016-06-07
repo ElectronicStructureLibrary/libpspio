@@ -33,7 +33,7 @@
  * Global routines                                                    *
  **********************************************************************/
 
-int pspio_mesh_alloc(pspio_mesh_t **mesh, const int np)
+int pspio_mesh_alloc(pspio_mesh_t **mesh, int np)
 {
   assert(mesh != NULL);
   assert(*mesh == NULL);
@@ -63,8 +63,8 @@ int pspio_mesh_alloc(pspio_mesh_t **mesh, const int np)
   return PSPIO_SUCCESS;
 }
 
-int pspio_mesh_init(pspio_mesh_t *mesh, const int type, const double a, 
-		    const double b, const double *r, const double *rab)
+int pspio_mesh_init(pspio_mesh_t *mesh, int type, double a,
+		    double b, const double *r, const double *rab)
 {
   assert(mesh != NULL);
   assert(mesh->r != NULL);
@@ -79,8 +79,8 @@ int pspio_mesh_init(pspio_mesh_t *mesh, const int type, const double a,
   return PSPIO_SUCCESS;
 }
 
-void pspio_mesh_init_from_parameters(pspio_mesh_t *mesh, const int type, 
-				     const double a, const double b)
+void pspio_mesh_init_from_parameters(pspio_mesh_t *mesh, int type,
+				     double a, double b)
 {
   int i;
 

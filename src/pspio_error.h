@@ -61,7 +61,7 @@ typedef struct pspio_error_type pspio_error_t;
  * @param[in] routine: current routine in the source file.
  * @return the error code provided as input (for automation purposes).
  */
-int pspio_error_add(const int error_id, const char *filename, const int line, 
+int pspio_error_add(int error_id, const char *filename, int line,
 		    const char *routine);
 
 /**
@@ -111,7 +111,7 @@ pspio_error_t *pspio_error_pop(void);
  * @param[in] routine: current routine in the source file.
  * @return string with error message.
  */
-void pspio_error_show(const int error_id, const char *filename, const int line, 
+void pspio_error_show(int error_id, const char *filename, int line,
 		      const char *routine);
 
 /**

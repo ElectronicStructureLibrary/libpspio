@@ -48,8 +48,8 @@ int pspio_xc_alloc(pspio_xc_t **xc)
   return PSPIO_SUCCESS;
 }
 
-int pspio_xc_init(pspio_xc_t *xc, const int exchange, const int correlation, 
-		  const int nlcc_scheme, const pspio_mesh_t *mesh, 
+int pspio_xc_init(pspio_xc_t *xc, int exchange, int correlation,
+		  int nlcc_scheme, const pspio_mesh_t *mesh,
 		  const double *cd, const double *cdd, const double *cddd)
 {
   assert(xc != NULL);  
@@ -106,7 +106,7 @@ void pspio_xc_free(pspio_xc_t *xc)
  * Setters                                                            *
  **********************************************************************/
 
-int pspio_xc_set_exchange(pspio_xc_t *xc, const int exchange)
+int pspio_xc_set_exchange(pspio_xc_t *xc, int exchange)
 {
   assert(xc != NULL);
 
@@ -115,7 +115,7 @@ int pspio_xc_set_exchange(pspio_xc_t *xc, const int exchange)
   return PSPIO_SUCCESS;
 }
 
-int pspio_xc_set_correlation(pspio_xc_t *xc, const int correlation)
+int pspio_xc_set_correlation(pspio_xc_t *xc, int correlation)
 {
   assert(xc != NULL);
 
@@ -124,7 +124,7 @@ int pspio_xc_set_correlation(pspio_xc_t *xc, const int correlation)
   return PSPIO_SUCCESS;
 }
 
-int pspio_xc_set_nlcc_scheme(pspio_xc_t *xc, const int nlcc_scheme)
+int pspio_xc_set_nlcc_scheme(pspio_xc_t *xc, int nlcc_scheme)
 {
   assert(xc != NULL);
 
@@ -220,7 +220,7 @@ int pspio_xc_cmp(const pspio_xc_t *xc1, const pspio_xc_t *xc2) {
   }
 }
 
-double pspio_xc_nlcc_density_eval(const pspio_xc_t *xc, const double r)
+double pspio_xc_nlcc_density_eval(const pspio_xc_t *xc, double r)
 {
   assert(xc != NULL);
 
@@ -231,7 +231,7 @@ double pspio_xc_nlcc_density_eval(const pspio_xc_t *xc, const double r)
   }
 }
 
-double pspio_xc_nlcc_density_eval_deriv(const pspio_xc_t *xc, const double r)
+double pspio_xc_nlcc_density_eval_deriv(const pspio_xc_t *xc, double r)
 {
   assert(xc != NULL);
 
@@ -242,7 +242,7 @@ double pspio_xc_nlcc_density_eval_deriv(const pspio_xc_t *xc, const double r)
   }
 }
 
-double pspio_xc_nlcc_density_eval_deriv2(const pspio_xc_t *xc, const double r)
+double pspio_xc_nlcc_density_eval_deriv2(const pspio_xc_t *xc, double r)
 {
   assert(xc != NULL);
 

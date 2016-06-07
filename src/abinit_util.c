@@ -34,10 +34,10 @@
 #endif
 
 /* Prototypes of the replacement functions for MacOSX */
-static char *my_strndup (char const *s, size_t n);
+static char *my_strndup (const char *s, size_t n);
 
 
-int abinit_read_header(FILE *fp, const int format, pspio_pspdata_t *pspdata)
+int abinit_read_header(FILE *fp, int format, pspio_pspdata_t *pspdata)
 {
   char line[PSPIO_STRLEN_LINE], symbol[3];
   char *line4;
@@ -147,7 +147,7 @@ int abinit_read_header(FILE *fp, const int format, pspio_pspdata_t *pspdata)
   return PSPIO_SUCCESS;
 }
 
-int abinit_write_header(FILE *fp, const int format, const pspio_pspdata_t *pspdata)
+int abinit_write_header(FILE *fp, int format, const pspio_pspdata_t *pspdata)
 {
   char pspdate[7];
   int pspxc, have_nlcc;
@@ -217,7 +217,7 @@ int abinit_write_header(FILE *fp, const int format, const pspio_pspdata_t *pspda
  * @param[in] n: number of characters to duplicate.
  * @return the duplicated string.
  */
-char *my_strndup(char const *s, size_t n)
+char *my_strndup(const char *s, size_t n)
 {
 #if defined HAVE_STRNDUP
   return strndup(s, n);

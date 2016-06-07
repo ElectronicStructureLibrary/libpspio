@@ -55,7 +55,7 @@
  * @note z should be larger than 0 and smaller than 113.
  * @return error code
  */
-int z_to_symbol(const double z, char *symbol);
+int z_to_symbol(double z, char *symbol);
 
 /**
  * Given the symbol, returns the atomic number
@@ -75,7 +75,6 @@ int symbol_to_z(const char *symbol, double *z);
  * @param[in] x: point where we want to evaluate the function
  * @return value of the function at x
  */
-double linear_extrapolation(const double x1, const double x2, const double f1,
-			    const double f2, const double x);
+double linear_extrapolation(double x1, double x2, double f1,  double f2, double x);
 
 #endif

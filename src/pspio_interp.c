@@ -55,7 +55,7 @@ struct pspio_interp_t {
  * Global routines                                                    *
  **********************************************************************/
 
-int pspio_interp_alloc(pspio_interp_t **interp, const int method, const int size)
+int pspio_interp_alloc(pspio_interp_t **interp, int method, int size)
 {
   assert(interp != NULL);
   assert(size > 1);
@@ -180,7 +180,7 @@ void pspio_interp_free(pspio_interp_t *interp) {
  * Utility routines                                                   *
  **********************************************************************/
 
-double pspio_interp_eval(const pspio_interp_t *interp, const double r)
+double pspio_interp_eval(const pspio_interp_t *interp, double r)
 {
   assert(interp != NULL);
 
@@ -196,7 +196,7 @@ double pspio_interp_eval(const pspio_interp_t *interp, const double r)
   }
 }
 
-double pspio_interp_eval_deriv(const pspio_interp_t *interp, const double r)
+double pspio_interp_eval_deriv(const pspio_interp_t *interp, double r)
 {
   assert(interp != NULL);
 
@@ -212,7 +212,7 @@ double pspio_interp_eval_deriv(const pspio_interp_t *interp, const double r)
   }
 }
 
-double pspio_interp_eval_deriv2(const pspio_interp_t *interp, const double r)
+double pspio_interp_eval_deriv2(const pspio_interp_t *interp, double r)
 {
   assert(interp != NULL);
 

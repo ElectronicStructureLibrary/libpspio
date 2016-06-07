@@ -57,7 +57,7 @@ typedef struct{
  * @return error code
  * @note np should be larger than 1.
  */
-int pspio_mesh_alloc(pspio_mesh_t **mesh, const int np);
+int pspio_mesh_alloc(pspio_mesh_t **mesh, int np);
 
 /**
  * Initializes the mesh data.
@@ -72,8 +72,8 @@ int pspio_mesh_alloc(pspio_mesh_t **mesh, const int np);
  *       method.
  * @note r and rab should be of size mesh->np.
  */
-int pspio_mesh_init(pspio_mesh_t *mesh, const int type, const double a, 
-       const double b, const double *r, const double *rab);
+int pspio_mesh_init(pspio_mesh_t *mesh, int type, double a,
+       double b, const double *r, const double *rab);
 
 /**
  * Sets the mesh data from a list of points. The function will try to determine
@@ -100,7 +100,7 @@ void pspio_mesh_init_from_points(pspio_mesh_t *mesh, const double *r, const doub
  * @note The mesh pointer has to be allocated first with the pspio_mesh_alloc
  *       method.
  */
-void pspio_mesh_init_from_parameters(pspio_mesh_t *mesh, const int type, const double a, const double b);
+void pspio_mesh_init_from_parameters(pspio_mesh_t *mesh, int type, double a, double b);
 
 /**
  * Duplicates a mesh structure

@@ -57,7 +57,7 @@ typedef struct{
  * @return error code
  * @note np should be larger than 1.
  */
-int pspio_projector_alloc(pspio_projector_t **projector, const int np);
+int pspio_projector_alloc(pspio_projector_t **projector, int np);
 
 /**
  * Initializes the projector data.
@@ -71,7 +71,7 @@ int pspio_projector_alloc(pspio_projector_t **projector, const int np);
  *       pspio_projector_alloc method.
  */
 int pspio_projector_init(pspio_projector_t *projector, const pspio_qn_t *qn, 
-      const double energy, const pspio_mesh_t *mesh, const double *pofr);
+      double energy, const pspio_mesh_t *mesh, const double *pofr);
 
 /**
  * Duplicates a projector structure.
@@ -89,7 +89,7 @@ int pspio_projector_copy(pspio_projector_t **dst, const pspio_projector_t *src);
  * Frees all memory associated with a projector structure
  * 
  * @param[in,out] projector: projector structure
- * @note This function can be safelly called even if some or all of the
+ * @note This function can be safely called even if some or all of the
  *       projector components have not been allocated.
  */
 void pspio_projector_free(pspio_projector_t *projector);
@@ -140,7 +140,7 @@ int pspio_projector_cmp(const pspio_projector_t *projector1, const
  * @return value of the projector at r
  * @note The projector pointer has to be fully set.
  */
-double pspio_projector_eval(const pspio_projector_t *projector, const double r);
+double pspio_projector_eval(const pspio_projector_t *projector, double r);
 
 /**
  * Returns the value of the derivative of the projector at an arbitrary point

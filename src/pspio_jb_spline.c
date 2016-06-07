@@ -42,7 +42,7 @@ struct jb_spline_t {
  * Global routines                                                    *
  **********************************************************************/
 
-int jb_spline_alloc(jb_spline_t **spline, const int np)
+int jb_spline_alloc(jb_spline_t **spline, int np)
 {
   *spline = (jb_spline_t *) malloc (sizeof(jb_spline_t));
   FULFILL_OR_EXIT(*spline != NULL, PSPIO_ENOMEM);
@@ -61,7 +61,7 @@ int jb_spline_alloc(jb_spline_t **spline, const int np)
   return PSPIO_SUCCESS;
 }
 
-int jb_spline_init(jb_spline_t **spline, const double *r, const double *f, const int np) 
+int jb_spline_init(jb_spline_t **spline, const double *r, const double *f, int np)
 {
   memcpy((*spline)->t, r, np * sizeof(double));
   memcpy((*spline)->y, f, np * sizeof(double));
@@ -408,7 +408,7 @@ void jb_spline_free(jb_spline_t *spline)
  * Atomic routines                                                    *
  **********************************************************************/
 
-double jb_spline_eval(const jb_spline_t *spline, const double r)
+double jb_spline_eval(const jb_spline_t *spline, double r)
 {
   double ret;
 
@@ -417,7 +417,7 @@ double jb_spline_eval(const jb_spline_t *spline, const double r)
   return ret;
 }
 
-double jb_spline_eval_deriv(const jb_spline_t *spline, const double r)
+double jb_spline_eval_deriv(const jb_spline_t *spline, double r)
 {
   double ret;
 
@@ -426,7 +426,7 @@ double jb_spline_eval_deriv(const jb_spline_t *spline, const double r)
   return ret;
 }
 
-double jb_spline_eval_deriv2(const jb_spline_t *spline, const double r)
+double jb_spline_eval_deriv2(const jb_spline_t *spline, double r)
 {
   double ret;
 

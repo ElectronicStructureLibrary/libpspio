@@ -43,7 +43,7 @@
  * @param[in] format: the Abinit format number
  * @return error code
  */
-int pspio_abinit_read(FILE *fp, pspio_pspdata_t *pspdata, const int format);
+int pspio_abinit_read(FILE *fp, pspio_pspdata_t *pspdata, int format);
 
 /**
  * Write the data contained in the psp_data structure to a file using an Abinit format
@@ -52,7 +52,7 @@ int pspio_abinit_read(FILE *fp, pspio_pspdata_t *pspdata, const int format);
  * @param[in] format: the Abinit format number
  * @return error code
  */
-int pspio_abinit_write(FILE *fp, const pspio_pspdata_t *pspdata, const int format);
+int pspio_abinit_write(FILE *fp, const pspio_pspdata_t *pspdata, int format);
 
 
 /**********************************************************************
@@ -66,7 +66,7 @@ int pspio_abinit_write(FILE *fp, const pspio_pspdata_t *pspdata, const int forma
 *@param[out] correlation: libxc code for correlation
 * @return error code
 */
-int abinit_to_libxc(const int pspxc, int *exchange, int *correlation);
+int abinit_to_libxc(int pspxc, int *exchange, int *correlation);
 
 /**
  * Converts libxc codes to Abinit codes
@@ -75,7 +75,7 @@ int abinit_to_libxc(const int pspxc, int *exchange, int *correlation);
  * @param[out] pspxc: Abinit code
  * @return error code
  */
-int libxc_to_abinit(const int exchange, const int correlation, int *pspxc);
+int libxc_to_abinit(int exchange, int correlation, int *pspxc);
 
 
 /**********************************************************************
@@ -89,7 +89,7 @@ int libxc_to_abinit(const int exchange, const int correlation, int *pspxc);
  * @param[out] pspdata: pseudopotential data structure
  * @return error code
  */
-int abinit_read_header(FILE *fp, const int format, pspio_pspdata_t *pspdata);
+int abinit_read_header(FILE *fp, int format, pspio_pspdata_t *pspdata);
 
 /**
  * Write the ABINIT header
@@ -98,6 +98,6 @@ int abinit_read_header(FILE *fp, const int format, pspio_pspdata_t *pspdata);
  * @param[in] pspdata: pseudopotential data structure
  * @return error code
  */
-int abinit_write_header(FILE *fp, const int format, const pspio_pspdata_t *pspdata);
+int abinit_write_header(FILE *fp, int format, const pspio_pspdata_t *pspdata);
 
 #endif

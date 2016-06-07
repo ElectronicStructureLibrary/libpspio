@@ -62,7 +62,7 @@ typedef struct pspio_interp_t pspio_interp_t;
  * @return error code
  * @note np should be larger than 1.
  */
-int pspio_interp_alloc(pspio_interp_t **interp, const int method, const int np);
+int pspio_interp_alloc(pspio_interp_t **interp, int method, int np);
 
 /**
  * Duplicates an interpolation structure
@@ -107,7 +107,7 @@ void pspio_interp_free(pspio_interp_t *interp);
  * @param[in] r:  point were we want to evaluate the function
  * @return value of the function
  */
-double pspio_interp_eval(const pspio_interp_t *interp, const double r);
+double pspio_interp_eval(const pspio_interp_t *interp, double r);
 
 /**
  * Evaluates the derivative of the interpolated function at arbitrary points
@@ -116,7 +116,7 @@ double pspio_interp_eval(const pspio_interp_t *interp, const double r);
  * @param[in] r: point were we want to evaluate the function
  * @return value of the derivative
  */
-double pspio_interp_eval_deriv(const pspio_interp_t *interp, const double r);
+double pspio_interp_eval_deriv(const pspio_interp_t *interp, double r);
 
 /**
  * Returns the value of the second derivative of a function at arbitrary points
@@ -125,6 +125,6 @@ double pspio_interp_eval_deriv(const pspio_interp_t *interp, const double r);
  * @param[in] r: point were we want to evaluate the function
  * @return value of the second derivative
  */
-double pspio_interp_eval_deriv2(const pspio_interp_t *interp, const double r);
+double pspio_interp_eval_deriv2(const pspio_interp_t *interp, double r);
 
 #endif

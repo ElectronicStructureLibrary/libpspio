@@ -31,7 +31,7 @@
 /* Store successive errors in a chain */
 static pspio_error_t *pspio_error_chain = NULL;
 
-int pspio_error_add(const int error_id, const char *filename, const int line, const char *routine)
+int pspio_error_add(int error_id, const char *filename, int line, const char *routine)
 {
   size_t s;
   pspio_error_t *last_err;
@@ -228,7 +228,7 @@ pspio_error_t *pspio_error_pop(void)
   return first_error;
 }
 
-void pspio_error_show(const int error_id, const char *filename, const int line,
+void pspio_error_show(int error_id, const char *filename, int line,
 		      const char *routine)
 {
   fprintf(stderr, "libpspio: ERROR:\n");
@@ -238,7 +238,7 @@ void pspio_error_show(const int error_id, const char *filename, const int line,
   fprintf(stderr, "      %s\n", pspio_error_string(error_id));
 }
 
-const char *pspio_error_string(const int error_id)
+const char *pspio_error_string(int error_id)
 {
   switch (error_id) {
   case PSPIO_SUCCESS:

@@ -81,7 +81,7 @@ int pspio_pspdata_alloc(pspio_pspdata_t **pspdata)
   return PSPIO_SUCCESS;
 }
 
-int pspio_pspdata_read(pspio_pspdata_t *pspdata, const int file_format, 
+int pspio_pspdata_read(pspio_pspdata_t *pspdata, int file_format,
 		       const char *file_name) 
 {
   int ierr, fmt;
@@ -151,7 +151,7 @@ int pspio_pspdata_read(pspio_pspdata_t *pspdata, const int file_format,
   return PSPIO_SUCCESS;
 }
 
-int pspio_pspdata_write(pspio_pspdata_t *pspdata, const int file_format, 
+int pspio_pspdata_write(pspio_pspdata_t *pspdata, int file_format,
 			const char *file_name) 
 {
   FILE * fp;
@@ -290,7 +290,7 @@ void pspio_pspdata_free(pspio_pspdata_t *pspdata)
  * Setters                                                            *
  **********************************************************************/
 
-int pspio_pspdata_set_symbol(pspio_pspdata_t *pspdata, char * symbol)
+int pspio_pspdata_set_symbol(pspio_pspdata_t *pspdata, char *symbol)
 {
   assert(pspdata != NULL);
 
@@ -303,7 +303,7 @@ int pspio_pspdata_set_symbol(pspio_pspdata_t *pspdata, char * symbol)
   return PSPIO_SUCCESS;
 }
 
-int pspio_pspdata_set_z(pspio_pspdata_t *pspdata, const double z)
+int pspio_pspdata_set_z(pspio_pspdata_t *pspdata, double z)
 {
   assert(pspdata != NULL);
 
@@ -312,7 +312,7 @@ int pspio_pspdata_set_z(pspio_pspdata_t *pspdata, const double z)
   return PSPIO_SUCCESS;
 }
 
-int pspio_pspdata_set_zvalence(pspio_pspdata_t *pspdata, const double zvalence)
+int pspio_pspdata_set_zvalence(pspio_pspdata_t *pspdata, double zvalence)
 {
   assert(pspdata != NULL);
 
@@ -321,7 +321,7 @@ int pspio_pspdata_set_zvalence(pspio_pspdata_t *pspdata, const double zvalence)
   return PSPIO_SUCCESS;
 }
 
-int pspio_pspdata_set_nelvalence(pspio_pspdata_t *pspdata, const double nelvalence)
+int pspio_pspdata_set_nelvalence(pspio_pspdata_t *pspdata, double nelvalence)
 {
   assert(pspdata != NULL);
 
@@ -330,7 +330,7 @@ int pspio_pspdata_set_nelvalence(pspio_pspdata_t *pspdata, const double nelvalen
   return PSPIO_SUCCESS;
 }
 
-int pspio_pspdata_set_l_max(pspio_pspdata_t *pspdata, const int l_max)
+int pspio_pspdata_set_l_max(pspio_pspdata_t *pspdata, int l_max)
 {
   assert(pspdata != NULL);
 
@@ -339,7 +339,7 @@ int pspio_pspdata_set_l_max(pspio_pspdata_t *pspdata, const int l_max)
   return PSPIO_SUCCESS;
 }
 
-int pspio_pspdata_set_wave_eq(pspio_pspdata_t *pspdata, const int wave_eq)
+int pspio_pspdata_set_wave_eq(pspio_pspdata_t *pspdata, int wave_eq)
 {
   assert(pspdata != NULL);
 
@@ -348,7 +348,7 @@ int pspio_pspdata_set_wave_eq(pspio_pspdata_t *pspdata, const int wave_eq)
   return PSPIO_SUCCESS;
 }
 
-int pspio_pspdata_set_total_energy(pspio_pspdata_t *pspdata, const double total_energy)
+int pspio_pspdata_set_total_energy(pspio_pspdata_t *pspdata, double total_energy)
 {
   assert(pspdata != NULL);
 
@@ -366,7 +366,7 @@ int pspio_pspdata_set_mesh(pspio_pspdata_t *pspdata, const pspio_mesh_t *mesh)
   return PSPIO_SUCCESS;
 }
 
-int pspio_pspdata_set_n_states(pspio_pspdata_t *pspdata, const int n_states)
+int pspio_pspdata_set_n_states(pspio_pspdata_t *pspdata, int n_states)
 {
   int is;
 
@@ -390,7 +390,7 @@ int pspio_pspdata_set_n_states(pspio_pspdata_t *pspdata, const int n_states)
   return PSPIO_SUCCESS;
 }
 
-int pspio_pspdata_set_state(pspio_pspdata_t *pspdata, const int index, const pspio_state_t *state)
+int pspio_pspdata_set_state(pspio_pspdata_t *pspdata, int index, const pspio_state_t *state)
 {
   assert(pspdata != NULL);
 
@@ -399,7 +399,7 @@ int pspio_pspdata_set_state(pspio_pspdata_t *pspdata, const int index, const psp
   return PSPIO_SUCCESS;
 }
 
-int pspio_pspdata_set_scheme(pspio_pspdata_t *pspdata, const int scheme)
+int pspio_pspdata_set_scheme(pspio_pspdata_t *pspdata, int scheme)
 {
   assert(pspdata != NULL);
 
@@ -408,7 +408,7 @@ int pspio_pspdata_set_scheme(pspio_pspdata_t *pspdata, const int scheme)
   return PSPIO_SUCCESS;
 }
 
-int pspio_pspdata_set_n_potentials(pspio_pspdata_t *pspdata, const int n_potentials)
+int pspio_pspdata_set_n_potentials(pspio_pspdata_t *pspdata, int n_potentials)
 {
   int ip;
 
@@ -432,7 +432,7 @@ int pspio_pspdata_set_n_potentials(pspio_pspdata_t *pspdata, const int n_potenti
   return PSPIO_SUCCESS;
 }
 
-int pspio_pspdata_set_potential(pspio_pspdata_t *pspdata, const int index, const pspio_potential_t *potential)
+int pspio_pspdata_set_potential(pspio_pspdata_t *pspdata, int index, const pspio_potential_t *potential)
 {
   assert(pspdata != NULL);
 
@@ -442,7 +442,7 @@ int pspio_pspdata_set_potential(pspio_pspdata_t *pspdata, const int index, const
   return PSPIO_SUCCESS;
 }
 
-int pspio_pspdata_set_n_projectors(pspio_pspdata_t *pspdata, const int n_projectors)
+int pspio_pspdata_set_n_projectors(pspio_pspdata_t *pspdata, int n_projectors)
 {
   int ip;
 
@@ -466,7 +466,7 @@ int pspio_pspdata_set_n_projectors(pspio_pspdata_t *pspdata, const int n_project
   return PSPIO_SUCCESS;
 }
 
-int pspio_pspdata_set_projector(pspio_pspdata_t *pspdata, const int index, const pspio_projector_t *projector)
+int pspio_pspdata_set_projector(pspio_pspdata_t *pspdata, int index, const pspio_projector_t *projector)
 {
   assert(pspdata != NULL);
 
@@ -475,7 +475,7 @@ int pspio_pspdata_set_projector(pspio_pspdata_t *pspdata, const int index, const
   return PSPIO_SUCCESS;
 }
 
-int pspio_pspdata_set_projectors_l_max(pspio_pspdata_t *pspdata, const int l_max)
+int pspio_pspdata_set_projectors_l_max(pspio_pspdata_t *pspdata, int l_max)
 {
   assert(pspdata != NULL);
 
@@ -484,7 +484,7 @@ int pspio_pspdata_set_projectors_l_max(pspio_pspdata_t *pspdata, const int l_max
   return PSPIO_SUCCESS;
 }
 
-int pspio_pspdata_set_l_local(pspio_pspdata_t *pspdata, const int l_local)
+int pspio_pspdata_set_l_local(pspio_pspdata_t *pspdata, int l_local)
 {
   assert(pspdata != NULL);
 
@@ -595,7 +595,7 @@ int pspio_pspdata_get_n_states(const pspio_pspdata_t *pspdata)
   return pspdata->n_states;
 }
 
-const pspio_state_t * pspio_pspdata_get_state(const pspio_pspdata_t *pspdata, const int index)
+const pspio_state_t * pspio_pspdata_get_state(const pspio_pspdata_t *pspdata, int index)
 {
   assert(pspdata != NULL);
 
@@ -616,7 +616,7 @@ int pspio_pspdata_get_n_potentials(const pspio_pspdata_t *pspdata)
   return pspdata->n_potentials;
 }
 
-const pspio_potential_t * pspio_pspdata_get_potential(const pspio_pspdata_t *pspdata, const int index)
+const pspio_potential_t * pspio_pspdata_get_potential(const pspio_pspdata_t *pspdata, int index)
 {
   assert(pspdata != NULL);
 
@@ -630,7 +630,7 @@ int pspio_pspdata_get_n_projectors(const pspio_pspdata_t *pspdata)
   return pspdata->n_projectors;
 }
 
-const pspio_projector_t * pspio_pspdata_get_projector(const pspio_pspdata_t *pspdata, const int index)
+const pspio_projector_t * pspio_pspdata_get_projector(const pspio_pspdata_t *pspdata, int index)
 {
   assert(pspdata != NULL);
 

@@ -34,6 +34,7 @@ Suite *make_potential_suite(void);
 Suite *make_projector_suite(void);
 Suite *make_state_suite(void);
 Suite *make_xc_suite(void);
+Suite *make_pspinfo_suite(void);
 Suite *make_pspdata_suite(void);
 
 #endif

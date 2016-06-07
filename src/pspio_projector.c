@@ -32,7 +32,7 @@
  * Global routines                                                    *
  **********************************************************************/
 
-int pspio_projector_alloc(pspio_projector_t **projector, const int np)
+int pspio_projector_alloc(pspio_projector_t **projector, int np)
 {
   int ierr;
 
@@ -63,7 +63,7 @@ int pspio_projector_alloc(pspio_projector_t **projector, const int np)
 }
 
 int pspio_projector_init(pspio_projector_t *projector, const pspio_qn_t *qn, 
-			 const double energy, const pspio_mesh_t *mesh,
+			 double energy, const pspio_mesh_t *mesh,
 			 const double *pofr)
 {
   assert(projector != NULL);
@@ -155,21 +155,21 @@ int pspio_projector_cmp(const pspio_projector_t *projector1, const
   }
 }
 
-double pspio_projector_eval(const pspio_projector_t *projector, const double r)
+double pspio_projector_eval(const pspio_projector_t *projector, double r)
 {
   assert(projector != NULL);
 
   return pspio_meshfunc_eval(projector->proj, r);
 }
 
-double pspio_projector_eval_deriv(const pspio_projector_t *projector, const double r)
+double pspio_projector_eval_deriv(const pspio_projector_t *projector, double r)
 {
   assert(projector != NULL);
 
   return pspio_meshfunc_eval_deriv(projector->proj, r);
 }
 
-double pspio_projector_eval_deriv2(const pspio_projector_t *projector, const double r)
+double pspio_projector_eval_deriv2(const pspio_projector_t *projector, double r)
 {
   assert(projector != NULL);
 

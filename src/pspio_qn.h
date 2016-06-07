@@ -64,7 +64,7 @@ int pspio_qn_alloc(pspio_qn_t **qn);
  * @note The qn pointer has to be allocated first with the pspio_qn_alloc
  *       method.
  */
-int pspio_qn_init(pspio_qn_t *qn, const int n, const int l, const double j);
+int pspio_qn_init(pspio_qn_t *qn, int n, int l, double j);
 
 /**
  * Duplicates a quantum number structure.
