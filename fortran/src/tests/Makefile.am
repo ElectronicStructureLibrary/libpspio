@@ -33,9 +33,19 @@ AM_FCFLAGS = @FCFLAGS_COVERAGE@ -I..
                     # ------------------------------------ #
 
 #
-# Test programs
+# FRUIT unit test framework
 #
 
+noinst_LTLIBRARIES = libfruit.la
+libfruit_la_SOURCES = fruit.f90
+
+                    # ------------------------------------ #
+
+#
+# Test programs
+#
+fpio_basic_tests = \
+  test_fortran_error
 fpio_xfail_tests = \
   test_fortran_io
 fpio_wrapped_tests = \
@@ -47,12 +57,22 @@ fpio_gcov_post_tests = \
 fpio_memprof_tests = \
   test_fortran_memory
 
-check_PROGRAMS = $(fpio_xfail_tests)
+check_PROGRAMS = $(fpio_basic_tests) $(fpio_xfail_tests)
 nodist_check_SCRIPTS = \
   $(fpio_gcov_pre_tests) \
   $(fpio_wrapped_tests) \
   $(fpio_gcov_post_tests) \
   $(fpio_memprof_tests)
+
+test_fortran_error_SOURCES = m_error_test.F90 test_fortran_error.F90
+test_fortran_error_LDADD = \
+  libfruit.la \
+  ../libfpspio.la \
+  @pio_pspio_libs@ \
+  $(LIBS_COVERAGE)
+test_fortran_error_DEPENDENCIES = \
+  ../libfpspio.la \
+  @pio_pspio_libs@
 
 test_fortran_io_SOURCES = test_fortran_io.F90
 test_fortran_io_LDADD = \
@@ -65,6 +85,7 @@ test_fortran_io_DEPENDENCIES = \
 
 TESTS = \
   $(fpio_gcov_pre_tests) \
+  $(fpio_basic_tests) \
   $(fpio_xfail_tests) \
   $(fpio_wrapped_tests) \
   $(fpio_gcov_post_tests) \

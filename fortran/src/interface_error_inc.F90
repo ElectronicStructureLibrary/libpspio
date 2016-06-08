@@ -21,11 +21,19 @@ interface
   ! Routines                                                            !
   !*********************************************************************!
 
-  ! fetchall
-  subroutine pspio_error_fetchall(error_msg)  bind(c)
+  ! add (only used for tests)
+  integer(c_int) function pspio_error_add(err_code, err_file, err_line, &
+&   err_func) bind(c)
     import
-    character(kind=c_char) :: error_msg(PSPIO_STRLEN_ERROR)
-  end subroutine pspio_error_fetchall
+    integer(kind=c_int), value :: err_code, err_line
+    character(kind=c_char) :: err_file(*), err_func(*)
+  end function pspio_error_add
+
+  ! fetchall
+  function pspio_error_fetchall() bind(c)
+    import
+    type(c_ptr) :: pspio_error_fetchall
+  end function pspio_error_fetchall
 
   ! flush
   subroutine fpspio_error_flush() bind(c, name="pspio_error_flush")

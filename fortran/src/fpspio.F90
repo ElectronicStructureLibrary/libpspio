@@ -23,6 +23,7 @@ module fpspio_m
 
   public :: &
     ! error
+    fpspio_error_add, &
     fpspio_error_fetchall, &
     fpspio_error_flush, &
     fpspio_error_free, &

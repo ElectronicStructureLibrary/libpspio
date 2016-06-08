@@ -1,4 +1,4 @@
-!! Copyright (C) 2012-2015 M. Oliveira
+!! Copyright (C) 2012-2016 M. Oliveira, Y. Pouillon
 !!
 !! This program is free software; you can redistribute it and/or modify
 !! it under the terms of the GNU Lesser General Public License as published by
@@ -20,16 +20,31 @@
 ! Routines                                                            !
 !*********************************************************************!
 
+! add (only used for tests)
+integer function fpspio_error_add(err_code, err_file, err_line, err_func) &
+&                  result(ferr_code)
+  integer, intent(in) :: err_code, err_line
+  character(len=*), intent(in) :: err_file, err_func
+
+  character(kind=c_char) :: c_err_file(len_trim(err_file)+1)
+  character(kind=c_char) :: c_err_func(len_trim(err_func)+1)
+
+  c_err_file = f_to_c_string(trim(err_file))
+  c_err_func = f_to_c_string(trim(err_func))
+
+  ferr_code = pspio_error_add(err_code, c_err_file, err_line, c_err_func)
+
+end function fpspio_error_add
+
 ! fetchall
-subroutine fpspio_error_fetchall(error_msg)
-  character(len=PSPIO_STRLEN_ERROR), intent(out) :: error_msg
+function fpspio_error_fetchall() result(error_msg)
+  character(len=PSPIO_STRLEN_ERROR) :: error_msg
+  type(c_ptr) :: c_error_msg
 
-  character(kind=c_char) :: c_error_msg(PSPIO_STRLEN_ERROR)
-    
-  call pspio_error_fetchall(c_error_msg)
-  call c_to_f_string(c_error_msg, error_msg)
+  c_error_msg = pspio_error_fetchall()
+  call c_to_f_string_ptr(c_error_msg, error_msg)
 
-end subroutine fpspio_error_fetchall
+end function fpspio_error_fetchall
 
 ! get_last
 integer function fpspio_error_get_last(routine) result(last)

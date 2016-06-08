@@ -40,10 +40,10 @@ void error_teardown(void)
   pspio_error_free();
 }
 
-START_TEST(test_error_fetch_all)
+START_TEST(test_error_fetchall)
 {
   ck_assert(pspio_error_add(PSPIO_EVALUE, "test_1_1.c", 1234, "dummy1") == PSPIO_EVALUE);
-  pspio_error_fetchall(&err_str);
+  err_str = pspio_error_fetchall();
   ck_assert_str_eq(err_str, "libpspio: ERROR:\n"
           "  * in test_1_1.c(dummy1):1234:\n"
           "      value error: bad value found (PSPIO_EVALUE)\n");
@@ -56,7 +56,7 @@ START_TEST(test_error_empty)
   ck_assert_int_eq(pspio_error_get_last(NULL), PSPIO_SUCCESS);
   ck_assert_int_eq(pspio_error_len(), 0);
 
-  pspio_error_fetchall(&err_str);
+  err_str = pspio_error_fetchall();
   ck_assert(err_str == NULL);
   free(err_str);
 
@@ -72,7 +72,7 @@ START_TEST(test_error_single)
   ck_assert(pspio_error_get_last(NULL) == PSPIO_EVALUE);
   ck_assert(pspio_error_len() == 1);
 
-  pspio_error_fetchall(&err_str);
+  err_str = pspio_error_fetchall();
   ck_assert_str_eq(err_str, "libpspio: ERROR:\n"
           "  * in test_1_1.c(dummy1):1234:\n"
           "      value error: bad value found (PSPIO_EVALUE)\n");
@@ -93,7 +93,7 @@ START_TEST(test_error_double)
   ck_assert(pspio_error_get_last(NULL) == PSPIO_ENOSUPPORT);
   ck_assert(pspio_error_len() == 2);
 
-  pspio_error_fetchall(&err_str);
+  err_str = pspio_error_fetchall();
   ck_assert_str_eq(err_str, "libpspio: ERROR:\n"
           "  * in test_2_1.c(dummy21):1234:\n"
           "      error in GSL (PSPIO_EGSL)\n"
@@ -129,7 +129,7 @@ START_TEST(test_error_triple)
           "      file does not exist (PSPIO_ENOFILE)\n", result);
   sprintf(result, "%s  * in test_3_3.c(dummy33):333:\n"
           "      error (PSPIO_ERROR)\n", result);
-  pspio_error_fetchall(&err_str);
+  err_str = pspio_error_fetchall();
   ck_assert_str_eq(err_str, result);
   free(err_str);
 
@@ -162,7 +162,7 @@ Suite * make_error_suite(void)
 
   tc_fetch = tcase_create("Fetch all");
   tcase_add_checked_fixture(tc_fetch, error_setup, error_teardown);
-  tcase_add_test(tc_fetch, test_error_fetch_all);
+  tcase_add_test(tc_fetch, test_error_fetchall);
   suite_add_tcase(s, tc_fetch);
 
   tc_empty = tcase_create("Empty chain");

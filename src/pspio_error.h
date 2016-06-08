@@ -66,9 +66,9 @@ int pspio_error_add(int error_id, const char *filename, int line,
 
 /**
  * Fetch and clear the error chain.
- * @param[out] err_str: string pointer describing the chain of errors.
+ * @return string pointer describing the chain of errors.
  */
-void pspio_error_fetchall(char **err_str);
+char *pspio_error_fetchall(void);
 
 /**
  * Flush and clear the error chain.
