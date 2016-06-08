@@ -21,6 +21,14 @@ interface
   ! Routines                                                            !
   !*********************************************************************!
 
+  ! add (only used for tests)
+  integer(c_int) function pspio_error_add(err_code, err_file, err_line, &
+&   err_func) bind(c)
+    import
+    integer(kind=c_int), value :: err_code, err_line
+    character(kind=c_char) :: err_file(*), err_func(*)
+  end function pspio_error_add
+
   ! fetchall
   subroutine pspio_error_fetchall(error_msg)  bind(c)
     import
