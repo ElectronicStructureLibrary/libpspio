@@ -30,10 +30,10 @@ interface
   end function pspio_error_add
 
   ! fetchall
-  subroutine pspio_error_fetchall(error_msg)  bind(c)
+  function pspio_error_fetchall() bind(c)
     import
-    character(kind=c_char) :: error_msg(PSPIO_STRLEN_ERROR)
-  end subroutine pspio_error_fetchall
+    type(c_ptr) :: pspio_error_fetchall
+  end function pspio_error_fetchall
 
   ! flush
   subroutine fpspio_error_flush() bind(c, name="pspio_error_flush")
