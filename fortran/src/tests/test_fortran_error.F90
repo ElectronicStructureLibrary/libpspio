@@ -28,8 +28,12 @@ program test_fortran_error
 
   call init_fruit()
 
-  call test_error_add()
+  call test_error_empty()
   call test_error_fetchall()
+  call test_error_get_last()
+  call test_error_single()
+  call test_error_double()
+  call test_error_triple()
 
   call fruit_summary()
 
