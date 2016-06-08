@@ -19,7 +19,7 @@
 #include "config.h"
 #endif
 
-module m_error_test
+module m_info_test
 
   use fpspio_m
   use fruit
@@ -28,36 +28,32 @@ module m_error_test
 
 contains
 
-  subroutine test_error_add()
+  subroutine test_info_version()
 
     implicit none
 
-    character(len=*), parameter :: err_file = "test_1_1.F90"
-    character(len=*), parameter :: err_func = "dummy1"
-    integer, parameter :: err_refcode = PSPIO_EVALUE
+    character(len=*), parameter :: ref_version = PACKAGE_VERSION
+    character(len=len_trim(ref_version)) :: chk_version
+    integer :: major, minor, micro
 
-    integer :: err_code
+    call fpspio_info_version(major, minor, micro)
+    write(chk_version, '(I0,".",I0,".",I0)') major, minor, micro
 
-    err_code = &
-&     fpspio_error_add(err_refcode, err_file, 1234, err_func)
+    call assert_equals(ref_version, chk_version, "Package version")
 
-    call assert_equals(err_refcode, err_code, "Add EVALUE error")
+  end subroutine test_info_version
 
-  end subroutine test_error_add
-
-  subroutine test_error_fetchall()
+  subroutine test_info_string()
 
     implicit none
 
-    character(len=1), parameter :: ch10 = achar(10)
-    character(len=*), parameter :: err_refmsg = &
-&     "libpspio: ERROR:" // ch10 // "  * in test_1_1.F90(dummy1):1234:" &
-&     // ch10 // "      value error: bad value found (PSPIO_EVALUE)" // ch10
-    character(len=PSPIO_STRLEN_ERROR) :: err_msg
+    character(len=*), parameter :: ref_string = PACKAGE_STRING
+    character(len=len_trim(ref_string)) :: chk_string
 
-    err_msg = fpspio_error_fetchall()
-    call assert_equals(err_refmsg, err_msg, "Retrieve EVALUE error message")
+    call fpspio_info_string(chk_string)
 
-  end subroutine test_error_fetchall
+    call assert_equals(ref_string, chk_string, "Package string")
 
-end module m_error_test
+  end subroutine test_info_string
+
+end module m_info_test
