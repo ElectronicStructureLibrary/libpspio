@@ -1,4 +1,4 @@
-!! Copyright (C) 2012-2015 M. Oliveira
+!! Copyright (C) 2016 Y. Pouillon
 !!
 !! This program is free software; you can redistribute it and/or modify
 !! it under the terms of the GNU Lesser General Public License as published by
@@ -15,22 +15,22 @@
 !! Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 !!
 
-interface
+#if defined HAVE_CONFIG_H
+#include "config.h"
+#endif
 
-  !*********************************************************************!
-  ! Routines                                                            !
-  !*********************************************************************!
+program test_fortran_info
 
-  ! version
-  subroutine fpspio_info_version(major, minor, micro) bind(c, name="pspio_info_version")
-    import
-    integer(c_int), intent(out) :: major, minor, micro
-  end subroutine fpspio_info_version
+  use fruit
+  use m_info_test
 
-  ! info
-  subroutine pspio_info_string(info) bind(c)
-    import
-    character(kind=c_char) :: info(*)
-  end subroutine pspio_info_string
+  implicit none
 
-end interface
+  call init_fruit()
+
+  call test_info_version()
+  call test_info_string()
+
+  call fruit_summary()
+
+end program test_fortran_info

@@ -20,7 +20,7 @@
 ! Routines                                                            !
 !*********************************************************************!
 
-! info
+! package string
 subroutine fpspio_info_string(info)
   character(len=*), intent(out) :: info
 

@@ -45,7 +45,8 @@ libfruit_la_SOURCES = fruit.f90
 # Test programs
 #
 fpio_basic_tests = \
-  test_fortran_error
+  test_fortran_error \
+  test_fortran_info
 fpio_xfail_tests = \
   test_fortran_io
 fpio_wrapped_tests = \
@@ -71,6 +72,16 @@ test_fortran_error_LDADD = \
   @pio_pspio_libs@ \
   $(LIBS_COVERAGE)
 test_fortran_error_DEPENDENCIES = \
+  ../libfpspio.la \
+  @pio_pspio_libs@
+
+test_fortran_info_SOURCES = m_info_test.F90 test_fortran_info.F90
+test_fortran_info_LDADD = \
+  libfruit.la \
+  ../libfpspio.la \
+  @pio_pspio_libs@ \
+  $(LIBS_COVERAGE)
+test_fortran_info_DEPENDENCIES = \
   ../libfpspio.la \
   @pio_pspio_libs@
 
