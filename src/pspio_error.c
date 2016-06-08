@@ -111,20 +111,23 @@ int pspio_error_add(const int error_id, const char *filename, const int line, co
   return error_id;
 }
 
-void pspio_error_fetchall(char **err_str) 
+char *pspio_error_fetchall() 
 {
   char buf[8];
-  char *tmp_str;
+  char *err_str, *tmp_str;
   int err_len;
   pspio_error_t *cursor = pspio_error_chain;
 
-  *err_str = NULL;
+  err_str = NULL;
 
   if ( cursor != NULL ) {
-    *err_str  = (char *) malloc (20*sizeof(char));
-    assert(*err_str != NULL);
-    sprintf(*err_str, "%s\n", "libpspio: ERROR:");
+    err_str  = (char *) malloc (20*sizeof(char));
   }
+  if ( err_str == NULL ) {
+    return NULL;
+  }
+
+  sprintf(err_str, "%s\n", "libpspio: ERROR:");
 
   while ( cursor != NULL ) {
     assert(cursor->filename != NULL);
@@ -142,19 +145,21 @@ void pspio_error_fetchall(char **err_str)
     sprintf(tmp_str, "  * in %s(%s):%d:\n      %s\n",
       cursor->filename, cursor->routine, cursor->line,
       pspio_error_string(cursor->id));
-    *err_str = realloc(*err_str, strlen(*err_str)+err_len+1);
-    if ( *err_str == NULL ) {
+    err_str = realloc(err_str, strlen(err_str)+err_len+1);
+    if ( err_str == NULL ) {
       fprintf(stderr,
         "libpspio: FATAL:\n      could not build error message.\n");
-      exit(1);
+      return NULL;
     }
-    strcat(*err_str, tmp_str);
+    strcat(err_str, tmp_str);
     free(tmp_str);
 
     cursor = cursor->next;
   }
 
   pspio_error_free();
+
+  return err_str;
 }
 
 void pspio_error_flush(FILE *fd)
@@ -163,7 +168,7 @@ void pspio_error_flush(FILE *fd)
 
   assert(fd != NULL);
 
-  pspio_error_fetchall(&err_str);
+  err_str = pspio_error_fetchall();
   if ( err_str != NULL ) {
     fprintf(fd, "%s", err_str);
     fflush(fd);
