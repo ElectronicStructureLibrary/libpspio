@@ -171,7 +171,7 @@ AC_DEFUN([AX_SEARCH_LIBPSPIO],[
       AC_MSG_WARN([assuming slave build - bypassing Libpspio detection])
       pio_pspio_ok="yes"
       pio_pspio_incs="-I${ac_abs_top_srcdir}/src"
-      pio_pspio_libs="${ac_abs_top_builddir}/src/.libs/libpspio.a"
+      pio_pspio_libs="${ac_abs_top_builddir}/../src/.libs/libpspio.la"
     fi
   fi
 

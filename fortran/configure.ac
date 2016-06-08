@@ -238,6 +238,12 @@ fi
 # Libtool (must be set once languages are known)
 #
 
+# Disable shared libraries when using gcov
+# Note: may still be overridden from the command line
+if test "${enable_gcov}" = "yes"; then
+  AC_DISABLE_SHARED
+fi
+
 # Initialize Libtool
 LT_INIT
 LT_PREREQ([2.4])
@@ -328,22 +334,29 @@ AC_DEFINE_UNQUOTED([PSPIO_CHK_DATADIR],
   [Directory containing pseudopotential files for the tests.])
 
 # Generate explicit dependencies for GCOV tests
+tmp_gcov_test_mf="src/tests/gcov-fortran-tests-deps.mf"
 if test "${enable_gcov}" = "yes"; then
+  ${MKDIR_P} `dirname "${tmp_gcov_test_mf}"`
   echo "# Script-generated makefile targets for GCOV tests" \
-    >src/gcov-fortran-tests-deps.mf
+    >"${tmp_gcov_test_mf}"
   for src in ${ac_top_srcdir}/src/test_*.F90; do
-    exe=`basename "${src}" | sed -e 's/\.F90//'`
-    echo "" >>src/gcov-fortran-tests-deps.mf
-    echo "${exe}.log: gcov_fortran_clean.log" >>src/gcov-fortran-tests-deps.mf
+    if test -s "${src}"; then
+      exe=`basename "${src}" | sed -e 's/\.F90//'`
+      echo "" >>"${tmp_gcov_test_mf}"
+      echo "${exe}.log: gcov_fortran_clean.log" >>"${tmp_gcov_test_mf}"
+    fi
   done
   for src in ${ac_top_srcdir}/src/test_*.in; do
-    exe=`basename "${src}" | sed -e 's/\.in//'`
-    echo "" >>src/gcov-fortran-tests-deps.mf
-    echo "${exe}.log: gcov_fortran_clean.log" >>src/gcov-fortran-tests-deps.mf
+    if test -s "${src}"; then
+      exe=`basename "${src}" | sed -e 's/\.in//'`
+      echo "" >>"${tmp_gcov_test_mf}"
+      echo "${exe}.log: gcov_fortran_clean.log" >>"${tmp_gcov_test_mf}"
+    fi
   done
-  echo "" >>src/gcov-fortran-tests-deps.mf
-  echo "gcov_report.log: gcov_clean.log" >>src/gcov-fortran-tests-deps.mf
+  echo "" >>"${tmp_gcov_test_mf}"
+  echo "gcov_report.log: gcov_clean.log" >>"${tmp_gcov_test_mf}"
 fi
+unset tmp_gcov_test_mf
 
 # ---------------------------------------------------------------------------- #
 
@@ -366,19 +379,20 @@ AC_MSG_NOTICE([LIBS     = ${LIBS}])
 
 AC_CONFIG_COMMANDS([script-perms],
   [chmod u+x \
-    src/gcov_check_coverage \
-    src/gcov_fortran_clean \
-    src/gcov_fortran_report \
-    src/test_fortran_io_multiple \
-    src/test_fortran_memory])
+    src/tests/gcov_check_coverage \
+    src/tests/gcov_fortran_clean \
+    src/tests/gcov_fortran_report \
+    src/tests/test_fortran_io_multiple \
+    src/tests/test_fortran_memory])
 
 AC_CONFIG_FILES([
   Makefile
   src/Makefile
-  src/gcov_check_coverage
-  src/gcov_fortran_clean
-  src/gcov_fortran_report
-  src/test_fortran_io_multiple
-  src/test_fortran_memory])
+  src/tests/Makefile
+  src/tests/gcov_check_coverage
+  src/tests/gcov_fortran_clean
+  src/tests/gcov_fortran_report
+  src/tests/test_fortran_io_multiple
+  src/tests/test_fortran_memory])
 
 AC_OUTPUT

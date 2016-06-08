@@ -189,6 +189,12 @@ AC_PATH_PROGS([PYTHON], [python python2.7])
 # Libtool (must be set once languages are known)
 #
 
+# Disable shared libraries when using gcov
+# Note: may still be overridden from the command line
+if test "${enable_gcov}" = "yes"; then
+  AC_DISABLE_SHARED
+fi
+
 # Initialize Libtool
 LT_INIT
 LT_PREREQ([2.4])
@@ -319,17 +325,22 @@ AC_DEFINE_UNQUOTED([PSPIO_CHK_DATADIR], "${ac_abs_top_srcdir}/psp_references",
 
 # Generate explicit dependencies for GCOV tests
 if test "${enable_gcov}" = "yes"; then
+  ${MKDIR_P} src
   echo "# Script-generated makefile targets for GCOV tests" \
     >src/gcov-tests-deps.mf
-  for src in ${ac_top_srcdir}/src/test_*.c; do
-    exe=`basename "${src}" | sed -e 's/\.c//'`
-    echo "" >>src/gcov-tests-deps.mf
-    echo "${exe}.log: gcov_clean.log" >>src/gcov-tests-deps.mf
+  for src in ${ac_top_srcdir}/src/check_*.c ${ac_top_srcdir}/src/test_*.c; do
+    if test -s "${src}"; then
+      exe=`basename "${src}" | sed -e 's/\.c//'`
+      echo "" >>src/gcov-tests-deps.mf
+      echo "${exe}.log: gcov_clean.log" >>src/gcov-tests-deps.mf
+    fi
   done
   for src in ${ac_top_srcdir}/src/test_*.in; do
-    exe=`basename "${src}" | sed -e 's/\.in//'`
-    echo "" >>src/gcov-tests-deps.mf
-    echo "${exe}.log: gcov_clean.log" >>src/gcov-tests-deps.mf
+    if test -s "${src}"; then
+      exe=`basename "${src}" | sed -e 's/\.in//'`
+      echo "" >>src/gcov-tests-deps.mf
+      echo "${exe}.log: gcov_clean.log" >>src/gcov-tests-deps.mf
+    fi
   done
   echo "" >>src/gcov-tests-deps.mf
   echo "gcov_report.log: gcov_clean.log" >>src/gcov-tests-deps.mf
