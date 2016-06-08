@@ -45,7 +45,6 @@ contains
 
   end subroutine test_error_add
 
-
   subroutine test_error_fetchall()
 
     implicit none
@@ -56,7 +55,7 @@ contains
 &     // ch10 // "      value error: bad value found (PSPIO_EVALUE)" // ch10
     character(len=PSPIO_STRLEN_ERROR) :: err_msg
 
-    call fpspio_error_fetchall(err_msg)
+    err_msg = fpspio_error_fetchall()
     call assert_equals(err_refmsg, err_msg, "Retrieve EVALUE error message")
 
   end subroutine test_error_fetchall
