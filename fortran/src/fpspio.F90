@@ -174,8 +174,15 @@ module fpspio_m
     fpspio_xc_nlcc_density_eval, &
     fpspio_xc_nlcc_density_eval_deriv, &
     fpspio_xc_nlcc_density_eval_deriv2, &
-    fpspio_xc_has_nlcc
+    fpspio_xc_has_nlcc, &
+    ! associated
+    fpspio_associated
 
+  interface fpspio_associated
+    module procedure fpspio_qn_associated, fpspio_mesh_associated, fpspio_meshfunc_associated, &
+      fpspio_potential_associated, fpspio_projector_associated, fpspio_state_associated, &
+      fpspio_pspdata_associated
+  end interface
 
   ! DO NOT EDIT THE FOLLOWING SECTION - ALL CHANGES WILL BE OVERWRITTEN!
   ! Add new definitions into pspio_common.h instead

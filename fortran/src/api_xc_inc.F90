@@ -46,6 +46,14 @@ subroutine fpspio_xc_free(xc)
 
 end subroutine fpspio_xc_free
 
+! associated
+logical function fpspio_xc_associated(xc) result(is_associated)
+  type(fpspio_xc_t), intent(in) :: xc
+
+  is_associated = c_associated(xc%ptr)
+
+end function fpspio_xc_associated
+
 
 !*********************************************************************!
 ! Setters                                                             !

@@ -59,6 +59,14 @@ subroutine fpspio_projector_free(projector)
 
 end subroutine fpspio_projector_free
 
+! associated
+logical function fpspio_projector_associated(projector) result(is_associated)
+  type(fpspio_projector_t), intent(in) :: projector
+
+  is_associated = c_associated(projector%ptr)
+
+end function fpspio_projector_associated
+
 
 !*********************************************************************!
 ! Getters                                                             !

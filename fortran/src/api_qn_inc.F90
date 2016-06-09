@@ -57,6 +57,14 @@ subroutine fpspio_qn_free(qn)
 
 end subroutine fpspio_qn_free
 
+! associated
+logical function fpspio_qn_associated(qn) result(is_associated)
+  type(fpspio_qn_t), intent(in) :: qn
+
+  is_associated = c_associated(qn%ptr)
+
+end function fpspio_qn_associated
+
 
 !*********************************************************************!
 ! Getters                                                             !

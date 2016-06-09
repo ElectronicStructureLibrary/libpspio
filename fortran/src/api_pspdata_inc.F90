@@ -57,6 +57,14 @@ subroutine fpspio_pspdata_free(pspdata)
 
 end subroutine fpspio_pspdata_free
 
+! associated
+logical function fpspio_pspdata_associated(pspdata) result(is_associated)
+  type(fpspio_pspdata_t), intent(in) :: pspdata
+
+  is_associated = c_associated(pspdata%ptr)
+  
+end function fpspio_pspdata_associated
+
 
 !*********************************************************************!
 ! Setters                                                             !
@@ -415,7 +423,7 @@ end function fpspio_pspdata_get_xc
 
 ! rho_valence
 type(fpspio_meshfunc_t) function fpspio_pspdata_get_rho_valence(pspdata) result(rho_valence)
-  type(fpspio_pspdata_t),  intent(inout) :: pspdata
+  type(fpspio_pspdata_t),  intent(in) :: pspdata
 
   rho_valence%ptr = pspio_pspdata_get_rho_valence(pspdata%ptr)
 

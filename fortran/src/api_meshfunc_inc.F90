@@ -74,6 +74,14 @@ subroutine fpspio_meshfunc_free(meshfunc)
 
 end subroutine fpspio_meshfunc_free
 
+! associated
+logical function fpspio_meshfunc_associated(meshfunc) result(is_associated)
+  type(fpspio_meshfunc_t), intent(in) :: meshfunc
+
+  is_associated = c_associated(meshfunc%ptr)
+
+end function fpspio_meshfunc_associated
+
 
 !*********************************************************************!
 ! Getters                                                             !

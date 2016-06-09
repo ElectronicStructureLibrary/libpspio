@@ -58,6 +58,14 @@ subroutine fpspio_potential_free(potential)
 
 end subroutine fpspio_potential_free
 
+! associated
+logical function fpspio_potential_associated(potential) result(is_associated)
+  type(fpspio_potential_t), intent(in) :: potential
+
+  is_associated = c_associated(potential%ptr)
+
+end function fpspio_potential_associated
+
 
 !*********************************************************************!
 ! Getters                                                             !

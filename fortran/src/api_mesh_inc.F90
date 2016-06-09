@@ -91,6 +91,14 @@ subroutine fpspio_mesh_free(mesh)
 
 end subroutine fpspio_mesh_free
 
+! associated
+logical function fpspio_mesh_associated(mesh) result(is_associated)
+  type(fpspio_mesh_t), intent(in) :: mesh
+
+  is_associated = c_associated(mesh%ptr)
+
+end function fpspio_mesh_associated
+
 
 !*********************************************************************!
 ! Getters                                                             !

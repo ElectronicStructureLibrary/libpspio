@@ -62,6 +62,14 @@ subroutine fpspio_state_free(state)
 
 end subroutine fpspio_state_free
 
+! associated
+logical function fpspio_state_associated(state) result(is_associated)
+  type(fpspio_state_t), intent(in) :: state
+
+  is_associated = c_associated(state%ptr)
+
+end function fpspio_state_associated
+
 
 !*********************************************************************!
 ! Getters                                                             !
