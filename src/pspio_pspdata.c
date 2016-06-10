@@ -28,6 +28,7 @@
 #include "fhi.h"
 #include "upf.h"
 #include "abinit.h"
+#include "pspio.h"
 
 #if defined HAVE_CONFIG_H
 #include "config.h"
@@ -48,6 +49,7 @@ int pspio_pspdata_alloc(pspio_pspdata_t **pspdata)
   FULFILL_OR_EXIT(*pspdata != NULL, PSPIO_ENOMEM);
 
   /* Nullify pointers and initialize all values to 0 */
+  (*pspdata)->pspinfo = NULL;
   (*pspdata)->format_guessed = PSPIO_FMT_UNKNOWN;
   (*pspdata)->info = NULL;
   (*pspdata)->symbol = NULL;
@@ -199,6 +201,10 @@ void pspio_pspdata_reset(pspio_pspdata_t *pspdata)
   assert(pspdata != NULL);
 
   /* General data */
+  if (pspdata->pspinfo != NULL) {
+    pspio_pspinfo_free(pspdata->pspinfo);
+    pspdata->pspinfo = NULL;
+  }
   if (pspdata->info != NULL) {
     free(pspdata->info);
     pspdata->info = NULL;
@@ -290,12 +296,13 @@ void pspio_pspdata_free(pspio_pspdata_t *pspdata)
  * Setters                                                            *
  **********************************************************************/
 
-int pspio_pspdata_set_symbol(pspio_pspdata_t *pspdata, char *symbol)
+int pspio_pspdata_set_symbol(pspio_pspdata_t *pspdata, const char *symbol)
 {
   assert(pspdata != NULL);
 
   FULFILL_OR_RETURN(symbol != NULL, PSPIO_EVALUE);
 
+  free(pspdata->symbol);
   pspdata->symbol = (char *) malloc (3*sizeof(char));
   FULFILL_OR_EXIT( pspdata->symbol != NULL, PSPIO_ENOMEM );
   strncpy(pspdata->symbol, symbol, 3);

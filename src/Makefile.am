@@ -41,6 +41,7 @@ pio_core_srcs = \
   pspio_meshfunc.c \
   pspio_potential.c \
   pspio_projector.c \
+  pspio_pspinfo.c \
   pspio_pspdata.c \
   pspio_qn.c \
   pspio_state.c \
@@ -66,6 +67,7 @@ pio_core_hdrs = \
   pspio_potential.h \
   pspio_projector.h \
   pspio_pspdata.h \
+  pspio_pspinfo.h \
   pspio_qn.h \
   pspio_state.h \
   pspio_xc_funcs.h \
@@ -133,6 +135,7 @@ check_pspio_SOURCES = \
   check_pspio_projector.c \
   check_pspio_state.c \
   check_pspio_xc.c \
+  check_pspio_pspinfo.c \
   check_pspio_pspdata.c \
   check_pspio.c
 check_pspio_CPPFLAGS = -I$(top_srcdir)/src @pio_check_incs@

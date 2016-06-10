@@ -32,6 +32,7 @@
 #include "pspio_state.h"
 #include "pspio_projector.h"
 #include "pspio_xc.h"
+#include "pspio_pspinfo.h"
 
 
 /**********************************************************************
@@ -43,6 +44,7 @@
  */
 typedef struct{
   /* general data */
+  pspio_pspinfo_t *pspinfo; /**< Generic nformation about the pseudopotential. */
   int format_guessed;/**< Format of the file guessed by pspio_pspdata_read. */
   char *info;        /**< descriptive string for content of file read in. Nothing should ever be assumed about its content. */
   char *symbol;      /**< Atomic symbol */
@@ -138,7 +140,7 @@ void pspio_pspdata_reset(pspio_pspdata_t *pspdata);
  * @param[in] symbol: pointer to atomic symbol
  * @return error code
  */
-int pspio_pspdata_set_symbol(pspio_pspdata_t *pspdata, char * symbol);
+int pspio_pspdata_set_symbol(pspio_pspdata_t *pspdata, const char * symbol);
 
 /**
  * @param[in,out] pspdata: pointer to pspdata structure

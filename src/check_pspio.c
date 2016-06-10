@@ -41,6 +41,7 @@ int main(void)
   srunner_add_suite(sr, make_projector_suite());
   srunner_add_suite(sr, make_state_suite());
   srunner_add_suite(sr, make_xc_suite());
+  srunner_add_suite(sr, make_pspinfo_suite());
   srunner_add_suite(sr, make_pspdata_suite());
 
   srunner_run_all(sr, CK_VERBOSE);
