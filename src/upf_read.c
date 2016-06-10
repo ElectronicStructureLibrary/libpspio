@@ -27,6 +27,7 @@
 #include "pspio_error.h"
 #include "upf.h"
 #include "util.h"
+#include "pspio.h"
 
 #if defined HAVE_CONFIG_H
 #include "config.h"
@@ -36,6 +37,7 @@
 int upf_read_info(FILE *fp, pspio_pspdata_t *pspdata)
 {
   char line[PSPIO_STRLEN_LINE];
+  char *info;
   int il, nlines = 0;
 
   /* Find init tag */
@@ -51,18 +53,20 @@ int upf_read_info(FILE *fp, pspio_pspdata_t *pspdata)
   SUCCEED_OR_RETURN( upf_tag_init(fp,"PP_INFO", GO_BACK) );
 
   /* Allocate memory */
-  pspdata->info = (char *) malloc (1*sizeof(char));
-  FULFILL_OR_EXIT(pspdata->info != NULL, PSPIO_ENOMEM);
-  pspdata->info[0] = '\0';
+  SUCCEED_OR_RETURN( pspio_pspinfo_alloc(&pspdata->pspinfo) );
+  info = (char *) malloc (1*sizeof(char));
+  FULFILL_OR_EXIT(info != NULL, PSPIO_ENOMEM);
+  info[0] = '\0';
 
   /* Store all the lines */
   for (il=0; il<nlines; il++) {
     FULFILL_OR_RETURN( fgets(line, PSPIO_STRLEN_LINE, fp) != NULL, PSPIO_EIO );
-    pspdata->info = realloc(pspdata->info,
-      strlen(pspdata->info)+strlen(line)+1);
-    FULFILL_OR_EXIT(pspdata->info != NULL, PSPIO_ENOMEM);
-    strncat(pspdata->info, line, strlen(line));
+    info = realloc(info, strlen(info)+strlen(line)+1);
+    FULFILL_OR_EXIT(info != NULL, PSPIO_ENOMEM);
+    strncat(info, line, strlen(line));
   }
+  SUCCEED_OR_RETURN( pspio_pspinfo_set_description(pspdata->pspinfo, info) );
+  free(info);
 
   /* Check end tag */
   SUCCEED_OR_RETURN( upf_tag_check_end(fp,"PP_INFO") );

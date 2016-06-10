@@ -52,6 +52,34 @@ int pspio_pspinfo_alloc(pspio_pspinfo_t **pspinfo)
   return PSPIO_SUCCESS;
 }
 
+int pspio_pspinfo_init(pspio_pspinfo_t *pspinfo, const char *author, const char *code,
+                       const char *date, const char *description)
+{
+  assert(pspinfo != NULL);
+
+  if (author != NULL) {
+    pspinfo->author = strdup(author);
+    FULFILL_OR_RETURN(pspinfo->author != NULL, PSPIO_ENOMEM);
+  }
+
+  if (code != NULL) {
+    pspinfo->code = strdup(code);
+    FULFILL_OR_RETURN(pspinfo->code != NULL, PSPIO_ENOMEM);
+  }
+
+  if (date != NULL) {
+    pspinfo->date = strdup(date);
+    FULFILL_OR_RETURN(pspinfo->date != NULL, PSPIO_ENOMEM);
+  }
+
+  if (description != NULL) {
+    pspinfo->description = strdup(description);
+    FULFILL_OR_RETURN(pspinfo->description != NULL, PSPIO_ENOMEM);
+  }
+
+  return PSPIO_SUCCESS;
+}
+
 int pspio_pspinfo_copy(pspio_pspinfo_t **dst, const pspio_pspinfo_t *src) {
 
   assert(src != NULL);
@@ -172,4 +200,24 @@ const char * pspio_pspinfo_get_description(const pspio_pspinfo_t *pspinfo)
   assert(pspinfo != NULL);
 
   return pspinfo->description;
+}
+
+
+/**********************************************************************
+ * Utility routines                                                   *
+ **********************************************************************/
+
+int pspio_pspinfo_cmp(const pspio_pspinfo_t *pspinfo1, const pspio_pspinfo_t *pspinfo2)
+{
+  assert(pspinfo1 != NULL);
+  assert(pspinfo2 != NULL);
+
+  if (strcmp(pspinfo1->author, pspinfo2->author) ||
+      strcmp(pspinfo1->code, pspinfo2->code) ||
+      strcmp(pspinfo1->date, pspinfo2->date) ||
+      strcmp(pspinfo1->description, pspinfo2->description) ) {
+    return PSPIO_DIFF;
+  } else {
+    return PSPIO_EQUAL;
+  }
 }

@@ -24,6 +24,7 @@
 #include <math.h>
 
 #include "upf.h"
+#include "pspio.h"
 
 #if defined HAVE_CONFIG_H
 #include "config.h"
@@ -32,9 +33,13 @@
 
 void upf_write_info(FILE *fp, const pspio_pspdata_t *pspdata)
 {
+  char *description;
+
+  description = pspio_pspinfo_get_description(pspdata->pspinfo);
+
   fprintf(fp, "<PP_INFO>\n");
-  if (pspdata->info != NULL) {
-    fprintf(fp, "%s", pspdata->info);
+  if (description != NULL) {
+    fprintf(fp, "%s", description);
   }
   fprintf(fp, "</PP_INFO>\n");
 }
@@ -95,7 +100,7 @@ int upf_write_header(FILE *fp, const pspio_pspdata_t *pspdata)
   /* Write the number of wavefunctions and projectors */
   fprintf(fp, "%5d%5d             Number of Wavefunctions, Number of Projectors\n", pspdata->n_states, pspdata->n_projectors);
 
-  /* Write wavefunctions info */
+  /* Write wavefunctions description */
   fprintf(fp, " Wavefunctions         nl  l   occ\n");
   for (is=0; is<pspdata->n_states; is++) {
     label = pspio_state_get_label(pspdata->states[is]);

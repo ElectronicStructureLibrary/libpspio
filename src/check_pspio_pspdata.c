@@ -32,6 +32,7 @@
 #endif
 
 static pspio_pspdata_t *pspdata = NULL;
+static pspio_pspinfo_t *pspinfo = NULL;
 static pspio_mesh_t *mesh = NULL;
 static pspio_qn_t *qn = NULL;
 static pspio_state_t *state = NULL;
@@ -65,6 +66,10 @@ void pspdata_full_setup(void)
 
   pspio_pspdata_free(pspdata);
   pspio_pspdata_alloc(&pspdata);
+
+  pspio_pspinfo_free(pspinfo);
+  pspio_pspinfo_alloc(&pspinfo);
+  pspio_pspinfo_init(pspinfo, "A. Author", "XPTO", "99/99/99", "Universal alchemical pseudopotential");
 
   pspio_mesh_free(mesh);
   pspio_mesh_alloc(&mesh, 8);
@@ -105,6 +110,9 @@ void pspdata_full_setup(void)
 
 void pspdata_full_teardown(void)
 {
+  pspio_pspinfo_free(pspinfo);
+  pspinfo = NULL;
+
   pspio_mesh_free(mesh);
   mesh = NULL;
 
@@ -142,6 +150,13 @@ START_TEST(test_pspdata_setget_format_guessed)
 {
   /* No set function, so we just check that the default value is correct */
   ck_assert(pspio_pspdata_get_format_guessed(pspdata) == PSPIO_FMT_UNKNOWN);
+}
+END_TEST
+
+START_TEST(test_pspdata_setget_pspinfo)
+{
+  ck_assert(pspio_pspdata_set_pspinfo(pspdata, pspinfo) == PSPIO_SUCCESS);
+  ck_assert(pspio_pspinfo_cmp(pspio_pspdata_get_pspinfo(pspdata), pspinfo) == PSPIO_EQUAL);
 }
 END_TEST
 

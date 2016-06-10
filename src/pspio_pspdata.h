@@ -46,7 +46,6 @@ typedef struct{
   /* general data */
   pspio_pspinfo_t *pspinfo; /**< Generic nformation about the pseudopotential. */
   int format_guessed;/**< Format of the file guessed by pspio_pspdata_read. */
-  char *info;        /**< descriptive string for content of file read in. Nothing should ever be assumed about its content. */
   char *symbol;      /**< Atomic symbol */
   double z;          /**< Atomic number */
   double zvalence;   /**< charge of pseudopotential ion - valence electrons */
@@ -134,6 +133,13 @@ void pspio_pspdata_reset(pspio_pspdata_t *pspdata);
 /**********************************************************************
  * Setters                                                            *
  **********************************************************************/
+
+/**
+ * @param[in,out] pspdata: pointer to pspdata structure
+ * @param[in] pspinfo: pointer to the pseudopotential information
+ * @return error code
+ */
+int pspio_pspdata_set_pspinfo(pspio_pspdata_t *pspdata, const pspio_pspinfo_t *pspinfo);
 
 /**
  * @param[in,out] pspdata: pointer to pspdata structure
@@ -288,6 +294,12 @@ int pspio_pspdata_set_rho_valence(pspio_pspdata_t *pspdata, const pspio_meshfunc
  * @return format guessed
  */
 int pspio_pspdata_get_format_guessed(const pspio_pspdata_t *pspdata);
+
+/**
+ * @param[in] pspdata: pointer to pspdata structure
+ * @return pointer to pseudopotential information
+ */
+const pspio_pspinfo_t * pspio_pspdata_get_pspinfo(const pspio_pspdata_t *pspdata);
 
 /**
  * @param[in] pspdata: pointer to pspdata structure

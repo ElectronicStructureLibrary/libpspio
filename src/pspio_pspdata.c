@@ -28,7 +28,6 @@
 #include "fhi.h"
 #include "upf.h"
 #include "abinit.h"
-#include "pspio.h"
 
 #if defined HAVE_CONFIG_H
 #include "config.h"
@@ -51,7 +50,6 @@ int pspio_pspdata_alloc(pspio_pspdata_t **pspdata)
   /* Nullify pointers and initialize all values to 0 */
   (*pspdata)->pspinfo = NULL;
   (*pspdata)->format_guessed = PSPIO_FMT_UNKNOWN;
-  (*pspdata)->info = NULL;
   (*pspdata)->symbol = NULL;
   (*pspdata)->z = 0.0;
   (*pspdata)->zvalence = 0.0;
@@ -204,10 +202,6 @@ void pspio_pspdata_reset(pspio_pspdata_t *pspdata)
   if (pspdata->pspinfo != NULL) {
     pspio_pspinfo_free(pspdata->pspinfo);
     pspdata->pspinfo = NULL;
-  }
-  if (pspdata->info != NULL) {
-    free(pspdata->info);
-    pspdata->info = NULL;
   }
   if (pspdata->symbol != NULL) {
     free(pspdata->symbol);

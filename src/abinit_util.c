@@ -28,6 +28,7 @@
 
 #include "abinit.h"
 #include "util.h"
+#include "pspio_pspinfo.h"
 
 #if defined HAVE_CONFIG_H
 #include "config.h"
@@ -43,16 +44,12 @@ int abinit_read_header(FILE *fp, int format, pspio_pspdata_t *pspdata)
   char *line4;
   int format_read, pspcod, pspxc, lmax, lloc, mmax;
   int exchange, correlation;
-  size_t s;
   double zatom, zval, r2well, rchrg, fchrg, qchrg;
 
   /* Line 1: read title */
   FULFILL_OR_RETURN( fgets(line, PSPIO_STRLEN_LINE, fp) != NULL, PSPIO_EIO );
-  s = strlen(line);
-  pspdata->info = (char *) malloc ((s+1)*sizeof(char));
-  FULFILL_OR_EXIT(pspdata->info != NULL, PSPIO_ENOMEM);
-  strncpy(pspdata->info, line, s);
-  pspdata->info[s] = '\0';
+  SUCCEED_OR_RETURN( pspio_pspinfo_alloc(&pspdata->pspinfo) );
+  SUCCEED_OR_RETURN( pspio_pspinfo_set_description(pspdata->pspinfo, line) );
 
   /* Line 2: read atomic number, Z valence */
   /* Note: ignoring psp date */
@@ -165,7 +162,7 @@ int abinit_write_header(FILE *fp, int format, const pspio_pspdata_t *pspdata)
 
   /* Line 1: write title */
   /* FIXME: truncate info to its first line */
-  fprintf(fp, "%s\n", pspdata->info);
+  fprintf(fp, "%s\n", pspio_pspinfo_get_description(pspdata->pspinfo));
 
   /* Line 2: write atomic number, Z valence, psp date */
   int_now = time(NULL);

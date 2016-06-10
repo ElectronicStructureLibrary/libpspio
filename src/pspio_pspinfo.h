@@ -54,6 +54,20 @@ typedef struct{
 int pspio_pspinfo_alloc(pspio_pspinfo_t **pspinfo);
 
 /**
+ * Initializes the pseudopotential data.
+ * @param[in,out] pspinfo: potential information structure to be initialized
+ * @param[in] author: pointer to author name
+ * @param[in] code: pointer to code name
+ * @param[in] date: pointer to generation date
+ * @param[in] description: pointer to pseudopotential description
+ * @return error code
+ * @note The pspinfo pointer has to be allocated first with the
+ *       pspio_pspinfo_alloc method.
+ */
+int pspio_pspinfo_init(pspio_pspinfo_t *pspinfo, const char *author, const char *code,
+                       const char *date, const char *description);
+
+/**
  * Duplicates a pspinfo structure.
  * @param[out] dst: destination pspinfo structure pointer
  * @param[in] src: source pspinfo structure pointer 
@@ -132,5 +146,19 @@ const char * pspio_pspinfo_get_date(const pspio_pspinfo_t *pspinfo);
  * @return pointer to a description of the pseudopotential file
  */
 const char * pspio_pspinfo_get_description(const pspio_pspinfo_t *pspinfo);
+
+
+/**********************************************************************
+ * Utility routines                                                   *
+ **********************************************************************/
+
+/**
+ * Compares two pspinfos.
+ * @param[in] pspinfo1: first pspinfo to compare
+ * @param[in] pspinfo2: second pspinfo to compare
+ * @return PSPIO_EQUAL when equal, PSPIO_DIFF when different, PSPIO_ERROR if a
+ * problem occured.
+ */
+int pspio_pspinfo_cmp(const pspio_pspinfo_t *pspinfo1, const pspio_pspinfo_t *pspinfo2);
 
 #endif
