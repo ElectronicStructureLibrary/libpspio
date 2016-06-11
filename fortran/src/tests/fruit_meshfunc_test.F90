@@ -54,9 +54,9 @@ contains
     character(len=80) :: msg
     integer :: i, np
     real(dp), dimension(mesh_size) :: f_chk, fp_chk, fpp_chk
-    type(fpspio_mesh_t) :: m
+    type(fpspio_mesh_t), pointer :: m
 
-    m = fpspio_meshfunc_get_mesh(meshfunc)
+    m => fpspio_meshfunc_get_mesh(meshfunc)
     np = fpspio_mesh_get_np(mesh)
 
     call assert_equals(mesh_size, np, &
@@ -95,7 +95,7 @@ contains
     real(dp), parameter :: b = 2.0_dp
 
     integer :: eid, i
-    real(dp), dimension(2*mesh_size+1) :: r2
+    real(dp), dimension(:), pointer :: r2
 
     call fpspio_mesh_free(m1)
     eid = fpspio_mesh_alloc(m1, mesh_size)
@@ -104,7 +104,7 @@ contains
     call fpspio_mesh_free(m2)
     eid = fpspio_mesh_alloc(m2, 2*mesh_size+1)
     call fpspio_mesh_init_from_parameters(m1, PSPIO_MESH_LOG1, a, b)
-    r2 = fpspio_mesh_get_r(m2)
+    r2 => fpspio_mesh_get_r(m2)
 
     call fpspio_meshfunc_free(mf11)
     call fpspio_meshfunc_free(mf12)
