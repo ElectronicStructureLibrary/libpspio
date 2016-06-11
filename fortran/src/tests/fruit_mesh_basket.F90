@@ -21,7 +21,7 @@
 #include "config.h"
 #endif
 
-module m_mesh_basket
+module fruit_mesh_basket
 
   use fruit
 
@@ -29,9 +29,9 @@ module m_mesh_basket
 
 contains
 
-  subroutine m_mesh_test_all_tests()
+  subroutine fruit_mesh_test_all_tests()
 
-    use m_mesh_test
+    use fruit_mesh_test
 
     implicit none
 
@@ -41,9 +41,9 @@ contains
     call set_unit_name('test_mesh_alloc')
     call run_test_case(test_mesh_alloc, "test_mesh_alloc")
     if (.not. is_case_passed()) then
-      call case_failed_xml("test_mesh_alloc", "m_mesh_test")
+      call case_failed_xml("test_mesh_alloc", "fruit_mesh_test")
     else
-      call case_passed_xml("test_mesh_alloc", "m_mesh_test")
+      call case_passed_xml("test_mesh_alloc", "fruit_mesh_test")
     end if
     call teardown()
 
@@ -53,9 +53,9 @@ contains
     call set_unit_name('test_mesh_init')
     call run_test_case(test_mesh_init, "test_mesh_init")
     if (.not. is_case_passed()) then
-      call case_failed_xml("test_mesh_init", "m_mesh_test")
+      call case_failed_xml("test_mesh_init", "fruit_mesh_test")
     else
-      call case_passed_xml("test_mesh_init", "m_mesh_test")
+      call case_passed_xml("test_mesh_init", "fruit_mesh_test")
     end if
     call teardown()
 
@@ -66,9 +66,9 @@ contains
     call run_test_case(test_mesh_init_parameters_linear, &
 &     "test_mesh_init_parameters_linear")
     if (.not. is_case_passed()) then
-      call case_failed_xml("test_mesh_init_parameters_linear", "m_mesh_test")
+      call case_failed_xml("test_mesh_init_parameters_linear", "fruit_mesh_test")
     else
-      call case_passed_xml("test_mesh_init_parameters_linear", "m_mesh_test")
+      call case_passed_xml("test_mesh_init_parameters_linear", "fruit_mesh_test")
     end if
     call teardown()
 
@@ -79,9 +79,9 @@ contains
     call run_test_case(test_mesh_init_parameters_log1, &
 &     "test_mesh_init_parameters_log1")
     if (.not. is_case_passed()) then
-      call case_failed_xml("test_mesh_init_parameters_log1", "m_mesh_test")
+      call case_failed_xml("test_mesh_init_parameters_log1", "fruit_mesh_test")
     else
-      call case_passed_xml("test_mesh_init_parameters_log1", "m_mesh_test")
+      call case_passed_xml("test_mesh_init_parameters_log1", "fruit_mesh_test")
     end if
     call teardown()
 
@@ -92,9 +92,9 @@ contains
     call run_test_case(test_mesh_init_parameters_log2, &
 &     "test_mesh_init_parameters_log2")
     if (.not. is_case_passed()) then
-      call case_failed_xml("test_mesh_init_parameters_log2", "m_mesh_test")
+      call case_failed_xml("test_mesh_init_parameters_log2", "fruit_mesh_test")
     else
-      call case_passed_xml("test_mesh_init_parameters_log2", "m_mesh_test")
+      call case_passed_xml("test_mesh_init_parameters_log2", "fruit_mesh_test")
     end if
     call teardown()
 
@@ -105,9 +105,9 @@ contains
     call run_test_case(test_mesh_init_points_linear, &
 &     "test_mesh_init_points_linear")
     if (.not. is_case_passed()) then
-      call case_failed_xml("test_mesh_init_points_linear", "m_mesh_test")
+      call case_failed_xml("test_mesh_init_points_linear", "fruit_mesh_test")
     else
-      call case_passed_xml("test_mesh_init_points_linear", "m_mesh_test")
+      call case_passed_xml("test_mesh_init_points_linear", "fruit_mesh_test")
     end if
     call teardown()
 
@@ -118,9 +118,9 @@ contains
     call run_test_case(test_mesh_init_points_log1, &
 &     "test_mesh_init_points_log1")
     if (.not. is_case_passed()) then
-      call case_failed_xml("test_mesh_init_points_log1", "m_mesh_test")
+      call case_failed_xml("test_mesh_init_points_log1", "fruit_mesh_test")
     else
-      call case_passed_xml("test_mesh_init_points_log1", "m_mesh_test")
+      call case_passed_xml("test_mesh_init_points_log1", "fruit_mesh_test")
     end if
     call teardown()
 
@@ -131,9 +131,9 @@ contains
     call run_test_case(test_mesh_init_points_log2, &
 &     "test_mesh_init_points_log2")
     if (.not. is_case_passed()) then
-      call case_failed_xml("test_mesh_init_points_log2", "m_mesh_test")
+      call case_failed_xml("test_mesh_init_points_log2", "fruit_mesh_test")
     else
-      call case_passed_xml("test_mesh_init_points_log2", "m_mesh_test")
+      call case_passed_xml("test_mesh_init_points_log2", "fruit_mesh_test")
     end if
     call teardown()
 
@@ -144,9 +144,9 @@ contains
     call run_test_case(test_mesh_cmp_diff_type, &
 &     "test_mesh_cmp_diff_type")
     if (.not. is_case_passed()) then
-      call case_failed_xml("test_mesh_cmp_diff_type", "m_mesh_test")
+      call case_failed_xml("test_mesh_cmp_diff_type", "fruit_mesh_test")
     else
-      call case_passed_xml("test_mesh_cmp_diff_type", "m_mesh_test")
+      call case_passed_xml("test_mesh_cmp_diff_type", "fruit_mesh_test")
     end if
     call teardown()
 
@@ -157,9 +157,9 @@ contains
     call run_test_case(test_mesh_cmp_diff_a, &
 &     "test_mesh_cmp_diff_a")
     if (.not. is_case_passed()) then
-      call case_failed_xml("test_mesh_cmp_diff_a", "m_mesh_test")
+      call case_failed_xml("test_mesh_cmp_diff_a", "fruit_mesh_test")
     else
-      call case_passed_xml("test_mesh_cmp_diff_a", "m_mesh_test")
+      call case_passed_xml("test_mesh_cmp_diff_a", "fruit_mesh_test")
     end if
     call teardown()
 
@@ -170,9 +170,9 @@ contains
     call run_test_case(test_mesh_cmp_diff_b, &
 &     "test_mesh_cmp_diff_b")
     if (.not. is_case_passed()) then
-      call case_failed_xml("test_mesh_cmp_diff_b", "m_mesh_test")
+      call case_failed_xml("test_mesh_cmp_diff_b", "fruit_mesh_test")
     else
-      call case_passed_xml("test_mesh_cmp_diff_b", "m_mesh_test")
+      call case_passed_xml("test_mesh_cmp_diff_b", "fruit_mesh_test")
     end if
     call teardown()
 
@@ -183,9 +183,9 @@ contains
     call run_test_case(test_mesh_cmp_diff_r, &
 &     "test_mesh_cmp_diff_r")
     if (.not. is_case_passed()) then
-      call case_failed_xml("test_mesh_cmp_diff_r", "m_mesh_test")
+      call case_failed_xml("test_mesh_cmp_diff_r", "fruit_mesh_test")
     else
-      call case_passed_xml("test_mesh_cmp_diff_r", "m_mesh_test")
+      call case_passed_xml("test_mesh_cmp_diff_r", "fruit_mesh_test")
     end if
     call teardown()
 
@@ -196,9 +196,9 @@ contains
     call run_test_case(test_mesh_cmp_mtequal, &
 &     "test_mesh_cmp_mtequal")
     if (.not. is_case_passed()) then
-      call case_failed_xml("test_mesh_cmp_mtequal", "m_mesh_test")
+      call case_failed_xml("test_mesh_cmp_mtequal", "fruit_mesh_test")
     else
-      call case_passed_xml("test_mesh_cmp_mtequal", "m_mesh_test")
+      call case_passed_xml("test_mesh_cmp_mtequal", "fruit_mesh_test")
     end if
     call teardown()
 
@@ -209,9 +209,9 @@ contains
     call run_test_case(test_mesh_cmp_equal, &
 &     "test_mesh_cmp_equal")
     if (.not. is_case_passed()) then
-      call case_failed_xml("test_mesh_cmp_equal", "m_mesh_test")
+      call case_failed_xml("test_mesh_cmp_equal", "fruit_mesh_test")
     else
-      call case_passed_xml("test_mesh_cmp_equal", "m_mesh_test")
+      call case_passed_xml("test_mesh_cmp_equal", "fruit_mesh_test")
     end if
     call teardown()
 
@@ -222,9 +222,9 @@ contains
     call run_test_case(test_mesh_copy_null, &
 &     "test_mesh_copy_null")
     if (.not. is_case_passed()) then
-      call case_failed_xml("test_mesh_copy_null", "m_mesh_test")
+      call case_failed_xml("test_mesh_copy_null", "fruit_mesh_test")
     else
-      call case_passed_xml("test_mesh_copy_null", "m_mesh_test")
+      call case_passed_xml("test_mesh_copy_null", "fruit_mesh_test")
     end if
     call teardown()
 
@@ -235,9 +235,9 @@ contains
     call run_test_case(test_mesh_copy_nonnull, &
 &     "test_mesh_copy_nonnull")
     if (.not. is_case_passed()) then
-      call case_failed_xml("test_mesh_copy_nonnull", "m_mesh_test")
+      call case_failed_xml("test_mesh_copy_nonnull", "fruit_mesh_test")
     else
-      call case_passed_xml("test_mesh_copy_nonnull", "m_mesh_test")
+      call case_passed_xml("test_mesh_copy_nonnull", "fruit_mesh_test")
     end if
     call teardown()
 
@@ -248,20 +248,20 @@ contains
     call run_test_case(test_mesh_copy_nonnull_size, &
 &     "test_mesh_copy_nonnull_size")
     if (.not. is_case_passed()) then
-      call case_failed_xml("test_mesh_copy_nonnull_size", "m_mesh_test")
+      call case_failed_xml("test_mesh_copy_nonnull_size", "fruit_mesh_test")
     else
-      call case_passed_xml("test_mesh_copy_nonnull_size", "m_mesh_test")
+      call case_passed_xml("test_mesh_copy_nonnull_size", "fruit_mesh_test")
     end if
     call teardown()
 
-  end subroutine m_mesh_test_all_tests
+  end subroutine fruit_mesh_test_all_tests
 
   subroutine fruit_basket()
 
     implicit none
 
-    call m_mesh_test_all_tests()
+    call fruit_mesh_test_all_tests()
 
   end subroutine fruit_basket
 
-end module m_mesh_basket
+end module fruit_mesh_basket

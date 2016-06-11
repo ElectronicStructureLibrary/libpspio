@@ -21,7 +21,7 @@
 #include "config.h"
 #endif
 
-module m_error_test
+module fruit_error_test
 
   use fpspio_m
   use fruit
@@ -208,4 +208,4 @@ contains
 
   end subroutine test_error_triple
 
-end module m_error_test
+end module fruit_error_test

@@ -22,7 +22,7 @@
 #include "config.h"
 #endif
 
-module m_mesh_test
+module fruit_mesh_test
 
   use fpspio_m
   use fruit
@@ -379,4 +379,4 @@ contains
 
   end subroutine test_mesh_copy_nonnull_size
 
-end module m_mesh_test
+end module fruit_mesh_test

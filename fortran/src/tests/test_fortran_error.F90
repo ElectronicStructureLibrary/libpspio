@@ -25,7 +25,7 @@
 program test_fortran_error
 
   use fruit
-  use m_error_test
+  use fruit_error_test
 
   implicit none
 

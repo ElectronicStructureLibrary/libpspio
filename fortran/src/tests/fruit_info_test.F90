@@ -22,7 +22,7 @@
 #include "config.h"
 #endif
 
-module m_info_test
+module fruit_info_test
 
   use fpspio_m
   use fruit
@@ -59,4 +59,4 @@ contains
 
   end subroutine test_info_string
 
-end module m_info_test
+end module fruit_info_test

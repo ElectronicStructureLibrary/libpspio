@@ -25,7 +25,7 @@
 program test_fortran_info
 
   use fruit
-  use m_info_test
+  use fruit_info_test
 
   implicit none
 

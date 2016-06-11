@@ -25,7 +25,7 @@
 program test_fortran_meshfunc
 
   use fruit
-  use m_meshfunc_basket
+  use fruit_meshfunc_basket
 
   implicit none
 

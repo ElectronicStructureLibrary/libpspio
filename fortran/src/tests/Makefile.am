@@ -69,7 +69,9 @@ nodist_check_SCRIPTS = \
   $(fpio_gcov_post_tests) \
   $(fpio_memprof_tests)
 
-test_fortran_error_SOURCES = m_error_test.F90 test_fortran_error.F90
+test_fortran_error_SOURCES = \
+  fruit_error_test.F90 \
+  test_fortran_error.F90
 test_fortran_error_LDADD = \
   libfruit.la \
   ../libfpspio.la \
@@ -79,7 +81,9 @@ test_fortran_error_DEPENDENCIES = \
   ../libfpspio.la \
   @pio_pspio_libs@
 
-test_fortran_info_SOURCES = m_info_test.F90 test_fortran_info.F90
+test_fortran_info_SOURCES = \
+  fruit_info_test.F90 \
+  test_fortran_info.F90
 test_fortran_info_LDADD = \
   libfruit.la \
   ../libfpspio.la \
@@ -89,7 +93,10 @@ test_fortran_info_DEPENDENCIES = \
   ../libfpspio.la \
   @pio_pspio_libs@
 
-test_fortran_mesh_SOURCES = m_mesh_test.F90 m_mesh_basket.F90 test_fortran_mesh.F90
+test_fortran_mesh_SOURCES = \
+  fruit_mesh_test.F90 \
+  fruit_mesh_basket.F90 \
+  test_fortran_mesh.F90
 test_fortran_mesh_LDADD = \
   libfruit.la \
   ../libfpspio.la \
@@ -99,7 +106,10 @@ test_fortran_mesh_DEPENDENCIES = \
   ../libfpspio.la \
   @pio_pspio_libs@
 
-test_fortran_meshfunc_SOURCES = m_meshfunc_test.F90 m_meshfunc_basket.F90 test_fortran_meshfunc.F90
+test_fortran_meshfunc_SOURCES = \
+  fruit_meshfunc_test.F90 \
+  fruit_meshfunc_basket.F90 \
+  test_fortran_meshfunc.F90
 test_fortran_meshfunc_LDADD = \
   libfruit.la \
   ../libfpspio.la \

@@ -21,7 +21,7 @@
 #include "config.h"
 #endif
 
-module m_meshfunc_basket
+module fruit_meshfunc_basket
 
   use fruit
 
@@ -29,9 +29,9 @@ module m_meshfunc_basket
 
 contains
 
-  subroutine m_meshfunc_test_all_tests()
+  subroutine fruit_meshfunc_test_all_tests()
 
-    use m_meshfunc_test
+    use fruit_meshfunc_test
 
     implicit none
 
@@ -41,9 +41,9 @@ contains
     call set_unit_name('test_meshfunc_alloc')
     call run_test_case(test_meshfunc_alloc, "test_meshfunc_alloc")
     if (.not. is_case_passed()) then
-      call case_failed_xml("test_meshfunc_alloc", "m_meshfunc_test")
+      call case_failed_xml("test_meshfunc_alloc", "fruit_meshfunc_test")
     else
-      call case_passed_xml("test_meshfunc_alloc", "m_meshfunc_test")
+      call case_passed_xml("test_meshfunc_alloc", "fruit_meshfunc_test")
     end if
 
     ! fpspio_meshfunc_init 
@@ -52,20 +52,20 @@ contains
     call set_unit_name('test_meshfunc_init')
     call run_test_case(test_meshfunc_init, "test_meshfunc_init")
     if (.not. is_case_passed()) then
-      call case_failed_xml("test_meshfunc_init", "m_meshfunc_test")
+      call case_failed_xml("test_meshfunc_init", "fruit_meshfunc_test")
     else
-      call case_passed_xml("test_meshfunc_init", "m_meshfunc_test")
+      call case_passed_xml("test_meshfunc_init", "fruit_meshfunc_test")
     end if
     call teardown()
 
-  end subroutine m_meshfunc_test_all_tests
+  end subroutine fruit_meshfunc_test_all_tests
 
   subroutine fruit_basket()
 
     implicit none
 
-    call m_meshfunc_test_all_tests()
+    call fruit_meshfunc_test_all_tests()
 
   end subroutine fruit_basket
 
-end module m_meshfunc_basket
+end module fruit_meshfunc_basket

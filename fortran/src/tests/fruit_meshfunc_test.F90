@@ -21,7 +21,7 @@
 #include "config.h"
 #endif
 
-module m_meshfunc_test
+module fruit_meshfunc_test
 
   use fpspio_m
   use fruit
@@ -196,4 +196,4 @@ contains
 
   end subroutine test_meshfunc_init
 
-end module m_meshfunc_test
+end module fruit_meshfunc_test
