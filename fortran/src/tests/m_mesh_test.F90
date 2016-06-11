@@ -48,7 +48,7 @@ contains
 
     character(len=80) :: msg
     integer :: i, np
-    real(dp), dimension(mesh_size) :: r_chk, rab_chk
+    real(dp), dimension(:), pointer :: r_chk, rab_chk
 
     call assert_equals(mesh_size, fpspio_mesh_get_np(mesh), &
 &     "Mesh Init - Value comparison - Size check")
@@ -58,8 +58,8 @@ contains
 &     "Mesh Init - Value comparison - Parameter check: b")
 
     np = fpspio_mesh_get_np(mesh)
-    r_chk = fpspio_mesh_get_r(mesh)
-    rab_chk = fpspio_mesh_get_rab(mesh)
+    r_chk => fpspio_mesh_get_r(mesh)
+    rab_chk => fpspio_mesh_get_rab(mesh)
 
     do i=1,np
       write(msg, &

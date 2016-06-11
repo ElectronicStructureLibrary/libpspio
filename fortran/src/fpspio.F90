@@ -143,6 +143,10 @@ module fpspio_m
     fpspio_pspinfo_init, &
     fpspio_pspinfo_copy, &
     fpspio_pspinfo_free, &
+    fpspio_pspinfo_set_author, &
+    fpspio_pspinfo_set_code, &
+    fpspio_pspinfo_set_date, &
+    fpspio_pspinfo_set_description, &
     fpspio_pspinfo_get_author, &
     fpspio_pspinfo_get_code, &
     fpspio_pspinfo_get_date, &
@@ -196,8 +200,8 @@ module fpspio_m
 
   interface fpspio_associated
     module procedure fpspio_qn_associated, fpspio_mesh_associated, fpspio_meshfunc_associated, &
-      fpspio_potential_associated, fpspio_projector_associated, fpspio_state_associated, &
-      fpspio_pspdata_associated
+      fpspio_xc_associated, fpspio_potential_associated, fpspio_projector_associated, &
+      fpspio_state_associated, fpspio_pspdata_associated, fpspio_pspinfo_associated
   end interface
 
   ! DO NOT EDIT THE FOLLOWING SECTION - ALL CHANGES WILL BE OVERWRITTEN!
