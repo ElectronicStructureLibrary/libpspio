@@ -1,5 +1,5 @@
 /* Copyright (C) 2011-2016 Matthieu Verstraete <matthieu.jean.verstraete@gmail.com>
- *                         Micael Oliveira <micaeljtoliveira@gmail.com>
+ *                         Micael Oliveira <micael.oliveira@mpsd.mpg.de>
  *                         Yann Pouillon <notifications@materialsevolution.es>
  *
  * This file is part of Libpspio.

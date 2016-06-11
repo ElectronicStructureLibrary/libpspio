@@ -1,5 +1,5 @@
 /* Copyright (C) 2012-2016 Matteo Giantomassi <gmatteo@gmac>
- *                         Micael Oliveira <micaeljtoliveira@gmail.com>
+ *                         Micael Oliveira <micael.oliveira@mpsd.mpg.de>
  *                         Yann Pouillon <notifications@materialsevolution.es>
  *
  * This file is part of Libpspio.

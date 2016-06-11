@@ -1,4 +1,4 @@
-/* Copyright (C) 2014-2016 Micael Oliveira <micaeljtoliveira@gmail.com>
+/* Copyright (C) 2014-2016 Micael Oliveira <micael.oliveira@mpsd.mpg.de>
  *                         Yann Pouillon <notifications@materialsevolution.es>
  *
  * This file is part of Libpspio.

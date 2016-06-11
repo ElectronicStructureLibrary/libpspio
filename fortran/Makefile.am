@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2011-2015 Yann Pouillon <notifications@materialsevolution.es>
+# Copyright (C) 2011-2016 Yann Pouillon <notifications@materialsevolution.es>
 #
 # This file is part of Libpspio.
 #
