@@ -70,6 +70,15 @@ end function fpspio_pspdata_associated
 ! Setters                                                             !
 !*********************************************************************!
 
+! pspinfo
+integer function fpspio_pspdata_set_pspinfo(pspdata, pspinfo) result(ierr)
+  type(fpspio_pspdata_t), intent(inout) :: pspdata
+  type(fpspio_pspinfo_t), intent(in)    :: pspinfo
+
+  ierr = pspio_pspdata_set_pspinfo(pspdata%ptr, pspinfo%ptr)
+
+end function fpspio_pspdata_set_pspinfo
+
 ! symbol
 integer function fpspio_pspdata_set_symbol(pspdata, symbol) result(ierr)
   type(fpspio_pspdata_t), intent(inout) :: pspdata
@@ -265,6 +274,14 @@ integer function fpspio_pspdata_get_format_guessed(pspdata) result(format_guesse
   format_guessed = pspio_pspdata_get_format_guessed(pspdata%ptr)
 
 end function fpspio_pspdata_get_format_guessed
+
+! pspinfo
+type(fpspio_pspinfo_t) function fpspio_pspdata_get_pspinfo(pspdata) result(pspinfo)
+  type(fpspio_pspdata_t), intent(in) :: pspdata
+    
+  pspinfo%ptr = pspio_pspdata_get_pspinfo(pspdata%ptr)
+
+end function fpspio_pspdata_get_pspinfo
 
 ! symbol
 character(len=3) function fpspio_pspdata_get_symbol(pspdata) result(symbol)

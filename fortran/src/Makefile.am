@@ -41,6 +41,7 @@ fpio_inc_srcs = \
   api_potential_inc.F90 \
   api_projector_inc.F90 \
   api_pspdata_inc.F90 \
+  api_pspinfo_inc.F90 \
   api_qn_inc.F90 \
   api_state_inc.F90 \
   api_xc_inc.F90 \
@@ -51,6 +52,7 @@ fpio_inc_srcs = \
   interface_potential_inc.F90 \
   interface_projector_inc.F90 \
   interface_pspdata_inc.F90 \
+  interface_pspinfo_inc.F90 \
   interface_qn_inc.F90 \
   interface_state_inc.F90 \
   interface_xc_inc.F90

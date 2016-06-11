@@ -91,6 +91,7 @@ module fpspio_m
     fpspio_pspdata_read, &
     fpspio_pspdata_write, &
     fpspio_pspdata_free, &
+    fpspio_pspdata_set_pspinfo, &
     fpspio_pspdata_set_symbol, &
     fpspio_pspdata_set_z, &
     fpspio_pspdata_set_zvalence, &
@@ -112,6 +113,7 @@ module fpspio_m
     fpspio_pspdata_set_xc, &
     fpspio_pspdata_set_rho_valence, &
     fpspio_pspdata_get_format_guessed, &
+    fpspio_pspdata_get_pspinfo, &
     fpspio_pspdata_get_symbol, &
     fpspio_pspdata_get_z, &
     fpspio_pspdata_get_zvalence, &
@@ -132,6 +134,17 @@ module fpspio_m
     fpspio_pspdata_get_vlocal, &
     fpspio_pspdata_get_xc, &
     fpspio_pspdata_get_rho_valence, &
+    ! pspinfo
+    fpspio_pspinfo_t, &
+    fpspio_pspinfo_alloc, &
+    fpspio_pspinfo_init, &
+    fpspio_pspinfo_copy, &
+    fpspio_pspinfo_free, &
+    fpspio_pspinfo_get_author, &
+    fpspio_pspinfo_get_code, &
+    fpspio_pspinfo_get_date, &
+    fpspio_pspinfo_get_description, &
+    fpspio_pspinfo_cmp, &
     ! qn
     fpspio_qn_t, &
     fpspio_qn_alloc, &
@@ -292,6 +305,11 @@ module fpspio_m
     type(c_ptr) :: ptr = C_NULL_PTR
   end type fpspio_xc_t
 
+  type fpspio_pspinfo_t
+    private
+    type(c_ptr) :: ptr = C_NULL_PTR
+  end type fpspio_pspinfo_t
+  
   type fpspio_pspdata_t
     private
     type(c_ptr) :: ptr = C_NULL_PTR
@@ -306,6 +324,7 @@ module fpspio_m
 #include "interface_potential_inc.F90"
 #include "interface_projector_inc.F90"
 #include "interface_xc_inc.F90"
+#include "interface_pspinfo_inc.F90"
 #include "interface_pspdata_inc.F90"
 
 contains
@@ -319,6 +338,7 @@ contains
 #include "api_potential_inc.F90"
 #include "api_projector_inc.F90"
 #include "api_xc_inc.F90"
+#include "api_pspinfo_inc.F90"
 #include "api_pspdata_inc.F90"
 
 

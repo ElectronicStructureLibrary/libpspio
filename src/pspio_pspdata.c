@@ -290,6 +290,15 @@ void pspio_pspdata_free(pspio_pspdata_t *pspdata)
  * Setters                                                            *
  **********************************************************************/
 
+int pspio_pspdata_set_pspinfo(pspio_pspdata_t *pspdata, const pspio_pspinfo_t *pspinfo)
+{
+  assert(pspdata != NULL);
+
+  SUCCEED_OR_RETURN(pspio_pspinfo_copy(&pspdata->pspinfo, pspinfo));
+
+  return PSPIO_SUCCESS;
+}
+
 int pspio_pspdata_set_symbol(pspio_pspdata_t *pspdata, const char *symbol)
 {
   assert(pspdata != NULL);
@@ -531,6 +540,13 @@ int pspio_pspdata_get_format_guessed(const pspio_pspdata_t *pspdata)
   assert(pspdata != NULL);
 
   return pspdata->format_guessed;
+}
+
+const pspio_pspinfo_t * pspio_pspdata_get_pspinfo(const pspio_pspdata_t *pspdata)
+{
+  assert(pspdata != NULL);
+
+  return pspdata->pspinfo;
 }
 
 const char * pspio_pspdata_get_symbol(const pspio_pspdata_t *pspdata)

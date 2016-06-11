@@ -54,6 +54,13 @@ interface
   ! Setters                                                             !
   !*********************************************************************!
 
+  ! pspinfo
+  integer(c_int) function pspio_pspdata_set_pspinfo(pspdata, pspinfo) bind(c)
+    import
+    type(c_ptr), value :: pspdata
+    type(c_ptr), value :: pspinfo
+  end function pspio_pspdata_set_pspinfo
+  
   ! symbol
   integer(c_int) function pspio_pspdata_set_symbol(pspdata, symbol) bind(c)
     import
@@ -208,6 +215,12 @@ interface
     type(c_ptr), value :: pspdata
   end function pspio_pspdata_get_format_guessed
 
+  ! pspinfo
+  type(c_ptr) function pspio_pspdata_get_pspinfo(pspdata) bind(c)
+    import
+    type(c_ptr), value :: pspdata
+  end function pspio_pspdata_get_pspinfo
+  
   ! symbol
   character(kind=c_char) function pspio_pspdata_get_symbol(pspdata) bind(c)
     import
