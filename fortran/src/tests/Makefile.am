@@ -47,7 +47,8 @@ libfruit_la_SOURCES = fruit.f90
 fpio_basic_tests = \
   test_fortran_error \
   test_fortran_info \
-  test_fortran_mesh
+  test_fortran_mesh \
+  test_fortran_meshfunc
 fpio_xfail_tests = \
   test_fortran_io
 fpio_wrapped_tests = \
@@ -93,6 +94,16 @@ test_fortran_mesh_LDADD = \
   @pio_pspio_libs@ \
   $(LIBS_COVERAGE)
 test_fortran_mesh_DEPENDENCIES = \
+  ../libfpspio.la \
+  @pio_pspio_libs@
+
+test_fortran_meshfunc_SOURCES = m_meshfunc_test.F90 m_meshfunc_basket.F90 test_fortran_meshfunc.F90
+test_fortran_meshfunc_LDADD = \
+  libfruit.la \
+  ../libfpspio.la \
+  @pio_pspio_libs@ \
+  $(LIBS_COVERAGE)
+test_fortran_meshfunc_DEPENDENCIES = \
   ../libfpspio.la \
   @pio_pspio_libs@
 
