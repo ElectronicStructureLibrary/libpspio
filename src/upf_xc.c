@@ -45,23 +45,23 @@ int upf_to_libxc (const char xc_string[20], int *exchange, int *correlation)
       *exchange = XC_NONE;
     } else if (strncmp(exch, "SLA", 3) == 0) {
       if (strncmp(gradx, "NOGX", 4) == 0) {
-	*exchange = XC_LDA_X;
+        *exchange = XC_LDA_X;
       } else if (strncmp(gradx, "B88", 3) == 0) {
-	*exchange = XC_GGA_X_B88;
+        *exchange = XC_GGA_X_B88;
       } else if (strncmp(gradx, "GGX", 3) == 0) {
-	*exchange = XC_GGA_X_PW91;
+	      *exchange = XC_GGA_X_PW91;
       } else if (strncmp(gradx, "PBX", 3) == 0) {
-	*exchange = XC_GGA_X_PBE;
+	      *exchange = XC_GGA_X_PBE;
       } else if (strncmp(gradx, "PSX", 3) == 0) {
-	*exchange = XC_GGA_X_PBE_SOL;
+	      *exchange = XC_GGA_X_PBE_SOL;
       } else if (strncmp(gradx, "RPB", 3) == 0) {
-	*exchange = XC_GGA_X_PBE_R;
+	      *exchange = XC_GGA_X_PBE_R;
       } else if (strncmp(gradx, "WCX", 3) == 0) {
-	*exchange = XC_GGA_X_WC;
+	      *exchange = XC_GGA_X_WC;
       } else if (strncmp(gradx, "TPSS", 4) == 0) {
-	*exchange = XC_MGGA_X_TPSS;
+	      *exchange = XC_MGGA_X_TPSS;
       } else {
-	return PSPIO_EVALUE;
+	      return PSPIO_EVALUE;
       }
     } else {
       return PSPIO_EVALUE;
