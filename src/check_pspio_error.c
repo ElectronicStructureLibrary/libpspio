@@ -109,7 +109,7 @@ END_TEST
 
 START_TEST(test_error_triple)
 {
-  char result[579];
+  char result[PSPIO_STRLEN_ERROR];
 
   ck_assert(pspio_error_add(PSPIO_EVALUE, "test_3_1.c", 311, "dummy31") == PSPIO_EVALUE);
   ck_assert(pspio_error_get_last(NULL) == PSPIO_EVALUE);
@@ -124,12 +124,12 @@ START_TEST(test_error_triple)
   ck_assert(pspio_error_len() == 3);
 
   sprintf(result, "libpspio: ERROR:\n");
-  sprintf(result, "%s  * in test_3_1.c(dummy31):311:\n"
-          "      value error: bad value found (PSPIO_EVALUE)\n", result);
-  sprintf(result, "%s  * in test_3_2.c(dummy32):322:\n"
-          "      file does not exist (PSPIO_ENOFILE)\n", result);
-  sprintf(result, "%s  * in test_3_3.c(dummy33):333:\n"
-          "      error (PSPIO_ERROR)\n", result);
+  sprintf(result+strlen(result), "  * in test_3_1.c(dummy31):311:\n"
+          "      value error: bad value found (PSPIO_EVALUE)\n");
+  sprintf(result+strlen(result), "  * in test_3_2.c(dummy32):322:\n"
+          "      file does not exist (PSPIO_ENOFILE)\n");
+  sprintf(result+strlen(result), "  * in test_3_3.c(dummy33):333:\n"
+          "      error (PSPIO_ERROR)\n");
   err_str = pspio_error_fetchall();
   ck_assert_str_eq(err_str, result);
   free(err_str);
