@@ -80,3 +80,35 @@ double linear_extrapolation(double x1, double x2, double f1,
 
   return f;
 }
+
+
+char * psp_scheme_name(int scheme)
+{
+  switch (scheme) {
+    case PSPIO_SCM_BHS:
+      return "Bachelet-Hamann-Schluter scheme";
+    case PSPIO_SCM_GTH:
+      return "Goedecker-Teter-Hutter scheme";
+    case PSPIO_SCM_HAMANN:
+      return "Hamann scheme";
+    case PSPIO_SCM_HGH:
+      return "Hartwigsen-Goedecker-Hutter scheme";
+    case PSPIO_SCM_HSC:
+      return "Hamann-Schluter-Chiang scheme";
+    case PSPIO_SCM_KERKER:
+      return "Kerker scheme";
+    case PSPIO_SCM_MRPP:
+      return "Multi-reference TM scheme";
+    case PSPIO_SCM_RRKJ:
+      return "Rappe-Rabe-Kaxiras-Joannopoulos scheme";
+    case PSPIO_SCM_TM:
+      return "Troullier-Martins scheme";
+    case PSPIO_SCM_TM2:
+      return "Troullier-Martins 2 scheme";
+    case PSPIO_SCM_RTM:
+      return "Relativistic Troullier-Martins scheme";
+    case PSPIO_SCM_UNKNOWN:
+    default:
+      return "Unknown pseudopotential generation scheme";
+  }
+}

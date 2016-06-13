@@ -81,4 +81,12 @@ int symbol_to_z(const char *symbol, double *z);
  */
 double linear_extrapolation(double x1, double x2, double f1,  double f2, double x);
 
+/**
+ * Given the pseudopotential generation scheme, returns a string with the scheme name
+ *
+ * @param[in] scheme: the pseudopotential generation scheme id
+ * @return scheme name
+ */
+char * psp_scheme_name(int scheme);
+
 #endif
