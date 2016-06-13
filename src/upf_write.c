@@ -35,7 +35,7 @@
 
 void upf_write_info(FILE *fp, const pspio_pspdata_t *pspdata)
 {
-  char *description;
+  const char *description;
 
   description = pspio_pspinfo_get_description(pspdata->pspinfo);
 
