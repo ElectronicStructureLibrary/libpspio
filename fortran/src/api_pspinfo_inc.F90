@@ -32,15 +32,16 @@ integer function fpspio_pspinfo_alloc(pspinfo) result(ierr)
 end function fpspio_pspinfo_alloc
 
 ! init
-integer function fpspio_pspinfo_init(pspinfo, author, code, date, description) result(ierr)
+integer function fpspio_pspinfo_init(pspinfo, author, code, date, description, scheme_name) result(ierr)
   type(fpspio_pspinfo_t), intent(inout) :: pspinfo
   character(len=*),       intent(in)    :: author
   character(len=*),       intent(in)    :: code
   character(len=*),       intent(in)    :: date
   character(len=*),       intent(in)    :: description
-
+  character(len=*),       intent(in)    :: scheme_name
+  
   ierr = pspio_pspinfo_init(pspinfo%ptr, f_to_c_string(author), f_to_c_string(code), &
-    f_to_c_string(date), f_to_c_string(description))
+    f_to_c_string(date), f_to_c_string(description), f_to_c_string(scheme_name))
 
 end function fpspio_pspinfo_init
 
@@ -111,6 +112,15 @@ integer function fpspio_pspinfo_set_description(pspinfo, description) result(ier
 
 end function fpspio_pspinfo_set_description
 
+! scheme_name
+integer function fpspio_pspinfo_set_scheme_name(pspinfo, scheme_name) result(ierr)
+  type(fpspio_pspinfo_t), intent(inout) :: pspinfo
+  character(len=*),       intent(in)    :: scheme_name
+
+  ierr = pspio_pspinfo_set_scheme_name(pspinfo%ptr, f_to_c_string(scheme_name))
+
+end function fpspio_pspinfo_set_scheme_name
+
 
 !*********************************************************************!
 ! Getters                                                             !
@@ -147,6 +157,14 @@ character(len=256) function fpspio_pspinfo_get_description(pspinfo) result(descr
   call c_to_f_string(pspio_pspinfo_get_description(pspinfo%ptr), description)
 
 end function fpspio_pspinfo_get_description
+
+! scheme_name
+character(len=256) function fpspio_pspinfo_get_scheme_name(pspinfo) result(scheme_name)
+  type(fpspio_pspinfo_t), intent(in) :: pspinfo
+ 
+  call c_to_f_string(pspio_pspinfo_get_scheme_name(pspinfo%ptr), scheme_name)
+
+end function fpspio_pspinfo_get_scheme_name
 
 
 !*********************************************************************!

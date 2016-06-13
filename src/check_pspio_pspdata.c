@@ -71,7 +71,8 @@ void pspdata_full_setup(void)
 
   pspio_pspinfo_free(pspinfo);
   pspio_pspinfo_alloc(&pspinfo);
-  pspio_pspinfo_init(pspinfo, "A. Author", "XPTO", "99/99/99", "Universal alchemical pseudopotential");
+  pspio_pspinfo_init(pspinfo, "A. Author", "XPTO", "99/99/99",
+                     "Universal alchemical pseudopotential", "Hamann scheme");
 
   pspio_mesh_free(mesh);
   pspio_mesh_alloc(&mesh, 8);
@@ -373,6 +374,7 @@ Suite * make_pspdata_suite(void)
   tc_setget = tcase_create("Setters and getters");
   tcase_add_checked_fixture(tc_setget, pspdata_full_setup, pspdata_full_teardown);
   tcase_add_test(tc_setget, test_pspdata_setget_format_guessed);
+  tcase_add_test(tc_setget, test_pspdata_setget_pspinfo);
   tcase_add_test(tc_setget, test_pspdata_setget_symbol);
   tcase_add_test(tc_setget, test_pspdata_setget_z);
   tcase_add_test(tc_setget, test_pspdata_setget_zvalence);

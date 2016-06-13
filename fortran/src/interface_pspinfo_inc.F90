@@ -31,13 +31,14 @@ interface
   end function pspio_pspinfo_alloc
 
   ! init
-  integer(c_int) function pspio_pspinfo_init(pspinfo, author, code, date, description) bind(c)
+  integer(c_int) function pspio_pspinfo_init(pspinfo, author, code, date, description, scheme_name) bind(c)
     import
     type(c_ptr),           value :: pspinfo
     character(kind=c_char)       :: author(*)
     character(kind=c_char)       :: code(*)
     character(kind=c_char)       :: date(*)
     character(kind=c_char)       :: description(*)
+    character(kind=c_char)       :: scheme_name(*)
   end function pspio_pspinfo_init
   
   ! copy
@@ -85,7 +86,14 @@ interface
     type(c_ptr),            value :: pspinfo
     character(kind=c_char)        :: description(*)
   end function pspio_pspinfo_set_description
-  
+
+  ! scheme_name
+  integer(c_int) function pspio_pspinfo_set_scheme_name(pspinfo, scheme_name) bind(c)
+    import
+    type(c_ptr),            value :: pspinfo
+    character(kind=c_char)        :: scheme_name(*)
+  end function pspio_pspinfo_set_scheme_name
+
   
   !*********************************************************************!
   ! Getters                                                             !
@@ -115,6 +123,12 @@ interface
     type(c_ptr), value :: pspinfo
   end function pspio_pspinfo_get_description
 
+  ! scheme_name
+  character(kind=c_char) function pspio_pspinfo_get_scheme_name(pspinfo) bind(c)
+    import
+    type(c_ptr), value :: pspinfo
+  end function pspio_pspinfo_get_scheme_name
+  
 
   !*********************************************************************!
   ! Utility routines                                                    !

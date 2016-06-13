@@ -40,6 +40,7 @@ typedef struct{
   char *code;
   char *date;
   char *description; /**< descriptive string for content of file read in. Nothing should ever be assumed about its content. */
+  char *scheme_name;
 } pspio_pspinfo_t;
 
 
@@ -67,7 +68,7 @@ int pspio_pspinfo_alloc(pspio_pspinfo_t **pspinfo);
  *       pspio_pspinfo_alloc method.
  */
 int pspio_pspinfo_init(pspio_pspinfo_t *pspinfo, const char *author, const char *code,
-                       const char *date, const char *description);
+                       const char *date, const char *description, const char *scheme_name);
 
 /**
  * Duplicates a pspinfo structure.
@@ -120,6 +121,13 @@ int pspio_pspinfo_set_date(pspio_pspinfo_t *pspinfo, const char *date);
  */
 int pspio_pspinfo_set_description(pspio_pspinfo_t *pspinfo, const char *description);
 
+/**
+ * @param[in,out] pspinfo: pointer to pspinfo structure
+ * @param[in] scheme_name: pointer to pseudopotential generation scheme name
+ * @return error code
+ */
+int pspio_pspinfo_set_scheme_name(pspio_pspinfo_t *pspinfo, const char *scheme_name);
+
 
 /**********************************************************************
  * Getters                                                            *
@@ -148,6 +156,12 @@ const char * pspio_pspinfo_get_date(const pspio_pspinfo_t *pspinfo);
  * @return pointer to a description of the pseudopotential file
  */
 const char * pspio_pspinfo_get_description(const pspio_pspinfo_t *pspinfo);
+
+/**
+ * @param[in] pspdate: pointer to pspdata structure
+ * @return pointer to scheme name.
+ */
+const char * pspio_pspinfo_get_scheme_name(const pspio_pspinfo_t *pspinfo);
 
 
 /**********************************************************************

@@ -35,6 +35,7 @@ static char *author1 = "A. Author", *author2 = "Another Author";
 static char *code1 = "XPTO", *code2 = "DFT code";
 static char *date1 = "99/99/99", *date2 = "00/00/00";
 static char *description1 = "Universal alchemical pseudopotential", *description2 = "Minus one over r";
+static char *scheme_name1 = "Hamann scheme", *scheme_name2 = "Troullier-Martins scheme";
 
 
 void pspinfo_setup(void)
@@ -51,12 +52,14 @@ void pspinfo_teardown(void)
   pspinfo2 = NULL;
 }
 
-void pspinfo_compare_values(pspio_pspinfo_t *pspinfo, const char *author, const char *code, const char *date, const char *description)
+void pspinfo_compare_values(pspio_pspinfo_t *pspinfo, const char *author, const char *code, const char *date,
+                            const char *description, const char *scheme_name)
 {
   ck_assert_str_eq(pspio_pspinfo_get_author(pspinfo), author);
   ck_assert_str_eq(pspio_pspinfo_get_code(pspinfo), code);
   ck_assert_str_eq(pspio_pspinfo_get_date(pspinfo), date);
   ck_assert_str_eq(pspio_pspinfo_get_description(pspinfo), description);
+  ck_assert_str_eq(pspio_pspinfo_get_scheme_name(pspinfo), scheme_name);
 }
 
 
@@ -68,54 +71,63 @@ END_TEST
 
 START_TEST(test_pspinfo_init)
 {
-  ck_assert(pspio_pspinfo_init(pspinfo1, author1, code1, date1, description1) == PSPIO_SUCCESS);
-  pspinfo_compare_values(pspinfo1, author1, code1, date1, description1);
+  ck_assert(pspio_pspinfo_init(pspinfo1, author1, code1, date1, description1, scheme_name1) == PSPIO_SUCCESS);
+  pspinfo_compare_values(pspinfo1, author1, code1, date1, description1, scheme_name1);
 }
 END_TEST
 
 START_TEST(test_pspinfo_cmp_equal)
 {
-  ck_assert(pspio_pspinfo_init(pspinfo1, author1, code1, date1, description1) == PSPIO_SUCCESS);
-  ck_assert(pspio_pspinfo_init(pspinfo2, author1, code1, date1, description1) == PSPIO_SUCCESS);
+  ck_assert(pspio_pspinfo_init(pspinfo1, author1, code1, date1, description1, scheme_name1) == PSPIO_SUCCESS);
+  ck_assert(pspio_pspinfo_init(pspinfo2, author1, code1, date1, description1, scheme_name1) == PSPIO_SUCCESS);
   ck_assert(pspio_pspinfo_cmp(pspinfo1, pspinfo2) == PSPIO_EQUAL);
 }
 END_TEST
 
 START_TEST(test_pspinfo_cmp_diff_author)
 {
-  ck_assert(pspio_pspinfo_init(pspinfo1, author1, code1, date1, description1) == PSPIO_SUCCESS);
-  ck_assert(pspio_pspinfo_init(pspinfo2, author2, code1, date1, description1) == PSPIO_SUCCESS);
+  ck_assert(pspio_pspinfo_init(pspinfo1, author1, code1, date1, description1, scheme_name1) == PSPIO_SUCCESS);
+  ck_assert(pspio_pspinfo_init(pspinfo2, author2, code1, date1, description1, scheme_name1) == PSPIO_SUCCESS);
   ck_assert(pspio_pspinfo_cmp(pspinfo1, pspinfo2) == PSPIO_DIFF);
 }
 END_TEST
 
 START_TEST(test_pspinfo_cmp_diff_code)
 {
-  ck_assert(pspio_pspinfo_init(pspinfo1, author1, code1, date1, description1) == PSPIO_SUCCESS);
-  ck_assert(pspio_pspinfo_init(pspinfo2, author1, code2, date1, description1) == PSPIO_SUCCESS);
+  ck_assert(pspio_pspinfo_init(pspinfo1, author1, code1, date1, description1, scheme_name1) == PSPIO_SUCCESS);
+  ck_assert(pspio_pspinfo_init(pspinfo2, author1, code2, date1, description1, scheme_name1) == PSPIO_SUCCESS);
   ck_assert(pspio_pspinfo_cmp(pspinfo1, pspinfo2) == PSPIO_DIFF);
 }
 END_TEST
 
 START_TEST(test_pspinfo_cmp_diff_date)
 {
-  ck_assert(pspio_pspinfo_init(pspinfo1, author1, code1, date1, description1) == PSPIO_SUCCESS);
-  ck_assert(pspio_pspinfo_init(pspinfo2, author1, code1, date2, description1) == PSPIO_SUCCESS);
+  ck_assert(pspio_pspinfo_init(pspinfo1, author1, code1, date1, description1, scheme_name1) == PSPIO_SUCCESS);
+  ck_assert(pspio_pspinfo_init(pspinfo2, author1, code1, date2, description1, scheme_name1) == PSPIO_SUCCESS);
   ck_assert(pspio_pspinfo_cmp(pspinfo1, pspinfo2) == PSPIO_DIFF);
 }
 END_TEST
 
 START_TEST(test_pspinfo_cmp_diff_description)
 {
-  ck_assert(pspio_pspinfo_init(pspinfo1, author1, code1, date1, description1) == PSPIO_SUCCESS);
-  ck_assert(pspio_pspinfo_init(pspinfo2, author1, code1, date1, description2) == PSPIO_SUCCESS);
+  ck_assert(pspio_pspinfo_init(pspinfo1, author1, code1, date1, description1, scheme_name1) == PSPIO_SUCCESS);
+  ck_assert(pspio_pspinfo_init(pspinfo2, author1, code1, date1, description2, scheme_name1) == PSPIO_SUCCESS);
   ck_assert(pspio_pspinfo_cmp(pspinfo1, pspinfo2) == PSPIO_DIFF);
 }
 END_TEST
 
+START_TEST(test_pspinfo_cmp_diff_scheme_name)
+{
+  ck_assert(pspio_pspinfo_init(pspinfo1, author1, code1, date1, description1, scheme_name1) == PSPIO_SUCCESS);
+  ck_assert(pspio_pspinfo_init(pspinfo2, author1, code1, date1, description1, scheme_name2) == PSPIO_SUCCESS);
+  ck_assert(pspio_pspinfo_cmp(pspinfo1, pspinfo2) == PSPIO_DIFF);
+}
+END_TEST
+
+
 START_TEST(test_pspinfo_copy_null)
 {
-  ck_assert(pspio_pspinfo_init(pspinfo1, author1, code1, date1, description1) == PSPIO_SUCCESS);
+  ck_assert(pspio_pspinfo_init(pspinfo1, author1, code1, date1, description1, scheme_name1) == PSPIO_SUCCESS);
   pspio_pspinfo_free(pspinfo2);
   pspinfo2 = NULL;
 
@@ -126,8 +138,8 @@ END_TEST
 
 START_TEST(test_pspinfo_copy_nonnull)
 {
-  ck_assert(pspio_pspinfo_init(pspinfo1, author1, code1, date1, description1) == PSPIO_SUCCESS);
-  ck_assert(pspio_pspinfo_init(pspinfo2, author2, code2, date2, description2) == PSPIO_SUCCESS);
+  ck_assert(pspio_pspinfo_init(pspinfo1, author1, code1, date1, description1, scheme_name1) == PSPIO_SUCCESS);
+  ck_assert(pspio_pspinfo_init(pspinfo2, author2, code2, date2, description2, scheme_name2) == PSPIO_SUCCESS);
   ck_assert(pspio_pspinfo_copy(&pspinfo2, pspinfo1) == PSPIO_SUCCESS);
   ck_assert(pspio_pspinfo_cmp(pspinfo1, pspinfo2) == PSPIO_EQUAL);
 }
@@ -161,6 +173,14 @@ START_TEST(test_pspinfo_setget_description)
 }
 END_TEST
 
+START_TEST(test_pspinfo_setget_scheme_name)
+{
+  ck_assert(pspio_pspinfo_set_scheme_name(pspinfo1, scheme_name1) == PSPIO_SUCCESS);
+  ck_assert_str_eq(pspio_pspinfo_get_scheme_name(pspinfo1), scheme_name1);
+}
+END_TEST
+
+
 Suite * make_pspinfo_suite(void)
 {
   Suite *s;
@@ -185,6 +205,7 @@ Suite * make_pspinfo_suite(void)
   tcase_add_test(tc_cmp, test_pspinfo_cmp_diff_code);
   tcase_add_test(tc_cmp, test_pspinfo_cmp_diff_date);
   tcase_add_test(tc_cmp, test_pspinfo_cmp_diff_description);
+  tcase_add_test(tc_cmp, test_pspinfo_cmp_diff_scheme_name);
   suite_add_tcase(s, tc_cmp);
 
   tc_copy = tcase_create("Copy");
@@ -199,6 +220,7 @@ Suite * make_pspinfo_suite(void)
   tcase_add_test(tc_setget, test_pspinfo_setget_code);
   tcase_add_test(tc_setget, test_pspinfo_setget_date);
   tcase_add_test(tc_setget, test_pspinfo_setget_description);
+  tcase_add_test(tc_setget, test_pspinfo_setget_scheme_name);
   suite_add_tcase(s, tc_setget);
 
   return s;
