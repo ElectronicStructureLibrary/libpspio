@@ -147,10 +147,12 @@ module fpspio_m
     fpspio_pspinfo_set_code, &
     fpspio_pspinfo_set_date, &
     fpspio_pspinfo_set_description, &
+    fpspio_pspinfo_set_scheme_name, &
     fpspio_pspinfo_get_author, &
     fpspio_pspinfo_get_code, &
     fpspio_pspinfo_get_date, &
     fpspio_pspinfo_get_description, &
+    fpspio_pspinfo_get_scheme_name, &
     fpspio_pspinfo_cmp, &
     ! qn
     fpspio_qn_t, &
