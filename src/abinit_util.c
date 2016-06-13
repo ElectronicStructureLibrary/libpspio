@@ -43,7 +43,7 @@ static char *my_strndup (const char *s, size_t n);
 
 int abinit_read_header(FILE *fp, int format, pspio_pspdata_t *pspdata)
 {
-  char line[PSPIO_STRLEN_LINE], symbol[3];
+  char line[PSPIO_STRLEN_LINE], symbol[3], tmp[256], code[256], description[256];
   char *line4;
   int format_read, pspcod, pspxc, lmax, lloc, mmax;
   int exchange, correlation;
@@ -51,8 +51,10 @@ int abinit_read_header(FILE *fp, int format, pspio_pspdata_t *pspdata)
 
   /* Line 1: read title */
   FULFILL_OR_RETURN( fgets(line, PSPIO_STRLEN_LINE, fp) != NULL, PSPIO_EIO );
+  FULFILL_OR_RETURN( sscanf(line, "%s %s : %s", tmp, code, description) == 3, PSPIO_EFILE_CORRUPT );
   SUCCEED_OR_RETURN( pspio_pspinfo_alloc(&pspdata->pspinfo) );
-  SUCCEED_OR_RETURN( pspio_pspinfo_set_description(pspdata->pspinfo, line) );
+  SUCCEED_OR_RETURN( pspio_pspinfo_set_code(pspdata->pspinfo, code) );
+  SUCCEED_OR_RETURN( pspio_pspinfo_set_description(pspdata->pspinfo, description) );
 
   /* Line 2: read atomic number, Z valence */
   /* Note: ignoring psp date */
@@ -164,8 +166,8 @@ int abinit_write_header(FILE *fp, int format, const pspio_pspdata_t *pspdata)
     pspdata->xc->correlation, &pspxc));
 
   /* Line 1: write title */
-  /* FIXME: truncate info to its first line */
-  fprintf(fp, "%s\n", pspio_pspinfo_get_description(pspdata->pspinfo));
+  fprintf(fp, " %3s %s: %s\n", pspio_pspdata_get_symbol(pspdata),
+          pspio_pspinfo_get_code(pspdata->pspinfo), pspio_pspinfo_get_scheme_name(pspdata->pspinfo));
 
   /* Line 2: write atomic number, Z valence, psp date */
   int_now = time(NULL);
