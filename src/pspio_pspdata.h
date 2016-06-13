@@ -47,7 +47,7 @@
  */
 typedef struct{
   /* general data */
-  pspio_pspinfo_t *pspinfo; /**< Generic nformation about the pseudopotential. */
+  pspio_pspinfo_t *pspinfo; /**< Generic information about the pseudopotential. */
   int format_guessed;/**< Format of the file guessed by pspio_pspdata_read. */
   char *symbol;      /**< Atomic symbol */
   double z;          /**< Atomic number */
