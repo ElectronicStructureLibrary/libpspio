@@ -99,6 +99,8 @@ char * psp_scheme_name(int scheme)
       return "Kerker scheme";
     case PSPIO_SCM_MRPP:
       return "Multi-reference TM scheme";
+    case PSPIO_SCM_ONCV:
+      return "Hamann ONCV scheme";
     case PSPIO_SCM_RRKJ:
       return "Rappe-Rabe-Kaxiras-Joannopoulos scheme";
     case PSPIO_SCM_TM:
