@@ -23,7 +23,7 @@
 set -e
 
 # Check that we are in the right directory
-if test ! -s "./configure.ac" -o ! -s "src/fpspio.F90"; then
+if test ! -s "./configure.ac" -o ! -s "src/pspiof.F90"; then
   echo "This is not a Libpspio source tree - aborting now"
   exit 1
 fi

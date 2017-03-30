@@ -33,7 +33,7 @@ SUBDIRS = . tests
 
 # Fortran source - keep this in alphabetical order
 fpio_srcs = \
-  fpspio.F90
+  pspiof.F90
 
 fpio_inc_srcs = \
   api_error_inc.F90 \
@@ -63,7 +63,7 @@ fpio_inc_srcs = \
 if F90_MOD_UPPERCASE
   fpio_mods = FPSPIO_M.@ax_cv_f90_modext@
 else
-  fpio_mods = fpspio_m.@ax_cv_f90_modext@
+  fpio_mods = pspiof_m.@ax_cv_f90_modext@
 endif
 
 # Included Fortran files are not distributed by default
@@ -80,16 +80,16 @@ AM_CFLAGS = @CFLAGS_COVERAGE@
 AM_FCFLAGS = @FCFLAGS_COVERAGE@
 
 # Libraries
-lib_LTLIBRARIES = libfpspio.la
+lib_LTLIBRARIES = libpspiof.la
 
-libfpspio_la_LDFLAGS = -version-info 0:0:0
-libfpspio_la_SOURCES = $(fpio_srcs)
+libpspiof_la_LDFLAGS = -version-info 0:0:0
+libpspiof_la_SOURCES = $(fpio_srcs)
 
 # Headers
 nodist_include_HEADERS = $(fpio_mods)
 
 # Force check to build the library first
-check-local: libfpspio.la
+check-local: libpspiof.la
 
                     # ------------------------------------ #
 
@@ -98,9 +98,9 @@ check-local: libfpspio.la
 #
 
 # Fortran
-fpspio.$(LTOBJEXT): $(fpio_inc_srcs)
+pspiof.$(LTOBJEXT): $(fpio_inc_srcs)
 
-$(fpio_mods): fpspio.$(LTOBJEXT)
+$(fpio_mods): pspiof.$(LTOBJEXT)
 	@echo "Modules already built"
 
                     # ------------------------------------ #

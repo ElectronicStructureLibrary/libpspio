@@ -35,7 +35,7 @@ contains
 
     implicit none
 
-    ! fpspio_mesh_alloc
+    ! pspiof_mesh_alloc
     ! Note: no setup for this test
     write(*, '(/A)') "  ..running test: test_mesh_alloc"
     call set_unit_name('test_mesh_alloc')
@@ -47,7 +47,7 @@ contains
     end if
     call teardown()
 
-    ! fpspio_mesh_init 
+    ! pspiof_mesh_init 
     call setup()
     write(*, '(/A)') "  ..running test: test_mesh_init"
     call set_unit_name('test_mesh_init')
@@ -59,7 +59,7 @@ contains
     end if
     call teardown()
 
-    ! fpspio_mesh_init_from_parameters(linear)
+    ! pspiof_mesh_init_from_parameters(linear)
     call setup()
     write(*, '(/A)') "  ..running test: test_mesh_init_parameters_linear"
     call set_unit_name('test_mesh_init_parameters_linear')
@@ -72,7 +72,7 @@ contains
     end if
     call teardown()
 
-    ! fpspio_mesh_init_from_parameters(log1)
+    ! pspiof_mesh_init_from_parameters(log1)
     call setup()
     write(*, '(/A)') "  ..running test: test_mesh_init_parameters_log1"
     call set_unit_name('test_mesh_init_parameters_log1')
@@ -85,7 +85,7 @@ contains
     end if
     call teardown()
 
-    ! fpspio_mesh_init_from_parameters(log2)
+    ! pspiof_mesh_init_from_parameters(log2)
     call setup()
     write(*, '(/A)') "  ..running test: test_mesh_init_parameters_log2"
     call set_unit_name('test_mesh_init_parameters_log2')
@@ -98,7 +98,7 @@ contains
     end if
     call teardown()
 
-    ! fpspio_mesh_init_from_points(linear)
+    ! pspiof_mesh_init_from_points(linear)
     call setup()
     write(*, '(/A)') "  ..running test: test_mesh_init_points_linear"
     call set_unit_name('test_mesh_init_points_linear')
@@ -111,7 +111,7 @@ contains
     end if
     call teardown()
 
-    ! fpspio_mesh_init_from_points(log1)
+    ! pspiof_mesh_init_from_points(log1)
     call setup()
     write(*, '(/A)') "  ..running test: test_mesh_init_points_log1"
     call set_unit_name('test_mesh_init_points_log1')
@@ -124,7 +124,7 @@ contains
     end if
     call teardown()
 
-    ! fpspio_mesh_init_from_points(log2)
+    ! pspiof_mesh_init_from_points(log2)
     call setup()
     write(*, '(/A)') "  ..running test: test_mesh_init_points_log2"
     call set_unit_name('test_mesh_init_points_log2')
@@ -137,7 +137,7 @@ contains
     end if
     call teardown()
 
-    ! fpspio_mesh_cmp_diff_type
+    ! pspiof_mesh_cmp_diff_type
     call setup()
     write(*, '(/A)') "  ..running test: test_mesh_cmp_diff_type"
     call set_unit_name('test_mesh_cmp_diff_type')
@@ -150,7 +150,7 @@ contains
     end if
     call teardown()
 
-    ! fpspio_mesh_cmp_diff_a
+    ! pspiof_mesh_cmp_diff_a
     call setup()
     write(*, '(/A)') "  ..running test: test_mesh_cmp_diff_a"
     call set_unit_name('test_mesh_cmp_diff_a')
@@ -163,7 +163,7 @@ contains
     end if
     call teardown()
 
-    ! fpspio_mesh_cmp_diff_b
+    ! pspiof_mesh_cmp_diff_b
     call setup()
     write(*, '(/A)') "  ..running test: test_mesh_cmp_diff_b"
     call set_unit_name('test_mesh_cmp_diff_b')
@@ -176,7 +176,7 @@ contains
     end if
     call teardown()
 
-    ! fpspio_mesh_cmp_diff_r
+    ! pspiof_mesh_cmp_diff_r
     call setup()
     write(*, '(/A)') "  ..running test: test_mesh_cmp_diff_r"
     call set_unit_name('test_mesh_cmp_diff_r')
@@ -189,7 +189,7 @@ contains
     end if
     call teardown()
 
-    ! fpspio_mesh_cmp_mtequal
+    ! pspiof_mesh_cmp_mtequal
     call setup()
     write(*, '(/A)') "  ..running test: test_mesh_cmp_mtequal"
     call set_unit_name('test_mesh_cmp_mtequal')
@@ -202,7 +202,7 @@ contains
     end if
     call teardown()
 
-    ! fpspio_mesh_cmp_equal
+    ! pspiof_mesh_cmp_equal
     call setup()
     write(*, '(/A)') "  ..running test: test_mesh_cmp_equal"
     call set_unit_name('test_mesh_cmp_equal')
@@ -215,7 +215,7 @@ contains
     end if
     call teardown()
 
-    ! fpspio_mesh_copy_null
+    ! pspiof_mesh_copy_null
     call setup()
     write(*, '(/A)') "  ..running test: test_mesh_copy_null"
     call set_unit_name('test_mesh_copy_null')
@@ -228,7 +228,7 @@ contains
     end if
     call teardown()
 
-    ! fpspio_mesh_copy_nonnull
+    ! pspiof_mesh_copy_nonnull
     call setup()
     write(*, '(/A)') "  ..running test: test_mesh_copy_nonnull"
     call set_unit_name('test_mesh_copy_nonnull')
@@ -241,7 +241,7 @@ contains
     end if
     call teardown()
 
-    ! fpspio_mesh_copy_nonnull_size
+    ! pspiof_mesh_copy_nonnull_size
     call setup()
     write(*, '(/A)') "  ..running test: test_mesh_copy_nonnull_size"
     call set_unit_name('test_mesh_copy_nonnull_size')

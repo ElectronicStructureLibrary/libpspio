@@ -21,7 +21,7 @@
 # 02110-1301  USA.
 
 """\
-This script generates Fortran constants in src/fpspio.F90 from those
+This script generates Fortran constants in src/pspiof.F90 from those
 declared in src/pspio_common.h, to ensure a perfect match between C
 and Fortran namespaces and avoid the inclusion of pspio_common.h in
 Fortran files.
@@ -60,6 +60,6 @@ for line in file("../src/pspio_common.h", "r").readlines():
 f90_defs += "  !%%% END PSPIO CONSTANTS"
 
 # Replace existing Fortran definitions
-f90_file = "src/fpspio.F90"
+f90_file = "src/pspiof.F90"
 f90_src  = file(f90_file, "r").read()
 file(f90_file, "w").write(re.sub(re_cst_f90, f90_defs, f90_src))

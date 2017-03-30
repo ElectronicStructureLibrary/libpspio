@@ -35,7 +35,7 @@ contains
 
     implicit none
 
-    ! fpspio_meshfunc_alloc
+    ! pspiof_meshfunc_alloc
     ! Note: no setup nor teardown for this test
     write(*, '(/A)') "  ..running test: test_meshfunc_alloc"
     call set_unit_name('test_meshfunc_alloc')
@@ -46,7 +46,7 @@ contains
       call case_passed_xml("test_meshfunc_alloc", "fruit_meshfunc_test")
     end if
 
-    ! fpspio_meshfunc_init 
+    ! pspiof_meshfunc_init 
     call setup()
     write(*, '(/A)') "  ..running test: test_meshfunc_init"
     call set_unit_name('test_meshfunc_init')

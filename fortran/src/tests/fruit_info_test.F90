@@ -24,7 +24,7 @@
 
 module fruit_info_test
 
-  use fpspio_m
+  use pspiof_m
   use fruit
 
   implicit none
@@ -39,7 +39,7 @@ contains
     character(len=len_trim(ref_version)) :: chk_version
     integer :: major, minor, micro
 
-    call fpspio_info_version(major, minor, micro)
+    call pspiof_info_version(major, minor, micro)
     write(chk_version, '(I0,".",I0,".",I0)') major, minor, micro
 
     call assert_equals(ref_version, chk_version, "Package version")
@@ -53,7 +53,7 @@ contains
     character(len=*), parameter :: ref_string = PACKAGE_STRING
     character(len=len_trim(ref_string)) :: chk_string
 
-    call fpspio_info_string(chk_string)
+    call pspiof_info_string(chk_string)
 
     call assert_equals(ref_string, chk_string, "Package string")
 
