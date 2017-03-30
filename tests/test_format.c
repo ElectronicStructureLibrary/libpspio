@@ -21,7 +21,6 @@ int main(int argc, char **argv) {
   char psp_diff[DIFF_SIZE+1];
   int ierr, psp_fmt;
   size_t cmd_size;
-  FILE *fp;
   pspio_pspdata_t *data = NULL;
 
   /* Get format and input file */
@@ -58,7 +57,7 @@ int main(int argc, char **argv) {
 
   /* Compare input and output */
   cmd_size = (18 + strlen(psp_rd) + strlen(psp_wr)) * sizeof(char);
-  cmd = (char *) malloc ((12 + strlen(psp_rd) + strlen(psp_wr)) * sizeof(char));
+  cmd = (char *) malloc (cmd_size);
   memset(cmd, 0, cmd_size);
   memset(psp_diff, 0, DIFF_SIZE+1);
   sprintf(cmd, "diff -urN %s %s 1>&2", psp_rd, psp_wr);
