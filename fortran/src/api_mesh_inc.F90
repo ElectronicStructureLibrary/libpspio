@@ -24,17 +24,17 @@
 !*********************************************************************!
 
 ! alloc
-integer function fpspio_mesh_alloc(mesh, np) result(ierr)
-  type(fpspio_mesh_t), intent(inout) :: mesh
+integer function pspiof_mesh_alloc(mesh, np) result(ierr)
+  type(pspiof_mesh_t), intent(inout) :: mesh
   integer,             intent(in)    :: np
 
   ierr = pspio_mesh_alloc(mesh%ptr, np)
 
-end function fpspio_mesh_alloc
+end function pspiof_mesh_alloc
   
 ! init
-integer function fpspio_mesh_init(mesh, type, a, b, r, rab) result(ierr)
-  type(fpspio_mesh_t), intent(inout) :: mesh
+integer function pspiof_mesh_init(mesh, type, a, b, r, rab) result(ierr)
+  type(pspiof_mesh_t), intent(inout) :: mesh
   integer,             intent(in)    :: type
   real(8),             intent(in)    :: a
   real(8),             intent(in)    :: b
@@ -43,11 +43,11 @@ integer function fpspio_mesh_init(mesh, type, a, b, r, rab) result(ierr)
 
   ierr = pspio_mesh_init(mesh%ptr, type, a, b, r, rab)
 
-end function fpspio_mesh_init
+end function pspiof_mesh_init
 
 ! init_from_points
-subroutine fpspio_mesh_init_from_points(mesh, r, rab)
-  type(fpspio_mesh_t), intent(inout)                   :: mesh
+subroutine pspiof_mesh_init_from_points(mesh, r, rab)
+  type(pspiof_mesh_t), intent(inout)                   :: mesh
   real(8),             intent(in)                      :: r(*)
   real(8),             intent(in),    optional, target :: rab(*)
 
@@ -55,52 +55,52 @@ subroutine fpspio_mesh_init_from_points(mesh, r, rab)
   real(8), pointer :: f_rab(:)
 
   if (present(rab)) then
-    f_rab => rab(1:fpspio_mesh_get_np(mesh))
-    call c_f_pointer(c_rab, f_rab, [fpspio_mesh_get_np(mesh)])
+    f_rab => rab(1:pspiof_mesh_get_np(mesh))
+    call c_f_pointer(c_rab, f_rab, [pspiof_mesh_get_np(mesh)])
   else
     c_rab = C_NULL_PTR
   end if
 
   call pspio_mesh_init_from_points(mesh%ptr, r, c_rab)
 
-end subroutine fpspio_mesh_init_from_points
+end subroutine pspiof_mesh_init_from_points
 
 ! init_from_parameters
-subroutine fpspio_mesh_init_from_parameters(mesh, type, a, b)
-  type(fpspio_mesh_t), intent(inout) :: mesh
+subroutine pspiof_mesh_init_from_parameters(mesh, type, a, b)
+  type(pspiof_mesh_t), intent(inout) :: mesh
   integer,             intent(in)    :: type
   real(8),             intent(in)    :: a
   real(8),             intent(in)    :: b
 
   call pspio_mesh_init_from_parameters(mesh%ptr, type, a, b)
 
-end subroutine fpspio_mesh_init_from_parameters
+end subroutine pspiof_mesh_init_from_parameters
 
 ! copy
-integer function fpspio_mesh_copy(src, dst) result(ierr)
-  type(fpspio_mesh_t), intent(in)    :: src
-  type(fpspio_mesh_t), intent(inout) :: dst
+integer function pspiof_mesh_copy(src, dst) result(ierr)
+  type(pspiof_mesh_t), intent(in)    :: src
+  type(pspiof_mesh_t), intent(inout) :: dst
 
   ierr = pspio_mesh_copy(src%ptr, dst%ptr)
 
-end function fpspio_mesh_copy
+end function pspiof_mesh_copy
 
 ! free
-subroutine fpspio_mesh_free(mesh)
-  type(fpspio_mesh_t), intent(inout) :: mesh
+subroutine pspiof_mesh_free(mesh)
+  type(pspiof_mesh_t), intent(inout) :: mesh
 
   call pspio_mesh_free(mesh%ptr)
   mesh%ptr = C_NULL_PTR
 
-end subroutine fpspio_mesh_free
+end subroutine pspiof_mesh_free
 
 ! associated
-logical function fpspio_mesh_associated(mesh) result(is_associated)
-  type(fpspio_mesh_t), intent(in) :: mesh
+logical function pspiof_mesh_associated(mesh) result(is_associated)
+  type(pspiof_mesh_t), intent(in) :: mesh
 
   is_associated = c_associated(mesh%ptr)
 
-end function fpspio_mesh_associated
+end function pspiof_mesh_associated
 
 
 !*********************************************************************!
@@ -108,46 +108,46 @@ end function fpspio_mesh_associated
 !*********************************************************************!
 
 ! np
-integer function fpspio_mesh_get_np(mesh) result(np)
-  type(fpspio_mesh_t), intent(in)  :: mesh
+integer function pspiof_mesh_get_np(mesh) result(np)
+  type(pspiof_mesh_t), intent(in)  :: mesh
 
   np = pspio_mesh_get_np(mesh%ptr)
 
-end function fpspio_mesh_get_np
+end function pspiof_mesh_get_np
 
 ! a
-real(8) function fpspio_mesh_get_a(mesh) result(a)
-  type(fpspio_mesh_t), intent(in)  :: mesh
+real(8) function pspiof_mesh_get_a(mesh) result(a)
+  type(pspiof_mesh_t), intent(in)  :: mesh
 
   a = pspio_mesh_get_a(mesh%ptr)
 
-end function fpspio_mesh_get_a
+end function pspiof_mesh_get_a
 
 ! b
-real(8) function fpspio_mesh_get_b(mesh) result(b)
-  type(fpspio_mesh_t), intent(in)  :: mesh
+real(8) function pspiof_mesh_get_b(mesh) result(b)
+  type(pspiof_mesh_t), intent(in)  :: mesh
 
   b = pspio_mesh_get_b(mesh%ptr)
 
-end function fpspio_mesh_get_b
+end function pspiof_mesh_get_b
 
 ! r
-function fpspio_mesh_get_r(mesh) result(r)
-  type(fpspio_mesh_t), intent(in)  :: mesh
+function pspiof_mesh_get_r(mesh) result(r)
+  type(pspiof_mesh_t), intent(in)  :: mesh
   real(8), pointer :: r(:)
 
-  call c_f_pointer(pspio_mesh_get_r(mesh%ptr), r, [fpspio_mesh_get_np(mesh)])
+  call c_f_pointer(pspio_mesh_get_r(mesh%ptr), r, [pspiof_mesh_get_np(mesh)])
 
-end function fpspio_mesh_get_r
+end function pspiof_mesh_get_r
 
 ! rab
-function fpspio_mesh_get_rab(mesh) result(rab)
-  type(fpspio_mesh_t), intent(in)  :: mesh
+function pspiof_mesh_get_rab(mesh) result(rab)
+  type(pspiof_mesh_t), intent(in)  :: mesh
   real(8), pointer :: rab(:)
 
-  call c_f_pointer(pspio_mesh_get_rab(mesh%ptr), rab, [fpspio_mesh_get_np(mesh)])
+  call c_f_pointer(pspio_mesh_get_rab(mesh%ptr), rab, [pspiof_mesh_get_np(mesh)])
 
-end function fpspio_mesh_get_rab
+end function pspiof_mesh_get_rab
 
 
 !*********************************************************************!
@@ -155,10 +155,10 @@ end function fpspio_mesh_get_rab
 !*********************************************************************!
 
 ! cmp
-integer function fpspio_mesh_cmp(mesh1, mesh2) result(cmp)
-  type(fpspio_mesh_t) :: mesh1
-  type(fpspio_mesh_t) :: mesh2
+integer function pspiof_mesh_cmp(mesh1, mesh2) result(cmp)
+  type(pspiof_mesh_t) :: mesh1
+  type(pspiof_mesh_t) :: mesh2
 
   cmp = pspio_mesh_cmp(mesh1%ptr, mesh2%ptr)
 
-end function fpspio_mesh_cmp
+end function pspiof_mesh_cmp
