@@ -62,7 +62,7 @@ int upf_write_header(FILE *fp, const pspio_pspdata_t *pspdata)
   fprintf(fp, "   0                   Version Number\n");
  
   /* Write the atomic symbol */
-  fprintf(fp, "  %2s                   Element\n", pspdata->symbol);
+  fprintf(fp, "  %-2s                   Element\n", pspdata->symbol);
 
   /* Write the kind of pseudo-potentials US|NC|PAW
      At the moment we only support norm-conversing psp */
@@ -79,8 +79,7 @@ int upf_write_header(FILE *fp, const pspio_pspdata_t *pspdata)
   exchange = pspio_xc_get_exchange(pspdata->xc);
   correlation = pspio_xc_get_correlation(pspdata->xc);
   SUCCEED_OR_RETURN(libxc_to_upf(exchange, correlation, longname, shortname));
-  fprintf(fp, " %20s  %4s Exchange-Correlation functional\n",
-    longname, shortname);
+  fprintf(fp, " %22sExchange-Correlation functional\n", longname);
 
   /* Write the Z valence */
   fprintf(fp, "%17.11f      Z valence\n", pspdata->zvalence);
