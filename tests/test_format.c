@@ -1,6 +1,8 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#include <sys/types.h>
+#include <unistd.h>
 
 #include "pspio.h"
 
@@ -9,30 +11,27 @@
 #endif
 
 
-const size_t DIFF_SIZE = 4096;
+const size_t DIFF_SIZE = 4095;
 
 
 int main(int argc, char **argv) {
 
   char *cmd = NULL;
-  char *psp_inp = NULL, *psp_out = NULL;
-  char psp_tmp[L_tmpnam];
-  char psp_diff[DIFF_SIZE];
+  char *psp_rd = NULL, *psp_wr = NULL;
+  char psp_diff[DIFF_SIZE+1];
   int ierr, psp_fmt;
   size_t cmd_size;
-  FILE *fpd;
+  FILE *fp;
   pspio_pspdata_t *data = NULL;
 
   /* Get format and input file */
   if ( argc == 3 ) {
     psp_fmt = atoi(argv[1]);
-    psp_inp = argv[2];
+    psp_rd = argv[2];
   } else {
     fprintf(stderr, "Usage: test_format int(format) file\n");
     return 1;
   }
-
-  printf("FMT = %d FILE = %s\n", psp_fmt, psp_inp);
 
   /* Prepare data structure */
   ierr = pspio_pspdata_alloc(&data);
@@ -41,45 +40,33 @@ int main(int argc, char **argv) {
     return 2;
   }
 
-  printf("data allocated\n");
-
   /* Load input data */
-  ierr = pspio_pspdata_read(data, psp_fmt, psp_inp);
+  ierr = pspio_pspdata_read(data, psp_fmt, psp_rd);
   if ( ierr != PSPIO_SUCCESS ) {
     pspio_error_show(ierr, __FILE__, __LINE__, "__MAIN__");
     return 10;
   }
 
-  printf("data loaded\n");
-
   /* Save output data */
-  psp_out = tmpnam_r(psp_tmp);
-  ierr = pspio_pspdata_write(data, psp_fmt, psp_tmp);
+  psp_wr = (char *) malloc (13 * sizeof(char));
+  sprintf(psp_wr, "pspio-%6.6d", getpid());
+  ierr = pspio_pspdata_write(data, psp_fmt, psp_wr);
   if ( ierr != PSPIO_SUCCESS ) {
     pspio_error_show(ierr, __FILE__, __LINE__, "__MAIN__");
     return 20;
   }
 
-  printf("data saved to %s\n", psp_tmp);
-
   /* Compare input and output */
-  cmd_size = (12 + strlen(psp_inp) + strlen(psp_tmp)) * sizeof(char);
-  cmd = (char *) malloc ((12 + strlen(psp_inp) + strlen(psp_tmp)) * sizeof(char));
+  cmd_size = (18 + strlen(psp_rd) + strlen(psp_wr)) * sizeof(char);
+  cmd = (char *) malloc ((12 + strlen(psp_rd) + strlen(psp_wr)) * sizeof(char));
   memset(cmd, 0, cmd_size);
+  memset(psp_diff, 0, DIFF_SIZE+1);
+  sprintf(cmd, "diff -urN %s %s 1>&2", psp_rd, psp_wr);
 
-  sprintf(cmd, "diff -urN %s %s", psp_inp, psp_tmp);
-  printf("will run '%s'\n", cmd);
-  fpd = popen(cmd, "r");
-  fgets(psp_diff, DIFF_SIZE, fpd);
-  if ( pclose(fpd) != 0 ) {
-    fprintf(stderr, "Failed to close diff stream\n");
-    return 30;
-  }
-
-  printf("data compared\n");
-
-  printf("Format : %d\nFile   : %s\n>>> BEGIN DIFF <<<\n%s\n>>> END DIFF <<<\n",
-    psp_fmt, psp_inp, psp_diff);
+  fprintf(stderr,
+    "Format : %d\nFile   : %s\n>>> BEGIN DIFF <<<\n", psp_fmt, psp_rd);
+  system(cmd);
+  fprintf(stderr, ">>> END DIFF <<<\n");
 
   return 0;
 }

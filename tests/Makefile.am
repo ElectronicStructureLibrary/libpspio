@@ -37,13 +37,22 @@ test_format_LDADD = ../src/libpspio.la
 
                     # ------------------------------------ #
 
-pio_tests_fmt = \
+#
+# Test series
+#
+
+pio_tests_fmt_supported = \
+  run_test_format_6 \
+  run_test_format_14 \
+  run_test_format_16 \
+  run_test_format_17
+
+pio_tests_fmt_unsupported = \
   run_test_format_1 \
   run_test_format_2 \
   run_test_format_3 \
   run_test_format_4 \
   run_test_format_5 \
-  run_test_format_6 \
   run_test_format_7 \
   run_test_format_8 \
   run_test_format_9 \
@@ -51,14 +60,15 @@ pio_tests_fmt = \
   run_test_format_11 \
   run_test_format_12 \
   run_test_format_13 \
-  run_test_format_14 \
   run_test_format_15 \
-  run_test_format_16 \
-  run_test_format_17 \
   run_test_format_18
 
-TESTS = \
-  $(pio_tests_fmt)
+pio_tests_fmt = \
+  $(pio_tests_fmt_supported) \
+  $(pio_tests_fmt_unsupported)
+
+TESTS = $(pio_tests_fmt_supported)
+XFAIL_TESTS = $(pio_tests_fmt_unsupported)
 
 $(pio_tests_fmt):
 	$(LN_S) -f run_test_format $@
