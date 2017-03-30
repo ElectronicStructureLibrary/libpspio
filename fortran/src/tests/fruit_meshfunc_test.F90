@@ -23,7 +23,7 @@
 
 module fruit_meshfunc_test
 
-  use fpspio_m
+  use pspiof_m
   use fruit
 
   implicit none
@@ -32,8 +32,8 @@ module fruit_meshfunc_test
   integer, parameter, private :: mesh_size = 8
   real(dp), parameter, private :: meshfunc_tol = 1.0e-13_dp
 
-  type(fpspio_mesh_t), private :: m1, m2
-  type(fpspio_meshfunc_t), private :: mf11, mf12, mf20
+  type(pspiof_mesh_t), private :: m1, m2
+  type(pspiof_meshfunc_t), private :: mf11, mf12, mf20
   real(dp), dimension(:), allocatable, private :: f11, f11p, f11pp
   real(dp), dimension(:), allocatable, private :: f12, f12p, f12pp
   real(dp), dimension(:), allocatable, private :: f20, f20p, f20pp
@@ -46,27 +46,27 @@ contains
 
     implicit none
 
-    type(fpspio_mesh_t), intent(in) :: mesh
-    type(fpspio_meshfunc_t), intent(in) :: meshfunc
+    type(pspiof_mesh_t), intent(in) :: mesh
+    type(pspiof_meshfunc_t), intent(in) :: meshfunc
     real(dp), dimension(mesh_size), intent(in) :: f, fp, fpp
     real(dp), intent(in) :: tol
 
     character(len=80) :: msg
     integer :: i, np
     real(dp), dimension(mesh_size) :: f_chk, fp_chk, fpp_chk
-    type(fpspio_mesh_t), pointer :: m
+    type(pspiof_mesh_t) :: m
 
-    m => fpspio_meshfunc_get_mesh(meshfunc)
-    np = fpspio_mesh_get_np(mesh)
+    m = pspiof_meshfunc_get_mesh(meshfunc)
+    np = pspiof_mesh_get_np(mesh)
 
     call assert_equals(mesh_size, np, &
 &     "Mesh function comparison - Mesh size check")
-    call assert_equals(PSPIO_EQUAL, fpspio_mesh_cmp(m, mesh), &
+    call assert_equals(PSPIO_EQUAL, pspiof_mesh_cmp(m, mesh), &
 &     "Mesh function comparison - Mesh equality check")
 
-    f_chk = fpspio_meshfunc_get_function(meshfunc)
-    fp_chk = fpspio_meshfunc_get_deriv1(meshfunc)
-    fpp_chk = fpspio_meshfunc_get_deriv2(meshfunc)
+    f_chk = pspiof_meshfunc_get_function(meshfunc)
+    fp_chk = pspiof_meshfunc_get_deriv1(meshfunc)
+    fpp_chk = pspiof_meshfunc_get_deriv2(meshfunc)
     do i=1,np
       write(*,*) "FP_CHK : ", i, " ERR = ", abs(fpp_chk(i) - fpp(i))
       write(msg, &
@@ -97,21 +97,21 @@ contains
     integer :: eid, i
     real(dp), dimension(:), pointer :: r2
 
-    call fpspio_mesh_free(m1)
-    eid = fpspio_mesh_alloc(m1, mesh_size)
-    call fpspio_mesh_init_from_points(m1, r1, r1ab)
+    call pspiof_mesh_free(m1)
+    eid = pspiof_mesh_alloc(m1, mesh_size)
+    call pspiof_mesh_init_from_points(m1, r1, r1ab)
 
-    call fpspio_mesh_free(m2)
-    eid = fpspio_mesh_alloc(m2, 2*mesh_size+1)
-    call fpspio_mesh_init_from_parameters(m1, PSPIO_MESH_LOG1, a, b)
-    r2 => fpspio_mesh_get_r(m2)
+    call pspiof_mesh_free(m2)
+    eid = pspiof_mesh_alloc(m2, 2*mesh_size+1)
+    call pspiof_mesh_init_from_parameters(m1, PSPIO_MESH_LOG1, a, b)
+    r2 => pspiof_mesh_get_r(m2)
 
-    call fpspio_meshfunc_free(mf11)
-    call fpspio_meshfunc_free(mf12)
-    call fpspio_meshfunc_free(mf20)
-    eid = fpspio_meshfunc_alloc(mf11, mesh_size)
-    eid = fpspio_meshfunc_alloc(mf12, mesh_size)
-    eid = fpspio_meshfunc_alloc(mf20, 2*mesh_size+1)
+    call pspiof_meshfunc_free(mf11)
+    call pspiof_meshfunc_free(mf12)
+    call pspiof_meshfunc_free(mf20)
+    eid = pspiof_meshfunc_alloc(mf11, mesh_size)
+    eid = pspiof_meshfunc_alloc(mf12, mesh_size)
+    eid = pspiof_meshfunc_alloc(mf20, 2*mesh_size+1)
 
     allocate(f11(mesh_size), f11p(mesh_size), f11pp(mesh_size))
     do i=1,mesh_size
@@ -138,12 +138,12 @@ contains
 
   subroutine teardown()
 
-    call fpspio_mesh_free(m1)
-    call fpspio_mesh_free(m2)
+    call pspiof_mesh_free(m1)
+    call pspiof_mesh_free(m2)
 
-    call fpspio_meshfunc_free(mf11)
-    call fpspio_meshfunc_free(mf12)
-    call fpspio_meshfunc_free(mf20)
+    call pspiof_meshfunc_free(mf11)
+    call pspiof_meshfunc_free(mf12)
+    call pspiof_meshfunc_free(mf20)
 
     deallocate(f11)
     deallocate(f11p)
@@ -161,17 +161,17 @@ contains
 
     implicit none
 
-    type(fpspio_mesh_t) :: m
+    type(pspiof_mesh_t), target :: m
 
-    call assert_equals(PSPIO_SUCCESS, fpspio_meshfunc_alloc(mf11, 2*mesh_size+1), &
+    call assert_equals(PSPIO_SUCCESS, pspiof_meshfunc_alloc(mf11, 2*mesh_size+1), &
 &     "Mesh function allocation - Return value")
 
-    m = fpspio_meshfunc_get_mesh(mf11)
+    m = pspiof_meshfunc_get_mesh(mf11)
 
-    call assert_equals(2*mesh_size+1, fpspio_mesh_get_np(m), &
+    call assert_equals(2*mesh_size+1, pspiof_mesh_get_np(m), &
 &     "Mesh function allocation - Mesh size")
 
-    call fpspio_meshfunc_free(mf11)
+    call pspiof_meshfunc_free(mf11)
 
   end subroutine test_meshfunc_alloc
 
@@ -190,7 +190,7 @@ contains
 &      2.4601351993e+00_dp, 0.0000000000e+00_dp]
 
     call assert_equals(PSPIO_SUCCESS, &
-&     fpspio_meshfunc_init(mf11, m1, f11), &
+&     pspiof_meshfunc_init(mf11, m1, f11), &
 &     "Mesh init - Return value (generic)")
     call meshfunc_compare_values(m1, mf11, f11, fp_chk, fpp_chk, meshfunc_tol)
 

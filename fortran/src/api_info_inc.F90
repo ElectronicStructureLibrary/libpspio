@@ -24,7 +24,7 @@
 !*********************************************************************!
 
 ! package string
-subroutine fpspio_info_string(info)
+subroutine pspiof_info_string(info)
   character(len=*), intent(out) :: info
 
   character(kind=c_char,len=1) :: c_info(len(info)+1)
@@ -32,4 +32,4 @@ subroutine fpspio_info_string(info)
   call pspio_info_string(c_info)
   call c_to_f_string(c_info, info)
 
-end subroutine fpspio_info_string
+end subroutine pspiof_info_string

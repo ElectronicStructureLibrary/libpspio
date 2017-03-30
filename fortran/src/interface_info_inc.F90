@@ -25,10 +25,10 @@ interface
   !*********************************************************************!
 
   ! version
-  subroutine fpspio_info_version(major, minor, micro) bind(c, name="pspio_info_version")
+  subroutine pspiof_info_version(major, minor, micro) bind(c, name="pspio_info_version")
     import
     integer(c_int), intent(out) :: major, minor, micro
-  end subroutine fpspio_info_version
+  end subroutine pspiof_info_version
 
   ! info
   subroutine pspio_info_string(info) bind(c)

@@ -39,12 +39,12 @@ interface
   end function pspio_error_fetchall
 
   ! flush
-  subroutine fpspio_error_flush() bind(c, name="pspio_error_flush")
-  end subroutine fpspio_error_flush
+  subroutine pspiof_error_flush() bind(c, name="pspio_error_flush")
+  end subroutine pspiof_error_flush
 
   ! free
-  subroutine fpspio_error_free() bind(c, name="pspio_error_free")
-  end subroutine fpspio_error_free
+  subroutine pspiof_error_free() bind(c, name="pspio_error_free")
+  end subroutine pspiof_error_free
 
   ! get_last
   integer(c_int) function pspio_error_get_last(routine) bind(c)

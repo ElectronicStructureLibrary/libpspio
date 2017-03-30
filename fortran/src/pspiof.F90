@@ -18,7 +18,7 @@
 !! the Free Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
 !! 02110-1301  USA.
 
-module fpspio_m
+module pspiof_m
   use, intrinsic :: iso_c_binding
   implicit none
 
@@ -26,184 +26,184 @@ module fpspio_m
 
   public :: &
     ! error
-    fpspio_error_add, &
-    fpspio_error_fetchall, &
-    fpspio_error_flush, &
-    fpspio_error_free, &
-    fpspio_error_get_last, &
-    fpspio_error_len, &
-    fpspio_error_string, &
+    pspiof_error_add, &
+    pspiof_error_fetchall, &
+    pspiof_error_flush, &
+    pspiof_error_free, &
+    pspiof_error_get_last, &
+    pspiof_error_len, &
+    pspiof_error_string, &
     ! info
-    fpspio_info_version, &
-    fpspio_info_string, &
+    pspiof_info_version, &
+    pspiof_info_string, &
     ! mesh
-    fpspio_mesh_t, &
-    fpspio_mesh_alloc, &
-    fpspio_mesh_init, &
-    fpspio_mesh_init_from_points, &
-    fpspio_mesh_init_from_parameters, &
-    fpspio_mesh_copy, &
-    fpspio_mesh_free, &
-    fpspio_mesh_get_np, &
-    fpspio_mesh_get_a, &
-    fpspio_mesh_get_b, &
-    fpspio_mesh_get_r, &
-    fpspio_mesh_get_rab, &
-    fpspio_mesh_cmp, &
+    pspiof_mesh_t, &
+    pspiof_mesh_alloc, &
+    pspiof_mesh_init, &
+    pspiof_mesh_init_from_points, &
+    pspiof_mesh_init_from_parameters, &
+    pspiof_mesh_copy, &
+    pspiof_mesh_free, &
+    pspiof_mesh_get_np, &
+    pspiof_mesh_get_a, &
+    pspiof_mesh_get_b, &
+    pspiof_mesh_get_r, &
+    pspiof_mesh_get_rab, &
+    pspiof_mesh_cmp, &
     ! meshfunc
-    fpspio_meshfunc_t, &
-    fpspio_meshfunc_alloc, &
-    fpspio_meshfunc_init, &
-    fpspio_meshfunc_copy, &
-    fpspio_meshfunc_free, &
-    fpspio_meshfunc_get_function, &
-    fpspio_meshfunc_get_deriv1, &
-    fpspio_meshfunc_get_deriv2, &
-    fpspio_meshfunc_get_interp_method, &
-    fpspio_meshfunc_get_mesh, &
-    fpspio_meshfunc_cmp, &
-    fpspio_meshfunc_eval, &
-    fpspio_meshfunc_eval_deriv, &
-    fpspio_meshfunc_eval_deriv2, &
+    pspiof_meshfunc_t, &
+    pspiof_meshfunc_alloc, &
+    pspiof_meshfunc_init, &
+    pspiof_meshfunc_copy, &
+    pspiof_meshfunc_free, &
+    pspiof_meshfunc_get_function, &
+    pspiof_meshfunc_get_deriv1, &
+    pspiof_meshfunc_get_deriv2, &
+    pspiof_meshfunc_get_interp_method, &
+    pspiof_meshfunc_get_mesh, &
+    pspiof_meshfunc_cmp, &
+    pspiof_meshfunc_eval, &
+    pspiof_meshfunc_eval_deriv, &
+    pspiof_meshfunc_eval_deriv2, &
     ! potential
-    fpspio_potential_t, &
-    fpspio_potential_alloc, &
-    fpspio_potential_init, &
-    fpspio_potential_copy, &
-    fpspio_potential_free, &
-    fpspio_potential_get_qn, &
-    fpspio_potential_cmp, &
-    fpspio_potential_eval, &
-    fpspio_potential_eval_deriv, &
-    fpspio_potential_eval_deriv2, &
+    pspiof_potential_t, &
+    pspiof_potential_alloc, &
+    pspiof_potential_init, &
+    pspiof_potential_copy, &
+    pspiof_potential_free, &
+    pspiof_potential_get_qn, &
+    pspiof_potential_cmp, &
+    pspiof_potential_eval, &
+    pspiof_potential_eval_deriv, &
+    pspiof_potential_eval_deriv2, &
     ! projector
-    fpspio_projector_t, &
-    fpspio_projector_alloc, &
-    fpspio_projector_init, &
-    fpspio_projector_copy, &
-    fpspio_projector_free, &
-    fpspio_projector_get_energy, &
-    fpspio_projector_get_qn, &
-    fpspio_projector_cmp, &
-    fpspio_projector_eval, &
-    fpspio_projector_eval_deriv, &
-    fpspio_projector_eval_deriv2, &
+    pspiof_projector_t, &
+    pspiof_projector_alloc, &
+    pspiof_projector_init, &
+    pspiof_projector_copy, &
+    pspiof_projector_free, &
+    pspiof_projector_get_energy, &
+    pspiof_projector_get_qn, &
+    pspiof_projector_cmp, &
+    pspiof_projector_eval, &
+    pspiof_projector_eval_deriv, &
+    pspiof_projector_eval_deriv2, &
     ! pspdata
-    fpspio_pspdata_t, &
-    fpspio_pspdata_alloc, &
-    fpspio_pspdata_read, &
-    fpspio_pspdata_write, &
-    fpspio_pspdata_free, &
-    fpspio_pspdata_set_pspinfo, &
-    fpspio_pspdata_set_symbol, &
-    fpspio_pspdata_set_z, &
-    fpspio_pspdata_set_zvalence, &
-    fpspio_pspdata_set_nelvalence, &
-    fpspio_pspdata_set_l_max, &
-    fpspio_pspdata_set_wave_eq, &
-    fpspio_pspdata_set_total_energy, &
-    fpspio_pspdata_set_mesh, &
-    fpspio_pspdata_set_n_states, &
-    fpspio_pspdata_set_state, &
-    fpspio_pspdata_set_scheme, &
-    fpspio_pspdata_set_n_potentials, &
-    fpspio_pspdata_set_potential, &
-    fpspio_pspdata_set_n_projectors, &
-    fpspio_pspdata_set_projector, &
-    fpspio_pspdata_set_projectors_l_max, &
-    fpspio_pspdata_set_l_local, &
-    fpspio_pspdata_set_vlocal, &
-    fpspio_pspdata_set_xc, &
-    fpspio_pspdata_set_rho_valence, &
-    fpspio_pspdata_get_format_guessed, &
-    fpspio_pspdata_get_pspinfo, &
-    fpspio_pspdata_get_symbol, &
-    fpspio_pspdata_get_z, &
-    fpspio_pspdata_get_zvalence, &
-    fpspio_pspdata_get_nelvalence, &
-    fpspio_pspdata_get_l_max, &
-    fpspio_pspdata_get_wave_eq, &
-    fpspio_pspdata_get_total_energy, &
-    fpspio_pspdata_get_mesh, &
-    fpspio_pspdata_get_n_states, &
-    fpspio_pspdata_get_state, &
-    fpspio_pspdata_get_scheme, &
-    fpspio_pspdata_get_n_potentials, &
-    fpspio_pspdata_get_potential, &
-    fpspio_pspdata_get_n_projectors, &
-    fpspio_pspdata_get_projector, &
-    fpspio_pspdata_get_projectors_l_max, &
-    fpspio_pspdata_get_l_local, &
-    fpspio_pspdata_get_vlocal, &
-    fpspio_pspdata_get_xc, &
-    fpspio_pspdata_get_rho_valence, &
+    pspiof_pspdata_t, &
+    pspiof_pspdata_alloc, &
+    pspiof_pspdata_read, &
+    pspiof_pspdata_write, &
+    pspiof_pspdata_free, &
+    pspiof_pspdata_set_pspinfo, &
+    pspiof_pspdata_set_symbol, &
+    pspiof_pspdata_set_z, &
+    pspiof_pspdata_set_zvalence, &
+    pspiof_pspdata_set_nelvalence, &
+    pspiof_pspdata_set_l_max, &
+    pspiof_pspdata_set_wave_eq, &
+    pspiof_pspdata_set_total_energy, &
+    pspiof_pspdata_set_mesh, &
+    pspiof_pspdata_set_n_states, &
+    pspiof_pspdata_set_state, &
+    pspiof_pspdata_set_scheme, &
+    pspiof_pspdata_set_n_potentials, &
+    pspiof_pspdata_set_potential, &
+    pspiof_pspdata_set_n_projectors, &
+    pspiof_pspdata_set_projector, &
+    pspiof_pspdata_set_projectors_l_max, &
+    pspiof_pspdata_set_l_local, &
+    pspiof_pspdata_set_vlocal, &
+    pspiof_pspdata_set_xc, &
+    pspiof_pspdata_set_rho_valence, &
+    pspiof_pspdata_get_format_guessed, &
+    pspiof_pspdata_get_pspinfo, &
+    pspiof_pspdata_get_symbol, &
+    pspiof_pspdata_get_z, &
+    pspiof_pspdata_get_zvalence, &
+    pspiof_pspdata_get_nelvalence, &
+    pspiof_pspdata_get_l_max, &
+    pspiof_pspdata_get_wave_eq, &
+    pspiof_pspdata_get_total_energy, &
+    pspiof_pspdata_get_mesh, &
+    pspiof_pspdata_get_n_states, &
+    pspiof_pspdata_get_state, &
+    pspiof_pspdata_get_scheme, &
+    pspiof_pspdata_get_n_potentials, &
+    pspiof_pspdata_get_potential, &
+    pspiof_pspdata_get_n_projectors, &
+    pspiof_pspdata_get_projector, &
+    pspiof_pspdata_get_projectors_l_max, &
+    pspiof_pspdata_get_l_local, &
+    pspiof_pspdata_get_vlocal, &
+    pspiof_pspdata_get_xc, &
+    pspiof_pspdata_get_rho_valence, &
     ! pspinfo
-    fpspio_pspinfo_t, &
-    fpspio_pspinfo_alloc, &
-    fpspio_pspinfo_init, &
-    fpspio_pspinfo_copy, &
-    fpspio_pspinfo_free, &
-    fpspio_pspinfo_set_author, &
-    fpspio_pspinfo_set_code, &
-    fpspio_pspinfo_set_date, &
-    fpspio_pspinfo_set_description, &
-    fpspio_pspinfo_set_scheme_name, &
-    fpspio_pspinfo_get_author, &
-    fpspio_pspinfo_get_code, &
-    fpspio_pspinfo_get_date, &
-    fpspio_pspinfo_get_description, &
-    fpspio_pspinfo_get_scheme_name, &
-    fpspio_pspinfo_cmp, &
+    pspiof_pspinfo_t, &
+    pspiof_pspinfo_alloc, &
+    pspiof_pspinfo_init, &
+    pspiof_pspinfo_copy, &
+    pspiof_pspinfo_free, &
+    pspiof_pspinfo_set_author, &
+    pspiof_pspinfo_set_code, &
+    pspiof_pspinfo_set_date, &
+    pspiof_pspinfo_set_description, &
+    pspiof_pspinfo_set_scheme_name, &
+    pspiof_pspinfo_get_author, &
+    pspiof_pspinfo_get_code, &
+    pspiof_pspinfo_get_date, &
+    pspiof_pspinfo_get_description, &
+    pspiof_pspinfo_get_scheme_name, &
+    pspiof_pspinfo_cmp, &
     ! qn
-    fpspio_qn_t, &
-    fpspio_qn_alloc, &
-    fpspio_qn_init, &
-    fpspio_qn_copy, &
-    fpspio_qn_free, &
-    fpspio_qn_get_n, &
-    fpspio_qn_get_l, &
-    fpspio_qn_get_j, &
-    fpspio_qn_cmp, &
-    fpspio_qn_label, &
+    pspiof_qn_t, &
+    pspiof_qn_alloc, &
+    pspiof_qn_init, &
+    pspiof_qn_copy, &
+    pspiof_qn_free, &
+    pspiof_qn_get_n, &
+    pspiof_qn_get_l, &
+    pspiof_qn_get_j, &
+    pspiof_qn_cmp, &
+    pspiof_qn_label, &
     ! state
-    fpspio_state_t, &
-    fpspio_state_alloc, &
-    fpspio_state_init, &
-    fpspio_state_copy, &
-    fpspio_state_free, &
-    fpspio_state_get_label, &
-    fpspio_state_get_qn, &
-    fpspio_state_get_occ, &
-    fpspio_state_get_ev, &
-    fpspio_state_get_rc, &
-    fpspio_state_cmp, &
-    fpspio_state_wf_eval, &
-    fpspio_state_wf_eval_deriv, &
-    fpspio_state_wf_eval_deriv2, &
+    pspiof_state_t, &
+    pspiof_state_alloc, &
+    pspiof_state_init, &
+    pspiof_state_copy, &
+    pspiof_state_free, &
+    pspiof_state_get_label, &
+    pspiof_state_get_qn, &
+    pspiof_state_get_occ, &
+    pspiof_state_get_ev, &
+    pspiof_state_get_rc, &
+    pspiof_state_cmp, &
+    pspiof_state_wf_eval, &
+    pspiof_state_wf_eval_deriv, &
+    pspiof_state_wf_eval_deriv2, &
     ! xc
-    fpspio_xc_t, &
-    fpspio_xc_alloc, &
-    fpspio_xc_copy, &
-    fpspio_xc_free, &
-    fpspio_xc_set_exchange, &
-    fpspio_xc_set_correlation, &
-    fpspio_xc_set_nlcc_scheme, &
-    fpspio_xc_set_nlcc_density, &
-    fpspio_xc_get_exchange, &
-    fpspio_xc_get_correlation, &
-    fpspio_xc_get_nlcc_scheme, &
-    fpspio_xc_cmp, &
-    fpspio_xc_nlcc_density_eval, &
-    fpspio_xc_nlcc_density_eval_deriv, &
-    fpspio_xc_nlcc_density_eval_deriv2, &
-    fpspio_xc_has_nlcc, &
+    pspiof_xc_t, &
+    pspiof_xc_alloc, &
+    pspiof_xc_copy, &
+    pspiof_xc_free, &
+    pspiof_xc_set_exchange, &
+    pspiof_xc_set_correlation, &
+    pspiof_xc_set_nlcc_scheme, &
+    pspiof_xc_set_nlcc_density, &
+    pspiof_xc_get_exchange, &
+    pspiof_xc_get_correlation, &
+    pspiof_xc_get_nlcc_scheme, &
+    pspiof_xc_cmp, &
+    pspiof_xc_nlcc_density_eval, &
+    pspiof_xc_nlcc_density_eval_deriv, &
+    pspiof_xc_nlcc_density_eval_deriv2, &
+    pspiof_xc_has_nlcc, &
     ! associated
-    fpspio_associated
+    pspiof_associated
 
-  interface fpspio_associated
-    module procedure fpspio_qn_associated, fpspio_mesh_associated, fpspio_meshfunc_associated, &
-      fpspio_xc_associated, fpspio_potential_associated, fpspio_projector_associated, &
-      fpspio_state_associated, fpspio_pspdata_associated, fpspio_pspinfo_associated
+  interface pspiof_associated
+    module procedure pspiof_qn_associated, pspiof_mesh_associated, pspiof_meshfunc_associated, &
+      pspiof_xc_associated, pspiof_potential_associated, pspiof_projector_associated, &
+      pspiof_state_associated, pspiof_pspdata_associated, pspiof_pspinfo_associated
   end interface
 
   ! DO NOT EDIT THE FOLLOWING SECTION - ALL CHANGES WILL BE OVERWRITTEN!
@@ -279,50 +279,50 @@ module fpspio_m
   !%%% END PSPIO CONSTANTS
 
 
-  type :: fpspio_qn_t
+  type :: pspiof_qn_t
     private
     type(c_ptr) :: ptr = C_NULL_PTR
-  end type fpspio_qn_t
+  end type pspiof_qn_t
 
-  type fpspio_mesh_t
+  type pspiof_mesh_t
     private
     type(c_ptr) :: ptr = C_NULL_PTR
-  end type fpspio_mesh_t
+  end type pspiof_mesh_t
 
-  type fpspio_meshfunc_t
+  type pspiof_meshfunc_t
     private
     type(c_ptr) :: ptr = C_NULL_PTR
-  end type fpspio_meshfunc_t
+  end type pspiof_meshfunc_t
 
-  type fpspio_potential_t
+  type pspiof_potential_t
     private
     type(c_ptr) :: ptr = C_NULL_PTR
-  end type fpspio_potential_t
+  end type pspiof_potential_t
 
-  type fpspio_projector_t
+  type pspiof_projector_t
     private
     type(c_ptr) :: ptr = C_NULL_PTR
-  end type fpspio_projector_t
+  end type pspiof_projector_t
 
-  type fpspio_state_t
+  type pspiof_state_t
     private
     type(c_ptr) :: ptr = C_NULL_PTR
-  end type fpspio_state_t
+  end type pspiof_state_t
 
-  type fpspio_xc_t
+  type pspiof_xc_t
     private
     type(c_ptr) :: ptr = C_NULL_PTR
-  end type fpspio_xc_t
+  end type pspiof_xc_t
 
-  type fpspio_pspinfo_t
+  type pspiof_pspinfo_t
     private
     type(c_ptr) :: ptr = C_NULL_PTR
-  end type fpspio_pspinfo_t
+  end type pspiof_pspinfo_t
   
-  type fpspio_pspdata_t
+  type pspiof_pspdata_t
     private
     type(c_ptr) :: ptr = C_NULL_PTR
-  end type fpspio_pspdata_t
+  end type pspiof_pspdata_t
 
 #include "interface_info_inc.F90"
 #include "interface_error_inc.F90"
@@ -404,4 +404,4 @@ contains
 
   end subroutine c_to_f_string_ptr
   
-end module fpspio_m
+end module pspiof_m
