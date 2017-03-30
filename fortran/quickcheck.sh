@@ -25,7 +25,7 @@
 set -ev
 
 # Check that we are in the correct directory
-test -s "configure.ac" -a -s "src/fpspio.F90" || exit 0
+test -s "configure.ac" -a -s "src/pspiof.F90" || exit 0
 
 # Init build parameters
 export FC="gfortran"

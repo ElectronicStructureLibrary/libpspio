@@ -24,14 +24,14 @@
 
 
 program test_fortran
-  use fpspio_m
+  use pspiof_m
   implicit none
 
   character(len=1024) :: pio_program, pio_file_inp, pio_file_out
   character(len=4) :: pio_fmt_str
   integer :: pio_fmt, ierr, np
-  type(fpspio_mesh_t) :: pspmesh
-  type(fpspio_pspdata_t) :: pspdata
+  type(pspiof_mesh_t) :: pspmesh
+  type(pspiof_pspdata_t) :: pspdata
  
   ! Get command-line arguments
   call get_command_argument(0, pio_program)
@@ -57,47 +57,47 @@ program test_fortran
 
   ! Init pspdata
   write(*,'(A)') "test_fortran_io: initializing pspdata"
-  ierr = fpspio_pspdata_alloc(pspdata)
+  ierr = pspiof_pspdata_alloc(pspdata)
   if ( ierr /= 0 ) then
-    call fpspio_error_flush()
+    call pspiof_error_flush()
     stop 1
   end if
 
   ! Check parsing of file
   write(*,'(A)') "test_fortran_io: parsing file"
-  write(*,'("test_fortran_io: before fpspio_pspdata_read, status = ", &
+  write(*,'("test_fortran_io: before pspiof_pspdata_read, status = ", &
 &   I3, ", format = ", I3)') ierr, pio_fmt
-  ierr = fpspio_pspdata_read(pspdata, pio_fmt, trim(pio_file_inp))
+  ierr = pspiof_pspdata_read(pspdata, pio_fmt, trim(pio_file_inp))
   if ( ierr == 0 ) then
-    pio_fmt = fpspio_pspdata_get_format_guessed(pspdata)
-    write(*,'("test_fortran_io: after  fpspio_pspdata_read, status = ", &
+    pio_fmt = pspiof_pspdata_get_format_guessed(pspdata)
+    write(*,'("test_fortran_io: after  pspiof_pspdata_read, status = ", &
 &     I3, ", format = ", I3,A)') ierr, pio_fmt, achar(10)
   else
-    call fpspio_error_flush()
+    call pspiof_error_flush()
     stop 1
   end if
 
   ! Extract some random information
   write(*,'(A)') "test_fortran_io: extracting some data"
-  pspmesh = fpspio_pspdata_get_mesh(pspdata)
-  np = fpspio_mesh_get_np(pspmesh)
+  pspmesh = pspiof_pspdata_get_mesh(pspdata)
+  np = pspiof_mesh_get_np(pspmesh)
   write(*,'("test_fortran_io: number of points in the mesh = ", I6,A)') np, &
        &   achar(10)
 
   ! Check writing of file
   write(*,'(A)') "test_fortran_io: writing file"
-  ierr = fpspio_pspdata_write(pspdata, pio_fmt, trim(pio_file_out))
+  ierr = pspiof_pspdata_write(pspdata, pio_fmt, trim(pio_file_out))
   if ( ierr == 0 ) then
-    write(*,'("test_fortran_io: after fpspio_pspdata_write, status = ", &
+    write(*,'("test_fortran_io: after pspiof_pspdata_write, status = ", &
 &     I3,",format = ",I3,A)') ierr, pio_fmt, achar(10)
   else
-    call fpspio_error_flush()
+    call pspiof_error_flush()
     stop 1
   end if
 
   ! Destroy pspdata structures
   write(*,'(A,A)') "test_fortran_io: destroying pspdata structure", achar(10)
-  call fpspio_pspdata_free(pspdata)
+  call pspiof_pspdata_free(pspdata)
 
   write(*,'(A)') "=== END test_fortran_io ==="
 

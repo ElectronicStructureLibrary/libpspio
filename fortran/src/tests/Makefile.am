@@ -74,11 +74,11 @@ test_fortran_error_SOURCES = \
   test_fortran_error.F90
 test_fortran_error_LDADD = \
   libfruit.la \
-  ../libfpspio.la \
+  ../libpspiof.la \
   @pio_pspio_libs@ \
   $(LIBS_COVERAGE)
 test_fortran_error_DEPENDENCIES = \
-  ../libfpspio.la \
+  ../libpspiof.la \
   @pio_pspio_libs@
 
 test_fortran_info_SOURCES = \
@@ -86,11 +86,11 @@ test_fortran_info_SOURCES = \
   test_fortran_info.F90
 test_fortran_info_LDADD = \
   libfruit.la \
-  ../libfpspio.la \
+  ../libpspiof.la \
   @pio_pspio_libs@ \
   $(LIBS_COVERAGE)
 test_fortran_info_DEPENDENCIES = \
-  ../libfpspio.la \
+  ../libpspiof.la \
   @pio_pspio_libs@
 
 test_fortran_mesh_SOURCES = \
@@ -99,11 +99,11 @@ test_fortran_mesh_SOURCES = \
   test_fortran_mesh.F90
 test_fortran_mesh_LDADD = \
   libfruit.la \
-  ../libfpspio.la \
+  ../libpspiof.la \
   @pio_pspio_libs@ \
   $(LIBS_COVERAGE)
 test_fortran_mesh_DEPENDENCIES = \
-  ../libfpspio.la \
+  ../libpspiof.la \
   @pio_pspio_libs@
 
 test_fortran_meshfunc_SOURCES = \
@@ -112,20 +112,20 @@ test_fortran_meshfunc_SOURCES = \
   test_fortran_meshfunc.F90
 test_fortran_meshfunc_LDADD = \
   libfruit.la \
-  ../libfpspio.la \
+  ../libpspiof.la \
   @pio_pspio_libs@ \
   $(LIBS_COVERAGE)
 test_fortran_meshfunc_DEPENDENCIES = \
-  ../libfpspio.la \
+  ../libpspiof.la \
   @pio_pspio_libs@
 
 test_fortran_io_SOURCES = test_fortran_io.F90
 test_fortran_io_LDADD = \
-  ../libfpspio.la \
+  ../libpspiof.la \
   @pio_pspio_libs@ \
   $(LIBS_COVERAGE)
 test_fortran_io_DEPENDENCIES = \
-  ../libfpspio.la \
+  ../libpspiof.la \
   @pio_pspio_libs@
 
 TESTS = \

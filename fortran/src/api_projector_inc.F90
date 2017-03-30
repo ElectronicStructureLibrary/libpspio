@@ -24,51 +24,51 @@
 !*********************************************************************!
 
 ! alloc
-integer function fpspio_projector_alloc(projector, np) result(ierr)
-  type(fpspio_projector_t), intent(inout) :: projector
+integer function pspiof_projector_alloc(projector, np) result(ierr)
+  type(pspiof_projector_t), intent(inout) :: projector
   integer,                  intent(in)    :: np
 
   ierr = pspio_projector_alloc(projector%ptr, np)
 
-end function fpspio_projector_alloc
+end function pspiof_projector_alloc
 
 ! init
-integer function fpspio_projector_init(projector, qn, energy, mesh, proj) result(ierr)
-  type(fpspio_projector_t), intent(inout) :: projector
-  type(fpspio_qn_t),        intent(in)    :: qn
+integer function pspiof_projector_init(projector, qn, energy, mesh, proj) result(ierr)
+  type(pspiof_projector_t), intent(inout) :: projector
+  type(pspiof_qn_t),        intent(in)    :: qn
   real(8),                  intent(in)    :: energy
-  type(fpspio_mesh_t),      intent(in)    :: mesh
+  type(pspiof_mesh_t),      intent(in)    :: mesh
   real(8),                  intent(in)    :: proj(*)
 
   ierr = pspio_projector_init(projector%ptr, qn%ptr, energy, mesh%ptr, proj)
 
-end function fpspio_projector_init
+end function pspiof_projector_init
 
 ! copy
-integer function fpspio_projector_copy(src, dst) result(ierr)
-  type(fpspio_projector_t), intent(in)    :: src
-  type(fpspio_projector_t), intent(inout) :: dst
+integer function pspiof_projector_copy(src, dst) result(ierr)
+  type(pspiof_projector_t), intent(in)    :: src
+  type(pspiof_projector_t), intent(inout) :: dst
 
   ierr = pspio_projector_copy(src%ptr, dst%ptr)
 
-end function fpspio_projector_copy
+end function pspiof_projector_copy
 
 ! free
-subroutine fpspio_projector_free(projector)
-  type(fpspio_projector_t), intent(inout) :: projector
+subroutine pspiof_projector_free(projector)
+  type(pspiof_projector_t), intent(inout) :: projector
 
   call pspio_projector_free(projector%ptr)
   projector%ptr = C_NULL_PTR
 
-end subroutine fpspio_projector_free
+end subroutine pspiof_projector_free
 
 ! associated
-logical function fpspio_projector_associated(projector) result(is_associated)
-  type(fpspio_projector_t), intent(in) :: projector
+logical function pspiof_projector_associated(projector) result(is_associated)
+  type(pspiof_projector_t), intent(in) :: projector
 
   is_associated = c_associated(projector%ptr)
 
-end function fpspio_projector_associated
+end function pspiof_projector_associated
 
 
 !*********************************************************************!
@@ -76,20 +76,20 @@ end function fpspio_projector_associated
 !*********************************************************************!
 
 ! energy
-real(8) function fpspio_projector_get_energy(projector) result(energy)
-  type(fpspio_projector_t), intent(in)  :: projector
+real(8) function pspiof_projector_get_energy(projector) result(energy)
+  type(pspiof_projector_t), intent(in)  :: projector
 
   energy = pspio_projector_get_energy(projector%ptr)
 
-end function fpspio_projector_get_energy
+end function pspiof_projector_get_energy
 
 ! qn
-type(fpspio_qn_t) function fpspio_projector_get_qn(projector) result(qn)
-  type(fpspio_projector_t), intent(in)  :: projector
+type(pspiof_qn_t) function pspiof_projector_get_qn(projector) result(qn)
+  type(pspiof_projector_t), intent(in)  :: projector
 
   qn%ptr = pspio_projector_get_qn(projector%ptr)
 
-end function fpspio_projector_get_qn
+end function pspiof_projector_get_qn
 
 
 !*********************************************************************!
@@ -97,37 +97,37 @@ end function fpspio_projector_get_qn
 !*********************************************************************!
 
 ! cmp
-integer function fpspio_projector_cmp(projector1, projector2) result(cmp)
-  type(fpspio_projector_t) :: projector1
-  type(fpspio_projector_t) :: projector2
+integer function pspiof_projector_cmp(projector1, projector2) result(cmp)
+  type(pspiof_projector_t) :: projector1
+  type(pspiof_projector_t) :: projector2
 
   cmp = pspio_projector_cmp(projector1%ptr, projector2%ptr)
 
-end function fpspio_projector_cmp
+end function pspiof_projector_cmp
 
 ! eval
-real(8) function fpspio_projector_eval(projector, r) result(proj)
-  type(fpspio_projector_t), intent(in)  :: projector
+real(8) function pspiof_projector_eval(projector, r) result(proj)
+  type(pspiof_projector_t), intent(in)  :: projector
   real(8),                  intent(in)  :: r
 
   proj = pspio_projector_eval(projector%ptr, r)
 
-end function fpspio_projector_eval
+end function pspiof_projector_eval
 
 ! eval_deriv
-real(8) function fpspio_projector_eval_deriv(projector, r) result(projp)
-  type(fpspio_projector_t), intent(in)  :: projector
+real(8) function pspiof_projector_eval_deriv(projector, r) result(projp)
+  type(pspiof_projector_t), intent(in)  :: projector
   real(8),                  intent(in)  :: r
 
   projp = pspio_projector_eval_deriv(projector%ptr, r)
 
-end function fpspio_projector_eval_deriv
+end function pspiof_projector_eval_deriv
 
 ! eval_deriv2
-real(8) function fpspio_projector_eval_deriv2(projector, r) result(projpp)
-  type(fpspio_projector_t), intent(in)  :: projector
+real(8) function pspiof_projector_eval_deriv2(projector, r) result(projpp)
+  type(pspiof_projector_t), intent(in)  :: projector
   real(8),                  intent(in)  :: r
 
   projpp = pspio_projector_eval_deriv2(projector%ptr, r)
 
-end function fpspio_projector_eval_deriv2
+end function pspiof_projector_eval_deriv2
