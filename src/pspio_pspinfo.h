@@ -57,20 +57,6 @@ typedef struct{
 int pspio_pspinfo_alloc(pspio_pspinfo_t **pspinfo);
 
 /**
- * Initializes the pseudopotential data.
- * @param[in,out] pspinfo: potential information structure to be initialized
- * @param[in] author: pointer to author name
- * @param[in] code: pointer to code name
- * @param[in] date: pointer to generation date
- * @param[in] description: pointer to pseudopotential description
- * @return error code
- * @note The pspinfo pointer has to be allocated first with the
- *       pspio_pspinfo_alloc method.
- */
-int pspio_pspinfo_init(pspio_pspinfo_t *pspinfo, const char *author, const char *code,
-                       const char *date, const char *description, const char *scheme_name);
-
-/**
  * Duplicates a pspinfo structure.
  * @param[out] dst: destination pspinfo structure pointer
  * @param[in] src: source pspinfo structure pointer 

@@ -140,7 +140,6 @@ module fpspio_m
     ! pspinfo
     fpspio_pspinfo_t, &
     fpspio_pspinfo_alloc, &
-    fpspio_pspinfo_init, &
     fpspio_pspinfo_copy, &
     fpspio_pspinfo_free, &
     fpspio_pspinfo_set_author, &

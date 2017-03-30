@@ -55,39 +55,6 @@ int pspio_pspinfo_alloc(pspio_pspinfo_t **pspinfo)
   return PSPIO_SUCCESS;
 }
 
-int pspio_pspinfo_init(pspio_pspinfo_t *pspinfo, const char *author, const char *code,
-                       const char *date, const char *description, const char *scheme_name)
-{
-  assert(pspinfo != NULL);
-
-  if (author != NULL) {
-    pspinfo->author = strdup(author);
-    FULFILL_OR_RETURN(pspinfo->author != NULL, PSPIO_ENOMEM);
-  }
-
-  if (code != NULL) {
-    pspinfo->code = strdup(code);
-    FULFILL_OR_RETURN(pspinfo->code != NULL, PSPIO_ENOMEM);
-  }
-
-  if (date != NULL) {
-    pspinfo->date = strdup(date);
-    FULFILL_OR_RETURN(pspinfo->date != NULL, PSPIO_ENOMEM);
-  }
-
-  if (description != NULL) {
-    pspinfo->description = strdup(description);
-    FULFILL_OR_RETURN(pspinfo->description != NULL, PSPIO_ENOMEM);
-  }
-
-  if (scheme_name != NULL) {
-    pspinfo->scheme_name = strdup(scheme_name);
-    FULFILL_OR_RETURN(pspinfo->scheme_name != NULL, PSPIO_ENOMEM);
-  }
-
-  return PSPIO_SUCCESS;
-}
-
 int pspio_pspinfo_copy(pspio_pspinfo_t **dst, const pspio_pspinfo_t *src) {
 
   assert(src != NULL);

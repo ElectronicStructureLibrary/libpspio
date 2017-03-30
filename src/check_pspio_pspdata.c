@@ -71,8 +71,11 @@ void pspdata_full_setup(void)
 
   pspio_pspinfo_free(pspinfo);
   pspio_pspinfo_alloc(&pspinfo);
-  pspio_pspinfo_init(pspinfo, "A. Author", "XPTO", "99/99/99",
-                     "Universal alchemical pseudopotential", "Hamann scheme");
+  pspio_pspinfo_set_author(pspinfo, "A. Author");
+  pspio_pspinfo_set_code(pspinfo, "XPTO");
+  pspio_pspinfo_set_date(pspinfo, "99/99/99");
+  pspio_pspinfo_set_description(pspinfo, "Universal alchemical pseudopotential");
+  pspio_pspinfo_set_scheme_name(pspinfo, "Hamann scheme");
 
   pspio_mesh_free(mesh);
   pspio_mesh_alloc(&mesh, 8);

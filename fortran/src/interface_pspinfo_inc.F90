@@ -30,17 +30,6 @@ interface
     type(c_ptr) :: pspinfo
   end function pspio_pspinfo_alloc
 
-  ! init
-  integer(c_int) function pspio_pspinfo_init(pspinfo, author, code, date, description, scheme_name) bind(c)
-    import
-    type(c_ptr),           value :: pspinfo
-    character(kind=c_char)       :: author(*)
-    character(kind=c_char)       :: code(*)
-    character(kind=c_char)       :: date(*)
-    character(kind=c_char)       :: description(*)
-    character(kind=c_char)       :: scheme_name(*)
-  end function pspio_pspinfo_init
-  
   ! copy
   integer(c_int) function pspio_pspinfo_copy(dst, src) bind(c)
     import
