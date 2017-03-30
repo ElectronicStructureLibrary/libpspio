@@ -27,6 +27,8 @@
 #if !defined PSPIO_PSPINFO_H
 #define PSPIO_PSPINFO_H
 
+#include<time.h>
+
 
 /**********************************************************************
  * Data structures                                                    *
@@ -38,7 +40,7 @@
 typedef struct{
   char *author;
   char *code;
-  char *date;
+  struct tm time;
   char *description; /**< descriptive string for content of file read in. Nothing should ever be assumed about its content. */
   char *scheme_name;
 } pspio_pspinfo_t;
@@ -55,20 +57,6 @@ typedef struct{
  * @return error code
  */
 int pspio_pspinfo_alloc(pspio_pspinfo_t **pspinfo);
-
-/**
- * Initializes the pseudopotential data.
- * @param[in,out] pspinfo: potential information structure to be initialized
- * @param[in] author: pointer to author name
- * @param[in] code: pointer to code name
- * @param[in] date: pointer to generation date
- * @param[in] description: pointer to pseudopotential description
- * @return error code
- * @note The pspinfo pointer has to be allocated first with the
- *       pspio_pspinfo_alloc method.
- */
-int pspio_pspinfo_init(pspio_pspinfo_t *pspinfo, const char *author, const char *code,
-                       const char *date, const char *description, const char *scheme_name);
 
 /**
  * Duplicates a pspinfo structure.
@@ -109,10 +97,24 @@ int pspio_pspinfo_set_code(pspio_pspinfo_t *pspinfo, const char *code);
 
 /**
  * @param[in,out] pspinfo: pointer to pspinfo structure
- * @param[in] date: pointer to the generation date
+ * @param[in] generation_day: day when the pseudo was generated (range 1 to 31)
  * @return error code
  */
-int pspio_pspinfo_set_date(pspio_pspinfo_t *pspinfo, const char *date);
+int pspio_pspinfo_set_generation_day(pspio_pspinfo_t *pspinfo, int day);
+
+/**
+ * @param[in,out] pspinfo: pointer to pspinfo structure
+ * @param[in] generation_month: month when the pseudo was generated (range 1 to 12)
+ * @return error code
+ */
+int pspio_pspinfo_set_generation_month(pspio_pspinfo_t *pspinfo, int month);
+
+/**
+ * @param[in,out] pspinfo: pointer to pspinfo structure
+ * @param[in] generation_year: year when the pseudo was generated
+ * @return error code
+ */
+int pspio_pspinfo_set_generation_year(pspio_pspinfo_t *pspinfo, int year);
 
 /**
  * @param[in,out] pspinfo: pointer to pspinfo structure
@@ -147,9 +149,21 @@ const char * pspio_pspinfo_get_code(const pspio_pspinfo_t *pspinfo);
 
 /**
  * @param[in] pspinfo: pointer to pspinfo structure
- * @return pointer to generation date
+ * @return day of month (range 1 to 31)
  */
-const char * pspio_pspinfo_get_date(const pspio_pspinfo_t *pspinfo);
+int pspio_pspinfo_get_generation_day(const pspio_pspinfo_t *pspinfo);
+
+/**
+ * @param[in] pspinfo: pointer to pspinfo structure
+ * @return month (range 1 to 12)
+ */
+int pspio_pspinfo_get_generation_month(const pspio_pspinfo_t *pspinfo);
+
+/**
+ * @param[in] pspinfo: pointer to pspinfo structure
+ * @return year
+ */
+int pspio_pspinfo_get_generation_year(const pspio_pspinfo_t *pspinfo);
 
 /**
  * @param[in] pspinfo: pointer to pspinfo structure

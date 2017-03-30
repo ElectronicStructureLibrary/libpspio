@@ -48,42 +48,19 @@ int pspio_pspinfo_alloc(pspio_pspinfo_t **pspinfo)
   /* Nullify pointers */
   (*pspinfo)->author = NULL;
   (*pspinfo)->code = NULL;
-  (*pspinfo)->date = NULL;
   (*pspinfo)->description = NULL;
   (*pspinfo)->scheme_name = NULL;
 
-  return PSPIO_SUCCESS;
-}
-
-int pspio_pspinfo_init(pspio_pspinfo_t *pspinfo, const char *author, const char *code,
-                       const char *date, const char *description, const char *scheme_name)
-{
-  assert(pspinfo != NULL);
-
-  if (author != NULL) {
-    pspinfo->author = strdup(author);
-    FULFILL_OR_RETURN(pspinfo->author != NULL, PSPIO_ENOMEM);
-  }
-
-  if (code != NULL) {
-    pspinfo->code = strdup(code);
-    FULFILL_OR_RETURN(pspinfo->code != NULL, PSPIO_ENOMEM);
-  }
-
-  if (date != NULL) {
-    pspinfo->date = strdup(date);
-    FULFILL_OR_RETURN(pspinfo->date != NULL, PSPIO_ENOMEM);
-  }
-
-  if (description != NULL) {
-    pspinfo->description = strdup(description);
-    FULFILL_OR_RETURN(pspinfo->description != NULL, PSPIO_ENOMEM);
-  }
-
-  if (scheme_name != NULL) {
-    pspinfo->scheme_name = strdup(scheme_name);
-    FULFILL_OR_RETURN(pspinfo->scheme_name != NULL, PSPIO_ENOMEM);
-  }
+  /* Initialize variables */
+  (*pspinfo)->time.tm_sec = 0;
+  (*pspinfo)->time.tm_min = 0;
+  (*pspinfo)->time.tm_hour = 0;
+  (*pspinfo)->time.tm_mday = 1;
+  (*pspinfo)->time.tm_mon = 0;
+  (*pspinfo)->time.tm_year = 0;
+  (*pspinfo)->time.tm_wday = 0;
+  (*pspinfo)->time.tm_yday = 0;
+  (*pspinfo)->time.tm_isdst = 0;
 
   return PSPIO_SUCCESS;
 }
@@ -101,14 +78,13 @@ int pspio_pspinfo_copy(pspio_pspinfo_t **dst, const pspio_pspinfo_t *src) {
   if (src->code != NULL)
     pspio_pspinfo_set_code(*dst, src->code);
 
-  if (src->date != NULL)
-    pspio_pspinfo_set_date(*dst, src->date);
-
   if (src->description != NULL)
     pspio_pspinfo_set_description(*dst, src->description);
 
   if (src->scheme_name != NULL)
     pspio_pspinfo_set_scheme_name(*dst, src->scheme_name);
+
+  (*dst)->time = src->time;
 
   return PSPIO_SUCCESS;
 }
@@ -118,7 +94,6 @@ void pspio_pspinfo_free(pspio_pspinfo_t *pspinfo)
   if (pspinfo != NULL) {
     free(pspinfo->author);
     free(pspinfo->code);
-    free(pspinfo->date);
     free(pspinfo->description);
     free(pspinfo->scheme_name);
     free(pspinfo);
@@ -156,15 +131,38 @@ int pspio_pspinfo_set_code(pspio_pspinfo_t *pspinfo, const char *code)
   return PSPIO_SUCCESS;
 }
 
-int pspio_pspinfo_set_date(pspio_pspinfo_t *pspinfo, const char *date)
+int pspio_pspinfo_set_generation_day(pspio_pspinfo_t *pspinfo, int day)
 {
   assert(pspinfo != NULL);
 
-  FULFILL_OR_RETURN(date != NULL, PSPIO_EVALUE);
+  if (day < 32 && day > 0)
+    pspinfo->time.tm_mday = day;
+  else
+    return PSPIO_EVALUE;
 
-  free(pspinfo->date);
-  pspinfo->date = strdup(date);
-  FULFILL_OR_EXIT( pspinfo->date != NULL, PSPIO_ENOMEM );
+  return PSPIO_SUCCESS;
+}
+
+int pspio_pspinfo_set_generation_month(pspio_pspinfo_t *pspinfo, int month)
+{
+  assert(pspinfo != NULL);
+
+  if (month < 13 && month > 0)
+    pspinfo->time.tm_mon = month - 1;
+  else
+    return PSPIO_EVALUE;
+
+  return PSPIO_SUCCESS;
+}
+
+int pspio_pspinfo_set_generation_year(pspio_pspinfo_t *pspinfo, int year)
+{
+  assert(pspinfo != NULL);
+
+  if (year >= 0)
+    pspinfo->time.tm_year = year - 1900;
+  else
+    return PSPIO_EVALUE;
 
   return PSPIO_SUCCESS;
 }
@@ -214,11 +212,25 @@ const char * pspio_pspinfo_get_code(const pspio_pspinfo_t *pspinfo)
   return pspinfo->code;
 }
 
-const char * pspio_pspinfo_get_date(const pspio_pspinfo_t *pspinfo)
+int pspio_pspinfo_get_generation_day(const pspio_pspinfo_t *pspinfo)
 {
   assert(pspinfo != NULL);
 
-  return pspinfo->date;
+  return pspinfo->time.tm_mday;
+}
+
+int pspio_pspinfo_get_generation_month(const pspio_pspinfo_t *pspinfo)
+{
+  assert(pspinfo != NULL);
+
+  return pspinfo->time.tm_mon + 1;
+}
+
+int pspio_pspinfo_get_generation_year(const pspio_pspinfo_t *pspinfo)
+{
+  assert(pspinfo != NULL);
+
+  return pspinfo->time.tm_year + 1900;
 }
 
 const char * pspio_pspinfo_get_description(const pspio_pspinfo_t *pspinfo)
@@ -242,12 +254,14 @@ const char * pspio_pspinfo_get_scheme_name(const pspio_pspinfo_t *pspinfo)
 
 int pspio_pspinfo_cmp(const pspio_pspinfo_t *pspinfo1, const pspio_pspinfo_t *pspinfo2)
 {
+  struct tm time1 = pspinfo1->time, time2 = pspinfo2->time;
+
   assert(pspinfo1 != NULL);
   assert(pspinfo2 != NULL);
 
   if (strcmp(pspinfo1->author, pspinfo2->author) ||
       strcmp(pspinfo1->code, pspinfo2->code) ||
-      strcmp(pspinfo1->date, pspinfo2->date) ||
+      difftime(mktime(&time1),mktime(&time2) ) ||
       strcmp(pspinfo1->scheme_name, pspinfo2->scheme_name) ||
       strcmp(pspinfo1->description, pspinfo2->description) ) {
     return PSPIO_DIFF;
