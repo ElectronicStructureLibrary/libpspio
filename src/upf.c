@@ -56,6 +56,7 @@ int pspio_upf_read(FILE *fp, pspio_pspdata_t *pspdata)
     SUCCEED_OR_RETURN( upf_read_nlcc(fp, np, pspdata) );
   }
   SUCCEED_OR_RETURN( upf_read_nonlocal(fp, np, pspdata) );
+  fprintf(stderr, "TODO: fix upf_read_pswfc\n");
   SUCCEED_OR_RETURN( upf_read_pswfc(fp, np, pspdata) );
   SUCCEED_OR_RETURN( upf_read_local(fp, np, pspdata) );
   SUCCEED_OR_RETURN( upf_read_rhoatom(fp, np, pspdata) );

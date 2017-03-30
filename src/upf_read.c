@@ -172,7 +172,7 @@ int upf_read_header(FILE *fp, int *np, pspio_pspdata_t *pspdata)
 int upf_read_mesh(FILE *fp, int np, pspio_pspdata_t *pspdata)
 {
   char line[PSPIO_STRLEN_LINE];
-  int i, j, nargs;
+  int i, j, nargs, nsup;
   double tmp[4];
   double *r, *drdi;
 
@@ -201,12 +201,22 @@ int upf_read_mesh(FILE *fp, int np, pspio_pspdata_t *pspdata)
     
     /* Read Rab */
     SKIP_FUNC_ON_ERROR( upf_tag_init(fp, "PP_RAB", NO_GO_BACK) );
-    for (i=0; i<np; i+=4) {
+    if ( (np % 4) == 0 ) {
+      nsup = np - 4;
+    } else {
+      nsup = np - (np % 4);
+    }
+    for (i=0; i<nsup; i+=4) {
       FULFILL_OR_BREAK( fgets(line, PSPIO_STRLEN_LINE, fp) != NULL, PSPIO_EIO );
       nargs = sscanf(line, "%lf %lf %lf %lf", &tmp[0], &tmp[1], &tmp[2], &tmp[3]);
-      FULFILL_OR_BREAK( nargs < 5 && nargs > 0, PSPIO_EFILE_CORRUPT );
+      fprintf(stderr, ">>> PP_RAB ( %d / %d / %d ) [%d] <<<\n", i, nsup, np, nargs);
+      FULFILL_OR_BREAK( nargs == 4, PSPIO_EFILE_CORRUPT );
       for (j=0; j<nargs; j++) drdi[i+j] = tmp[j];
     }
+    DEFER_TEST_ERROR( fgets(line, PSPIO_STRLEN_LINE, fp) != NULL, PSPIO_EIO );
+    nargs = sscanf(line, "%lf %lf %lf %lf", &tmp[0], &tmp[1], &tmp[2], &tmp[3]);
+    fprintf(stderr, ">>> PP_RAB END ( %d / %d ) [%d] <<<\n", nsup, np, nargs);
+    for (j=0; j<nargs; j++) drdi[nsup+j] = tmp[j];
     SKIP_FUNC_ON_ERROR( upf_tag_check_end(fp, "PP_RAB") );
 
     /* Store the mesh in the pspdata structure */
