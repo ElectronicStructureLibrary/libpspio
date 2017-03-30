@@ -54,9 +54,9 @@ contains
     character(len=80) :: msg
     integer :: i, np
     real(dp), dimension(mesh_size) :: f_chk, fp_chk, fpp_chk
-    type(pspiof_mesh_t), pointer :: m
+    type(pspiof_mesh_t) :: m
 
-    m => pspiof_meshfunc_get_mesh(meshfunc)
+    m = pspiof_meshfunc_get_mesh(meshfunc)
     np = pspiof_mesh_get_np(mesh)
 
     call assert_equals(mesh_size, np, &
@@ -161,7 +161,7 @@ contains
 
     implicit none
 
-    type(pspiof_mesh_t) :: m
+    type(pspiof_mesh_t), target :: m
 
     call assert_equals(PSPIO_SUCCESS, pspiof_meshfunc_alloc(mf11, 2*mesh_size+1), &
 &     "Mesh function allocation - Return value")
