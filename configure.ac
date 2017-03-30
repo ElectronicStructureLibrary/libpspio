@@ -376,7 +376,8 @@ AC_CONFIG_COMMANDS([script-perms],
     src/gcov_check_coverage \
     src/gcov_clean \
     src/gcov_report \
-    src/test_memory
+    src/test_memory \
+    tests/run_test_format
   ])
 
 AC_CONFIG_FILES([
@@ -385,6 +386,8 @@ AC_CONFIG_FILES([
   src/gcov_check_coverage
   src/gcov_clean
   src/gcov_report
-  src/test_memory])
+  src/test_memory
+  tests/Makefile
+  tests/run_test_format])
 
 AC_OUTPUT

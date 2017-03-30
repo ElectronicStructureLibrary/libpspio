@@ -26,7 +26,7 @@
 ACLOCAL_AMFLAGS = -I config/m4
 
 # Main tasks
-SUBDIRS = src
+SUBDIRS = src tests
 if DO_BUILD_FORTRAN
   SUBDIRS += fortran
 endif

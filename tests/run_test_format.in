@@ -1,0 +1,48 @@
+#!/bin/sh
+
+my_name=`basename "${0}"`
+my_fmt=`cut -d_ -f4`
+refdir="@srcdir@/psp_references"
+
+if test "${my_fmt}" = ""; then
+  echo "This program is intended to be run by the test suite of Pspio" >&2
+  exit 1
+fi
+
+echo "Selecting format"
+
+case "${my_fmt}" in
+  1|2|3|4|5|6|7|8|9|10|11|12)
+    pspdir="abinit${my_fmt}"
+    ;;
+  13)
+    pspdir="atom"
+    ;;
+  14)
+    pspdir="fhi"
+    ;;
+  15)
+    pspdir="octopus_hgh"
+    ;;
+  16)
+    pspdir="siesta"
+    ;;
+  17)
+    pspdir="UPF"
+    ;;
+  *)
+    echo "Unknown pseudopotential format" >&2
+    exit 2
+    ;;
+esac
+
+echo "will look for pseudos in ${refdir}/${pspdir}"
+set -v
+
+for pspfile in ${refdir}/${pspdir}/*; do
+  if test "${pspfile}" != "README"; then
+    ./test_format "${my_fmt}" "${pspfile}"
+  fi
+done
+
+exit 0
