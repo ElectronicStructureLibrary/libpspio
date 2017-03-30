@@ -62,12 +62,26 @@ interface
     character(kind=c_char)        :: code(*)
   end function pspio_pspinfo_set_code
 
-  ! date
-  integer(c_int) function pspio_pspinfo_set_date(pspinfo, date) bind(c)
+  ! generation_day
+  integer(c_int) function pspio_pspinfo_set_generation_day(pspinfo, day) bind(c)
     import
-    type(c_ptr),            value :: pspinfo
-    character(kind=c_char)        :: date(*)
-  end function pspio_pspinfo_set_date
+    type(c_ptr),    value :: pspinfo
+    integer(c_int), value :: day
+  end function pspio_pspinfo_set_generation_day
+
+  ! generation_month
+  integer(c_int) function pspio_pspinfo_set_generation_month(pspinfo, month) bind(c)
+    import
+    type(c_ptr),    value :: pspinfo
+    integer(c_int), value :: month
+  end function pspio_pspinfo_set_generation_month
+
+  ! generation_year
+    integer(c_int) function pspio_pspinfo_set_generation_year(pspinfo, year) bind(c)
+      import
+      type(c_ptr),    value :: pspinfo
+      integer(c_int), value :: year
+    end function pspio_pspinfo_set_generation_year
 
   ! description
   integer(c_int) function pspio_pspinfo_set_description(pspinfo, description) bind(c)
@@ -100,11 +114,23 @@ interface
     type(c_ptr), value :: pspinfo
   end function pspio_pspinfo_get_code
 
-  ! date
-  character(kind=c_char) function pspio_pspinfo_get_date(pspinfo) bind(c)
+  ! generation_day
+  integer(c_int) function pspio_pspinfo_get_generation_day(pspinfo) bind(c)
     import
     type(c_ptr), value :: pspinfo
-  end function pspio_pspinfo_get_date
+  end function pspio_pspinfo_get_generation_day
+
+  ! generation_month
+  integer(c_int) function pspio_pspinfo_get_generation_month(pspinfo) bind(c)
+    import
+    type(c_ptr), value :: pspinfo
+  end function pspio_pspinfo_get_generation_month
+
+  ! generation_year
+  integer(c_int) function pspio_pspinfo_get_generation_year(pspinfo) bind(c)
+    import
+    type(c_ptr), value :: pspinfo
+  end function pspio_pspinfo_get_generation_year
 
   ! description
   character(kind=c_char) function pspio_pspinfo_get_description(pspinfo) bind(c)

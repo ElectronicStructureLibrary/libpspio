@@ -33,7 +33,7 @@
 static pspio_pspinfo_t *pspinfo1 = NULL, *pspinfo2 = NULL;
 static char *author1 = "A. Author", *author2 = "Another Author";
 static char *code1 = "XPTO", *code2 = "DFT code";
-static char *date1 = "99/99/99", *date2 = "00/00/00";
+static int day1 = 1, day2 = 31, month1 = 1, month2 = 12, year1 = 1900, year2 = 2100;
 static char *description1 = "Universal alchemical pseudopotential", *description2 = "Minus one over r";
 static char *scheme_name1 = "Hamann scheme", *scheme_name2 = "Troullier-Martins scheme";
 
@@ -50,7 +50,9 @@ void pspinfo_setup_init(void)
 
   pspio_pspinfo_set_author(pspinfo1, author1);
   pspio_pspinfo_set_code(pspinfo1, code1);
-  pspio_pspinfo_set_date(pspinfo1, date1);
+  pspio_pspinfo_set_generation_day(pspinfo1, day1);
+  pspio_pspinfo_set_generation_month(pspinfo1, month1);
+  pspio_pspinfo_set_generation_year(pspinfo1, year1);
   pspio_pspinfo_set_description(pspinfo1, description1);
   pspio_pspinfo_set_scheme_name(pspinfo1, scheme_name1);
 }
@@ -83,10 +85,24 @@ START_TEST(test_pspinfo_setget_code)
 }
 END_TEST
 
-START_TEST(test_pspinfo_setget_date)
+START_TEST(test_pspinfo_setget_generation_day)
 {
-    ck_assert(pspio_pspinfo_set_date(pspinfo1, date1) == PSPIO_SUCCESS);
-    ck_assert_str_eq(pspio_pspinfo_get_date(pspinfo1), date1);
+  ck_assert(pspio_pspinfo_set_generation_day(pspinfo1, day1) == PSPIO_SUCCESS);
+  ck_assert_int_eq(pspio_pspinfo_get_generation_day(pspinfo1), day1);
+}
+END_TEST
+
+START_TEST(test_pspinfo_setget_generation_month)
+{
+  ck_assert(pspio_pspinfo_set_generation_month(pspinfo1, month1) == PSPIO_SUCCESS);
+  ck_assert_int_eq(pspio_pspinfo_get_generation_month(pspinfo1), month1);
+}
+END_TEST
+
+START_TEST(test_pspinfo_setget_generation_year)
+{
+  ck_assert(pspio_pspinfo_set_generation_year(pspinfo1, year1) == PSPIO_SUCCESS);
+  ck_assert_int_eq(pspio_pspinfo_get_generation_year(pspinfo1), year1);
 }
 END_TEST
 
@@ -144,10 +160,26 @@ START_TEST(test_pspinfo_cmp_diff_code)
 }
 END_TEST
 
-START_TEST(test_pspinfo_cmp_diff_date)
+START_TEST(test_pspinfo_cmp_diff_generation_day)
 {
   ck_assert(pspio_pspinfo_copy(&pspinfo2, pspinfo1) == PSPIO_SUCCESS);
-  ck_assert(pspio_pspinfo_set_date(pspinfo2, date2) == PSPIO_SUCCESS);
+  ck_assert(pspio_pspinfo_set_generation_day(pspinfo2, day2) == PSPIO_SUCCESS);
+  ck_assert(pspio_pspinfo_cmp(pspinfo1, pspinfo2) == PSPIO_DIFF);
+}
+END_TEST
+
+START_TEST(test_pspinfo_cmp_diff_generation_month)
+{
+  ck_assert(pspio_pspinfo_copy(&pspinfo2, pspinfo1) == PSPIO_SUCCESS);
+  ck_assert(pspio_pspinfo_set_generation_month(pspinfo2, month2) == PSPIO_SUCCESS);
+  ck_assert(pspio_pspinfo_cmp(pspinfo1, pspinfo2) == PSPIO_DIFF);
+}
+END_TEST
+
+START_TEST(test_pspinfo_cmp_diff_generation_year)
+{
+  ck_assert(pspio_pspinfo_copy(&pspinfo2, pspinfo1) == PSPIO_SUCCESS);
+  ck_assert(pspio_pspinfo_set_generation_year(pspinfo2, year2) == PSPIO_SUCCESS);
   ck_assert(pspio_pspinfo_cmp(pspinfo1, pspinfo2) == PSPIO_DIFF);
 }
 END_TEST
@@ -184,7 +216,9 @@ Suite * make_pspinfo_suite(void)
   tcase_add_checked_fixture(tc_setget, pspinfo_setup, pspinfo_teardown);
   tcase_add_test(tc_setget, test_pspinfo_setget_author);
   tcase_add_test(tc_setget, test_pspinfo_setget_code);
-  tcase_add_test(tc_setget, test_pspinfo_setget_date);
+  tcase_add_test(tc_setget, test_pspinfo_setget_generation_day);
+  tcase_add_test(tc_setget, test_pspinfo_setget_generation_month);
+  tcase_add_test(tc_setget, test_pspinfo_setget_generation_year);
   tcase_add_test(tc_setget, test_pspinfo_setget_description);
   tcase_add_test(tc_setget, test_pspinfo_setget_scheme_name);
   suite_add_tcase(s, tc_setget);
@@ -200,7 +234,9 @@ Suite * make_pspinfo_suite(void)
   tcase_add_test(tc_cmp, test_pspinfo_cmp_equal);
   tcase_add_test(tc_cmp, test_pspinfo_cmp_diff_author);
   tcase_add_test(tc_cmp, test_pspinfo_cmp_diff_code);
-  tcase_add_test(tc_cmp, test_pspinfo_cmp_diff_date);
+  tcase_add_test(tc_cmp, test_pspinfo_cmp_diff_generation_day);
+  tcase_add_test(tc_cmp, test_pspinfo_cmp_diff_generation_month);
+  tcase_add_test(tc_cmp, test_pspinfo_cmp_diff_generation_year);
   tcase_add_test(tc_cmp, test_pspinfo_cmp_diff_description);
   tcase_add_test(tc_cmp, test_pspinfo_cmp_diff_scheme_name);
   suite_add_tcase(s, tc_cmp);

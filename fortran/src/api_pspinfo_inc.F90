@@ -80,14 +80,32 @@ integer function pspiof_pspinfo_set_code(pspinfo, code) result(ierr)
 
 end function pspiof_pspinfo_set_code
 
-! date
-integer function pspiof_pspinfo_set_date(pspinfo, date) result(ierr)
+! generation_day
+integer function pspiof_pspinfo_set_generation_day(pspinfo, day) result(ierr)
   type(pspiof_pspinfo_t), intent(inout) :: pspinfo
-  character(len=*),       intent(in)    :: date
+  integer(c_int),         intent(in)    :: day
 
-  ierr = pspio_pspinfo_set_date(pspinfo%ptr, f_to_c_string(date))
+  ierr = pspio_pspinfo_set_generation_day(pspinfo%ptr, day)
 
-end function pspiof_pspinfo_set_date
+end function pspiof_pspinfo_set_generation_day
+
+! generation_month
+integer function pspiof_pspinfo_set_generation_month(pspinfo, month) result(ierr)
+  type(pspiof_pspinfo_t), intent(inout) :: pspinfo
+  integer(c_int),         intent(in)    :: month
+
+  ierr = pspio_pspinfo_set_generation_month(pspinfo%ptr, month)
+
+end function pspiof_pspinfo_set_generation_month
+
+! generation_year
+integer function pspiof_pspinfo_set_generation_year(pspinfo, year) result(ierr)
+  type(pspiof_pspinfo_t), intent(inout) :: pspinfo
+  integer(c_int),         intent(in)    :: year
+
+  ierr = pspio_pspinfo_set_generation_year(pspinfo%ptr, year)
+
+end function pspiof_pspinfo_set_generation_year
 
 ! description
 integer function pspiof_pspinfo_set_description(pspinfo, description) result(ierr)
@@ -128,13 +146,29 @@ character(len=128) function pspiof_pspinfo_get_code(pspinfo) result(code)
 
 end function pspiof_pspinfo_get_code
 
-! date
-character(len=128) function pspiof_pspinfo_get_date(pspinfo) result(date)
+! generation_day
+integer function pspiof_pspinfo_get_generation_day(pspinfo) result(day)
   type(pspiof_pspinfo_t), intent(in) :: pspinfo
  
-  call c_to_f_string(pspio_pspinfo_get_date(pspinfo%ptr), date)
+  day = pspio_pspinfo_get_generation_day(pspinfo%ptr)
 
-end function pspiof_pspinfo_get_date
+end function pspiof_pspinfo_get_generation_day
+
+! generation_month
+integer function pspiof_pspinfo_get_generation_month(pspinfo) result(month)
+  type(pspiof_pspinfo_t), intent(in) :: pspinfo
+
+  month = pspio_pspinfo_get_generation_month(pspinfo%ptr)
+
+end function pspiof_pspinfo_get_generation_month
+
+! generation_year
+integer function pspiof_pspinfo_get_generation_year(pspinfo) result(year)
+  type(pspiof_pspinfo_t), intent(in) :: pspinfo
+
+  year = pspio_pspinfo_get_generation_year(pspinfo%ptr)
+
+end function pspiof_pspinfo_get_generation_year
 
 ! description
 character(len=256) function pspiof_pspinfo_get_description(pspinfo) result(description)
