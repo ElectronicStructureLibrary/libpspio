@@ -84,8 +84,6 @@ int upf_tag_check_end(FILE *fp, const char *tag)
     status = PSPIO_EFILE_CORRUPT;
   }
 
-  fprintf(stderr, "line: %s", read_string);
-  fprintf(stderr, "upf_tag_check_end status: %d\n\n", status);
   return status;
 }
 
