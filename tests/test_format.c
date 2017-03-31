@@ -49,7 +49,7 @@ int main(int argc, char **argv) {
 
   /* Save output data */
   psp_wr = (char *) malloc (13 * sizeof(char));
-  sprintf(psp_wr, "pspio-%6.6d", getpid());
+  sprintf(psp_wr, "pspio-test-%6.6d", getpid());
   ierr = pspio_pspdata_write(data, psp_fmt, psp_wr);
   if ( ierr != PSPIO_SUCCESS ) {
     pspio_error_flush(stderr);

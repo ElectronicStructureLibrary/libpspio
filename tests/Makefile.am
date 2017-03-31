@@ -73,6 +73,6 @@ XFAIL_TESTS = $(pio_tests_fmt_unsupported)
 $(pio_tests_fmt):
 	$(LN_S) -f run_test_format $@
 
-CLEANFILES = $(pio_tests_fmt)
+CLEANFILES = $(pio_tests_fmt) pspio-test-[0-9][0-9][0-9][0-9][0-9][0-9]
 
 EXTRA_DIST = run_test_format
