@@ -35,25 +35,27 @@ int main(int argc, char **argv) {
   /* Prepare data structure */
   ierr = pspio_pspdata_alloc(&data);
   if ( ierr != PSPIO_SUCCESS ) {
-    fprintf(stderr, "Could not allocate pseudopotential data structure\n");
+    pspio_error_flush(stderr);
     return 2;
   }
 
   /* Load input data */
   ierr = pspio_pspdata_read(data, psp_fmt, psp_rd);
   if ( ierr != PSPIO_SUCCESS ) {
-    pspio_error_show(ierr, __FILE__, __LINE__, "__MAIN__");
+    pspio_error_flush(stderr);
     return 10;
   }
+  fflush(stderr);
 
   /* Save output data */
   psp_wr = (char *) malloc (13 * sizeof(char));
   sprintf(psp_wr, "pspio-%6.6d", getpid());
   ierr = pspio_pspdata_write(data, psp_fmt, psp_wr);
   if ( ierr != PSPIO_SUCCESS ) {
-    pspio_error_show(ierr, __FILE__, __LINE__, "__MAIN__");
+    pspio_error_flush(stderr);
     return 20;
   }
+  fflush(stderr);
 
   /* Compare input and output */
   cmd_size = (18 + strlen(psp_rd) + strlen(psp_wr)) * sizeof(char);
