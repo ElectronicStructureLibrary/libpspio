@@ -23,6 +23,7 @@
  * @file upf_tag.c
  * @brief functions to deal with UPF tags
  */
+#include <stdio.h>
 #include <string.h>
 #include <ctype.h>
 

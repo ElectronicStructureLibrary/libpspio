@@ -165,4 +165,12 @@ double pspio_projector_eval_deriv(const pspio_projector_t *projector, double r);
  */
 double pspio_projector_eval_deriv2(const pspio_projector_t *projector, double r);
 
+/**
+ * Return a count of projectors per angular momentum
+ *
+ * @param[in] projectors: the projectors to count
+ * @param[in] nproj: the total number of projectors
+ */
+int * pspio_projectors_per_l(pspio_projector_t ** const projectors, int nproj);
+
 #endif

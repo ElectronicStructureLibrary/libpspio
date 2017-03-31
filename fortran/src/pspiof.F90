@@ -262,6 +262,7 @@ module pspiof_m
   integer(c_int), parameter, public :: PSPIO_SCM_TM = 9
   integer(c_int), parameter, public :: PSPIO_SCM_TM2 = 10
   integer(c_int), parameter, public :: PSPIO_SCM_RTM = 11
+  integer(c_int), parameter, public :: PSPIO_SCM_ONCV = 12
   integer(c_int), parameter, public :: PSPIO_MESH_UNKNOWN = -1
   integer(c_int), parameter, public :: PSPIO_MESH_NONE = 0
   integer(c_int), parameter, public :: PSPIO_MESH_LOG1 = 1
@@ -279,6 +280,7 @@ module pspiof_m
   integer(c_int), parameter, public :: PSPIO_NLCC_TETER1 = 3
   integer(c_int), parameter, public :: PSPIO_NLCC_TETER2 = 4
   integer(c_int), parameter, public :: PSPIO_NLCC_ATOM = 5
+  integer(c_int), parameter, public :: PSPIO_NLCC_ONCV = 5
   !%%% END PSPIO CONSTANTS
 
 

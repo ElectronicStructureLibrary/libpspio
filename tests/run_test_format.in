@@ -1,0 +1,51 @@
+#!/bin/sh
+
+my_name=`basename "${0}"`
+my_fmt=`echo "${my_name}" | cut -d_ -f4`
+psp_root="@srcdir@/../psp_references"
+
+if test "${my_fmt}" = ""; then
+  echo "${my_name}: must be run by the test suite of Pspio" >&2
+  exit 101
+fi
+
+case "${my_fmt}" in
+  1|2|3|4|5|6|7|8|9|10|11|12)
+    psp_dir="abinit${my_fmt}"
+    ;;
+  13)
+    psp_dir="atom"
+    ;;
+  14)
+    psp_dir="fhi"
+    ;;
+  15)
+    psp_dir="octopus_hgh"
+    ;;
+  16)
+    psp_dir="siesta"
+    ;;
+  17)
+    psp_dir="UPF"
+    ;;
+  *)
+    echo "${my_name}: unknown pseudopotential format" >&2
+    exit 102
+    ;;
+esac
+
+if test ! -d "${psp_root}/${psp_dir}"; then
+  echo "${my_name}: missing pseudopotential directory '${psp_dir}'" >&2
+  exit 103
+fi
+
+ret=0
+for psp_file in ${psp_root}/${psp_dir}/*; do
+  if test "`basename ${psp_file}`" != "README"; then
+    ./test_format "${my_fmt}" "${psp_file}"
+    ret="${?}"
+    test "${ret}" = "0" || break
+  fi
+done
+
+exit "${ret}"
