@@ -24,6 +24,8 @@
 #ifndef UTIL_H
 #define UTIL_H
 
+#include <stdio.h>
+
 /**
  * @file util.h
  * @brief include file with some useful macros and defines 
@@ -88,5 +90,16 @@ double linear_extrapolation(double x1, double x2, double f1,  double f2, double 
  * @return scheme name
  */
 char * psp_scheme_name(int scheme);
+
+/**
+ * Reads double precision array coefficients from a text file, 4 at a time,
+ * as found in various pseudopotential formats
+ *
+ * @param[in] fp: pointer to an open flow
+ * @param[out] array: pointer to a double precision array
+ * @param[in] npts: number of coefficients to read
+ * @return error code
+ */
+int read_array_4by4(FILE * fp, double *array, int npts);
 
 #endif

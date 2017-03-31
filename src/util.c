@@ -114,3 +114,29 @@ char * psp_scheme_name(int scheme)
       return "Unknown pseudopotential generation scheme";
   }
 }
+
+
+int read_array_4by4(FILE *fp, double *array, int npts) {
+
+  char line[PSPIO_STRLEN_LINE];
+  int i, j, nargs, nsup;
+  double tmp[4];
+
+  if ( (npts % 4) == 0 ) {
+    nsup = npts - 4;
+  } else {
+    nsup = npts - (npts % 4);
+  }
+  for (i=0; i<nsup; i+=4) {
+    FULFILL_OR_RETURN( fgets(line, PSPIO_STRLEN_LINE, fp) != NULL, PSPIO_EIO );
+    nargs = sscanf(line, "%lf %lf %lf %lf", &tmp[0], &tmp[1], &tmp[2], &tmp[3]);
+    FULFILL_OR_RETURN( nargs == 4, PSPIO_EFILE_CORRUPT );
+    for (j=0; j<nargs; j++) array[i+j] = tmp[j];
+  }
+  FULFILL_OR_RETURN( fgets(line, PSPIO_STRLEN_LINE, fp) != NULL, PSPIO_EIO );
+  nargs = sscanf(line, "%lf %lf %lf %lf", &tmp[0], &tmp[1], &tmp[2], &tmp[3]);
+  FULFILL_OR_RETURN( nargs == (npts - nsup), PSPIO_EFILE_CORRUPT );
+  for (j=0; j<nargs; j++) array[nsup+j] = tmp[j];
+
+  return PSPIO_SUCCESS;
+}
