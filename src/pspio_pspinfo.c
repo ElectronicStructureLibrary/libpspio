@@ -28,6 +28,7 @@
 #include <stdio.h>
 #include <assert.h>
 #include <string.h>
+#include <memory.h>
 
 #include "pspio_pspinfo.h"
 #include "pspio_error.h"
@@ -45,13 +46,12 @@ int pspio_pspinfo_alloc(pspio_pspinfo_t **pspinfo)
   *pspinfo = (pspio_pspinfo_t *) malloc (sizeof(pspio_pspinfo_t));
   FULFILL_OR_EXIT(*pspinfo != NULL, PSPIO_ENOMEM);
 
-  /* Nullify pointers */
-  (*pspinfo)->author = NULL;
-  (*pspinfo)->code = NULL;
-  (*pspinfo)->description = NULL;
-  (*pspinfo)->scheme_name = NULL;
-
   /* Initialize variables */
+  strcpy((*pspinfo)->author, "Unknown");
+  strcpy((*pspinfo)->code_name, "Unknown");
+  strcpy((*pspinfo)->code_version, "Unknown");
+  strcpy((*pspinfo)->description, "");
+  strcpy((*pspinfo)->scheme_name, "Unknown");
   (*pspinfo)->time.tm_sec = 0;
   (*pspinfo)->time.tm_min = 0;
   (*pspinfo)->time.tm_hour = 0;
@@ -72,18 +72,11 @@ int pspio_pspinfo_copy(pspio_pspinfo_t **dst, const pspio_pspinfo_t *src) {
   pspio_pspinfo_free(*dst);
   SUCCEED_OR_RETURN( pspio_pspinfo_alloc(dst) );
 
-  if (src->author != NULL)
-    pspio_pspinfo_set_author(*dst, src->author);
-
-  if (src->code != NULL)
-    pspio_pspinfo_set_code(*dst, src->code);
-
-  if (src->description != NULL)
-    pspio_pspinfo_set_description(*dst, src->description);
-
-  if (src->scheme_name != NULL)
-    pspio_pspinfo_set_scheme_name(*dst, src->scheme_name);
-
+  strcpy((*dst)->author, src->author);
+  strcpy((*dst)->code_name, src->code_name);
+  strcpy((*dst)->code_version, src->code_version);
+  strcpy((*dst)->description, src->description);
+  strcpy((*dst)->scheme_name, src->scheme_name);
   (*dst)->time = src->time;
 
   return PSPIO_SUCCESS;
@@ -92,10 +85,6 @@ int pspio_pspinfo_copy(pspio_pspinfo_t **dst, const pspio_pspinfo_t *src) {
 void pspio_pspinfo_free(pspio_pspinfo_t *pspinfo)
 {
   if (pspinfo != NULL) {
-    free(pspinfo->author);
-    free(pspinfo->code);
-    free(pspinfo->description);
-    free(pspinfo->scheme_name);
     free(pspinfo);
   }
 }
@@ -111,22 +100,38 @@ int pspio_pspinfo_set_author(pspio_pspinfo_t *pspinfo, const char *author)
 
   FULFILL_OR_RETURN(author != NULL, PSPIO_EVALUE);
 
-  free(pspinfo->author);
-  pspinfo->author = strdup(author);
-  FULFILL_OR_EXIT( pspinfo->author != NULL, PSPIO_ENOMEM );
+  if(strlen(author) >= PSPIO_STRLEN_LINE)
+    return PSPIO_STRLEN_ERROR;
+  else
+    strcpy(pspinfo->author, author);
 
   return PSPIO_SUCCESS;
 }
 
-int pspio_pspinfo_set_code(pspio_pspinfo_t *pspinfo, const char *code)
+int pspio_pspinfo_set_code_name(pspio_pspinfo_t *pspinfo, const char *code_name)
 {
   assert(pspinfo != NULL);
 
-  FULFILL_OR_RETURN(code != NULL, PSPIO_EVALUE);
+  FULFILL_OR_RETURN(code_name != NULL, PSPIO_EVALUE);
 
-  free(pspinfo->code);
-  pspinfo->code = strdup(code);
-  FULFILL_OR_EXIT( pspinfo->code != NULL, PSPIO_ENOMEM );
+  if(strlen(code_name) >= PSPIO_STRLEN_LINE)
+    return PSPIO_STRLEN_ERROR;
+  else
+    strcpy(pspinfo->code_name, code_name);
+
+  return PSPIO_SUCCESS;
+}
+
+int pspio_pspinfo_set_code_version(pspio_pspinfo_t *pspinfo, const char *code_version)
+{
+  assert(pspinfo != NULL);
+
+  FULFILL_OR_RETURN(code_version != NULL, PSPIO_EVALUE);
+
+  if(strlen(code_version) >= PSPIO_STRLEN_LINE)
+    return PSPIO_STRLEN_ERROR;
+  else
+    strcpy(pspinfo->code_version, code_version);
 
   return PSPIO_SUCCESS;
 }
@@ -173,9 +178,10 @@ int pspio_pspinfo_set_description(pspio_pspinfo_t *pspinfo, const char *descript
 
   FULFILL_OR_RETURN(description != NULL, PSPIO_EVALUE);
 
-  free(pspinfo->description);
-  pspinfo->description = strdup(description);
-  FULFILL_OR_EXIT( pspinfo->description != NULL, PSPIO_ENOMEM );
+  if(strlen(description) >= PSPIO_STRLEN_DESCRIPTION)
+    return PSPIO_STRLEN_ERROR;
+  else
+    strcpy(pspinfo->description, description);
 
   return PSPIO_SUCCESS;
 }
@@ -186,9 +192,10 @@ int pspio_pspinfo_set_scheme_name(pspio_pspinfo_t *pspinfo, const char *scheme_n
 
   FULFILL_OR_RETURN(scheme_name != NULL, PSPIO_EVALUE);
 
-  free(pspinfo->scheme_name);
-  pspinfo->scheme_name = strdup(scheme_name);
-  FULFILL_OR_EXIT( pspinfo->scheme_name != NULL, PSPIO_ENOMEM );
+  if(strlen(scheme_name) >= PSPIO_STRLEN_LINE)
+    return PSPIO_STRLEN_ERROR;
+  else
+    strcpy(pspinfo->scheme_name, scheme_name);
 
   return PSPIO_SUCCESS;
 }
@@ -205,11 +212,18 @@ const char * pspio_pspinfo_get_author(const pspio_pspinfo_t *pspinfo)
   return pspinfo->author;
 }
 
-const char * pspio_pspinfo_get_code(const pspio_pspinfo_t *pspinfo)
+const char * pspio_pspinfo_get_code_name(const pspio_pspinfo_t *pspinfo)
 {
   assert(pspinfo != NULL);
 
-  return pspinfo->code;
+  return pspinfo->code_name;
+}
+
+const char * pspio_pspinfo_get_code_version(const pspio_pspinfo_t *pspinfo)
+{
+  assert(pspinfo != NULL);
+
+  return pspinfo->code_version;
 }
 
 int pspio_pspinfo_get_generation_day(const pspio_pspinfo_t *pspinfo)
@@ -254,18 +268,21 @@ const char * pspio_pspinfo_get_scheme_name(const pspio_pspinfo_t *pspinfo)
 
 int pspio_pspinfo_cmp(const pspio_pspinfo_t *pspinfo1, const pspio_pspinfo_t *pspinfo2)
 {
-  struct tm time1 = pspinfo1->time, time2 = pspinfo2->time;
-
   assert(pspinfo1 != NULL);
   assert(pspinfo2 != NULL);
 
-  if (strcmp(pspinfo1->author, pspinfo2->author) ||
-      strcmp(pspinfo1->code, pspinfo2->code) ||
-      difftime(mktime(&time1),mktime(&time2) ) ||
-      strcmp(pspinfo1->scheme_name, pspinfo2->scheme_name) ||
-      strcmp(pspinfo1->description, pspinfo2->description) ) {
-    return PSPIO_DIFF;
-  } else {
-    return PSPIO_EQUAL;
+  {
+    struct tm time1 = pspinfo1->time, time2 = pspinfo2->time;
+
+    if (strcmp(pspinfo1->author, pspinfo2->author) ||
+        strcmp(pspinfo1->code_name, pspinfo2->code_name) ||
+        strcmp(pspinfo1->code_version, pspinfo2->code_version) ||
+        difftime(mktime(&time1), mktime(&time2)) ||
+        strcmp(pspinfo1->scheme_name, pspinfo2->scheme_name) ||
+        strcmp(pspinfo1->description, pspinfo2->description) ) {
+      return PSPIO_DIFF;
+    } else {
+      return PSPIO_EQUAL;
+    }
   }
 }

@@ -28,6 +28,7 @@
 #define PSPIO_PSPINFO_H
 
 #include<time.h>
+#include "pspio_common.h"
 
 
 /**********************************************************************
@@ -38,11 +39,12 @@
  * The pseudopotential information
  */
 typedef struct{
-  char *author;
-  char *code;
+  char author[PSPIO_STRLEN_LINE];
+  char code_name[PSPIO_STRLEN_LINE];
+  char code_version[PSPIO_STRLEN_LINE];
   struct tm time;
-  char *description; /**< descriptive string for content of file read in. Nothing should ever be assumed about its content. */
-  char *scheme_name;
+  char description[PSPIO_STRLEN_DESCRIPTION]; /**< descriptive string for content of file read in. Nothing should ever be assumed about its content. */
+  char scheme_name[PSPIO_STRLEN_LINE];
 } pspio_pspinfo_t;
 
 
@@ -90,10 +92,17 @@ int pspio_pspinfo_set_author(pspio_pspinfo_t *pspinfo, const char *author);
 
 /**
  * @param[in,out] pspinfo: pointer to pspinfo structure
- * @param[in] code: pointer to code name
+ * @param[in] code_name: pointer to code name
  * @return error code
  */
-int pspio_pspinfo_set_code(pspio_pspinfo_t *pspinfo, const char *code);
+int pspio_pspinfo_set_code_name(pspio_pspinfo_t *pspinfo, const char *code_name);
+
+/**
+ * @param[in,out] pspinfo: pointer to pspinfo structure
+ * @param[in] code_version: pointer to code version
+ * @return error code
+ */
+int pspio_pspinfo_set_code_version(pspio_pspinfo_t *pspinfo, const char *code_version);
 
 /**
  * @param[in,out] pspinfo: pointer to pspinfo structure
@@ -145,7 +154,13 @@ const char * pspio_pspinfo_get_author(const pspio_pspinfo_t *pspinfo);
  * @param[in] pspinfo: pointer to pspinfo structure
  * @return pointer to code name
  */
-const char * pspio_pspinfo_get_code(const pspio_pspinfo_t *pspinfo);
+const char * pspio_pspinfo_get_code_name(const pspio_pspinfo_t *pspinfo);
+
+/**
+ * @param[in] pspinfo: pointer to pspinfo structure
+ * @return pointer to code version
+ */
+const char * pspio_pspinfo_get_code_version(const pspio_pspinfo_t *pspinfo);
 
 /**
  * @param[in] pspinfo: pointer to pspinfo structure
