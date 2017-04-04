@@ -97,8 +97,8 @@ int upf_read_header(FILE *fp, int *np, pspio_pspdata_t *pspdata)
  
   /* Read the atomic symbol */
   FULFILL_OR_RETURN( fgets(line, PSPIO_STRLEN_LINE, fp) != NULL, PSPIO_EIO );
-  strncpy(symbol, strtok(line," "), 4);
-  symbol[4] = '\0';
+  strncpy(symbol, strtok(line," "), 3);
+  symbol[3] = '\0';
   SUCCEED_OR_RETURN( pspio_pspdata_set_symbol(pspdata, symbol) );
   SUCCEED_OR_RETURN( symbol_to_z(symbol, &z) );
   SUCCEED_OR_RETURN( pspio_pspdata_set_z(pspdata, z) );
@@ -172,9 +172,6 @@ int upf_read_header(FILE *fp, int *np, pspio_pspdata_t *pspdata)
 
 int upf_read_mesh(FILE *fp, int np, pspio_pspdata_t *pspdata)
 {
-  char line[PSPIO_STRLEN_LINE];
-  int i, j, nargs, nsup;
-  double tmp[4];
   double *r, *drdi;
 
   /* Find init tag */
@@ -220,9 +217,6 @@ int upf_read_mesh(FILE *fp, int np, pspio_pspdata_t *pspdata)
 
 int upf_read_nlcc(FILE *fp, int np, pspio_pspdata_t *pspdata)
 {
-  char line[PSPIO_STRLEN_LINE];
-  int i, j, nargs;
-  double tmp[4];
   double *rho;
 
   /* Find init tag */
@@ -255,8 +249,7 @@ int upf_read_nonlocal(FILE *fp, int np, pspio_pspdata_t *pspdata)
 {
   char line[PSPIO_STRLEN_LINE];
   int proj_np = 0;
-  int i, j, k, l, n_dij, ii, jj, nargs;
-  double tmp[4];
+  int i, j, l, n_dij, ii, jj;
   double *proj_j;
   double energy;
   double *ekb, *projector_read;
@@ -374,10 +367,8 @@ int upf_read_nonlocal(FILE *fp, int np, pspio_pspdata_t *pspdata)
 
 int upf_read_local(FILE *fp, int np, pspio_pspdata_t *pspdata)
 {
-  char line[PSPIO_STRLEN_LINE];
-  int i, j, nargs, n;
+  int i, j, n;
   double *vlocal;
-  double tmp[4];
   pspio_qn_t *qn = NULL;
 
   /* Find init tag */
@@ -433,7 +424,6 @@ int upf_read_pswfc(FILE *fp, int np, pspio_pspdata_t *pspdata)
   int nargs, n, l, lmax;
   double occ;
   double *j, *wf;
-  double tmp[4];
   pspio_qn_t *qn = NULL;
 
   /* Allocate memory */
@@ -511,10 +501,8 @@ int upf_read_pswfc(FILE *fp, int np, pspio_pspdata_t *pspdata)
 
 int upf_read_rhoatom(FILE *fp, int np, pspio_pspdata_t *pspdata)
 {
-  char line[PSPIO_STRLEN_LINE];
-  int i, j, nargs;
+  int i;
   double *rho_read;
-  double tmp[4];
 
   /* Find init tag */
   SUCCEED_OR_RETURN( upf_tag_init(fp,"PP_RHOATOM",GO_BACK) );
