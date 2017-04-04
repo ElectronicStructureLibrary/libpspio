@@ -26,12 +26,10 @@
  */
 #include <stdio.h>
 #include <string.h>
-#include <time.h>
 #include <math.h>
 
 #include "abinit.h"
 #include "util.h"
-#include "pspio_pspinfo.h"
 
 #if defined HAVE_CONFIG_H
 #include "config.h"
@@ -43,28 +41,30 @@ static char *my_strndup (const char *s, size_t n);
 
 int abinit_read_header(FILE *fp, int format, pspio_pspdata_t *pspdata)
 {
-  char line[PSPIO_STRLEN_LINE], symbol[4], tmp[256], code[256], description[256];
+  char line[PSPIO_STRLEN_LINE], symbol[4], tmp[256], code_name[PSPIO_STRLEN_LINE], description[PSPIO_STRLEN_DESCRIPTION];
   char *line4;
-  int format_read, pspcod, pspxc, lmax, lloc, mmax;
+  int format_read, year, month, day, pspcod, pspxc, lmax, lloc, mmax;
   int exchange, correlation;
   int ppl[6], npso[2];
   double zatom, zval, r2well, rchrg, fchrg, qchrg;
 
   /* Line 1: read title */
   FULFILL_OR_RETURN( fgets(line, PSPIO_STRLEN_LINE, fp) != NULL, PSPIO_EIO );
-  FULFILL_OR_RETURN( sscanf(line, "%s %s : %s", tmp, code, description) == 3, PSPIO_EFILE_CORRUPT );
+  FULFILL_OR_RETURN( sscanf(line, "%s %s : %s", tmp, code_name, description) == 3, PSPIO_EFILE_CORRUPT );
   SUCCEED_OR_RETURN( pspio_pspinfo_alloc(&pspdata->pspinfo) );
-  SUCCEED_OR_RETURN( pspio_pspinfo_set_code(pspdata->pspinfo, code) );
+  SUCCEED_OR_RETURN( pspio_pspinfo_set_code_name(pspdata->pspinfo, code_name) );
   SUCCEED_OR_RETURN( pspio_pspinfo_set_description(pspdata->pspinfo, description) );
 
   /* Line 2: read atomic number, Z valence */
-  /* Note: ignoring psp date */
   FULFILL_OR_RETURN( fgets(line, PSPIO_STRLEN_LINE, fp) != NULL, PSPIO_EIO );
-  FULFILL_OR_RETURN( sscanf(line, "%lf %lf", &zatom, &zval) == 2, PSPIO_EFILE_CORRUPT );
+  FULFILL_OR_RETURN( sscanf(line, "%lf %lf %2d%2d%2d", &zatom, &zval, &year, &month, &day) == 5, PSPIO_EFILE_CORRUPT );
   SUCCEED_OR_RETURN( pspio_pspdata_set_z(pspdata, zatom) );
   SUCCEED_OR_RETURN( pspio_pspdata_set_zvalence(pspdata, zval) );
   SUCCEED_OR_RETURN( z_to_symbol(zatom, symbol) );
   SUCCEED_OR_RETURN( pspio_pspdata_set_symbol(pspdata, symbol) );
+  SUCCEED_OR_RETURN( pspio_pspinfo_set_generation_day(pspdata->pspinfo, day) );
+  SUCCEED_OR_RETURN( pspio_pspinfo_set_generation_month(pspdata->pspinfo, month) );
+  SUCCEED_OR_RETURN( pspio_pspinfo_set_generation_year(pspdata->pspinfo, year) );
 
   /* Line 3: read pspcod, pspxc, lmax, lloc, mmax, r2well */
   FULFILL_OR_RETURN( fgets(line, PSPIO_STRLEN_LINE, fp) != NULL, PSPIO_EIO );
@@ -167,8 +167,6 @@ int abinit_write_header(FILE *fp, int format, const pspio_pspdata_t *pspdata)
   int pspxc, have_nlcc;
   int *ppl;
   double rchrg, fchrg, qchrg;
-  time_t int_now;
-  struct tm *now;
 
   assert(fp != NULL);
   assert(pspdata != NULL);
@@ -183,19 +181,19 @@ int abinit_write_header(FILE *fp, int format, const pspio_pspdata_t *pspdata)
     /* FIXME: write core radii */
     fprintf(fp, "%-3s   %s  r_core= %9.5f %9.5f %9.5f\n",
             pspio_pspdata_get_symbol(pspdata),
-            pspio_pspinfo_get_code(pspdata->pspinfo),
+            pspio_pspinfo_get_code_name(pspdata->pspinfo),
             0.0, 0.0, 0.0);
   } else {
     fprintf(fp, " %3s %s: %s\n", pspio_pspdata_get_symbol(pspdata),
-            pspio_pspinfo_get_code(pspdata->pspinfo),
+            pspio_pspinfo_get_code_name(pspdata->pspinfo),
             pspio_pspinfo_get_scheme_name(pspdata->pspinfo));
   }
 
   /* Line 2: write atomic number, Z valence, psp date */
-  int_now = time(NULL);
-  now = localtime(&int_now);
-  sprintf(pspdate, "%2.2d%2.2d%2.2d", 
-    (*now).tm_year % 100, (*now).tm_mon + 1, (*now).tm_mday);
+  sprintf(pspdate, "%2.2d%2.2d%2.2d",
+          pspio_pspinfo_get_generation_year(pspdata->pspinfo),
+          pspio_pspinfo_get_generation_month(pspdata->pspinfo),
+          pspio_pspinfo_get_generation_day(pspdata->pspinfo));
   pspdate[6] = '\0';
   FULFILL_OR_RETURN( fprintf(fp, " %11.4f %11.4f %11s   zatom, zion, pspd\n",
     pspdata->z, pspdata->zvalence, pspdate) > 0, PSPIO_EIO );
