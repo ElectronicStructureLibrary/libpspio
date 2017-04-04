@@ -53,7 +53,7 @@ int pspio_pspdata_alloc(pspio_pspdata_t **pspdata)
   /* Nullify pointers and initialize all values to 0 */
   (*pspdata)->pspinfo = NULL;
   (*pspdata)->format_guessed = PSPIO_FMT_UNKNOWN;
-  (*pspdata)->symbol = NULL;
+  strcpy((*pspdata)->symbol, "");
   (*pspdata)->z = 0.0;
   (*pspdata)->zvalence = 0.0;
   (*pspdata)->nelvalence = 0.0;
@@ -206,10 +206,7 @@ void pspio_pspdata_reset(pspio_pspdata_t *pspdata)
     pspio_pspinfo_free(pspdata->pspinfo);
     pspdata->pspinfo = NULL;
   }
-  if (pspdata->symbol != NULL) {
-    free(pspdata->symbol);
-    pspdata->symbol = NULL;
-  }
+  strcpy(pspdata->symbol, "");
   pspdata->z = 0.0;
   pspdata->zvalence = 0.0;
   pspdata->nelvalence = 0.0;
@@ -302,16 +299,14 @@ int pspio_pspdata_set_pspinfo(pspio_pspdata_t *pspdata, const pspio_pspinfo_t *p
   return PSPIO_SUCCESS;
 }
 
-int pspio_pspdata_set_symbol(pspio_pspdata_t *pspdata, const char *symbol)
+int pspio_pspdata_set_symbol(pspio_pspdata_t *pspdata, const char symbol[])
 {
   assert(pspdata != NULL);
 
-  FULFILL_OR_RETURN(symbol != NULL, PSPIO_EVALUE);
-
-  free(pspdata->symbol);
-  pspdata->symbol = (char *) malloc (3*sizeof(char));
-  FULFILL_OR_EXIT( pspdata->symbol != NULL, PSPIO_ENOMEM );
-  strncpy(pspdata->symbol, symbol, 3);
+  if (strlen(symbol) >= 4)
+    return PSPIO_STRLEN_ERROR;
+  else
+    strcpy(pspdata->symbol, symbol);
 
   return PSPIO_SUCCESS;
 }

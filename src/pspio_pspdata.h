@@ -49,7 +49,7 @@ typedef struct{
   /* general data */
   pspio_pspinfo_t *pspinfo; /**< Generic information about the pseudopotential. */
   int format_guessed;/**< Format of the file guessed by pspio_pspdata_read. */
-  char *symbol;      /**< Atomic symbol */
+  char symbol[4];    /**< Atomic symbol */
   double z;          /**< Atomic number */
   double zvalence;   /**< charge of pseudopotential ion - valence electrons */
   double nelvalence; /**< number of electrons - normally equal to zion, except for special cases for ions */
@@ -149,7 +149,7 @@ int pspio_pspdata_set_pspinfo(pspio_pspdata_t *pspdata, const pspio_pspinfo_t *p
  * @param[in] symbol: pointer to atomic symbol
  * @return error code
  */
-int pspio_pspdata_set_symbol(pspio_pspdata_t *pspdata, const char * symbol);
+int pspio_pspdata_set_symbol(pspio_pspdata_t *pspdata, const char symbol[]);
 
 /**
  * @param[in,out] pspdata: pointer to pspdata structure

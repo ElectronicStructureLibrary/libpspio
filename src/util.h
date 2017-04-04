@@ -59,7 +59,7 @@
  * @note z should be larger than 0 and smaller than 113.
  * @return error code
  */
-int z_to_symbol(double z, char *symbol);
+int z_to_symbol(double z, char symbol[4]);
 
 /**
  * Given the symbol, returns the atomic number
@@ -68,7 +68,7 @@ int z_to_symbol(double z, char *symbol);
  * @param[out] z: atomic number
  * @return error code
  */
-int symbol_to_z(const char *symbol, double *z);
+int symbol_to_z(const char symbol[4], double *z);
 
 /**
  * Given the values of a function at two points, uses a linear
