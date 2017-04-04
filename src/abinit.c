@@ -46,7 +46,6 @@ int pspio_abinit_read(FILE *fp, pspio_pspdata_t *pspdata, int format)
   ierr = abinit_read_header(fp, format, pspdata);
 
   switch (format) {
-  case PSPIO_FMT_ABINIT_5:
   case PSPIO_FMT_ABINIT_6:
     if (ierr == PSPIO_SUCCESS) {
       ierr = pspio_fhi_read(fp, pspdata);
@@ -65,6 +64,7 @@ int pspio_abinit_read(FILE *fp, pspio_pspdata_t *pspdata, int format)
   case PSPIO_FMT_ABINIT_2:
   case PSPIO_FMT_ABINIT_3:
   case PSPIO_FMT_ABINIT_4:
+  case PSPIO_FMT_ABINIT_5:
   case PSPIO_FMT_ABINIT_7:
   case PSPIO_FMT_ABINIT_10:
   case PSPIO_FMT_ABINIT_11:
@@ -87,7 +87,6 @@ int pspio_abinit_write(FILE *fp, const pspio_pspdata_t *pspdata, int format)
   assert(pspdata != NULL);
 
   switch (format) {
-  case PSPIO_FMT_ABINIT_5:
   case PSPIO_FMT_ABINIT_6:
     ierr = abinit_write_header(fp, format, pspdata);
     if (ierr == PSPIO_SUCCESS) {
@@ -104,6 +103,7 @@ int pspio_abinit_write(FILE *fp, const pspio_pspdata_t *pspdata, int format)
   case PSPIO_FMT_ABINIT_2:
   case PSPIO_FMT_ABINIT_3:
   case PSPIO_FMT_ABINIT_4:
+  case PSPIO_FMT_ABINIT_5:
   case PSPIO_FMT_ABINIT_7:
   case PSPIO_FMT_ABINIT_9:
   case PSPIO_FMT_ABINIT_10:

@@ -44,7 +44,6 @@ typedef struct{
   char code_version[PSPIO_STRLEN_LINE];
   struct tm time;
   char description[PSPIO_STRLEN_DESCRIPTION]; /**< descriptive string for content of file read in. Nothing should ever be assumed about its content. */
-  char scheme_name[PSPIO_STRLEN_LINE];
 } pspio_pspinfo_t;
 
 
@@ -132,13 +131,6 @@ int pspio_pspinfo_set_generation_year(pspio_pspinfo_t *pspinfo, int year);
  */
 int pspio_pspinfo_set_description(pspio_pspinfo_t *pspinfo, const char *description);
 
-/**
- * @param[in,out] pspinfo: pointer to pspinfo structure
- * @param[in] scheme_name: pointer to pseudopotential generation scheme name
- * @return error code
- */
-int pspio_pspinfo_set_scheme_name(pspio_pspinfo_t *pspinfo, const char *scheme_name);
-
 
 /**********************************************************************
  * Getters                                                            *
@@ -185,12 +177,6 @@ int pspio_pspinfo_get_generation_year(const pspio_pspinfo_t *pspinfo);
  * @return pointer to a description of the pseudopotential file
  */
 const char * pspio_pspinfo_get_description(const pspio_pspinfo_t *pspinfo);
-
-/**
- * @param[in] pspdate: pointer to pspdata structure
- * @return pointer to scheme name.
- */
-const char * pspio_pspinfo_get_scheme_name(const pspio_pspinfo_t *pspinfo);
 
 
 /**********************************************************************

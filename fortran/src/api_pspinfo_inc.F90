@@ -125,15 +125,6 @@ integer function pspiof_pspinfo_set_description(pspinfo, description) result(ier
 
 end function pspiof_pspinfo_set_description
 
-! scheme_name
-integer function pspiof_pspinfo_set_scheme_name(pspinfo, scheme_name) result(ierr)
-  type(pspiof_pspinfo_t), intent(inout) :: pspinfo
-  character(len=*),       intent(in)    :: scheme_name
-
-  ierr = pspio_pspinfo_set_scheme_name(pspinfo%ptr, f_to_c_string(scheme_name))
-
-end function pspiof_pspinfo_set_scheme_name
-
 
 !*********************************************************************!
 ! Getters                                                             !
@@ -194,14 +185,6 @@ character(len=256) function pspiof_pspinfo_get_description(pspinfo) result(descr
   call c_to_f_string(pspio_pspinfo_get_description(pspinfo%ptr), description)
 
 end function pspiof_pspinfo_get_description
-
-! scheme_name
-character(len=256) function pspiof_pspinfo_get_scheme_name(pspinfo) result(scheme_name)
-  type(pspiof_pspinfo_t), intent(in) :: pspinfo
- 
-  call c_to_f_string(pspio_pspinfo_get_scheme_name(pspinfo%ptr), scheme_name)
-
-end function pspiof_pspinfo_get_scheme_name
 
 
 !*********************************************************************!

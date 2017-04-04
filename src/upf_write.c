@@ -24,8 +24,10 @@
  * @brief routines to write UPF files 
  */
 #include <math.h>
+#include <string.h>
 
 #include "upf.h"
+#include "util.h"
 #include "pspio.h"
 
 #if defined HAVE_CONFIG_H
@@ -35,13 +37,41 @@
 
 void upf_write_info(FILE *fp, const pspio_pspdata_t *pspdata)
 {
-  const char *description;
-
-  description = pspio_pspinfo_get_description(pspdata->pspinfo);
+  int i;
+  const pspio_state_t *state = NULL;
+  const pspio_qn_t *qn = NULL;
 
   fprintf(fp, "<PP_INFO>\n");
-  if (description != NULL) {
-    fprintf(fp, "%s", description);
+  if (strcmp(pspio_pspinfo_get_description(pspdata->pspinfo), "")) {
+
+    fprintf(fp, "%s", pspio_pspinfo_get_description(pspdata->pspinfo));
+  } else {
+    fprintf(fp, "Generated using %s", pspio_pspinfo_get_code_name(pspdata->pspinfo));
+    if (strlen(pspio_pspinfo_get_code_version(pspdata->pspinfo)) > 0)
+      fprintf(fp, " Version-%s", pspio_pspinfo_get_code_version(pspdata->pspinfo));
+    fprintf(fp, "\n");
+    fprintf(fp, "Author: %s Generation date: %4d/%2.2d/%2.2d\n",
+            pspio_pspinfo_get_author(pspdata->pspinfo),
+            pspio_pspinfo_get_generation_year(pspdata->pspinfo),
+            pspio_pspinfo_get_generation_month(pspdata->pspinfo),
+            pspio_pspinfo_get_generation_day(pspdata->pspinfo));
+    fprintf(fp, "Pseudopotential for: %s\n", pspio_pspdata_get_symbol(pspdata));
+    /* Would be nice to include some information about xc:
+       fprintf(fp, "Exchange-correlation: %s\n", ?); */
+    fprintf(fp, "The pseudo was generated with a %s calculation\n",
+            psp_relativitic_treatment_name(pspio_pspdata_get_wave_eq(pspdata)));
+    fprintf(fp, "State   n   l    occ     rc         ev\n");
+    for (i=0; i<pspio_pspdata_get_n_states(pspdata); i++) {
+      state = pspio_pspdata_get_state(pspdata, i);
+      qn = pspio_state_get_qn(state);
+      fprintf(fp, "%-6s %2d  %2d  %6.2f  %6.2f  %12.6f\n",
+              pspio_state_get_label(state),
+              pspio_qn_get_n(qn),
+              pspio_qn_get_l(qn),
+              pspio_state_get_occ(state),
+              pspio_state_get_rc(state),
+              pspio_state_get_ev(state));
+    }
   }
   fprintf(fp, "</PP_INFO>\n");
 }

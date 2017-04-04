@@ -51,7 +51,6 @@ int pspio_pspinfo_alloc(pspio_pspinfo_t **pspinfo)
   strcpy((*pspinfo)->code_name, "Unknown");
   strcpy((*pspinfo)->code_version, "Unknown");
   strcpy((*pspinfo)->description, "");
-  strcpy((*pspinfo)->scheme_name, "Unknown");
   (*pspinfo)->time.tm_sec = 0;
   (*pspinfo)->time.tm_min = 0;
   (*pspinfo)->time.tm_hour = 0;
@@ -76,7 +75,6 @@ int pspio_pspinfo_copy(pspio_pspinfo_t **dst, const pspio_pspinfo_t *src) {
   strcpy((*dst)->code_name, src->code_name);
   strcpy((*dst)->code_version, src->code_version);
   strcpy((*dst)->description, src->description);
-  strcpy((*dst)->scheme_name, src->scheme_name);
   (*dst)->time = src->time;
 
   return PSPIO_SUCCESS;
@@ -186,20 +184,6 @@ int pspio_pspinfo_set_description(pspio_pspinfo_t *pspinfo, const char *descript
   return PSPIO_SUCCESS;
 }
 
-int pspio_pspinfo_set_scheme_name(pspio_pspinfo_t *pspinfo, const char *scheme_name)
-{
-  assert(pspinfo != NULL);
-
-  FULFILL_OR_RETURN(scheme_name != NULL, PSPIO_EVALUE);
-
-  if(strlen(scheme_name) >= PSPIO_STRLEN_LINE)
-    return PSPIO_STRLEN_ERROR;
-  else
-    strcpy(pspinfo->scheme_name, scheme_name);
-
-  return PSPIO_SUCCESS;
-}
-
 
 /**********************************************************************
  * Getters                                                            *
@@ -254,13 +238,6 @@ const char * pspio_pspinfo_get_description(const pspio_pspinfo_t *pspinfo)
   return pspinfo->description;
 }
 
-const char * pspio_pspinfo_get_scheme_name(const pspio_pspinfo_t *pspinfo)
-{
-  assert(pspinfo != NULL);
-
-  return pspinfo->scheme_name;
-}
-
 
 /**********************************************************************
  * Utility routines                                                   *
@@ -278,7 +255,6 @@ int pspio_pspinfo_cmp(const pspio_pspinfo_t *pspinfo1, const pspio_pspinfo_t *ps
         strcmp(pspinfo1->code_name, pspinfo2->code_name) ||
         strcmp(pspinfo1->code_version, pspinfo2->code_version) ||
         difftime(mktime(&time1), mktime(&time2)) ||
-        strcmp(pspinfo1->scheme_name, pspinfo2->scheme_name) ||
         strcmp(pspinfo1->description, pspinfo2->description) ) {
       return PSPIO_DIFF;
     } else {
