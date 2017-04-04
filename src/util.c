@@ -86,32 +86,32 @@ char * psp_scheme_name(int scheme)
 {
   switch (scheme) {
     case PSPIO_SCM_BHS:
-      return "Bachelet-Hamann-Schluter scheme";
+      return "Bachelet-Hamann-Schluter";
     case PSPIO_SCM_GTH:
-      return "Goedecker-Teter-Hutter scheme";
+      return "Goedecker-Teter-Hutter";
     case PSPIO_SCM_HAMANN:
       return "Hamann scheme";
     case PSPIO_SCM_HGH:
-      return "Hartwigsen-Goedecker-Hutter scheme";
+      return "Hartwigsen-Goedecker-Hutter";
     case PSPIO_SCM_HSC:
-      return "Hamann-Schluter-Chiang scheme";
+      return "Hamann-Schluter-Chiang";
     case PSPIO_SCM_KERKER:
       return "Kerker scheme";
     case PSPIO_SCM_MRPP:
-      return "Multi-reference TM scheme";
+      return "Multi-reference TM";
     case PSPIO_SCM_ONCV:
       return "Hamann ONCV scheme";
     case PSPIO_SCM_RRKJ:
-      return "Rappe-Rabe-Kaxiras-Joannopoulos scheme";
+      return "Rappe-Rabe-Kaxiras-Joannopoulos";
     case PSPIO_SCM_TM:
-      return "Troullier-Martins scheme";
+      return "Troullier-Martins";
     case PSPIO_SCM_TM2:
-      return "Troullier-Martins 2 scheme";
+      return "Troullier-Martins 2";
     case PSPIO_SCM_RTM:
-      return "Relativistic Troullier-Martins scheme";
+      return "Relativistic Troullier-Martins";
     case PSPIO_SCM_UNKNOWN:
     default:
-      return "Unknown pseudopotential generation scheme";
+      return "Unknown";
   }
 }
 
