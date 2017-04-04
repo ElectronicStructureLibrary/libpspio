@@ -77,7 +77,6 @@ void pspdata_full_setup(void)
   pspio_pspinfo_set_generation_month(pspinfo, 1);
   pspio_pspinfo_set_generation_year(pspinfo, 1900);
   pspio_pspinfo_set_description(pspinfo, "Universal alchemical pseudopotential");
-  pspio_pspinfo_set_scheme_name(pspinfo, "Hamann scheme");
 
   pspio_mesh_free(mesh);
   pspio_mesh_alloc(&mesh, 8);
