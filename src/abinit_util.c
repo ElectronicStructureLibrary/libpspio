@@ -43,7 +43,7 @@ static char *my_strndup (const char *s, size_t n);
 
 int abinit_read_header(FILE *fp, int format, pspio_pspdata_t *pspdata)
 {
-  char line[PSPIO_STRLEN_LINE], symbol[3], tmp[256], code[256], description[256];
+  char line[PSPIO_STRLEN_LINE], symbol[4], tmp[256], code[256], description[256];
   char *line4;
   int format_read, pspcod, pspxc, lmax, lloc, mmax;
   int exchange, correlation;

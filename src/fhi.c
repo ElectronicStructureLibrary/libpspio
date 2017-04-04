@@ -158,7 +158,7 @@ int pspio_fhi_read(FILE *fp, pspio_pspdata_t *pspdata)
   }
   
   /* We do not know the symbol (note that it might have been set somewhere else) */
-  if ( pspdata->symbol == NULL ) {
+  if (strcmp(pspdata->symbol, "")) {
     SUCCEED_OR_RETURN( pspio_pspdata_set_symbol(pspdata, "N/D") );
   }
 

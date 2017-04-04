@@ -82,7 +82,7 @@ int upf_read_header(FILE *fp, int *np, pspio_pspdata_t *pspdata)
 {
   char line[PSPIO_STRLEN_LINE];
   int version_number, i;
-  char symbol[3], nlcc_flag[2], xc_string[23];
+  char symbol[4], nlcc_flag[2], xc_string[23];
   int exchange, correlation, l_max, n_states, n_projectors;
   double z, zvalence, total_energy;
   double wfc_cutoff, rho_cutoff;
@@ -97,7 +97,8 @@ int upf_read_header(FILE *fp, int *np, pspio_pspdata_t *pspdata)
  
   /* Read the atomic symbol */
   FULFILL_OR_RETURN( fgets(line, PSPIO_STRLEN_LINE, fp) != NULL, PSPIO_EIO );
-  strcpy(symbol, strtok(line," "));
+  strncpy(symbol, strtok(line," "), 4);
+  symbol[4] = '\0';
   SUCCEED_OR_RETURN( pspio_pspdata_set_symbol(pspdata, symbol) );
   SUCCEED_OR_RETURN( symbol_to_z(symbol, &z) );
   SUCCEED_OR_RETURN( pspio_pspdata_set_z(pspdata, z) );

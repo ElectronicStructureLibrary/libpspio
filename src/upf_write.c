@@ -62,7 +62,7 @@ int upf_write_header(FILE *fp, const pspio_pspdata_t *pspdata)
   fprintf(fp, "   0                   Version Number\n");
  
   /* Write the atomic symbol */
-  fprintf(fp, "  %-2s                   Element\n", pspdata->symbol);
+  fprintf(fp, "  %-2s                   Element\n", pspio_pspdata_get_symbol(pspdata));
 
   /* Write the kind of pseudo-potentials US|NC|PAW
      At the moment we only support norm-conversing psp */

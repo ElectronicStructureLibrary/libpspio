@@ -30,27 +30,27 @@
 #endif
 
 
-const char *symbols[] = {"H  ","He ","Li ","Be ","B  ","C  ","N  ","O  ","F  ","Ne ","Na ", 
-			"Mg ","Al ","Si ","P  ","S  ","Cl ","Ar ","K  ","Ca ","Sc ","Ti ", 
-			"V  ","Cr ","Mn ","Fe ","Co ","Ni ","Cu ","Zn ","Ga ","Ge ","As ", 
-			"Se ","Br ","Kr ","Rb ","Sr ","Y  ","Zr ","Nb ","Mo ","Tc ","Ru ", 
-			"Rh ","Pd ","Ag ","Cd ","In ","Sn ","Sb ","Te ","I  ","Xe ","Cs ", 
-			"Ba ","La ","Ce ","Pr ","Nd ","Pm ","Sm ","Eu ","Gd ","Tb ","Dy ", 
-			"Ho ","Er ","Tm ","Yb ","Lu ","Hf ","Ta ","W  ","Re ","Os ","Ir ", 
-			"Pt ","Au ","Hg ","Tl ","Pb ","Bi ","Po ","At ","Rn ","Fr ","Ra ", 
-			"Ac ","Th ","Pa ","U  ","Np ","Pu ","Am ","Cm ","Bk ","Cf ","Es ", 
-			"Fm ","Md ","No ","Lr ","Rf ","Db ","Sg ","Bh ","Hs ","Mt ","Uun", 
-			"Uuu","Uub"};
+const char symbols[][4] = {"H",  "He", "Li", "Be", "B",  "C",  "N",  "O",  "F",  "Ne", "Na",
+                           "Mg", "Al", "Si", "P",  "S",  "Cl", "Ar", "K",  "Ca", "Sc", "Ti",
+                           "V",  "Cr", "Mn", "Fe", "Co", "Ni", "Cu", "Zn", "Ga", "Ge", "As",
+                           "Se", "Br", "Kr", "Rb", "Sr", "Y",  "Zr", "Nb", "Mo", "Tc", "Ru",
+                           "Rh", "Pd", "Ag", "Cd", "In", "Sn", "Sb", "Te", "I",  "Xe", "Cs",
+                           "Ba", "La", "Ce", "Pr", "Nd", "Pm", "Sm", "Eu", "Gd", "Tb", "Dy",
+                           "Ho", "Er", "Tm", "Yb", "Lu", "Hf", "Ta", "W",  "Re", "Os", "Ir",
+                           "Pt", "Au", "Hg", "Tl", "Pb", "Bi", "Po", "At", "Rn", "Fr", "Ra",
+                           "Ac", "Th", "Pa", "U",  "Np", "Pu", "Am", "Cm", "Bk", "Cf", "Es",
+                           "Fm", "Md", "No", "Lr", "Rf", "Db", "Sg", "Bh", "Hs", "Mt",
+                           "Uun", "Uuu", "Uub"};
 
 
-int symbol_to_z(const char *symbol, double *z)
+int symbol_to_z(const char symbol[4], double *z)
 {
   int i;
 
   assert(symbol != NULL);
 
   for (i=0; i<112; i++) {
-    if (strncmp(symbol, symbols[i], 2)) {
+    if (strcmp(symbol, symbols[i])) {
       *z = i + 1.0;
       return PSPIO_SUCCESS;
     }
@@ -60,11 +60,11 @@ int symbol_to_z(const char *symbol, double *z)
 }
 
 
-int z_to_symbol(double z, char *symbol)
+int z_to_symbol(double z, char symbol[4])
 {
   FULFILL_OR_RETURN(z < 113.0 && z > 0.0, PSPIO_EVALUE);
 
-  strncpy(symbol, symbols[(int)z-1], 3);
+  strcpy(symbol, symbols[(int)z-1]);
 
   return PSPIO_SUCCESS;
 }
