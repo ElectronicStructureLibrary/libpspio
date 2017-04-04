@@ -36,7 +36,6 @@ static char *code_name1 = "XPTO", *code_name2 = "DFT code";
 static char *code_version1 = "3.4.0", *code_version2 = "1.0";
 static int day1 = 1, day2 = 31, month1 = 1, month2 = 12, year1 = 1900, year2 = 2100;
 static char *description1 = "Universal alchemical pseudopotential", *description2 = "Minus one over r";
-static char *scheme_name1 = "Hamann scheme", *scheme_name2 = "Troullier-Martins scheme";
 
 
 void pspinfo_setup(void)
@@ -56,7 +55,6 @@ void pspinfo_setup_init(void)
   pspio_pspinfo_set_generation_month(pspinfo1, month1);
   pspio_pspinfo_set_generation_year(pspinfo1, year1);
   pspio_pspinfo_set_description(pspinfo1, description1);
-  pspio_pspinfo_set_scheme_name(pspinfo1, scheme_name1);
 }
 
 void pspinfo_teardown(void)
@@ -125,14 +123,6 @@ START_TEST(test_pspinfo_setget_description)
   ck_assert_str_eq(pspio_pspinfo_get_description(pspinfo1), "");
   ck_assert(pspio_pspinfo_set_description(pspinfo1, description1) == PSPIO_SUCCESS);
   ck_assert_str_eq(pspio_pspinfo_get_description(pspinfo1), description1);
-}
-END_TEST
-
-START_TEST(test_pspinfo_setget_scheme_name)
-{
-  ck_assert_str_eq(pspio_pspinfo_get_scheme_name(pspinfo1), "Unknown");
-  ck_assert(pspio_pspinfo_set_scheme_name(pspinfo1, scheme_name1) == PSPIO_SUCCESS);
-  ck_assert_str_eq(pspio_pspinfo_get_scheme_name(pspinfo1), scheme_name1);
 }
 END_TEST
 
@@ -216,13 +206,6 @@ START_TEST(test_pspinfo_cmp_diff_description)
 }
 END_TEST
 
-START_TEST(test_pspinfo_cmp_diff_scheme_name)
-{
-  ck_assert(pspio_pspinfo_copy(&pspinfo2, pspinfo1) == PSPIO_SUCCESS);
-  ck_assert(pspio_pspinfo_set_scheme_name(pspinfo2, scheme_name2) == PSPIO_SUCCESS);
-  ck_assert(pspio_pspinfo_cmp(pspinfo1, pspinfo2) == PSPIO_DIFF);
-}
-END_TEST
 
 Suite * make_pspinfo_suite(void)
 {
@@ -245,7 +228,6 @@ Suite * make_pspinfo_suite(void)
   tcase_add_test(tc_setget, test_pspinfo_setget_generation_month);
   tcase_add_test(tc_setget, test_pspinfo_setget_generation_year);
   tcase_add_test(tc_setget, test_pspinfo_setget_description);
-  tcase_add_test(tc_setget, test_pspinfo_setget_scheme_name);
   suite_add_tcase(s, tc_setget);
 
   tc_copy = tcase_create("Copy");
@@ -264,7 +246,6 @@ Suite * make_pspinfo_suite(void)
   tcase_add_test(tc_cmp, test_pspinfo_cmp_diff_generation_month);
   tcase_add_test(tc_cmp, test_pspinfo_cmp_diff_generation_year);
   tcase_add_test(tc_cmp, test_pspinfo_cmp_diff_description);
-  tcase_add_test(tc_cmp, test_pspinfo_cmp_diff_scheme_name);
   suite_add_tcase(s, tc_cmp);
 
   return s;

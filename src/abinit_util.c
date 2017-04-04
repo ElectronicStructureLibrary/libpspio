@@ -186,7 +186,7 @@ int abinit_write_header(FILE *fp, int format, const pspio_pspdata_t *pspdata)
   } else {
     fprintf(fp, " %3s %s: %s\n", pspio_pspdata_get_symbol(pspdata),
             pspio_pspinfo_get_code_name(pspdata->pspinfo),
-            pspio_pspinfo_get_scheme_name(pspdata->pspinfo));
+            psp_scheme_name(pspio_pspdata_get_scheme(pspdata)));
   }
 
   /* Line 2: write atomic number, Z valence, psp date */
