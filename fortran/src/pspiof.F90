@@ -143,19 +143,13 @@ module pspiof_m
     pspiof_pspinfo_copy, &
     pspiof_pspinfo_free, &
     pspiof_pspinfo_set_author, &
-    pspiof_pspinfo_set_code, &
+    pspiof_pspinfo_set_code_name, &
+    pspiof_pspinfo_set_code_version, &
     pspiof_pspinfo_set_generation_day, &
     pspiof_pspinfo_set_generation_month, &
     pspiof_pspinfo_set_generation_year, &
     pspiof_pspinfo_set_description, &
     pspiof_pspinfo_set_scheme_name, &
-    pspiof_pspinfo_get_author, &
-    pspiof_pspinfo_get_code, &
-    pspiof_pspinfo_get_generation_day, &
-    pspiof_pspinfo_get_generation_month, &
-    pspiof_pspinfo_get_generation_year, &
-    pspiof_pspinfo_get_description, &
-    pspiof_pspinfo_get_scheme_name, &
     pspiof_pspinfo_cmp, &
     ! qn
     pspiof_qn_t, &

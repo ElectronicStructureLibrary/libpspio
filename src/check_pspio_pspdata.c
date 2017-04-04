@@ -72,7 +72,7 @@ void pspdata_full_setup(void)
   pspio_pspinfo_free(pspinfo);
   pspio_pspinfo_alloc(&pspinfo);
   pspio_pspinfo_set_author(pspinfo, "A. Author");
-  pspio_pspinfo_set_code(pspinfo, "XPTO");
+  pspio_pspinfo_set_code_version(pspinfo, "1.0");
   pspio_pspinfo_set_generation_day(pspinfo, 1);
   pspio_pspinfo_set_generation_month(pspinfo, 1);
   pspio_pspinfo_set_generation_year(pspinfo, 1900);

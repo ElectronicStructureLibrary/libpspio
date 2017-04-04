@@ -55,12 +55,19 @@ interface
     character(kind=c_char)        :: author(*)
   end function pspio_pspinfo_set_author
 
-  ! code
-  integer(c_int) function pspio_pspinfo_set_code(pspinfo, code) bind(c)
+  ! code_name
+  integer(c_int) function pspio_pspinfo_set_code_name(pspinfo, code_name) bind(c)
     import
     type(c_ptr),            value :: pspinfo
-    character(kind=c_char)        :: code(*)
-  end function pspio_pspinfo_set_code
+    character(kind=c_char)        :: code_name(*)
+  end function pspio_pspinfo_set_code_name
+  ! code_name
+
+  integer(c_int) function pspio_pspinfo_set_code_version(pspinfo, code_version) bind(c)
+    import
+    type(c_ptr),            value :: pspinfo
+    character(kind=c_char)        :: code_version(*)
+  end function pspio_pspinfo_set_code_version
 
   ! generation_day
   integer(c_int) function pspio_pspinfo_set_generation_day(pspinfo, day) bind(c)
@@ -108,11 +115,17 @@ interface
     type(c_ptr), value :: pspinfo
   end function pspio_pspinfo_get_author
 
-  ! code
-  character(kind=c_char) function pspio_pspinfo_get_code(pspinfo) bind(c)
+  ! code_name
+  character(kind=c_char) function pspio_pspinfo_get_code_name(pspinfo) bind(c)
     import
     type(c_ptr), value :: pspinfo
-  end function pspio_pspinfo_get_code
+  end function pspio_pspinfo_get_code_name
+
+  ! code_version
+  character(kind=c_char) function pspio_pspinfo_get_code_version(pspinfo) bind(c)
+    import
+    type(c_ptr), value :: pspinfo
+  end function pspio_pspinfo_get_code_version
 
   ! generation_day
   integer(c_int) function pspio_pspinfo_get_generation_day(pspinfo) bind(c)

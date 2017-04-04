@@ -71,14 +71,23 @@ integer function pspiof_pspinfo_set_author(pspinfo, author) result(ierr)
 
 end function pspiof_pspinfo_set_author
 
-! code
-integer function pspiof_pspinfo_set_code(pspinfo, code) result(ierr)
+! code_name
+integer function pspiof_pspinfo_set_code_name(pspinfo, code_name) result(ierr)
   type(pspiof_pspinfo_t), intent(inout) :: pspinfo
-  character(len=*),       intent(in)    :: code
+  character(len=*),       intent(in)    :: code_name
 
-  ierr = pspio_pspinfo_set_code(pspinfo%ptr, f_to_c_string(code))
+  ierr = pspio_pspinfo_set_code_name(pspinfo%ptr, f_to_c_string(code_name))
 
-end function pspiof_pspinfo_set_code
+end function pspiof_pspinfo_set_code_name
+
+! code_name
+integer function pspiof_pspinfo_set_code_version(pspinfo, code_version) result(ierr)
+  type(pspiof_pspinfo_t), intent(inout) :: pspinfo
+  character(len=*),       intent(in)    :: code_version
+
+  ierr = pspio_pspinfo_set_code_version(pspinfo%ptr, f_to_c_string(code_version))
+
+end function pspiof_pspinfo_set_code_version
 
 ! generation_day
 integer function pspiof_pspinfo_set_generation_day(pspinfo, day) result(ierr)
@@ -131,20 +140,28 @@ end function pspiof_pspinfo_set_scheme_name
 !*********************************************************************!
 
 ! author
-character(len=128) function pspiof_pspinfo_get_author(pspinfo) result(author)
+character(len=256) function pspiof_pspinfo_get_author(pspinfo) result(author)
   type(pspiof_pspinfo_t), intent(in) :: pspinfo
  
   call c_to_f_string(pspio_pspinfo_get_author(pspinfo%ptr), author)
 
 end function pspiof_pspinfo_get_author
 
-! code
-character(len=128) function pspiof_pspinfo_get_code(pspinfo) result(code)
+! code_name
+character(len=256) function pspiof_pspinfo_get_code_name(pspinfo) result(code_name)
   type(pspiof_pspinfo_t), intent(in) :: pspinfo
  
-  call c_to_f_string(pspio_pspinfo_get_code(pspinfo%ptr), code)
+  call c_to_f_string(pspio_pspinfo_get_code_name(pspinfo%ptr), code_name)
 
-end function pspiof_pspinfo_get_code
+end function pspiof_pspinfo_get_code_name
+
+! code_version
+character(len=256) function pspiof_pspinfo_get_code_version(pspinfo) result(code_version)
+  type(pspiof_pspinfo_t), intent(in) :: pspinfo
+
+  call c_to_f_string(pspio_pspinfo_get_code_version(pspinfo%ptr), code_version)
+
+end function pspiof_pspinfo_get_code_version
 
 ! generation_day
 integer function pspiof_pspinfo_get_generation_day(pspinfo) result(day)
