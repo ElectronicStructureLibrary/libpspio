@@ -92,6 +92,14 @@ double linear_extrapolation(double x1, double x2, double f1,  double f2, double 
 char * psp_scheme_name(int scheme);
 
 /**
+ * Given the wave-equation id, returns a string with the name of the relativistic treatment
+ *
+ * @param[in] wave_eq: the wave-equation id
+ * @return relativistic treatment name
+ */
+char * psp_relativitic_treatment_name(int wave_eq);
+
+/**
  * Reads double precision array coefficients from a text file, 4 at a time,
  * as found in various pseudopotential formats
  *

@@ -115,6 +115,19 @@ char * psp_scheme_name(int scheme)
   }
 }
 
+char * psp_relativitic_treatment_name(int wave_eq)
+{
+  switch (wave_eq) {
+  case PSPIO_EQN_SCHRODINGER:
+    return "non-relativistic";
+  case PSPIO_EQN_SCALAR_REL:
+    return "scalar-relativistic";
+  case PSPIO_EQN_DIRAC:
+    return "fully-relativistic";
+  default:
+    return "unknown";
+  }
+}
 
 int read_array_4by4(FILE *fp, double *array, int npts) {
 
