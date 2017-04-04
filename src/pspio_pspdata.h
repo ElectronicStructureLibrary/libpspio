@@ -72,6 +72,7 @@ typedef struct{
 
   /* Non-local projectors */
   int n_projectors;               /**< number of projectors */
+  int *n_projectors_per_l;       /**< number of projectors per angular momentum */
   pspio_projector_t **projectors; /**< projectors */
   int projectors_l_max;           /**< maximum angular momentum of considered in the projectors */
   int l_local;                    /**< angular momentum channel of local potential */
@@ -246,6 +247,14 @@ int pspio_pspdata_set_n_projectors(pspio_pspdata_t *pspdata, int n_projectors);
 
 /**
  * @param[in,out] pspdata: pointer to pspdata structure
+ * @param[in] n_ppl: array storing the number of projectors for each angular momentum
+ * @note array length must be less than 7
+ * @return error code
+ */
+int pspio_pspdata_set_n_projectors_per_l(pspio_pspdata_t *pspdata, int *n_ppl);
+
+/**
+ * @param[in,out] pspdata: pointer to pspdata structure
  * @param[in] index: index of projector to be set
  * @param[in] projector: pointer to projector
  * @return error code
@@ -389,6 +398,12 @@ const pspio_potential_t * pspio_pspdata_get_potential(const pspio_pspdata_t *psp
  * @return number of projectors
  */
 int pspio_pspdata_get_n_projectors(const pspio_pspdata_t *pspdata);
+
+/**
+ * @param[in] pspdata: pointer to pspdata structure
+ * @return number of projectors per angular momentum (maximum up to l=6)
+ */
+int * pspio_pspdata_get_n_projectors_per_l(const pspio_pspdata_t *pspdata);
 
 /**
  * @param[in] pspdata: pointer to pspdata structure

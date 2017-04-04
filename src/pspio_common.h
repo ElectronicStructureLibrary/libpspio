@@ -106,6 +106,7 @@
 #define PSPIO_SCM_TM 9
 #define PSPIO_SCM_TM2 10
 #define PSPIO_SCM_RTM 11
+#define PSPIO_SCM_ONCV 12
 
 
 /**
@@ -143,5 +144,6 @@
 #define PSPIO_NLCC_TETER1 3 /* 7 May 1992 by M. Teter abinit version for pspcod 4 */
 #define PSPIO_NLCC_TETER2 4 /* 5 Nov 1992 by M. Teter abinit version for pspcod 1 */
 #define PSPIO_NLCC_ATOM 5 /* Scheme implemented in the ATOM pseudopotential generator code. */
+#define PSPIO_NLCC_ONCV 5 /* Scheme implemented in the ONCVPSP pseudopotential generator code. */
 
 #endif

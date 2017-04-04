@@ -107,7 +107,7 @@ void pspdata_full_setup(void)
 
   pspio_xc_free(xc);
   pspio_xc_alloc(&xc);
-  pspio_xc_init(xc, 1, 4, PSPIO_NLCC_FHI, mesh, func, NULL, NULL);
+  pspio_xc_init(xc, 1, 4, PSPIO_NLCC_FHI, 1.0, 2.0, mesh, func, NULL, NULL);
 
   pspio_meshfunc_free(rho_valence);
   pspio_meshfunc_alloc(&rho_valence, 8);
