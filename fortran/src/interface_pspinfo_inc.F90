@@ -1,19 +1,22 @@
-!! Copyright (C) 2016 M. Oliveira
+!! Copyright (C) 2016 Micael Oliveira <micael.oliveira@mpsd.mpg.de>
+!!                    Yann Pouillon <notifications@materialsevolution.es>
 !!
-!! This program is free software; you can redistribute it and/or modify
-!! it under the terms of the GNU Lesser General Public License as published by
-!! the Free Software Foundation; either version 3 of the License, or 
-!! (at your option) any later version.
+!! This file is part of Libpspio.
 !!
-!! This program is distributed in the hope that it will be useful,
-!! but WITHOUT ANY WARRANTY; without even the implied warranty of
-!! MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-!! GNU Lesser General Public License for more details.
+!! Libpspio is free software: you can redistribute it and/or modify it under
+!! the terms of the GNU Lesser General Public License as published by the Free
+!! Software Foundation, version 3 of the License, or (at your option) any later
+!! version.
+!!
+!! Libpspio is distributed in the hope that it will be useful, but WITHOUT ANY
+!! WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+!! FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public License for
+!! more details.
 !!
 !! You should have received a copy of the GNU Lesser General Public License
-!! along with this program; if not, write to the Free Software
-!! Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-!!
+!! along with Libpspio.  If not, see <http://www.gnu.org/licenses/> or write to
+!! the Free Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
+!! 02110-1301  USA.
 
 interface
 
@@ -27,16 +30,6 @@ interface
     type(c_ptr) :: pspinfo
   end function pspio_pspinfo_alloc
 
-  ! init
-  integer(c_int) function pspio_pspinfo_init(pspinfo, author, code, date, description) bind(c)
-    import
-    type(c_ptr),           value :: pspinfo
-    character(kind=c_char)       :: author(*)
-    character(kind=c_char)       :: code(*)
-    character(kind=c_char)       :: date(*)
-    character(kind=c_char)       :: description(*)
-  end function pspio_pspinfo_init
-  
   ! copy
   integer(c_int) function pspio_pspinfo_copy(dst, src) bind(c)
     import
@@ -62,19 +55,40 @@ interface
     character(kind=c_char)        :: author(*)
   end function pspio_pspinfo_set_author
 
-  ! code
-  integer(c_int) function pspio_pspinfo_set_code(pspinfo, code) bind(c)
+  ! code_name
+  integer(c_int) function pspio_pspinfo_set_code_name(pspinfo, code_name) bind(c)
     import
     type(c_ptr),            value :: pspinfo
-    character(kind=c_char)        :: code(*)
-  end function pspio_pspinfo_set_code
+    character(kind=c_char)        :: code_name(*)
+  end function pspio_pspinfo_set_code_name
+  ! code_name
 
-  ! date
-  integer(c_int) function pspio_pspinfo_set_date(pspinfo, date) bind(c)
+  integer(c_int) function pspio_pspinfo_set_code_version(pspinfo, code_version) bind(c)
     import
     type(c_ptr),            value :: pspinfo
-    character(kind=c_char)        :: date(*)
-  end function pspio_pspinfo_set_date
+    character(kind=c_char)        :: code_version(*)
+  end function pspio_pspinfo_set_code_version
+
+  ! generation_day
+  integer(c_int) function pspio_pspinfo_set_generation_day(pspinfo, day) bind(c)
+    import
+    type(c_ptr),    value :: pspinfo
+    integer(c_int), value :: day
+  end function pspio_pspinfo_set_generation_day
+
+  ! generation_month
+  integer(c_int) function pspio_pspinfo_set_generation_month(pspinfo, month) bind(c)
+    import
+    type(c_ptr),    value :: pspinfo
+    integer(c_int), value :: month
+  end function pspio_pspinfo_set_generation_month
+
+  ! generation_year
+    integer(c_int) function pspio_pspinfo_set_generation_year(pspinfo, year) bind(c)
+      import
+      type(c_ptr),    value :: pspinfo
+      integer(c_int), value :: year
+    end function pspio_pspinfo_set_generation_year
 
   ! description
   integer(c_int) function pspio_pspinfo_set_description(pspinfo, description) bind(c)
@@ -82,7 +96,7 @@ interface
     type(c_ptr),            value :: pspinfo
     character(kind=c_char)        :: description(*)
   end function pspio_pspinfo_set_description
-  
+
   
   !*********************************************************************!
   ! Getters                                                             !
@@ -94,17 +108,35 @@ interface
     type(c_ptr), value :: pspinfo
   end function pspio_pspinfo_get_author
 
-  ! code
-  character(kind=c_char) function pspio_pspinfo_get_code(pspinfo) bind(c)
+  ! code_name
+  character(kind=c_char) function pspio_pspinfo_get_code_name(pspinfo) bind(c)
     import
     type(c_ptr), value :: pspinfo
-  end function pspio_pspinfo_get_code
+  end function pspio_pspinfo_get_code_name
 
-  ! date
-  character(kind=c_char) function pspio_pspinfo_get_date(pspinfo) bind(c)
+  ! code_version
+  character(kind=c_char) function pspio_pspinfo_get_code_version(pspinfo) bind(c)
     import
     type(c_ptr), value :: pspinfo
-  end function pspio_pspinfo_get_date
+  end function pspio_pspinfo_get_code_version
+
+  ! generation_day
+  integer(c_int) function pspio_pspinfo_get_generation_day(pspinfo) bind(c)
+    import
+    type(c_ptr), value :: pspinfo
+  end function pspio_pspinfo_get_generation_day
+
+  ! generation_month
+  integer(c_int) function pspio_pspinfo_get_generation_month(pspinfo) bind(c)
+    import
+    type(c_ptr), value :: pspinfo
+  end function pspio_pspinfo_get_generation_month
+
+  ! generation_year
+  integer(c_int) function pspio_pspinfo_get_generation_year(pspinfo) bind(c)
+    import
+    type(c_ptr), value :: pspinfo
+  end function pspio_pspinfo_get_generation_year
 
   ! description
   character(kind=c_char) function pspio_pspinfo_get_description(pspinfo) bind(c)

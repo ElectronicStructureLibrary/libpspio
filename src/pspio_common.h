@@ -1,21 +1,25 @@
-/*
- Copyright (C) 2011 J. Alberdi, M. Oliveira, Y. Pouillon, and M. Verstraete
-
- This program is free software; you can redistribute it and/or modify
- it under the terms of the GNU Lesser General Public License as published by
- the Free Software Foundation; either version 3 of the License, or 
- (at your option) any later version.
-
- This program is distributed in the hope that it will be useful,
- but WITHOUT ANY WARRANTY; without even the implied warranty of
- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- GNU Lesser General Public License for more details.
-
- You should have received a copy of the GNU Lesser General Public License
- along with this program; if not, write to the Free Software
- Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-
-*/
+/* Copyright (C) 2011-2016 Joseba Alberdi <alberdi@hotmail.es>
+ *                         Matthieu Verstraete <matthieu.jean.verstraete@gmail.com>
+ *                         Micael Oliveira <micael.oliveira@mpsd.mpg.de>
+ *                         Yann Pouillon <notifications@materialsevolution.es>
+ *
+ * This file is part of Libpspio.
+ *
+ * Libpspio is free software: you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation, version 3 of the License, or (at your option) any later
+ * version.
+ *
+ * Libpspio is distributed in the hope that it will be useful, but WITHOUT ANY
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public License for
+ * more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with Libpspio.  If not, see <http://www.gnu.org/licenses/> or write to
+ * the Free Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
+ * 02110-1301  USA.
+ */
 
 #ifndef PSPIO_COMMON_H
 #define PSPIO_COMMON_H
@@ -31,6 +35,8 @@
 #define PSPIO_STRLEN_ERROR 1024
 #define PSPIO_STRLEN_LINE 256
 #define PSPIO_STRLEN_TITLE 80
+#define PSPIO_STRLEN_DESCRIPTION 4096
+
 
 
 /**
@@ -102,6 +108,7 @@
 #define PSPIO_SCM_TM 9
 #define PSPIO_SCM_TM2 10
 #define PSPIO_SCM_RTM 11
+#define PSPIO_SCM_ONCV 12
 
 
 /**
@@ -139,5 +146,6 @@
 #define PSPIO_NLCC_TETER1 3 /* 7 May 1992 by M. Teter abinit version for pspcod 4 */
 #define PSPIO_NLCC_TETER2 4 /* 5 Nov 1992 by M. Teter abinit version for pspcod 1 */
 #define PSPIO_NLCC_ATOM 5 /* Scheme implemented in the ATOM pseudopotential generator code. */
+#define PSPIO_NLCC_ONCV 5 /* Scheme implemented in the ONCVPSP pseudopotential generator code. */
 
 #endif

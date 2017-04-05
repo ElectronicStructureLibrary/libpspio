@@ -1,21 +1,23 @@
-/*
- Copyright (C) 2016 M. Oliveira
-
- This program is free software; you can redistribute it and/or modify
- it under the terms of the GNU Lesser General Public License as published by
- the Free Software Foundation; either version 3 of the License, or 
- (at your option) any later version.
-
- This program is distributed in the hope that it will be useful,
- but WITHOUT ANY WARRANTY; without even the implied warranty of
- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- GNU Lesser General Public License for more details.
-
- You should have received a copy of the GNU Lesser General Public License
- along with this program; if not, write to the Free Software
- Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-
-*/
+/* Copyright (C) 2016 Micael Oliveira <micael.oliveira@mpsd.mpg.de>
+ *                    Yann Pouillon <notifications@materialsevolution.es>
+ *
+ * This file is part of Libpspio.
+ *
+ * Libpspio is free software: you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation, version 3 of the License, or (at your option) any later
+ * version.
+ *
+ * Libpspio is distributed in the hope that it will be useful, but WITHOUT ANY
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public License for
+ * more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with Libpspio.  If not, see <http://www.gnu.org/licenses/> or write to
+ * the Free Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
+ * 02110-1301  USA.
+ */
 
 /**
  * @file pspio_pspinfo.h
@@ -24,6 +26,9 @@
 
 #if !defined PSPIO_PSPINFO_H
 #define PSPIO_PSPINFO_H
+
+#include<time.h>
+#include "pspio_common.h"
 
 
 /**********************************************************************
@@ -34,10 +39,11 @@
  * The pseudopotential information
  */
 typedef struct{
-  char *author;
-  char *code;
-  char *date;
-  char *description; /**< descriptive string for content of file read in. Nothing should ever be assumed about its content. */
+  char author[PSPIO_STRLEN_LINE];
+  char code_name[PSPIO_STRLEN_LINE];
+  char code_version[PSPIO_STRLEN_LINE];
+  struct tm time;
+  char description[PSPIO_STRLEN_DESCRIPTION]; /**< descriptive string for content of file read in. Nothing should ever be assumed about its content. */
 } pspio_pspinfo_t;
 
 
@@ -52,20 +58,6 @@ typedef struct{
  * @return error code
  */
 int pspio_pspinfo_alloc(pspio_pspinfo_t **pspinfo);
-
-/**
- * Initializes the pseudopotential data.
- * @param[in,out] pspinfo: potential information structure to be initialized
- * @param[in] author: pointer to author name
- * @param[in] code: pointer to code name
- * @param[in] date: pointer to generation date
- * @param[in] description: pointer to pseudopotential description
- * @return error code
- * @note The pspinfo pointer has to be allocated first with the
- *       pspio_pspinfo_alloc method.
- */
-int pspio_pspinfo_init(pspio_pspinfo_t *pspinfo, const char *author, const char *code,
-                       const char *date, const char *description);
 
 /**
  * Duplicates a pspinfo structure.
@@ -99,17 +91,38 @@ int pspio_pspinfo_set_author(pspio_pspinfo_t *pspinfo, const char *author);
 
 /**
  * @param[in,out] pspinfo: pointer to pspinfo structure
- * @param[in] code: pointer to code name
+ * @param[in] code_name: pointer to code name
  * @return error code
  */
-int pspio_pspinfo_set_code(pspio_pspinfo_t *pspinfo, const char *code);
+int pspio_pspinfo_set_code_name(pspio_pspinfo_t *pspinfo, const char *code_name);
 
 /**
  * @param[in,out] pspinfo: pointer to pspinfo structure
- * @param[in] date: pointer to the generation date
+ * @param[in] code_version: pointer to code version
  * @return error code
  */
-int pspio_pspinfo_set_date(pspio_pspinfo_t *pspinfo, const char *date);
+int pspio_pspinfo_set_code_version(pspio_pspinfo_t *pspinfo, const char *code_version);
+
+/**
+ * @param[in,out] pspinfo: pointer to pspinfo structure
+ * @param[in] generation_day: day when the pseudo was generated (range 1 to 31)
+ * @return error code
+ */
+int pspio_pspinfo_set_generation_day(pspio_pspinfo_t *pspinfo, int day);
+
+/**
+ * @param[in,out] pspinfo: pointer to pspinfo structure
+ * @param[in] generation_month: month when the pseudo was generated (range 1 to 12)
+ * @return error code
+ */
+int pspio_pspinfo_set_generation_month(pspio_pspinfo_t *pspinfo, int month);
+
+/**
+ * @param[in,out] pspinfo: pointer to pspinfo structure
+ * @param[in] generation_year: year when the pseudo was generated
+ * @return error code
+ */
+int pspio_pspinfo_set_generation_year(pspio_pspinfo_t *pspinfo, int year);
 
 /**
  * @param[in,out] pspinfo: pointer to pspinfo structure
@@ -133,13 +146,31 @@ const char * pspio_pspinfo_get_author(const pspio_pspinfo_t *pspinfo);
  * @param[in] pspinfo: pointer to pspinfo structure
  * @return pointer to code name
  */
-const char * pspio_pspinfo_get_code(const pspio_pspinfo_t *pspinfo);
+const char * pspio_pspinfo_get_code_name(const pspio_pspinfo_t *pspinfo);
 
 /**
  * @param[in] pspinfo: pointer to pspinfo structure
- * @return pointer to generation date
+ * @return pointer to code version
  */
-const char * pspio_pspinfo_get_date(const pspio_pspinfo_t *pspinfo);
+const char * pspio_pspinfo_get_code_version(const pspio_pspinfo_t *pspinfo);
+
+/**
+ * @param[in] pspinfo: pointer to pspinfo structure
+ * @return day of month (range 1 to 31)
+ */
+int pspio_pspinfo_get_generation_day(const pspio_pspinfo_t *pspinfo);
+
+/**
+ * @param[in] pspinfo: pointer to pspinfo structure
+ * @return month (range 1 to 12)
+ */
+int pspio_pspinfo_get_generation_month(const pspio_pspinfo_t *pspinfo);
+
+/**
+ * @param[in] pspinfo: pointer to pspinfo structure
+ * @return year
+ */
+int pspio_pspinfo_get_generation_year(const pspio_pspinfo_t *pspinfo);
 
 /**
  * @param[in] pspinfo: pointer to pspinfo structure

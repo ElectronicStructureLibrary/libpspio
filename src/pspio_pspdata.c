@@ -1,22 +1,25 @@
-/*
- Copyright (C) 2011-2012 J. Alberdi, M. Oliveira, Y. Pouillon, and M. Verstraete
- Copyright (C) 2014 M. Oliveira
-
- This program is free software; you can redistribute it and/or modify
- it under the terms of the GNU Lesser General Public License as published by
- the Free Software Foundation; either version 3 of the License, or 
- (at your option) any later version.
-
- This program is distributed in the hope that it will be useful,
- but WITHOUT ANY WARRANTY; without even the implied warranty of
- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- GNU Lesser General Public License for more details.
-
- You should have received a copy of the GNU Lesser General Public License
- along with this program; if not, write to the Free Software
- Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-
-*/
+/* Copyright (C) 2011-2016 Joseba Alberdi <alberdi@hotmail.es>
+ *                         Matthieu Verstraete <matthieu.jean.verstraete@gmail.com>
+ *                         Micael Oliveira <micael.oliveira@mpsd.mpg.de>
+ *                         Yann Pouillon <notifications@materialsevolution.es>
+ *
+ * This file is part of Libpspio.
+ *
+ * Libpspio is free software: you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation, version 3 of the License, or (at your option) any later
+ * version.
+ *
+ * Libpspio is distributed in the hope that it will be useful, but WITHOUT ANY
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public License for
+ * more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with Libpspio.  If not, see <http://www.gnu.org/licenses/> or write to
+ * the Free Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
+ * 02110-1301  USA.
+ */
 
 #include <stdio.h>
 #include <string.h>
@@ -50,7 +53,7 @@ int pspio_pspdata_alloc(pspio_pspdata_t **pspdata)
   /* Nullify pointers and initialize all values to 0 */
   (*pspdata)->pspinfo = NULL;
   (*pspdata)->format_guessed = PSPIO_FMT_UNKNOWN;
-  (*pspdata)->symbol = NULL;
+  strcpy((*pspdata)->symbol, "");
   (*pspdata)->z = 0.0;
   (*pspdata)->zvalence = 0.0;
   (*pspdata)->nelvalence = 0.0;
@@ -69,6 +72,7 @@ int pspio_pspdata_alloc(pspio_pspdata_t **pspdata)
   (*pspdata)->potentials = NULL;
 
   (*pspdata)->n_projectors = 0;
+  (*pspdata)->n_projectors_per_l = NULL;
   (*pspdata)->projectors = NULL;
   (*pspdata)->projectors_l_max = 0;
   (*pspdata)->l_local = 0;
@@ -203,10 +207,7 @@ void pspio_pspdata_reset(pspio_pspdata_t *pspdata)
     pspio_pspinfo_free(pspdata->pspinfo);
     pspdata->pspinfo = NULL;
   }
-  if (pspdata->symbol != NULL) {
-    free(pspdata->symbol);
-    pspdata->symbol = NULL;
-  }
+  strcpy(pspdata->symbol, "");
   pspdata->z = 0.0;
   pspdata->zvalence = 0.0;
   pspdata->nelvalence = 0.0;
@@ -257,6 +258,9 @@ void pspio_pspdata_reset(pspio_pspdata_t *pspdata)
     pspdata->projectors = NULL;
   }
   pspdata->n_projectors = 0;
+  if (pspdata->n_projectors_per_l != NULL) {
+    free(pspdata->n_projectors_per_l);
+  }
   pspdata->l_local = 0;
   pspdata->projectors_l_max = 0;
   if (pspdata->vlocal != NULL) {
@@ -299,16 +303,14 @@ int pspio_pspdata_set_pspinfo(pspio_pspdata_t *pspdata, const pspio_pspinfo_t *p
   return PSPIO_SUCCESS;
 }
 
-int pspio_pspdata_set_symbol(pspio_pspdata_t *pspdata, const char *symbol)
+int pspio_pspdata_set_symbol(pspio_pspdata_t *pspdata, const char symbol[])
 {
   assert(pspdata != NULL);
 
-  FULFILL_OR_RETURN(symbol != NULL, PSPIO_EVALUE);
-
-  free(pspdata->symbol);
-  pspdata->symbol = (char *) malloc (3*sizeof(char));
-  FULFILL_OR_EXIT( pspdata->symbol != NULL, PSPIO_ENOMEM );
-  strncpy(pspdata->symbol, symbol, 3);
+  if (strlen(symbol) >= 4)
+    return PSPIO_STRLEN_ERROR;
+  else
+    strcpy(pspdata->symbol, symbol);
 
   return PSPIO_SUCCESS;
 }
@@ -471,6 +473,21 @@ int pspio_pspdata_set_n_projectors(pspio_pspdata_t *pspdata, int n_projectors)
   FULFILL_OR_EXIT(pspdata->projectors != NULL, PSPIO_ENOMEM);
   for (ip=0; ip<pspdata->n_projectors; ip++) {
     pspdata->projectors[ip] = NULL;
+  }
+
+  return PSPIO_SUCCESS;
+}
+
+int pspio_pspdata_set_n_projectors_per_l(pspio_pspdata_t *pspdata, int *n_ppl)
+{
+  assert(pspdata != NULL);
+  assert(pspdata->n_projectors_per_l == NULL);
+
+  if ( n_ppl == NULL ) {
+    pspdata->n_projectors_per_l = pspio_projectors_per_l(pspdata->projectors,
+      pspdata->n_projectors);
+  } else {
+    pspdata->n_projectors_per_l = n_ppl;
   }
 
   return PSPIO_SUCCESS;
@@ -645,6 +662,13 @@ int pspio_pspdata_get_n_projectors(const pspio_pspdata_t *pspdata)
   assert(pspdata != NULL);
 
   return pspdata->n_projectors;
+}
+
+int * pspio_pspdata_get_n_projectors_per_l(const pspio_pspdata_t *pspdata)
+{
+  assert(pspdata != NULL);
+
+  return pspdata->n_projectors_per_l;
 }
 
 const pspio_projector_t * pspio_pspdata_get_projector(const pspio_pspdata_t *pspdata, int index)

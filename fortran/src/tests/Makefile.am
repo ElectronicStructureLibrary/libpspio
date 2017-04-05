@@ -1,21 +1,23 @@
 #
-# Copyright (C) 2012-2015 M. Oliveira, Y. Pouillon
+# Copyright (C) 2011-2016 Micael Oliveira <micael.oliveira@mpsd.mpg.de>
+#                         Yann Pouillon <notifications@materialsevolution.es>
 #
-# This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU Lesser General Public License as published by
-# the Free Software Foundation; either version 3 of the License, or 
-# (at your option) any later version.
+# This file is part of Libpspio.
 #
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU Lesser General Public License for more details.
+# Libpspio is free software: you can redistribute it and/or modify it under the
+# terms of the GNU Lesser General Public License as published by the Free
+# Software Foundation, version 3 of the License, or (at your option) any later
+# version.
+#
+# Libpspio is distributed in the hope that it will be useful, but WITHOUT ANY
+# WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
+# A PARTICULAR PURPOSE.  See the GNU Lesser General Public License for more
+# details.
 #
 # You should have received a copy of the GNU Lesser General Public License
-# along with this program; if not, write to the Free Software
-# Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-#
-#
+# along with Libpspio.  If not, see <http://www.gnu.org/licenses/> or write to
+# the Free Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
+# 02110-1301  USA.
 
 #
 # Makefile for the sources of Libpspio-Fortran
@@ -67,53 +69,63 @@ nodist_check_SCRIPTS = \
   $(fpio_gcov_post_tests) \
   $(fpio_memprof_tests)
 
-test_fortran_error_SOURCES = m_error_test.F90 test_fortran_error.F90
+test_fortran_error_SOURCES = \
+  fruit_error_test.F90 \
+  test_fortran_error.F90
 test_fortran_error_LDADD = \
   libfruit.la \
-  ../libfpspio.la \
+  ../libpspiof.la \
   @pio_pspio_libs@ \
   $(LIBS_COVERAGE)
 test_fortran_error_DEPENDENCIES = \
-  ../libfpspio.la \
+  ../libpspiof.la \
   @pio_pspio_libs@
 
-test_fortran_info_SOURCES = m_info_test.F90 test_fortran_info.F90
+test_fortran_info_SOURCES = \
+  fruit_info_test.F90 \
+  test_fortran_info.F90
 test_fortran_info_LDADD = \
   libfruit.la \
-  ../libfpspio.la \
+  ../libpspiof.la \
   @pio_pspio_libs@ \
   $(LIBS_COVERAGE)
 test_fortran_info_DEPENDENCIES = \
-  ../libfpspio.la \
+  ../libpspiof.la \
   @pio_pspio_libs@
 
-test_fortran_mesh_SOURCES = m_mesh_test.F90 m_mesh_basket.F90 test_fortran_mesh.F90
+test_fortran_mesh_SOURCES = \
+  fruit_mesh_test.F90 \
+  fruit_mesh_basket.F90 \
+  test_fortran_mesh.F90
 test_fortran_mesh_LDADD = \
   libfruit.la \
-  ../libfpspio.la \
+  ../libpspiof.la \
   @pio_pspio_libs@ \
   $(LIBS_COVERAGE)
 test_fortran_mesh_DEPENDENCIES = \
-  ../libfpspio.la \
+  ../libpspiof.la \
   @pio_pspio_libs@
 
-test_fortran_meshfunc_SOURCES = m_meshfunc_test.F90 m_meshfunc_basket.F90 test_fortran_meshfunc.F90
+test_fortran_meshfunc_SOURCES = \
+  fruit_meshfunc_test.F90 \
+  fruit_meshfunc_basket.F90 \
+  test_fortran_meshfunc.F90
 test_fortran_meshfunc_LDADD = \
   libfruit.la \
-  ../libfpspio.la \
+  ../libpspiof.la \
   @pio_pspio_libs@ \
   $(LIBS_COVERAGE)
 test_fortran_meshfunc_DEPENDENCIES = \
-  ../libfpspio.la \
+  ../libpspiof.la \
   @pio_pspio_libs@
 
 test_fortran_io_SOURCES = test_fortran_io.F90
 test_fortran_io_LDADD = \
-  ../libfpspio.la \
+  ../libpspiof.la \
   @pio_pspio_libs@ \
   $(LIBS_COVERAGE)
 test_fortran_io_DEPENDENCIES = \
-  ../libfpspio.la \
+  ../libpspiof.la \
   @pio_pspio_libs@
 
 TESTS = \

@@ -1,21 +1,23 @@
-/*
- Copyright (C) 2015 M. Oliveira
-
- This program is free software; you can redistribute it and/or modify
- it under the terms of the GNU Lesser General Public License as published by
- the Free Software Foundation; either version 3 of the License, or 
- (at your option) any later version.
-
- This program is distributed in the hope that it will be useful,
- but WITHOUT ANY WARRANTY; without even the implied warranty of
- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- GNU Lesser General Public License for more details.
-
- You should have received a copy of the GNU Lesser General Public License
- along with this program; if not, write to the Free Software
- Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-
-*/
+/* Copyright (C) 2015-2016 Micael Oliveira <micael.oliveira@mpsd.mpg.de>
+ *                         Yann Pouillon <notifications@materialsevolution.es>
+ *
+ * This file is part of Libpspio.
+ *
+ * Libpspio is free software: you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation, version 3 of the License, or (at your option) any later
+ * version.
+ *
+ * Libpspio is distributed in the hope that it will be useful, but WITHOUT ANY
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public License for
+ * more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with Libpspio.  If not, see <http://www.gnu.org/licenses/> or write to
+ * the Free Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
+ * 02110-1301  USA.
+ */
 
 /**
  * @file test_pspdata.c
@@ -69,7 +71,12 @@ void pspdata_full_setup(void)
 
   pspio_pspinfo_free(pspinfo);
   pspio_pspinfo_alloc(&pspinfo);
-  pspio_pspinfo_init(pspinfo, "A. Author", "XPTO", "99/99/99", "Universal alchemical pseudopotential");
+  pspio_pspinfo_set_author(pspinfo, "A. Author");
+  pspio_pspinfo_set_code_version(pspinfo, "1.0");
+  pspio_pspinfo_set_generation_day(pspinfo, 1);
+  pspio_pspinfo_set_generation_month(pspinfo, 1);
+  pspio_pspinfo_set_generation_year(pspinfo, 1900);
+  pspio_pspinfo_set_description(pspinfo, "Universal alchemical pseudopotential");
 
   pspio_mesh_free(mesh);
   pspio_mesh_alloc(&mesh, 8);
@@ -99,7 +106,7 @@ void pspdata_full_setup(void)
 
   pspio_xc_free(xc);
   pspio_xc_alloc(&xc);
-  pspio_xc_init(xc, 1, 4, PSPIO_NLCC_FHI, mesh, func, NULL, NULL);
+  pspio_xc_init(xc, 1, 4, PSPIO_NLCC_FHI, 1.0, 2.0, mesh, func, NULL, NULL);
 
   pspio_meshfunc_free(rho_valence);
   pspio_meshfunc_alloc(&rho_valence, 8);
@@ -371,6 +378,7 @@ Suite * make_pspdata_suite(void)
   tc_setget = tcase_create("Setters and getters");
   tcase_add_checked_fixture(tc_setget, pspdata_full_setup, pspdata_full_teardown);
   tcase_add_test(tc_setget, test_pspdata_setget_format_guessed);
+  tcase_add_test(tc_setget, test_pspdata_setget_pspinfo);
   tcase_add_test(tc_setget, test_pspdata_setget_symbol);
   tcase_add_test(tc_setget, test_pspdata_setget_z);
   tcase_add_test(tc_setget, test_pspdata_setget_zvalence);

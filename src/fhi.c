@@ -1,21 +1,23 @@
-/*
- Copyright (C) 2011-2012 M. Oliveira
-
- This program is free software; you can redistribute it and/or modify
- it under the terms of the GNU Lesser General Public License as published by
- the Free Software Foundation; either version 3 of the License, or 
- (at your option) any later version.
-
- This program is distributed in the hope that it will be useful,
- but WITHOUT ANY WARRANTY; without even the implied warranty of
- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- GNU Lesser General Public License for more details.
-
- You should have received a copy of the GNU Lesser General Public License
- along with this program; if not, write to the Free Software
- Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-
-*/
+/* Copyright (C) 2012-2016 Micael Oliveira <micael.oliveira@mpsd.mpg.de>
+ *                         Yann Pouillon <notifications@materialsevolution.es>
+ *
+ * This file is part of Libpspio.
+ *
+ * Libpspio is free software: you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation, version 3 of the License, or (at your option) any later
+ * version.
+ *
+ * Libpspio is distributed in the hope that it will be useful, but WITHOUT ANY
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public License for
+ * more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with Libpspio.  If not, see <http://www.gnu.org/licenses/> or write to
+ * the Free Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
+ * 02110-1301  USA.
+ */
 
 /** 
  * @file fhi.c
@@ -156,7 +158,7 @@ int pspio_fhi_read(FILE *fp, pspio_pspdata_t *pspdata)
   }
   
   /* We do not know the symbol (note that it might have been set somewhere else) */
-  if ( pspdata->symbol == NULL ) {
+  if (strcmp(pspdata->symbol, "")) {
     SUCCEED_OR_RETURN( pspio_pspdata_set_symbol(pspdata, "N/D") );
   }
 
@@ -165,7 +167,7 @@ int pspio_fhi_read(FILE *fp, pspio_pspdata_t *pspdata)
 
 int pspio_fhi_write(FILE *fp, const pspio_pspdata_t *pspdata)
 {
-  int i, l, is, ir;
+  int i, l, is, in, ir;
   double wf, v, r;
 
   assert(fp != NULL);
@@ -195,7 +197,10 @@ int pspio_fhi_write(FILE *fp, const pspio_pspdata_t *pspdata)
       pspdata->mesh->r[1]/pspdata->mesh->r[0]) > 0, PSPIO_EIO );
 
     i = LJ_TO_I(l,0.0);
-    is = pspdata->qn_to_istate[0][i];
+
+    in = 0;
+    while ((is = pspdata->qn_to_istate[in][i]) < 0)
+      in ++;
 
     /* This format is not suitable for j-dependent pseudos */
     FULFILL_OR_RETURN( pspio_qn_get_j(pspio_state_get_qn(pspdata->states[is])) == 0.0,

@@ -1,21 +1,25 @@
-/*
- Copyright (C) 2011-2012 J. Alberdi, M. Oliveira, Y. Pouillon, and M. Verstraete
-
- This program is free software; you can redistribute it and/or modify
- it under the terms of the GNU Lesser General Public License as published by
- the Free Software Foundation; either version 3 of the License, or 
- (at your option) any later version.
-
- This program is distributed in the hope that it will be useful,
- but WITHOUT ANY WARRANTY; without even the implied warranty of
- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- GNU Lesser General Public License for more details.
-
- You should have received a copy of the GNU Lesser General Public License
- along with this program; if not, write to the Free Software
- Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-
-*/
+/* Copyright (C) 2011-2016 Joseba Alberdi <alberdi@hotmail.es>
+ *                         Matthieu Verstraete <matthieu.jean.verstraete@gmail.com>
+ *                         Micael Oliveira <micael.oliveira@mpsd.mpg.de>
+ *                         Yann Pouillon <notifications@materialsevolution.es>
+ *
+ * This file is part of Libpspio.
+ *
+ * Libpspio is free software: you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation, version 3 of the License, or (at your option) any later
+ * version.
+ *
+ * Libpspio is distributed in the hope that it will be useful, but WITHOUT ANY
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public License for
+ * more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with Libpspio.  If not, see <http://www.gnu.org/licenses/> or write to
+ * the Free Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
+ * 02110-1301  USA.
+ */
 
 /** 
  * @file upf_read.c
@@ -78,7 +82,7 @@ int upf_read_header(FILE *fp, int *np, pspio_pspdata_t *pspdata)
 {
   char line[PSPIO_STRLEN_LINE];
   int version_number, i;
-  char symbol[3], nlcc_flag[2], xc_string[23];
+  char symbol[4], nlcc_flag[2], xc_string[23];
   int exchange, correlation, l_max, n_states, n_projectors;
   double z, zvalence, total_energy;
   double wfc_cutoff, rho_cutoff;
@@ -93,7 +97,8 @@ int upf_read_header(FILE *fp, int *np, pspio_pspdata_t *pspdata)
  
   /* Read the atomic symbol */
   FULFILL_OR_RETURN( fgets(line, PSPIO_STRLEN_LINE, fp) != NULL, PSPIO_EIO );
-  strcpy(symbol, strtok(line," "));
+  strncpy(symbol, strtok(line," "), 3);
+  symbol[3] = '\0';
   SUCCEED_OR_RETURN( pspio_pspdata_set_symbol(pspdata, symbol) );
   SUCCEED_OR_RETURN( symbol_to_z(symbol, &z) );
   SUCCEED_OR_RETURN( pspio_pspdata_set_z(pspdata, z) );
@@ -167,9 +172,6 @@ int upf_read_header(FILE *fp, int *np, pspio_pspdata_t *pspdata)
 
 int upf_read_mesh(FILE *fp, int np, pspio_pspdata_t *pspdata)
 {
-  char line[PSPIO_STRLEN_LINE];
-  int i, j, nargs;
-  double tmp[4];
   double *r, *drdi;
 
   /* Find init tag */
@@ -187,22 +189,12 @@ int upf_read_mesh(FILE *fp, int np, pspio_pspdata_t *pspdata)
      feasibility. */
   DEFER_FUNC_ERROR( upf_tag_init(fp, "PP_R", NO_GO_BACK) );
   if ( pspio_error_get_last(__func__) == PSPIO_SUCCESS ) {
-    for (i=0; i<np; i+=4) {
-      FULFILL_OR_BREAK( fgets(line, PSPIO_STRLEN_LINE, fp) != NULL, PSPIO_EIO );
-      nargs = sscanf(line, "%lf %lf %lf %lf", &tmp[0], &tmp[1], &tmp[2], &tmp[3]);
-      FULFILL_OR_BREAK( nargs < 5 && nargs > 0, PSPIO_EFILE_CORRUPT );
-      for (j=0; j<nargs; j++) r[i+j] = tmp[j];
-    }
+    SKIP_FUNC_ON_ERROR( read_array_4by4(fp, r, np) );
     SKIP_FUNC_ON_ERROR( upf_tag_check_end(fp, "PP_R") );
     
     /* Read Rab */
     SKIP_FUNC_ON_ERROR( upf_tag_init(fp, "PP_RAB", NO_GO_BACK) );
-    for (i=0; i<np; i+=4) {
-      FULFILL_OR_BREAK( fgets(line, PSPIO_STRLEN_LINE, fp) != NULL, PSPIO_EIO );
-      nargs = sscanf(line, "%lf %lf %lf %lf", &tmp[0], &tmp[1], &tmp[2], &tmp[3]);
-      FULFILL_OR_BREAK( nargs < 5 && nargs > 0, PSPIO_EFILE_CORRUPT );
-      for (j=0; j<nargs; j++) drdi[i+j] = tmp[j];
-    }
+    SKIP_FUNC_ON_ERROR( read_array_4by4(fp, drdi, np) );
     SKIP_FUNC_ON_ERROR( upf_tag_check_end(fp, "PP_RAB") );
 
     /* Store the mesh in the pspdata structure */
@@ -225,9 +217,6 @@ int upf_read_mesh(FILE *fp, int np, pspio_pspdata_t *pspdata)
 
 int upf_read_nlcc(FILE *fp, int np, pspio_pspdata_t *pspdata)
 {
-  char line[PSPIO_STRLEN_LINE];
-  int i, j, nargs;
-  double tmp[4];
   double *rho;
 
   /* Find init tag */
@@ -238,12 +227,7 @@ int upf_read_nlcc(FILE *fp, int np, pspio_pspdata_t *pspdata)
   FULFILL_OR_EXIT(rho != NULL, PSPIO_ENOMEM);
 
   /* Read core rho */
-  for (i=0; i<np; i+=4) {
-    FULFILL_OR_BREAK( fgets(line, PSPIO_STRLEN_LINE, fp) != NULL, PSPIO_EIO );
-    nargs = sscanf(line,"%lf %lf %lf %lf",&tmp[0],&tmp[1],&tmp[2],&tmp[3]);
-    FULFILL_OR_BREAK( nargs < 5 && nargs > 0, PSPIO_EFILE_CORRUPT );
-    for (j=0; j<nargs; j++) rho[i+j] = tmp[j];
-  }
+  SKIP_FUNC_ON_ERROR( read_array_4by4(fp, rho, np) );
 
   /* Store the non-linear core corrections in the pspdata structure */
   SKIP_FUNC_ON_ERROR( pspio_xc_set_nlcc_density(pspdata->xc, pspdata->mesh, rho, NULL, NULL) );
@@ -265,8 +249,7 @@ int upf_read_nonlocal(FILE *fp, int np, pspio_pspdata_t *pspdata)
 {
   char line[PSPIO_STRLEN_LINE];
   int proj_np = 0;
-  int i, j, k, l, n_dij, ii, jj, nargs;
-  double tmp[4];
+  int i, j, l, n_dij, ii, jj;
   double *proj_j;
   double energy;
   double *ekb, *projector_read;
@@ -339,14 +322,8 @@ int upf_read_nonlocal(FILE *fp, int np, pspio_pspdata_t *pspdata)
     FULFILL_OR_BREAK( sscanf(line, "%d", &proj_np) == 1, PSPIO_EFILE_CORRUPT );
 
     /* Read the projector function */
-    for (j=0; j<proj_np; j+=4){
-      FULFILL_OR_BREAK( fgets(line, PSPIO_STRLEN_LINE, fp) != NULL, PSPIO_EIO );
-      nargs = sscanf(line,"%lf %lf %lf %lf", &tmp[0], &tmp[1], &tmp[2],
-        &tmp[3]);
-      FULFILL_OR_BREAK( nargs < 5 && nargs > 0, PSPIO_EFILE_CORRUPT );
+    SKIP_FUNC_ON_ERROR( read_array_4by4(fp, projector_read, np) );
 
-      for (k=0; k<nargs; k++) projector_read[k+j] = tmp[k];
-    }
     BREAK_ON_DEFERRED_ERROR;
 
     /* Fill with zeros, if any left */
@@ -390,10 +367,8 @@ int upf_read_nonlocal(FILE *fp, int np, pspio_pspdata_t *pspdata)
 
 int upf_read_local(FILE *fp, int np, pspio_pspdata_t *pspdata)
 {
-  char line[PSPIO_STRLEN_LINE];
-  int i, j, nargs, n;
+  int i, j, n;
   double *vlocal;
-  double tmp[4];
   pspio_qn_t *qn = NULL;
 
   /* Find init tag */
@@ -418,12 +393,7 @@ int upf_read_local(FILE *fp, int np, pspio_pspdata_t *pspdata)
   }
 
   /* Read local potential */
-  for (i=0; i<np; i+=4) {
-    FULFILL_OR_BREAK( fgets(line, PSPIO_STRLEN_LINE, fp) != NULL,  PSPIO_EIO );
-    nargs = sscanf(line,"%lf %lf %lf %lf",&tmp[0],&tmp[1],&tmp[2],&tmp[3]);
-    FULFILL_OR_BREAK( nargs < 5 && nargs > 0, PSPIO_EFILE_CORRUPT );
-    for (j=0; j<nargs; j++) vlocal[i+j] = tmp[j];
-  }
+  SKIP_FUNC_ON_ERROR( read_array_4by4(fp, vlocal, np) );
 
   /* Convert from Rydbergs */
   for (i=0; i<np; i++) vlocal[i] /= 2.0;
@@ -454,7 +424,6 @@ int upf_read_pswfc(FILE *fp, int np, pspio_pspdata_t *pspdata)
   int nargs, n, l, lmax;
   double occ;
   double *j, *wf;
-  double tmp[4];
   pspio_qn_t *qn = NULL;
 
   /* Allocate memory */
@@ -488,19 +457,22 @@ int upf_read_pswfc(FILE *fp, int np, pspio_pspdata_t *pspdata)
   for (is=0; is<pspdata->n_states; is++) {
     /* Read the quantum numbers and occupations */
     FULFILL_OR_BREAK( fgets(line, PSPIO_STRLEN_LINE, fp) != NULL, PSPIO_EIO );
-    FULFILL_OR_BREAK( sscanf(line, "%1d%1c %d %lf", &n, &ll, &l, &occ) == 4, PSPIO_EFILE_CORRUPT );
+    // TODO: ask QE developers whether they still accept the old format
+    //       like in the He pseudo
+    //FULFILL_OR_BREAK( sscanf(line, "%1d%1c %d %lf", &n, &ll, &l, &occ) == 4, PSPIO_EFILE_CORRUPT );
+    nargs = sscanf(line, "%1d%1c %d %lf", &n, &ll, &l, &occ);
+    if ( nargs != 4 ) {
+        n = 1;
+        nargs = sscanf(line, "%1c %d %lf", &ll, &l, &occ);
+        FULFILL_OR_BREAK( nargs == 3, PSPIO_EFILE_CORRUPT );
+    }
     FULFILL_OR_BREAK( sprintf(label, "%1d%1c", n, ll) > 0, PSPIO_EIO );
     SUCCEED_OR_BREAK( pspio_qn_init(qn, n, l, j[is]) );
     lmax = max(l, lmax);
 
     /* Read wavefunction */
-    for (ir=0; ir<np; ir+=4) {
-      FULFILL_OR_BREAK( fgets(line, PSPIO_STRLEN_LINE, fp) != NULL, PSPIO_EIO );
-      nargs = sscanf(line, "%lf %lf %lf %lf",
-        &tmp[0], &tmp[1], &tmp[2], &tmp[3]);
-      FULFILL_OR_BREAK( nargs < 5 && nargs > 0, PSPIO_EFILE_CORRUPT );
-      for (i=0; i<nargs; i++) wf[ir+i] = tmp[i];
-    }
+    SKIP_FUNC_ON_ERROR( read_array_4by4(fp, wf, np) );
+
     BREAK_ON_DEFERRED_ERROR;
 
     /* UPF uses the wavefunctions multiplied by r */
@@ -529,10 +501,8 @@ int upf_read_pswfc(FILE *fp, int np, pspio_pspdata_t *pspdata)
 
 int upf_read_rhoatom(FILE *fp, int np, pspio_pspdata_t *pspdata)
 {
-  char line[PSPIO_STRLEN_LINE];
-  int i, j, nargs;
+  int i;
   double *rho_read;
-  double tmp[4];
 
   /* Find init tag */
   SUCCEED_OR_RETURN( upf_tag_init(fp,"PP_RHOATOM",GO_BACK) );
@@ -542,12 +512,7 @@ int upf_read_rhoatom(FILE *fp, int np, pspio_pspdata_t *pspdata)
   FULFILL_OR_EXIT(rho_read != NULL, PSPIO_ENOMEM);
 
   /* Read valence density */
-  for (i=0; i<np; i+=4){
-    FULFILL_OR_BREAK( fgets(line, PSPIO_STRLEN_LINE, fp) != NULL, PSPIO_EIO );
-    nargs = sscanf(line,"%lf %lf %lf %lf", &tmp[0], &tmp[1],&tmp[2], &tmp[3]);
-    FULFILL_OR_BREAK( nargs < 5 && nargs > 0, PSPIO_EFILE_CORRUPT );
-    for (j=0; j<nargs; j++) rho_read[i+j] = tmp[j];
-  }
+  SKIP_FUNC_ON_ERROR( read_array_4by4(fp, rho_read, np) );
 
   /* UPF uses the density multiplied by 4*Pi*r*r */
   for (i=0; i<np; i++) {

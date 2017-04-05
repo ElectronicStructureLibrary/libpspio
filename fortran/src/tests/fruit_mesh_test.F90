@@ -1,27 +1,30 @@
-!! Copyright (C) 2016 Y. Pouillon
+!! Copyright (C) 2016 Micael Oliveira <micael.oliveira@mpsd.mpg.de>
+!!                    Yann Pouillon <notifications@materialsevolution.es>
 !!
-!! This program is free software; you can redistribute it and/or modify
-!! it under the terms of the GNU Lesser General Public License as published by
-!! the Free Software Foundation; either version 3 of the License, or 
-!! (at your option) any later version.
+!! This file is part of Libpspio.
 !!
-!! This program is distributed in the hope that it will be useful,
-!! but WITHOUT ANY WARRANTY; without even the implied warranty of
-!! MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-!! GNU Lesser General Public License for more details.
+!! Libpspio is free software: you can redistribute it and/or modify it under
+!! the terms of the GNU Lesser General Public License as published by the Free
+!! Software Foundation, version 3 of the License, or (at your option) any later
+!! version.
+!!
+!! Libpspio is distributed in the hope that it will be useful, but WITHOUT ANY
+!! WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+!! FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public License for
+!! more details.
 !!
 !! You should have received a copy of the GNU Lesser General Public License
-!! along with this program; if not, write to the Free Software
-!! Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-!!
+!! along with Libpspio.  If not, see <http://www.gnu.org/licenses/> or write to
+!! the Free Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
+!! 02110-1301  USA.
 
 #if defined HAVE_CONFIG_H
 #include "config.h"
 #endif
 
-module m_mesh_test
+module fruit_mesh_test
 
-  use fpspio_m
+  use pspiof_m
   use fruit
 
   implicit none
@@ -30,7 +33,7 @@ module m_mesh_test
   integer, parameter, private :: mesh_size = 8
   real(dp), parameter, private :: mesh_tol = 1.0d-13
 
-  type(fpspio_mesh_t), private :: m1, m2
+  type(pspiof_mesh_t), private :: m1, m2
 
   private :: mesh_compare_values
 
@@ -40,24 +43,24 @@ contains
 
     implicit none
 
-    type(fpspio_mesh_t), intent(in) :: mesh
+    type(pspiof_mesh_t), intent(in) :: mesh
     real(dp), intent(in) :: a, b, tol
     real(dp), dimension(mesh_size), intent(in) :: r, rab
 
     character(len=80) :: msg
     integer :: i, np
-    real(dp), dimension(mesh_size) :: r_chk, rab_chk
+    real(dp), dimension(:), pointer :: r_chk, rab_chk
 
-    call assert_equals(mesh_size, fpspio_mesh_get_np(mesh), &
+    call assert_equals(mesh_size, pspiof_mesh_get_np(mesh), &
 &     "Mesh Init - Value comparison - Size check")
-    call assert_equals(a, fpspio_mesh_get_a(mesh), &
+    call assert_equals(a, pspiof_mesh_get_a(mesh), &
 &     "Mesh Init - Value comparison - Parameter check: a")
-    call assert_equals(b, fpspio_mesh_get_b(mesh), &
+    call assert_equals(b, pspiof_mesh_get_b(mesh), &
 &     "Mesh Init - Value comparison - Parameter check: b")
 
-    np = fpspio_mesh_get_np(mesh)
-    r_chk = fpspio_mesh_get_r(mesh)
-    rab_chk = fpspio_mesh_get_rab(mesh)
+    np = pspiof_mesh_get_np(mesh)
+    r_chk => pspiof_mesh_get_r(mesh)
+    rab_chk => pspiof_mesh_get_rab(mesh)
 
     do i=1,np
       write(msg, &
@@ -76,17 +79,17 @@ contains
 
     integer :: eid
 
-    call fpspio_mesh_free(m1)
-    call fpspio_mesh_free(m2)
-    eid = fpspio_mesh_alloc(m1, mesh_size)
-    eid = fpspio_mesh_alloc(m2, mesh_size)
+    call pspiof_mesh_free(m1)
+    call pspiof_mesh_free(m2)
+    eid = pspiof_mesh_alloc(m1, mesh_size)
+    eid = pspiof_mesh_alloc(m2, mesh_size)
 
   end subroutine setup
 
   subroutine teardown()
 
-    call fpspio_mesh_free(m1)
-    call fpspio_mesh_free(m2)
+    call pspiof_mesh_free(m1)
+    call pspiof_mesh_free(m2)
 
   end subroutine teardown
 
@@ -94,11 +97,11 @@ contains
 
     implicit none
 
-    type(fpspio_mesh_t) :: m1
+    type(pspiof_mesh_t) :: m1
 
-    call assert_equals(PSPIO_SUCCESS, fpspio_mesh_alloc(m1, 2*mesh_size+1), &
+    call assert_equals(PSPIO_SUCCESS, pspiof_mesh_alloc(m1, 2*mesh_size+1), &
 &     "Mesh allocation - Return value")
-    call assert_equals(2*mesh_size+1, fpspio_mesh_get_np(m1), &
+    call assert_equals(2*mesh_size+1, pspiof_mesh_get_np(m1), &
 &     "Mesh allocation - Mesh size")
 
   end subroutine test_mesh_alloc
@@ -116,7 +119,7 @@ contains
 &     [0.05_dp, 0.05_dp, 0.20_dp, 0.20_dp, 0.20_dp, 0.20_dp, 0.05_dp, 0.05_dp]
 
     call assert_equals(PSPIO_SUCCESS, &
-&     fpspio_mesh_init(m1, PSPIO_MESH_LOG1, a, b, r_init, rab_init), &
+&     pspiof_mesh_init(m1, PSPIO_MESH_LOG1, a, b, r_init, rab_init), &
 &     "Mesh init - Return value (generic)")
     call mesh_compare_values(m1, a, b, r_init, rab_init, mesh_tol)
 
@@ -137,7 +140,7 @@ contains
       rab_chk(i) = a
     end do
 
-    call fpspio_mesh_init_from_parameters(m1, PSPIO_MESH_LINEAR, a, b)
+    call pspiof_mesh_init_from_parameters(m1, PSPIO_MESH_LINEAR, a, b)
 
     call mesh_compare_values(m1, a, b, r_chk, rab_chk, mesh_tol)
 
@@ -158,7 +161,7 @@ contains
       rab_chk(i) = a * r_chk(i)
     end do
 
-    call fpspio_mesh_init_from_parameters(m1, PSPIO_MESH_LOG1, a, b)
+    call pspiof_mesh_init_from_parameters(m1, PSPIO_MESH_LOG1, a, b)
 
     call mesh_compare_values(m1, a, b, r_chk, rab_chk, mesh_tol)
 
@@ -179,7 +182,7 @@ contains
       rab_chk(i) = a * r_chk(i) + a * b
     end do
 
-    call fpspio_mesh_init_from_parameters(m1, PSPIO_MESH_LOG2, a, b)
+    call pspiof_mesh_init_from_parameters(m1, PSPIO_MESH_LOG2, a, b)
 
     call mesh_compare_values(m1, a, b, r_chk, rab_chk, mesh_tol)
 
@@ -200,7 +203,7 @@ contains
       rab_chk(i) = a
     end do
 
-    call fpspio_mesh_init_from_points(m1, r_chk, rab_chk)
+    call pspiof_mesh_init_from_points(m1, r_chk, rab_chk)
 
     call mesh_compare_values(m1, a, b, r_chk, rab_chk, mesh_tol)
 
@@ -221,7 +224,7 @@ contains
       rab_chk(i) = a * r_chk(i)
     end do
 
-    call fpspio_mesh_init_from_points(m1, r_chk, rab_chk)
+    call pspiof_mesh_init_from_points(m1, r_chk, rab_chk)
 
     call mesh_compare_values(m1, a, b, r_chk, rab_chk, mesh_tol)
 
@@ -242,7 +245,7 @@ contains
       rab_chk(i) = a * r_chk(i) + a * b
     end do
 
-    call fpspio_mesh_init_from_points(m1, r_chk, rab_chk)
+    call pspiof_mesh_init_from_points(m1, r_chk, rab_chk)
 
     call mesh_compare_values(m1, a, b, r_chk, rab_chk, mesh_tol)
 
@@ -252,10 +255,10 @@ contains
 
     implicit none
 
-    call fpspio_mesh_init_from_parameters(m1, PSPIO_MESH_LINEAR, 1.0_dp, 2.0_dp)
-    call fpspio_mesh_init_from_parameters(m2, PSPIO_MESH_LOG1, 1.0_dp, 2.0_dp)
+    call pspiof_mesh_init_from_parameters(m1, PSPIO_MESH_LINEAR, 1.0_dp, 2.0_dp)
+    call pspiof_mesh_init_from_parameters(m2, PSPIO_MESH_LOG1, 1.0_dp, 2.0_dp)
 
-    call assert_equals(PSPIO_DIFF, fpspio_mesh_cmp(m1, m2), &
+    call assert_equals(PSPIO_DIFF, pspiof_mesh_cmp(m1, m2), &
 &     "Mesh comparison - Different types")
 
   end subroutine test_mesh_cmp_diff_type
@@ -264,10 +267,10 @@ contains
 
     implicit none
 
-    call fpspio_mesh_init_from_parameters(m1, PSPIO_MESH_LINEAR, 1.0_dp, 2.0_dp)
-    call fpspio_mesh_init_from_parameters(m2, PSPIO_MESH_LINEAR, 2.0_dp, 2.0_dp)
+    call pspiof_mesh_init_from_parameters(m1, PSPIO_MESH_LINEAR, 1.0_dp, 2.0_dp)
+    call pspiof_mesh_init_from_parameters(m2, PSPIO_MESH_LINEAR, 2.0_dp, 2.0_dp)
 
-    call assert_equals(PSPIO_DIFF, fpspio_mesh_cmp(m1, m2), &
+    call assert_equals(PSPIO_DIFF, pspiof_mesh_cmp(m1, m2), &
 &     "Mesh comparison - Different a parameters")
 
   end subroutine test_mesh_cmp_diff_a
@@ -276,10 +279,10 @@ contains
 
     implicit none
 
-    call fpspio_mesh_init_from_parameters(m1, PSPIO_MESH_LOG1, 2.0_dp, 3.0_dp)
-    call fpspio_mesh_init_from_parameters(m2, PSPIO_MESH_LOG1, 2.0_dp, 2.0_dp)
+    call pspiof_mesh_init_from_parameters(m1, PSPIO_MESH_LOG1, 2.0_dp, 3.0_dp)
+    call pspiof_mesh_init_from_parameters(m2, PSPIO_MESH_LOG1, 2.0_dp, 2.0_dp)
 
-    call assert_equals(PSPIO_DIFF, fpspio_mesh_cmp(m1, m2), &
+    call assert_equals(PSPIO_DIFF, pspiof_mesh_cmp(m1, m2), &
 &     "Mesh comparison - Different b parameters")
 
   end subroutine test_mesh_cmp_diff_b
@@ -293,10 +296,10 @@ contains
     real(dp), dimension(mesh_size), parameter :: r2 = &
 &     [0.00_dp, 0.05_dp, 0.10_dp, 0.25_dp, 0.40_dp, 0.65_dp, 0.85_dp, 1.00_dp]
 
-    call fpspio_mesh_init_from_points(m1, r1)
-    call fpspio_mesh_init_from_points(m2, r2)
+    call pspiof_mesh_init_from_points(m1, r1)
+    call pspiof_mesh_init_from_points(m2, r2)
 
-    call assert_equals(PSPIO_DIFF, fpspio_mesh_cmp(m1, m2), &
+    call assert_equals(PSPIO_DIFF, pspiof_mesh_cmp(m1, m2), &
 &     "Mesh comparison - Different r parameters")
 
   end subroutine test_mesh_cmp_diff_r
@@ -307,12 +310,12 @@ contains
 
     integer :: eid
 
-    call fpspio_mesh_init_from_parameters(m1, PSPIO_MESH_LINEAR, 1.0_dp, 2.0_dp)
-    call fpspio_mesh_free(m2)
-    eid = fpspio_mesh_alloc(m2, 2*mesh_size+1)
-    call fpspio_mesh_init_from_parameters(m2, PSPIO_MESH_LINEAR, 1.0_dp, 2.0_dp)
+    call pspiof_mesh_init_from_parameters(m1, PSPIO_MESH_LINEAR, 1.0_dp, 2.0_dp)
+    call pspiof_mesh_free(m2)
+    eid = pspiof_mesh_alloc(m2, 2*mesh_size+1)
+    call pspiof_mesh_init_from_parameters(m2, PSPIO_MESH_LINEAR, 1.0_dp, 2.0_dp)
 
-    call assert_equals(PSPIO_MTEQUAL, fpspio_mesh_cmp(m1, m2), &
+    call assert_equals(PSPIO_MTEQUAL, pspiof_mesh_cmp(m1, m2), &
 &     "Mesh comparison - Different sizes, equal types")
 
   end subroutine test_mesh_cmp_mtequal
@@ -323,10 +326,10 @@ contains
 
     integer :: eid
 
-    call fpspio_mesh_init_from_parameters(m1, PSPIO_MESH_LINEAR, 1.0_dp, 2.0_dp)
-    call fpspio_mesh_init_from_parameters(m2, PSPIO_MESH_LINEAR, 1.0_dp, 2.0_dp)
+    call pspiof_mesh_init_from_parameters(m1, PSPIO_MESH_LINEAR, 1.0_dp, 2.0_dp)
+    call pspiof_mesh_init_from_parameters(m2, PSPIO_MESH_LINEAR, 1.0_dp, 2.0_dp)
 
-    call assert_equals(PSPIO_EQUAL, fpspio_mesh_cmp(m1, m2), &
+    call assert_equals(PSPIO_EQUAL, pspiof_mesh_cmp(m1, m2), &
 &     "Mesh comparison - Identical meshes")
 
   end subroutine test_mesh_cmp_equal
@@ -335,11 +338,11 @@ contains
 
     implicit none
 
-    call fpspio_mesh_init_from_parameters(m1, PSPIO_MESH_LOG1, 1.0_dp, 2.0_dp)
+    call pspiof_mesh_init_from_parameters(m1, PSPIO_MESH_LOG1, 1.0_dp, 2.0_dp)
 
-    call assert_equals(PSPIO_SUCCESS, fpspio_mesh_copy(m2, m1), &
+    call assert_equals(PSPIO_SUCCESS, pspiof_mesh_copy(m2, m1), &
 &     "Mesh copy - Uninitialized destination - Data transfer")
-    call assert_equals(PSPIO_EQUAL, fpspio_mesh_cmp(m1, m2), &
+    call assert_equals(PSPIO_EQUAL, pspiof_mesh_cmp(m1, m2), &
 &     "Mesh copy - Uninitialized destination - Comparison")
 
   end subroutine test_mesh_copy_null
@@ -348,12 +351,12 @@ contains
 
     implicit none
 
-    call fpspio_mesh_init_from_parameters(m1, PSPIO_MESH_LOG1, 1.0_dp, 2.0_dp)
-    call fpspio_mesh_init_from_parameters(m2, PSPIO_MESH_LOG2, 1.0_dp, 2.0_dp)
+    call pspiof_mesh_init_from_parameters(m1, PSPIO_MESH_LOG1, 1.0_dp, 2.0_dp)
+    call pspiof_mesh_init_from_parameters(m2, PSPIO_MESH_LOG2, 1.0_dp, 2.0_dp)
 
-    call assert_equals(PSPIO_SUCCESS, fpspio_mesh_copy(m2, m1), &
+    call assert_equals(PSPIO_SUCCESS, pspiof_mesh_copy(m2, m1), &
 &     "Mesh copy - Initialized destination - Data transfer")
-    call assert_equals(PSPIO_EQUAL, fpspio_mesh_cmp(m1, m2), &
+    call assert_equals(PSPIO_EQUAL, pspiof_mesh_cmp(m1, m2), &
 &     "Mesh copy - Initialized destination - Comparison")
 
   end subroutine test_mesh_copy_nonnull
@@ -364,16 +367,16 @@ contains
 
     integer :: eid
 
-    call fpspio_mesh_init_from_parameters(m1, PSPIO_MESH_LOG1, 1.0_dp, 2.0_dp)
-    call fpspio_mesh_free(m2)
-    eid = fpspio_mesh_alloc(m2, 2*mesh_size+1)
-    call fpspio_mesh_init_from_parameters(m2, PSPIO_MESH_LOG2, 1.0_dp, 2.0_dp)
+    call pspiof_mesh_init_from_parameters(m1, PSPIO_MESH_LOG1, 1.0_dp, 2.0_dp)
+    call pspiof_mesh_free(m2)
+    eid = pspiof_mesh_alloc(m2, 2*mesh_size+1)
+    call pspiof_mesh_init_from_parameters(m2, PSPIO_MESH_LOG2, 1.0_dp, 2.0_dp)
 
-    call assert_equals(PSPIO_SUCCESS, fpspio_mesh_copy(m2, m1), &
+    call assert_equals(PSPIO_SUCCESS, pspiof_mesh_copy(m2, m1), &
 &     "Mesh copy - Different sizes - Data transfer")
-    call assert_equals(PSPIO_EQUAL, fpspio_mesh_cmp(m1, m2), &
+    call assert_equals(PSPIO_EQUAL, pspiof_mesh_cmp(m1, m2), &
 &     "Mesh copy - Different sizes - Comparison")
 
   end subroutine test_mesh_copy_nonnull_size
 
-end module m_mesh_test
+end module fruit_mesh_test

@@ -1,24 +1,30 @@
-/*
- Copyright (C) 2011-2012 J. Alberdi, M. Oliveira, Y. Pouillon, and M. Verstraete
-
- This program is free software; you can redistribute it and/or modify
- it under the terms of the GNU Lesser General Public License as published by
- the Free Software Foundation; either version 3 of the License, or 
- (at your option) any later version.
-
- This program is distributed in the hope that it will be useful,
- but WITHOUT ANY WARRANTY; without even the implied warranty of
- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- GNU Lesser General Public License for more details.
-
- You should have received a copy of the GNU Lesser General Public License
- along with this program; if not, write to the Free Software
- Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-
-*/
+/* Copyright (C) 2011-2016 Joseba Alberdi <alberdi@hotmail.es>
+ *                         Matthieu Verstraete <matthieu.jean.verstraete@gmail.com>
+ *                         Micael Oliveira <micael.oliveira@mpsd.mpg.de>
+ *                         Yann Pouillon <notifications@materialsevolution.es>
+ *
+ * This file is part of Libpspio.
+ *
+ * Libpspio is free software: you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation, version 3 of the License, or (at your option) any later
+ * version.
+ *
+ * Libpspio is distributed in the hope that it will be useful, but WITHOUT ANY
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public License for
+ * more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with Libpspio.  If not, see <http://www.gnu.org/licenses/> or write to
+ * the Free Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
+ * 02110-1301  USA.
+ */
 
 #ifndef UTIL_H
 #define UTIL_H
+
+#include <stdio.h>
 
 /**
  * @file util.h
@@ -55,7 +61,7 @@
  * @note z should be larger than 0 and smaller than 113.
  * @return error code
  */
-int z_to_symbol(double z, char *symbol);
+int z_to_symbol(double z, char symbol[4]);
 
 /**
  * Given the symbol, returns the atomic number
@@ -64,7 +70,7 @@ int z_to_symbol(double z, char *symbol);
  * @param[out] z: atomic number
  * @return error code
  */
-int symbol_to_z(const char *symbol, double *z);
+int symbol_to_z(const char symbol[4], double *z);
 
 /**
  * Given the values of a function at two points, uses a linear
@@ -76,5 +82,32 @@ int symbol_to_z(const char *symbol, double *z);
  * @return value of the function at x
  */
 double linear_extrapolation(double x1, double x2, double f1,  double f2, double x);
+
+/**
+ * Given the pseudopotential generation scheme, returns a string with the scheme name
+ *
+ * @param[in] scheme: the pseudopotential generation scheme id
+ * @return scheme name
+ */
+char * psp_scheme_name(int scheme);
+
+/**
+ * Given the wave-equation id, returns a string with the name of the relativistic treatment
+ *
+ * @param[in] wave_eq: the wave-equation id
+ * @return relativistic treatment name
+ */
+char * psp_relativitic_treatment_name(int wave_eq);
+
+/**
+ * Reads double precision array coefficients from a text file, 4 at a time,
+ * as found in various pseudopotential formats
+ *
+ * @param[in] fp: pointer to an open flow
+ * @param[out] array: pointer to a double precision array
+ * @param[in] npts: number of coefficients to read
+ * @return error code
+ */
+int read_array_4by4(FILE * fp, double *array, int npts);
 
 #endif

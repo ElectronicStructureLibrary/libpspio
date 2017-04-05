@@ -1,21 +1,24 @@
-/*
- Copyright (C) 2012-2013 Y. Pouillon
-
- This program is free software; you can redistribute it and/or modify
- it under the terms of the GNU Lesser General Public License as published by
- the Free Software Foundation; either version 3 of the License, or 
- (at your option) any later version.
-
- This program is distributed in the hope that it will be useful,
- but WITHOUT ANY WARRANTY; without even the implied warranty of
- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- GNU Lesser General Public License for more details.
-
- You should have received a copy of the GNU Lesser General Public License
- along with this program; if not, write to the Free Software
- Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-
-*/
+/* Copyright (C) 2012-2016 Matteo Giantomassi <gmatteo@gmac>
+ *                         Micael Oliveira <micael.oliveira@mpsd.mpg.de>
+ *                         Yann Pouillon <notifications@materialsevolution.es>
+ *
+ * This file is part of Libpspio.
+ *
+ * Libpspio is free software: you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation, version 3 of the License, or (at your option) any later
+ * version.
+ *
+ * Libpspio is distributed in the hope that it will be useful, but WITHOUT ANY
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public License for
+ * more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with Libpspio.  If not, see <http://www.gnu.org/licenses/> or write to
+ * the Free Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
+ * 02110-1301  USA.
+ */
 
 /** 
  * @file abinit_util.c
@@ -23,12 +26,10 @@
  */
 #include <stdio.h>
 #include <string.h>
-#include <time.h>
 #include <math.h>
 
 #include "abinit.h"
 #include "util.h"
-#include "pspio_pspinfo.h"
 
 #if defined HAVE_CONFIG_H
 #include "config.h"
@@ -40,25 +41,30 @@ static char *my_strndup (const char *s, size_t n);
 
 int abinit_read_header(FILE *fp, int format, pspio_pspdata_t *pspdata)
 {
-  char line[PSPIO_STRLEN_LINE], symbol[3];
+  char line[PSPIO_STRLEN_LINE], symbol[4], tmp[256], code_name[PSPIO_STRLEN_LINE], description[PSPIO_STRLEN_DESCRIPTION];
   char *line4;
-  int format_read, pspcod, pspxc, lmax, lloc, mmax;
+  int format_read, year, month, day, pspcod, pspxc, lmax, lloc, mmax;
   int exchange, correlation;
+  int ppl[6], npso[2];
   double zatom, zval, r2well, rchrg, fchrg, qchrg;
 
   /* Line 1: read title */
   FULFILL_OR_RETURN( fgets(line, PSPIO_STRLEN_LINE, fp) != NULL, PSPIO_EIO );
+  FULFILL_OR_RETURN( sscanf(line, "%s %s : %s", tmp, code_name, description) == 3, PSPIO_EFILE_CORRUPT );
   SUCCEED_OR_RETURN( pspio_pspinfo_alloc(&pspdata->pspinfo) );
-  SUCCEED_OR_RETURN( pspio_pspinfo_set_description(pspdata->pspinfo, line) );
+  SUCCEED_OR_RETURN( pspio_pspinfo_set_code_name(pspdata->pspinfo, code_name) );
+  SUCCEED_OR_RETURN( pspio_pspinfo_set_description(pspdata->pspinfo, description) );
 
   /* Line 2: read atomic number, Z valence */
-  /* Note: ignoring psp date */
   FULFILL_OR_RETURN( fgets(line, PSPIO_STRLEN_LINE, fp) != NULL, PSPIO_EIO );
-  FULFILL_OR_RETURN( sscanf(line, "%lf %lf", &zatom, &zval) == 2, PSPIO_EFILE_CORRUPT );
+  FULFILL_OR_RETURN( sscanf(line, "%lf %lf %2d%2d%2d", &zatom, &zval, &year, &month, &day) == 5, PSPIO_EFILE_CORRUPT );
   SUCCEED_OR_RETURN( pspio_pspdata_set_z(pspdata, zatom) );
   SUCCEED_OR_RETURN( pspio_pspdata_set_zvalence(pspdata, zval) );
   SUCCEED_OR_RETURN( z_to_symbol(zatom, symbol) );
   SUCCEED_OR_RETURN( pspio_pspdata_set_symbol(pspdata, symbol) );
+  SUCCEED_OR_RETURN( pspio_pspinfo_set_generation_day(pspdata->pspinfo, day) );
+  SUCCEED_OR_RETURN( pspio_pspinfo_set_generation_month(pspdata->pspinfo, month) );
+  SUCCEED_OR_RETURN( pspio_pspinfo_set_generation_year(pspdata->pspinfo, year) );
 
   /* Line 3: read pspcod, pspxc, lmax, lloc, mmax, r2well */
   FULFILL_OR_RETURN( fgets(line, PSPIO_STRLEN_LINE, fp) != NULL, PSPIO_EIO );
@@ -80,7 +86,7 @@ int abinit_read_header(FILE *fp, int format, pspio_pspdata_t *pspdata)
 
   /* Line 4: read rchrg, fchrg, qchrg if NLCC */
   /* Note: tolerance copied from Abinit */
-  /* FIXME: store rchrg, fchrg, qchrg */
+  /* Note: qchrg is not used and might be removed from future formats */
   FULFILL_OR_RETURN( fgets(line, PSPIO_STRLEN_LINE, fp) != NULL, PSPIO_EIO );
   line4 = my_strndup(line, 3);
   if ( strcmp("4--", line4) != 0 ) {
@@ -88,15 +94,26 @@ int abinit_read_header(FILE *fp, int format, pspio_pspdata_t *pspdata)
       &rchrg, &fchrg, &qchrg) == 3, PSPIO_EFILE_CORRUPT );
     if ( fabs(fchrg) >= 1.0e-14 ) {
       pspio_xc_set_nlcc_scheme(pspdata->xc, PSPIO_NLCC_FHI);
+      pspio_xc_set_nlcc_prefactors(pspdata->xc, rchrg, fchrg);
     }
   }
   free(line4);
   RETURN_ON_DEFERRED_ERROR;
 
-  /* Ignore lines 5-7 */
-  FULFILL_OR_RETURN( fgets(line, PSPIO_STRLEN_LINE, fp) != NULL, PSPIO_EIO );
-  FULFILL_OR_RETURN( fgets(line, PSPIO_STRLEN_LINE, fp) != NULL, PSPIO_EIO );
-  FULFILL_OR_RETURN( fgets(line, PSPIO_STRLEN_LINE, fp) != NULL, PSPIO_EIO );
+  /* Ignore lines 5-7, except with format 8 */
+  /* FIXME: do something with multiple projectors */
+  /* FIXME: add spin-orbit support */
+  if ( pspcod == 8 ) {
+    FULFILL_OR_RETURN( fgets(line, PSPIO_STRLEN_LINE, fp) != NULL, PSPIO_EIO );
+    FULFILL_OR_RETURN( sscanf(line, "%d %d %d %d %d", &ppl[0], &ppl[1], &ppl[2], &ppl[3], &ppl[4]) == 5, PSPIO_EFILE_CORRUPT );
+    FULFILL_OR_RETURN( fgets(line, PSPIO_STRLEN_LINE, fp) != NULL, PSPIO_EIO );
+    FULFILL_OR_RETURN( sscanf(line, "%d %d", &npso[0], &npso[1]) == 2, PSPIO_EFILE_CORRUPT );
+    FULFILL_OR_RETURN( ((npso[0] == 1) && (npso[1] == 1)), PSPIO_ENOSUPPORT );
+  } else {
+    FULFILL_OR_RETURN( fgets(line, PSPIO_STRLEN_LINE, fp) != NULL, PSPIO_EIO );
+    FULFILL_OR_RETURN( fgets(line, PSPIO_STRLEN_LINE, fp) != NULL, PSPIO_EIO );
+    FULFILL_OR_RETURN( fgets(line, PSPIO_STRLEN_LINE, fp) != NULL, PSPIO_EIO );
+  }
 
   /* Check that the format found is the one we expected */
   switch (pspcod) {
@@ -148,9 +165,8 @@ int abinit_write_header(FILE *fp, int format, const pspio_pspdata_t *pspdata)
 {
   char pspdate[7];
   int pspxc, have_nlcc;
+  int *ppl;
   double rchrg, fchrg, qchrg;
-  time_t int_now;
-  struct tm *now;
 
   assert(fp != NULL);
   assert(pspdata != NULL);
@@ -161,34 +177,43 @@ int abinit_write_header(FILE *fp, int format, const pspio_pspdata_t *pspdata)
     pspdata->xc->correlation, &pspxc));
 
   /* Line 1: write title */
-  /* FIXME: truncate info to its first line */
-  fprintf(fp, "%s\n", pspio_pspinfo_get_description(pspdata->pspinfo));
+  if ( format == 8 ) {
+    /* FIXME: write core radii */
+    fprintf(fp, "%-3s   %s  r_core= %9.5f %9.5f %9.5f\n",
+            pspio_pspdata_get_symbol(pspdata),
+            pspio_pspinfo_get_code_name(pspdata->pspinfo),
+            0.0, 0.0, 0.0);
+  } else {
+    fprintf(fp, " %3s %s: %s\n", pspio_pspdata_get_symbol(pspdata),
+            pspio_pspinfo_get_code_name(pspdata->pspinfo),
+            psp_scheme_name(pspio_pspdata_get_scheme(pspdata)));
+  }
 
   /* Line 2: write atomic number, Z valence, psp date */
-  int_now = time(NULL);
-  now = localtime(&int_now);
-  sprintf(pspdate, "%2.2d%2.2d%2.2d", 
-    (*now).tm_year % 100, (*now).tm_mon + 1, (*now).tm_mday);
+  sprintf(pspdate, "%2.2d%2.2d%2.2d",
+          pspio_pspinfo_get_generation_year(pspdata->pspinfo),
+          pspio_pspinfo_get_generation_month(pspdata->pspinfo),
+          pspio_pspinfo_get_generation_day(pspdata->pspinfo));
   pspdate[6] = '\0';
-  FULFILL_OR_RETURN( fprintf(fp, "%8.3f %8.3f   %6s   zatom, zion, pspdat\n",
+  FULFILL_OR_RETURN( fprintf(fp, " %11.4f %11.4f %11s   zatom, zion, pspd\n",
     pspdata->z, pspdata->zvalence, pspdate) > 0, PSPIO_EIO );
   
   /* Line 3: write pspcod, pspxc, lmax, lloc, mmax, r2well */
   /* Line 4: write rchrg, fchrg, qchrg if NLCC */
-  /* Lines 5-7: free comments, unused */
+  /* Lines 5-7: free comments, except for 8 */
   switch ( format ) {
   case 4:
   case 5:
   case 6:
+  case 8:
     FULFILL_OR_RETURN(
-        fprintf(fp, "   %d   %d   %d   %d   %d   %8.3f   pspcod, pspxc, lmax, lloc, mmax, r2well\n",
+        fprintf(fp, " %5d %7d %3d %5d %5d %5.1f   pspcod, pspxc, lmax, lloc, mmax, r2well\n",
         format, pspxc, pspdata->l_max, pspdata->l_local,
         pspdata->mesh->np, 0.0) > 0, PSPIO_EIO );
 
-    /* FIXME: write something relevant (bug lp:1348721) */
     if ( have_nlcc ) {
-      rchrg = 0.0;
-      fchrg = 0.0;
+      rchrg = pspdata->xc->nlcc_pf_scale;
+      fchrg = pspdata->xc->nlcc_pf_value;
       qchrg = 0.0;
     } else {
       rchrg = 0.0;
@@ -196,10 +221,19 @@ int abinit_write_header(FILE *fp, int format, const pspio_pspdata_t *pspdata)
       qchrg = 0.0;
     }
     FULFILL_OR_RETURN(
-        fprintf(fp, "%8.3f   %8.3f   %8.3f   rchrg, fchrg, qchrg\n",
+        fprintf(fp, " %11.8f %11.8f %11.8f   rchrg, fchrg, qchrg\n",
         rchrg, fchrg, qchrg) > 0, PSPIO_EIO );
-    FULFILL_OR_RETURN( fprintf(fp, "5--- These two lines are available for giving more information, later\n6\n") > 0, PSPIO_EIO );
-    FULFILL_OR_RETURN( fprintf(fp, "7-Here follows the cpi file from the fhi98pp code-\n") > 0, PSPIO_EIO );
+
+    /* FIXME: get spin-orbit information, no spin-orbit for now */
+    if ( format == 8 ) {
+      ppl = pspio_projectors_per_l(pspdata->projectors, pspdata->n_projectors);
+      FULFILL_OR_RETURN( fprintf(fp, " %5d %5d %5d %5d %5d          nproj\n",
+        ppl[0],ppl[1],ppl[2],ppl[3],ppl[4]) > 0, PSPIO_EIO );
+      FULFILL_OR_RETURN( fprintf(fp, " %5d %5d                      extension_switch\n", 1, 1) > 0, PSPIO_EIO );
+    } else {
+      FULFILL_OR_RETURN( fprintf(fp, "5--- These two lines are available for giving more information, later\n6\n") > 0, PSPIO_EIO );
+      FULFILL_OR_RETURN( fprintf(fp, "7-Here follows the cpi file from the fhi98pp code-\n") > 0, PSPIO_EIO );
+    }
     break;
   default:
     return PSPIO_EFILE_FORMAT;

@@ -1,22 +1,25 @@
-/*
- Copyright (C) 2011 J. Alberdi, M. Oliveira, Y. Pouillon, and M. Verstraete
- Copyright (C) 2014-2015 M. Oliveira
-
- This program is free software; you can redistribute it and/or modify
- it under the terms of the GNU Lesser General Public License as published by
- the Free Software Foundation; either version 3 of the License, or 
- (at your option) any later version.
-
- This program is distributed in the hope that it will be useful,
- but WITHOUT ANY WARRANTY; without even the implied warranty of
- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- GNU Lesser General Public License for more details.
-
- You should have received a copy of the GNU Lesser General Public License
- along with this program; if not, write to the Free Software
- Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-
-*/
+/* Copyright (C) 2011-2016 Joseba Alberdi <alberdi@hotmail.es>
+ *                         Matthieu Verstraete <matthieu.jean.verstraete@gmail.com>
+ *                         Micael Oliveira <micael.oliveira@mpsd.mpg.de>
+ *                         Yann Pouillon <notifications@materialsevolution.es>
+ *
+ * This file is part of Libpspio.
+ *
+ * Libpspio is free software: you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation, version 3 of the License, or (at your option) any later
+ * version.
+ *
+ * Libpspio is distributed in the hope that it will be useful, but WITHOUT ANY
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public License for
+ * more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with Libpspio.  If not, see <http://www.gnu.org/licenses/> or write to
+ * the Free Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
+ * 02110-1301  USA.
+ */
 
 #ifndef PSPIO_PSPDATA_H
 #define PSPIO_PSPDATA_H
@@ -44,9 +47,9 @@
  */
 typedef struct{
   /* general data */
-  pspio_pspinfo_t *pspinfo; /**< Generic nformation about the pseudopotential. */
+  pspio_pspinfo_t *pspinfo; /**< Generic information about the pseudopotential. */
   int format_guessed;/**< Format of the file guessed by pspio_pspdata_read. */
-  char *symbol;      /**< Atomic symbol */
+  char symbol[4];    /**< Atomic symbol */
   double z;          /**< Atomic number */
   double zvalence;   /**< charge of pseudopotential ion - valence electrons */
   double nelvalence; /**< number of electrons - normally equal to zion, except for special cases for ions */
@@ -69,6 +72,7 @@ typedef struct{
 
   /* Non-local projectors */
   int n_projectors;               /**< number of projectors */
+  int *n_projectors_per_l;       /**< number of projectors per angular momentum */
   pspio_projector_t **projectors; /**< projectors */
   int projectors_l_max;           /**< maximum angular momentum of considered in the projectors */
   int l_local;                    /**< angular momentum channel of local potential */
@@ -146,7 +150,7 @@ int pspio_pspdata_set_pspinfo(pspio_pspdata_t *pspdata, const pspio_pspinfo_t *p
  * @param[in] symbol: pointer to atomic symbol
  * @return error code
  */
-int pspio_pspdata_set_symbol(pspio_pspdata_t *pspdata, const char * symbol);
+int pspio_pspdata_set_symbol(pspio_pspdata_t *pspdata, const char symbol[]);
 
 /**
  * @param[in,out] pspdata: pointer to pspdata structure
@@ -240,6 +244,14 @@ int pspio_pspdata_set_potential(pspio_pspdata_t *pspdata, int index, const pspio
  * @return error code
  */
 int pspio_pspdata_set_n_projectors(pspio_pspdata_t *pspdata, int n_projectors);
+
+/**
+ * @param[in,out] pspdata: pointer to pspdata structure
+ * @param[in] n_ppl: array storing the number of projectors for each angular momentum
+ * @note array length must be less than 7
+ * @return error code
+ */
+int pspio_pspdata_set_n_projectors_per_l(pspio_pspdata_t *pspdata, int *n_ppl);
 
 /**
  * @param[in,out] pspdata: pointer to pspdata structure
@@ -386,6 +398,12 @@ const pspio_potential_t * pspio_pspdata_get_potential(const pspio_pspdata_t *psp
  * @return number of projectors
  */
 int pspio_pspdata_get_n_projectors(const pspio_pspdata_t *pspdata);
+
+/**
+ * @param[in] pspdata: pointer to pspdata structure
+ * @return number of projectors per angular momentum (maximum up to l=6)
+ */
+int * pspio_pspdata_get_n_projectors_per_l(const pspio_pspdata_t *pspdata);
 
 /**
  * @param[in] pspdata: pointer to pspdata structure

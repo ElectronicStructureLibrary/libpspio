@@ -1,29 +1,33 @@
-/*
- Copyright (C) 2011-2012 J. Alberdi, M. Oliveira, Y. Pouillon, and M. Verstraete
-
- This program is free software; you can redistribute it and/or modify
- it under the terms of the GNU Lesser General Public License as published by
- the Free Software Foundation; either version 3 of the License, or 
- (at your option) any later version.
-
- This program is distributed in the hope that it will be useful,
- but WITHOUT ANY WARRANTY; without even the implied warranty of
- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- GNU Lesser General Public License for more details.
-
- You should have received a copy of the GNU Lesser General Public License
- along with this program; if not, write to the Free Software
- Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-
-*/
+/* Copyright (C) 2012-2016 Micael Oliveira <micael.oliveira@mpsd.mpg.de>
+ *                         Yann Pouillon <notifications@materialsevolution.es>
+ *
+ * This file is part of Libpspio.
+ *
+ * Libpspio is free software: you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation, version 3 of the License, or (at your option) any later
+ * version.
+ *
+ * Libpspio is distributed in the hope that it will be useful, but WITHOUT ANY
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public License for
+ * more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with Libpspio.  If not, see <http://www.gnu.org/licenses/> or write to
+ * the Free Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
+ * 02110-1301  USA.
+ */
 
 /** 
  * @file upf_write.c
  * @brief routines to write UPF files 
  */
 #include <math.h>
+#include <string.h>
 
 #include "upf.h"
+#include "util.h"
 #include "pspio.h"
 
 #if defined HAVE_CONFIG_H
@@ -33,13 +37,41 @@
 
 void upf_write_info(FILE *fp, const pspio_pspdata_t *pspdata)
 {
-  char *description;
-
-  description = pspio_pspinfo_get_description(pspdata->pspinfo);
+  int i;
+  const pspio_state_t *state = NULL;
+  const pspio_qn_t *qn = NULL;
 
   fprintf(fp, "<PP_INFO>\n");
-  if (description != NULL) {
-    fprintf(fp, "%s", description);
+  if (strcmp(pspio_pspinfo_get_description(pspdata->pspinfo), "")) {
+
+    fprintf(fp, "%s", pspio_pspinfo_get_description(pspdata->pspinfo));
+  } else {
+    fprintf(fp, "Generated using %s", pspio_pspinfo_get_code_name(pspdata->pspinfo));
+    if (strlen(pspio_pspinfo_get_code_version(pspdata->pspinfo)) > 0)
+      fprintf(fp, " Version-%s", pspio_pspinfo_get_code_version(pspdata->pspinfo));
+    fprintf(fp, "\n");
+    fprintf(fp, "Author: %s Generation date: %4d/%2.2d/%2.2d\n",
+            pspio_pspinfo_get_author(pspdata->pspinfo),
+            pspio_pspinfo_get_generation_year(pspdata->pspinfo),
+            pspio_pspinfo_get_generation_month(pspdata->pspinfo),
+            pspio_pspinfo_get_generation_day(pspdata->pspinfo));
+    fprintf(fp, "Pseudopotential for: %s\n", pspio_pspdata_get_symbol(pspdata));
+    /* Would be nice to include some information about xc:
+       fprintf(fp, "Exchange-correlation: %s\n", ?); */
+    fprintf(fp, "The pseudo was generated with a %s calculation\n",
+            psp_relativitic_treatment_name(pspio_pspdata_get_wave_eq(pspdata)));
+    fprintf(fp, "State   n   l    occ     rc         ev\n");
+    for (i=0; i<pspio_pspdata_get_n_states(pspdata); i++) {
+      state = pspio_pspdata_get_state(pspdata, i);
+      qn = pspio_state_get_qn(state);
+      fprintf(fp, "%-6s %2d  %2d  %6.2f  %6.2f  %12.6f\n",
+              pspio_state_get_label(state),
+              pspio_qn_get_n(qn),
+              pspio_qn_get_l(qn),
+              pspio_state_get_occ(state),
+              pspio_state_get_rc(state),
+              pspio_state_get_ev(state));
+    }
   }
   fprintf(fp, "</PP_INFO>\n");
 }
@@ -60,7 +92,7 @@ int upf_write_header(FILE *fp, const pspio_pspdata_t *pspdata)
   fprintf(fp, "   0                   Version Number\n");
  
   /* Write the atomic symbol */
-  fprintf(fp, "  %2s                   Element\n", pspdata->symbol);
+  fprintf(fp, "  %-2s                   Element\n", pspio_pspdata_get_symbol(pspdata));
 
   /* Write the kind of pseudo-potentials US|NC|PAW
      At the moment we only support norm-conversing psp */
@@ -77,8 +109,7 @@ int upf_write_header(FILE *fp, const pspio_pspdata_t *pspdata)
   exchange = pspio_xc_get_exchange(pspdata->xc);
   correlation = pspio_xc_get_correlation(pspdata->xc);
   SUCCEED_OR_RETURN(libxc_to_upf(exchange, correlation, longname, shortname));
-  fprintf(fp, " %20s  %4s Exchange-Correlation functional\n",
-    longname, shortname);
+  fprintf(fp, " %22sExchange-Correlation functional\n", longname);
 
   /* Write the Z valence */
   fprintf(fp, "%17.11f      Z valence\n", pspdata->zvalence);

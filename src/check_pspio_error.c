@@ -1,22 +1,23 @@
-/*
- Copyright (C) 2011 J. Alberdi, M. Oliveira, Y. Pouillon, and M. Verstraete
- Copyright (C) 2015 M. Oliveira
-
- This program is free software; you can redistribute it and/or modify
- it under the terms of the GNU Lesser General Public License as published by
- the Free Software Foundation; either version 3 of the License, or 
- (at your option) any later version.
-
- This program is distributed in the hope that it will be useful,
- but WITHOUT ANY WARRANTY; without even the implied warranty of
- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- GNU Lesser General Public License for more details.
-
- You should have received a copy of the GNU Lesser General Public License
- along with this program; if not, write to the Free Software
- Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-
-*/
+/* Copyright (C) 2011-2016 Micael Oliveira <micael.oliveira@mpsd.mpg.de>
+ *                         Yann Pouillon <notifications@materialsevolution.es>
+ *
+ * This file is part of Libpspio.
+ *
+ * Libpspio is free software: you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation, version 3 of the License, or (at your option) any later
+ * version.
+ *
+ * Libpspio is distributed in the hope that it will be useful, but WITHOUT ANY
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public License for
+ * more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with Libpspio.  If not, see <http://www.gnu.org/licenses/> or write to
+ * the Free Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
+ * 02110-1301  USA.
+ */
 
 /**
  * @file check_pspio_error.c
@@ -108,7 +109,7 @@ END_TEST
 
 START_TEST(test_error_triple)
 {
-  char result[579];
+  char result[PSPIO_STRLEN_ERROR];
 
   ck_assert(pspio_error_add(PSPIO_EVALUE, "test_3_1.c", 311, "dummy31") == PSPIO_EVALUE);
   ck_assert(pspio_error_get_last(NULL) == PSPIO_EVALUE);
@@ -123,12 +124,12 @@ START_TEST(test_error_triple)
   ck_assert(pspio_error_len() == 3);
 
   sprintf(result, "libpspio: ERROR:\n");
-  sprintf(result, "%s  * in test_3_1.c(dummy31):311:\n"
-          "      value error: bad value found (PSPIO_EVALUE)\n", result);
-  sprintf(result, "%s  * in test_3_2.c(dummy32):322:\n"
-          "      file does not exist (PSPIO_ENOFILE)\n", result);
-  sprintf(result, "%s  * in test_3_3.c(dummy33):333:\n"
-          "      error (PSPIO_ERROR)\n", result);
+  sprintf(result+strlen(result), "  * in test_3_1.c(dummy31):311:\n"
+          "      value error: bad value found (PSPIO_EVALUE)\n");
+  sprintf(result+strlen(result), "  * in test_3_2.c(dummy32):322:\n"
+          "      file does not exist (PSPIO_ENOFILE)\n");
+  sprintf(result+strlen(result), "  * in test_3_3.c(dummy33):333:\n"
+          "      error (PSPIO_ERROR)\n");
   err_str = pspio_error_fetchall();
   ck_assert_str_eq(err_str, result);
   free(err_str);

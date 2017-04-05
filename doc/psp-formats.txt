@@ -1,0 +1,9 @@
+Pseudopotential formats - Specifications enforcements needed
+============================================================
+
+Abinit
+------
+
+* Date format is unspecified - check in FHI98PP.
+* LibXC ids must follow APE conventions: -(X + 1000 * C).
+

@@ -1,21 +1,23 @@
-/*
- Copyright (C) 2011-2012 J. Alberdi, M. Oliveira, Y. Pouillon, and M. Verstraete
-
- This program is free software; you can redistribute it and/or modify
- it under the terms of the GNU Lesser General Public License as published by
- the Free Software Foundation; either version 3 of the License, or 
- (at your option) any later version.
-
- This program is distributed in the hope that it will be useful,
- but WITHOUT ANY WARRANTY; without even the implied warranty of
- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- GNU Lesser General Public License for more details.
-
- You should have received a copy of the GNU Lesser General Public License
- along with this program; if not, write to the Free Software
- Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-
-*/
+/* Copyright (C) 2011-2016 Micael Oliveira <micael.oliveira@mpsd.mpg.de>
+ *                         Yann Pouillon <notifications@materialsevolution.es>
+ *
+ * This file is part of Libpspio.
+ *
+ * Libpspio is free software: you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation, version 3 of the License, or (at your option) any later
+ * version.
+ *
+ * Libpspio is distributed in the hope that it will be useful, but WITHOUT ANY
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public License for
+ * more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with Libpspio.  If not, see <http://www.gnu.org/licenses/> or write to
+ * the Free Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
+ * 02110-1301  USA.
+ */
 
 #include <stdlib.h>
 #include <assert.h>
@@ -43,13 +45,16 @@ int pspio_xc_alloc(pspio_xc_t **xc)
   (*xc)->exchange = XC_NONE;
 
   (*xc)->nlcc_scheme = PSPIO_NLCC_NONE;
+  (*xc)->nlcc_pf_scale = 0.0;
+  (*xc)->nlcc_pf_value = 0.0;
   (*xc)->nlcc_dens = NULL;
 
   return PSPIO_SUCCESS;
 }
 
 int pspio_xc_init(pspio_xc_t *xc, int exchange, int correlation,
-		  int nlcc_scheme, const pspio_mesh_t *mesh,
+		  int nlcc_scheme, double nlcc_pfs, double nlcc_pfv,
+		  const pspio_mesh_t *mesh,
 		  const double *cd, const double *cdd, const double *cddd)
 {
   assert(xc != NULL);  
@@ -57,7 +62,10 @@ int pspio_xc_init(pspio_xc_t *xc, int exchange, int correlation,
   SUCCEED_OR_RETURN( pspio_xc_set_exchange(xc, exchange) );
   SUCCEED_OR_RETURN( pspio_xc_set_correlation(xc, correlation) );
   SUCCEED_OR_RETURN( pspio_xc_set_nlcc_scheme(xc, nlcc_scheme) );
-  if ( nlcc_scheme != PSPIO_NLCC_NONE ) {
+  if ( nlcc_scheme == PSPIO_NLCC_NONE ) {
+    SUCCEED_OR_RETURN( pspio_xc_set_nlcc_prefactors(xc, 0.0, 0.0) );
+  } else {
+    SUCCEED_OR_RETURN( pspio_xc_set_nlcc_prefactors(xc, nlcc_pfs, nlcc_pfv) );
     SUCCEED_OR_RETURN( pspio_xc_set_nlcc_density(xc, mesh, cd, cdd, cddd) );
   }
 
@@ -75,6 +83,8 @@ int pspio_xc_copy(pspio_xc_t **dst, const pspio_xc_t *src)
   (*dst)->exchange = src->exchange;
   (*dst)->correlation = src->correlation;
   (*dst)->nlcc_scheme = src->nlcc_scheme;
+  (*dst)->nlcc_pf_scale = src->nlcc_pf_scale;
+  (*dst)->nlcc_pf_value = src->nlcc_pf_value;
 
   if (src->nlcc_scheme != PSPIO_NLCC_NONE) {
     if ( (*dst)->nlcc_dens != NULL) {
@@ -120,6 +130,15 @@ int pspio_xc_set_correlation(pspio_xc_t *xc, int correlation)
   assert(xc != NULL);
 
   xc->correlation = correlation;
+
+  return PSPIO_SUCCESS;
+}
+
+int pspio_xc_set_nlcc_prefactors(pspio_xc_t *xc, double nlcc_pfs,
+      double nlcc_pfv)
+{
+  xc->nlcc_pf_scale = nlcc_pfs;
+  xc->nlcc_pf_value = nlcc_pfv;
 
   return PSPIO_SUCCESS;
 }
@@ -185,6 +204,20 @@ int pspio_xc_get_correlation(const pspio_xc_t *xc)
   return xc->correlation;
 }
 
+int pspio_xc_get_nlcc_pf_scale(const pspio_xc_t *xc)
+{
+  assert(xc != NULL);
+
+  return xc->nlcc_pf_scale;
+}
+
+int pspio_xc_get_nlcc_pf_value(const pspio_xc_t *xc)
+{
+  assert(xc != NULL);
+
+  return xc->nlcc_pf_value;
+}
+
 int pspio_xc_get_nlcc_scheme(const pspio_xc_t *xc)
 {
   assert(xc != NULL);
@@ -213,7 +246,12 @@ int pspio_xc_cmp(const pspio_xc_t *xc1, const pspio_xc_t *xc2) {
     return PSPIO_DIFF;
   } else {
     if (xc1->nlcc_scheme != PSPIO_NLCC_NONE) {
-      return pspio_meshfunc_cmp(xc1->nlcc_dens, xc2->nlcc_dens) == PSPIO_EQUAL ? PSPIO_EQUAL : PSPIO_DIFF;
+      if ( (xc1->nlcc_pf_scale == xc2->nlcc_pf_scale) &&
+                   (xc1->nlcc_pf_value == xc2->nlcc_pf_value) ) {
+        return pspio_meshfunc_cmp(xc1->nlcc_dens, xc2->nlcc_dens) == PSPIO_EQUAL ? PSPIO_EQUAL : PSPIO_DIFF;
+      } else {
+        return PSPIO_DIFF;
+      }
     } else {
       return PSPIO_EQUAL;
     }

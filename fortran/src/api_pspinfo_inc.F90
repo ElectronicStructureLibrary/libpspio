@@ -1,19 +1,22 @@
-!! Copyright (C) 2016 M. Oliveira
+!! Copyright (C) 2016 Micael Oliveira <micael.oliveira@mpsd.mpg.de>
+!!                    Yann Pouillon <notifications@materialsevolution.es>
 !!
-!! This program is free software; you can redistribute it and/or modify
-!! it under the terms of the GNU Lesser General Public License as published by
-!! the Free Software Foundation; either version 3 of the License, or 
-!! (at your option) any later version.
+!! This file is part of Libpspio.
 !!
-!! This program is distributed in the hope that it will be useful,
-!! but WITHOUT ANY WARRANTY; without even the implied warranty of
-!! MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-!! GNU Lesser General Public License for more details.
+!! Libpspio is free software: you can redistribute it and/or modify it under
+!! the terms of the GNU Lesser General Public License as published by the Free
+!! Software Foundation, version 3 of the License, or (at your option) any later
+!! version.
+!!
+!! Libpspio is distributed in the hope that it will be useful, but WITHOUT ANY
+!! WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+!! FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public License for
+!! more details.
 !!
 !! You should have received a copy of the GNU Lesser General Public License
-!! along with this program; if not, write to the Free Software
-!! Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-!!
+!! along with Libpspio.  If not, see <http://www.gnu.org/licenses/> or write to
+!! the Free Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
+!! 02110-1301  USA.
 
 
 !*********************************************************************!
@@ -21,51 +24,38 @@
 !*********************************************************************!
 
 ! alloc
-integer function fpspio_pspinfo_alloc(pspinfo) result(ierr)
-  type(fpspio_pspinfo_t), intent(inout) :: pspinfo
+integer function pspiof_pspinfo_alloc(pspinfo) result(ierr)
+  type(pspiof_pspinfo_t), intent(inout) :: pspinfo
 
   ierr = pspio_pspinfo_alloc(pspinfo%ptr)
 
-end function fpspio_pspinfo_alloc
-
-! init
-integer function fpspio_pspinfo_init(pspinfo, author, code, date, description) result(ierr)
-  type(fpspio_pspinfo_t), intent(inout) :: pspinfo
-  character(len=*),       intent(in)    :: author
-  character(len=*),       intent(in)    :: code
-  character(len=*),       intent(in)    :: date
-  character(len=*),       intent(in)    :: description
-
-  ierr = pspio_pspinfo_init(pspinfo%ptr, f_to_c_string(author), f_to_c_string(code), &
-    f_to_c_string(date), f_to_c_string(description))
-
-end function fpspio_pspinfo_init
+end function pspiof_pspinfo_alloc
 
 ! copy
-integer function fpspio_pspinfo_copy(src, dst) result(ierr)
-  type(fpspio_pspinfo_t), intent(in)    :: src
-  type(fpspio_pspinfo_t), intent(inout) :: dst
+integer function pspiof_pspinfo_copy(src, dst) result(ierr)
+  type(pspiof_pspinfo_t), intent(in)    :: src
+  type(pspiof_pspinfo_t), intent(inout) :: dst
 
   ierr = pspio_pspinfo_copy(src%ptr, dst%ptr)
 
-end function fpspio_pspinfo_copy
+end function pspiof_pspinfo_copy
 
 ! free
-subroutine fpspio_pspinfo_free(pspinfo)
-  type(fpspio_pspinfo_t), intent(inout) :: pspinfo
+subroutine pspiof_pspinfo_free(pspinfo)
+  type(pspiof_pspinfo_t), intent(inout) :: pspinfo
 
   call pspio_pspinfo_free(pspinfo%ptr)
   pspinfo%ptr = C_NULL_PTR
 
-end subroutine fpspio_pspinfo_free
+end subroutine pspiof_pspinfo_free
 
 ! associated
-logical function fpspio_pspinfo_associated(pspinfo) result(is_associated)
-  type(fpspio_pspinfo_t), intent(in) :: pspinfo
+logical function pspiof_pspinfo_associated(pspinfo) result(is_associated)
+  type(pspiof_pspinfo_t), intent(in) :: pspinfo
 
   is_associated = c_associated(pspinfo%ptr)
 
-end function fpspio_pspinfo_associated
+end function pspiof_pspinfo_associated
 
 
 !*********************************************************************!
@@ -73,40 +63,67 @@ end function fpspio_pspinfo_associated
 !*********************************************************************!
 
 ! author
-integer function fpspio_pspinfo_set_author(pspinfo, author) result(ierr)
-  type(fpspio_pspinfo_t), intent(inout) :: pspinfo
+integer function pspiof_pspinfo_set_author(pspinfo, author) result(ierr)
+  type(pspiof_pspinfo_t), intent(inout) :: pspinfo
   character(len=*),       intent(in)    :: author
 
   ierr = pspio_pspinfo_set_author(pspinfo%ptr, f_to_c_string(author))
 
-end function fpspio_pspinfo_set_author
+end function pspiof_pspinfo_set_author
 
-! code
-integer function fpspio_pspinfo_set_code(pspinfo, code) result(ierr)
-  type(fpspio_pspinfo_t), intent(inout) :: pspinfo
-  character(len=*),       intent(in)    :: code
+! code_name
+integer function pspiof_pspinfo_set_code_name(pspinfo, code_name) result(ierr)
+  type(pspiof_pspinfo_t), intent(inout) :: pspinfo
+  character(len=*),       intent(in)    :: code_name
 
-  ierr = pspio_pspinfo_set_code(pspinfo%ptr, f_to_c_string(code))
+  ierr = pspio_pspinfo_set_code_name(pspinfo%ptr, f_to_c_string(code_name))
 
-end function fpspio_pspinfo_set_code
+end function pspiof_pspinfo_set_code_name
 
-! date
-integer function fpspio_pspinfo_set_date(pspinfo, date) result(ierr)
-  type(fpspio_pspinfo_t), intent(inout) :: pspinfo
-  character(len=*),       intent(in)    :: date
+! code_name
+integer function pspiof_pspinfo_set_code_version(pspinfo, code_version) result(ierr)
+  type(pspiof_pspinfo_t), intent(inout) :: pspinfo
+  character(len=*),       intent(in)    :: code_version
 
-  ierr = pspio_pspinfo_set_date(pspinfo%ptr, f_to_c_string(date))
+  ierr = pspio_pspinfo_set_code_version(pspinfo%ptr, f_to_c_string(code_version))
 
-end function fpspio_pspinfo_set_date
+end function pspiof_pspinfo_set_code_version
+
+! generation_day
+integer function pspiof_pspinfo_set_generation_day(pspinfo, day) result(ierr)
+  type(pspiof_pspinfo_t), intent(inout) :: pspinfo
+  integer(c_int),         intent(in)    :: day
+
+  ierr = pspio_pspinfo_set_generation_day(pspinfo%ptr, day)
+
+end function pspiof_pspinfo_set_generation_day
+
+! generation_month
+integer function pspiof_pspinfo_set_generation_month(pspinfo, month) result(ierr)
+  type(pspiof_pspinfo_t), intent(inout) :: pspinfo
+  integer(c_int),         intent(in)    :: month
+
+  ierr = pspio_pspinfo_set_generation_month(pspinfo%ptr, month)
+
+end function pspiof_pspinfo_set_generation_month
+
+! generation_year
+integer function pspiof_pspinfo_set_generation_year(pspinfo, year) result(ierr)
+  type(pspiof_pspinfo_t), intent(inout) :: pspinfo
+  integer(c_int),         intent(in)    :: year
+
+  ierr = pspio_pspinfo_set_generation_year(pspinfo%ptr, year)
+
+end function pspiof_pspinfo_set_generation_year
 
 ! description
-integer function fpspio_pspinfo_set_description(pspinfo, description) result(ierr)
-  type(fpspio_pspinfo_t), intent(inout) :: pspinfo
+integer function pspiof_pspinfo_set_description(pspinfo, description) result(ierr)
+  type(pspiof_pspinfo_t), intent(inout) :: pspinfo
   character(len=*),       intent(in)    :: description
 
   ierr = pspio_pspinfo_set_description(pspinfo%ptr, f_to_c_string(description))
 
-end function fpspio_pspinfo_set_description
+end function pspiof_pspinfo_set_description
 
 
 !*********************************************************************!
@@ -114,36 +131,60 @@ end function fpspio_pspinfo_set_description
 !*********************************************************************!
 
 ! author
-character(len=128) function fpspio_pspinfo_get_author(pspinfo) result(author)
-  type(fpspio_pspinfo_t), intent(in) :: pspinfo
+character(len=256) function pspiof_pspinfo_get_author(pspinfo) result(author)
+  type(pspiof_pspinfo_t), intent(in) :: pspinfo
  
   call c_to_f_string(pspio_pspinfo_get_author(pspinfo%ptr), author)
 
-end function fpspio_pspinfo_get_author
+end function pspiof_pspinfo_get_author
 
-! code
-character(len=128) function fpspio_pspinfo_get_code(pspinfo) result(code)
-  type(fpspio_pspinfo_t), intent(in) :: pspinfo
+! code_name
+character(len=256) function pspiof_pspinfo_get_code_name(pspinfo) result(code_name)
+  type(pspiof_pspinfo_t), intent(in) :: pspinfo
  
-  call c_to_f_string(pspio_pspinfo_get_code(pspinfo%ptr), code)
+  call c_to_f_string(pspio_pspinfo_get_code_name(pspinfo%ptr), code_name)
 
-end function fpspio_pspinfo_get_code
+end function pspiof_pspinfo_get_code_name
 
-! date
-character(len=128) function fpspio_pspinfo_get_date(pspinfo) result(date)
-  type(fpspio_pspinfo_t), intent(in) :: pspinfo
+! code_version
+character(len=256) function pspiof_pspinfo_get_code_version(pspinfo) result(code_version)
+  type(pspiof_pspinfo_t), intent(in) :: pspinfo
+
+  call c_to_f_string(pspio_pspinfo_get_code_version(pspinfo%ptr), code_version)
+
+end function pspiof_pspinfo_get_code_version
+
+! generation_day
+integer function pspiof_pspinfo_get_generation_day(pspinfo) result(day)
+  type(pspiof_pspinfo_t), intent(in) :: pspinfo
  
-  call c_to_f_string(pspio_pspinfo_get_date(pspinfo%ptr), date)
+  day = pspio_pspinfo_get_generation_day(pspinfo%ptr)
 
-end function fpspio_pspinfo_get_date
+end function pspiof_pspinfo_get_generation_day
+
+! generation_month
+integer function pspiof_pspinfo_get_generation_month(pspinfo) result(month)
+  type(pspiof_pspinfo_t), intent(in) :: pspinfo
+
+  month = pspio_pspinfo_get_generation_month(pspinfo%ptr)
+
+end function pspiof_pspinfo_get_generation_month
+
+! generation_year
+integer function pspiof_pspinfo_get_generation_year(pspinfo) result(year)
+  type(pspiof_pspinfo_t), intent(in) :: pspinfo
+
+  year = pspio_pspinfo_get_generation_year(pspinfo%ptr)
+
+end function pspiof_pspinfo_get_generation_year
 
 ! description
-character(len=256) function fpspio_pspinfo_get_description(pspinfo) result(description)
-  type(fpspio_pspinfo_t), intent(in) :: pspinfo
+character(len=256) function pspiof_pspinfo_get_description(pspinfo) result(description)
+  type(pspiof_pspinfo_t), intent(in) :: pspinfo
  
   call c_to_f_string(pspio_pspinfo_get_description(pspinfo%ptr), description)
 
-end function fpspio_pspinfo_get_description
+end function pspiof_pspinfo_get_description
 
 
 !*********************************************************************!
@@ -151,10 +192,10 @@ end function fpspio_pspinfo_get_description
 !*********************************************************************!
 
 ! cmp
-integer function fpspio_pspinfo_cmp(pspinfo1, pspinfo2) result(cmp)
-  type(fpspio_pspinfo_t) :: pspinfo1
-  type(fpspio_pspinfo_t) :: pspinfo2
+integer function pspiof_pspinfo_cmp(pspinfo1, pspinfo2) result(cmp)
+  type(pspiof_pspinfo_t) :: pspinfo1
+  type(pspiof_pspinfo_t) :: pspinfo2
 
   cmp = pspio_pspinfo_cmp(pspinfo1%ptr, pspinfo2%ptr)
 
-end function fpspio_pspinfo_cmp
+end function pspiof_pspinfo_cmp

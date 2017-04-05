@@ -1,21 +1,23 @@
 #
-# Copyright (C) 2012-2015 M. Oliveira, Y. Pouillon
+# Copyright (C) 2011-2016 Micael Oliveira <micael.oliveira@mpsd.mpg.de>
+#                         Yann Pouillon <notifications@materialsevolution.es>
 #
-# This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU Lesser General Public License as published by
-# the Free Software Foundation; either version 3 of the License, or 
-# (at your option) any later version.
+# This file is part of Libpspio.
 #
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU Lesser General Public License for more details.
+# Libpspio is free software: you can redistribute it and/or modify it under the
+# terms of the GNU Lesser General Public License as published by the Free
+# Software Foundation, version 3 of the License, or (at your option) any later
+# version.
+#
+# Libpspio is distributed in the hope that it will be useful, but WITHOUT ANY
+# WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
+# A PARTICULAR PURPOSE.  See the GNU Lesser General Public License for more
+# details.
 #
 # You should have received a copy of the GNU Lesser General Public License
-# along with this program; if not, write to the Free Software
-# Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-#
-#
+# along with Libpspio.  If not, see <http://www.gnu.org/licenses/> or write to
+# the Free Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
+# 02110-1301  USA.
 
 #
 # Makefile for the sources of Libpspio-Fortran
@@ -31,7 +33,7 @@ SUBDIRS = . tests
 
 # Fortran source - keep this in alphabetical order
 fpio_srcs = \
-  fpspio.F90
+  pspiof.F90
 
 fpio_inc_srcs = \
   api_error_inc.F90 \
@@ -61,7 +63,7 @@ fpio_inc_srcs = \
 if F90_MOD_UPPERCASE
   fpio_mods = FPSPIO_M.@ax_cv_f90_modext@
 else
-  fpio_mods = fpspio_m.@ax_cv_f90_modext@
+  fpio_mods = pspiof_m.@ax_cv_f90_modext@
 endif
 
 # Included Fortran files are not distributed by default
@@ -78,16 +80,16 @@ AM_CFLAGS = @CFLAGS_COVERAGE@
 AM_FCFLAGS = @FCFLAGS_COVERAGE@
 
 # Libraries
-lib_LTLIBRARIES = libfpspio.la
+lib_LTLIBRARIES = libpspiof.la
 
-libfpspio_la_LDFLAGS = -version-info 0:0:0
-libfpspio_la_SOURCES = $(fpio_srcs)
+libpspiof_la_LDFLAGS = -version-info 0:0:0
+libpspiof_la_SOURCES = $(fpio_srcs)
 
 # Headers
 nodist_include_HEADERS = $(fpio_mods)
 
 # Force check to build the library first
-check-local: libfpspio.la
+check-local: libpspiof.la
 
                     # ------------------------------------ #
 
@@ -96,9 +98,9 @@ check-local: libfpspio.la
 #
 
 # Fortran
-fpspio.$(LTOBJEXT): $(fpio_inc_srcs)
+pspiof.$(LTOBJEXT): $(fpio_inc_srcs)
 
-$(fpio_mods): fpspio.$(LTOBJEXT)
+$(fpio_mods): pspiof.$(LTOBJEXT)
 	@echo "Modules already built"
 
                     # ------------------------------------ #

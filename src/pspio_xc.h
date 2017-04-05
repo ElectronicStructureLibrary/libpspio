@@ -1,21 +1,23 @@
-/*
- Copyright (C) 2011 J. Alberdi, M. Oliveira, Y. Pouillon, and M. Verstraete
-
- This program is free software; you can redistribute it and/or modify
- it under the terms of the GNU Lesser General Public License as published by
- the Free Software Foundation; either version 3 of the License, or 
- (at your option) any later version.
-
- This program is distributed in the hope that it will be useful,
- but WITHOUT ANY WARRANTY; without even the implied warranty of
- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- GNU Lesser General Public License for more details.
-
- You should have received a copy of the GNU Lesser General Public License
- along with this program; if not, write to the Free Software
- Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-
-*/
+/* Copyright (C) 2011-2016 Micael Oliveira <micael.oliveira@mpsd.mpg.de>
+ *                         Yann Pouillon <notifications@materialsevolution.es>
+ *
+ * This file is part of Libpspio.
+ *
+ * Libpspio is free software: you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation, version 3 of the License, or (at your option) any later
+ * version.
+ *
+ * Libpspio is distributed in the hope that it will be useful, but WITHOUT ANY
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public License for
+ * more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with Libpspio.  If not, see <http://www.gnu.org/licenses/> or write to
+ * the Free Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
+ * 02110-1301  USA.
+ */
 
 /**
  * @file pspio_xc.h
@@ -42,7 +44,9 @@
 typedef struct{
   int exchange;    /**< exchange functional id, taken from libxc conventions */
   int correlation; /**< correlation functional id, taken from libxc conventions */  
-  int nlcc_scheme; /**< Scheme used to obtain the NLCC */
+  int nlcc_scheme; /**< scheme used to obtain the NLCC */
+  double nlcc_pf_scale; /**< prefactor for model scale if NLCC (multiplies core-valence crossover radius), ignored otherwise */
+  double nlcc_pf_value; /**< prefactor for model amplitude if NLCC (multiplies core-valence crossover value), ignored otherwise */
   pspio_meshfunc_t *nlcc_dens; /**< core density, on a radial mesh */
 } pspio_xc_t;
 
@@ -65,6 +69,8 @@ int pspio_xc_alloc(pspio_xc_t **xc);
  * @param[in] exchange: identifier
  * @param[in] correlation: identifier
  * @param[in] nlcc_scheme:  scheme used to obtain core density
+ * @param[in] nlcc_pfs:  NLCC core-valence scale crossover prefactor (radius)
+ * @param[in] nlcc_pfv:  NLCC core-valence value crossover prefactor (amplitude)
  * @param[in] mesh: the radial mesh
  * @param[in] cd: values of the core density on the mesh (optional if nlcc_scheme == PSPIO_NLCC_NONE)
  * @param[in] cdp: values of the core density first derivative on the mesh (optional)
@@ -73,8 +79,10 @@ int pspio_xc_alloc(pspio_xc_t **xc);
  * @note The xc pointer is supposed to have been already allocated
  *       with pspio_xc_alloc.
  */
-int pspio_xc_init(pspio_xc_t *xc, int exchange, int correlation, int nlcc_scheme,
-		  const pspio_mesh_t *mesh, const double *cd, const double *cdd, const double *cddd);
+int pspio_xc_init(pspio_xc_t *xc, int exchange, int correlation,
+		  int nlcc_scheme, double nlcc_pfs, double nlcc_pfv,
+		  const pspio_mesh_t *mesh,
+		  const double *cd, const double *cdd, const double *cddd);
 
 /**
  * Duplicates a xc structure.
@@ -119,7 +127,17 @@ int pspio_xc_set_exchange(pspio_xc_t *xc, int exchange);
 int pspio_xc_set_correlation(pspio_xc_t *xc, int correlation);
 
 /**
- * Sets the xc data.
+ * Sets the NLCC core-valence crossover prefactors.
+ * @param[in,out] xc: xc structure to set
+ * @param[in] nlcc_pfs: prefactor for the crossover scale (radius)
+ * @param[in] nlcc_pfv: prefactor for the crossover value (amplitude)
+ * @return error code
+ */
+int pspio_xc_set_nlcc_prefactors(pspio_xc_t *xc, double nlcc_pfs,
+      double nlcc_pfv);
+
+/**
+ * Sets the NLCC scheme.
  * @param[in,out] xc: xc structure to set
  * @param[in] nlcc_scheme: scheme used to obtain core density
  * @return error code
@@ -159,16 +177,30 @@ int pspio_xc_get_exchange(const pspio_xc_t *xc);
 int pspio_xc_get_correlation(const pspio_xc_t *xc);
 
 /**
+ * Returns the NLCC core-valence crossover scale prefactor (multiplies radius)
+ * @param[in] xc: xc structure
+ * @return the prefactor
+ */
+int pspio_xc_get_nlcc_pf_scale(const pspio_xc_t *xc);
+
+/**
+ * Returns the NLCC core-valence crossover value prefactor (multiplies amplitude)
+ * @param[in] xc: xc structure
+ * @return the prefactor
+ */
+int pspio_xc_get_nlcc_pf_value(const pspio_xc_t *xc);
+
+/**
  * Returns the scheme used to generate the NLCC core density
  * @param[in] xc: xc structure
- * @param[out] nlcc_scheme: the scheme used
+ * @return the scheme used
  */
 int pspio_xc_get_nlcc_scheme(const pspio_xc_t *xc);
 
 /**
  * Returns the core density function
  * @param[in] xc: xc structure
- * @param[out] *cd_func: NLCC core density function defined on the mesh
+ * @return NLCC core density function defined on the mesh
  */
 const pspio_meshfunc_t *pspio_xc_get_nlcc_density(const pspio_xc_t *xc);
 

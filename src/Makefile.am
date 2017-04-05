@@ -1,21 +1,25 @@
 #
-# Copyright (C) 2011-2015 J. Alberdi, M. Oliveira, Y. Pouillon, and M. Verstraete
+# Copyright (C) 2011-2016 Joseba Alberdi <alberdi@hotmail.es>
+#                         Matthieu Verstraete <matthieu.jean.verstraete@gmail.com>
+#                         Micael Oliveira <micael.oliveira@mpsd.mpg.de>
+#                         Yann Pouillon <notifications@materialsevolution.es>
 #
-# This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU Lesser General Public License as published by
-# the Free Software Foundation; either version 3 of the License, or 
-# (at your option) any later version.
+# This file is part of Libpspio.
 #
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU Lesser General Public License for more details.
+# Libpspio is free software: you can redistribute it and/or modify it under the
+# terms of the GNU Lesser General Public License as published by the Free
+# Software Foundation, version 3 of the License, or (at your option) any later
+# version.
+#
+# Libpspio is distributed in the hope that it will be useful, but WITHOUT ANY
+# WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
+# A PARTICULAR PURPOSE.  See the GNU Lesser General Public License for more
+# details.
 #
 # You should have received a copy of the GNU Lesser General Public License
-# along with this program; if not, write to the Free Software
-# Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-#
-#
+# along with Libpspio.  If not, see <http://www.gnu.org/licenses/> or write to
+# the Free Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
+# 02110-1301  USA.
 
 #
 # Makefile for the sources of Libpspio
@@ -33,6 +37,7 @@ pio_core_srcs = \
   abinit_util.c \
   abinit_xc.c \
   fhi.c \
+  oncv.c \
   pspio_error.c \
   pspio_info.c \
   pspio_interp.c \
@@ -79,6 +84,7 @@ pio_hidden_hdrs = \
   abinit.h \
   check_pspio.h \
   fhi.h \
+  oncv.h \
   upf.h \
   util.h
 
