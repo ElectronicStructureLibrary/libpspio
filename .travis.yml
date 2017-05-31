@@ -1,0 +1,20 @@
+language: c
+
+notifications:
+    email:
+        recipients:
+            - devops@materialsevolution.es
+        on_failure: always
+        on_success: change
+
+before_install:
+    - sudo apt-get install -qq check libxml2-dev
+    - ./autogen.sh
+    - ./configure
+
+install:
+    - make
+    - sudo make install
+
+script:
+    - make check
