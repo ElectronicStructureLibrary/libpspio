@@ -8,13 +8,15 @@ notifications:
         on_success: change
 
 before_install:
-    - sudo apt-get install -qq check libxml2-dev
+    - sudo apt-get install -qq autoconf-archive check libxml2-dev
     - ./autogen.sh
     - ./configure
 
 install:
+    - make dist
     - make
     - sudo make install
 
 script:
     - make check
+    - make distcheck
