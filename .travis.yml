@@ -11,7 +11,7 @@ notifications:
         on_success: change
 
 before_install:
-    - sudo apt-get install -qq autoconf-archive check gfortran gsl-bin libgsl-dbg libgsl-dev libxml2-dev
+    - sudo apt-get install -qq autoconf-archive check gfortran gsl-bin libgsl0ldbl libgsl0-dbg libgsl0-dev libxml2-dev
     - ./autogen.sh
     - ./configure
 
