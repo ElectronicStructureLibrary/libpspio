@@ -10,6 +10,11 @@ notifications:
         on_failure: always
         on_success: change
 
+branches:
+    only:
+        - develop
+        - master
+
 before_install:
     - sudo apt-get install -qq autoconf-archive check gfortran gsl-bin libgsl0ldbl libgsl0-dbg libgsl0-dev libxml2-dev
     - ./autogen.sh
