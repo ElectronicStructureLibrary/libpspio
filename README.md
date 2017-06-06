@@ -4,6 +4,7 @@ Pspio
 Library to read and write pseudopotentials in multiple formats
 
 [![Build Status](https://travis-ci.org/ElectronicStructureLibrary/pspio.svg?branch=master)](https://travis-ci.org/ElectronicStructureLibrary/pspio)
+[![Coverage Status](https://coveralls.io/repos/github/ElectronicStructureLibrary/pspio/badge.svg?branch=master)](https://coveralls.io/github/ElectronicStructureLibrary/pspio?branch=master)
 [![Snap Status](https://build.snapcraft.io/badge/pouillon/pspio.svg)](https://build.snapcraft.io/user/pouillon/pspio)
 
 Pspio performs I/O from and to pseudopotential data files so that users

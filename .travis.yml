@@ -1,8 +1,6 @@
 dist: trusty
 sudo: required
 
-language: c
-
 notifications:
     email:
         recipients:
@@ -14,17 +12,40 @@ branches:
     only:
         - develop
         - master
+        - travis
+
+language: c
+compiler: gcc
+
+matrix:
+  include:
+    - os: linux
+      addons:
+        apt:
+          sources:
+            - ubuntu-toolchain-r-test
+          packages:
+            - g++-5
+            - gfortran-5
+            - autoconf-archive
+            - check
+            - gsl-bin
+            - libgsl0ldbl
+            - libgsl0-dbg
+            - libgsl0-dev
+            - libxml2-dbg
+            - libxml2-dev
+      env:
+         - MATRIX_EVAL="CC=gcc-5 && CXX=g++-5 && F77=gfortran-5 && FC=gfortran-5"
 
 before_install:
-    - sudo apt-get install -qq autoconf-archive check gfortran gsl-bin libgsl0ldbl libgsl0-dbg libgsl0-dev libxml2-dev
+    - eval "${MATRIX_EVAL}"
+    - pip install --user cpp-coveralls
     - ./autogen.sh
-    - ./configure
-
-install:
-    - make dist
-    - make -j2
-    - sudo make install
 
 script:
-    - make check
-    - make distcheck
+    - ./configure --enable-gcov && make && make check
+
+after_success:
+  - coveralls --gcov-options '\-lp'
+
