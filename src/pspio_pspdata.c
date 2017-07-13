@@ -31,6 +31,7 @@
 #include "fhi.h"
 #include "upf.h"
 #include "abinit.h"
+#include "oncv.h"
 
 #if defined HAVE_CONFIG_H
 #include "config.h"
@@ -120,6 +121,9 @@ int pspio_pspdata_read(pspio_pspdata_t *pspdata, int file_format,
     case PSPIO_FMT_ABINIT_6:
       ierr = pspio_abinit_read(fp, pspdata, fmt);
       break;
+    case PSPIO_FMT_ABINIT_8:
+      ierr = pspio_oncv_read(fp, pspdata);
+      break;
     case PSPIO_FMT_FHI98PP:
       ierr = pspio_fhi_read(fp, pspdata);
       break;
@@ -147,7 +151,7 @@ int pspio_pspdata_read(pspio_pspdata_t *pspdata, int file_format,
   FULFILL_OR_RETURN( fclose(fp) == 0, PSPIO_EIO );
 
   /* Make sure ierr is not silently ignored */
-  FULFILL_OR_RETURN(ierr == PSPIO_SUCCESS, ierr);
+  FULFILL_OR_RETURN( ierr == PSPIO_SUCCESS, ierr );
 
   /* Create states lookup table */
   SUCCEED_OR_RETURN( pspio_states_lookup_table(pspdata->n_states, pspdata->states, &pspdata->qn_to_istate) );
@@ -177,6 +181,9 @@ int pspio_pspdata_write(pspio_pspdata_t *pspdata, int file_format,
     case PSPIO_FMT_ABINIT_6:
       ierr = pspio_abinit_write(fp, pspdata, file_format);
       break;
+    case PSPIO_FMT_ABINIT_8:
+      ierr = pspio_oncv_write(fp, pspdata);
+      break;
     case PSPIO_FMT_FHI98PP:
       ierr = pspio_fhi_write(fp, pspdata);
       break;
@@ -203,6 +210,7 @@ void pspio_pspdata_reset(pspio_pspdata_t *pspdata)
   assert(pspdata != NULL);
 
   /* General data */
+  pspdata->format_guessed = PSPIO_FMT_UNKNOWN;
   if (pspdata->pspinfo != NULL) {
     pspio_pspinfo_free(pspdata->pspinfo);
     pspdata->pspinfo = NULL;
