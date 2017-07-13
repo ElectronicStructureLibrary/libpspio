@@ -116,10 +116,4 @@ int read_array_4by4(FILE * fp, double *array, int npts);
  */
 int strcmp_nullok(char *s1, char *s2);
 
-/**
- * Fault-tolerant string comparison, allowing any number of arguments to be
- * NULL.
- */
-int strcmp_nullok(char *s1, char *s2);
-
 #endif

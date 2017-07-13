@@ -239,14 +239,6 @@ int pspio_meshfunc_cmp(const pspio_meshfunc_t *meshfunc1,
 
   assert(meshfunc1 != NULL);
   assert(meshfunc2 != NULL);
-  assert(meshfunc1->mesh != NULL);
-  assert(meshfunc2->mesh != NULL);
-  assert(meshfunc1->f != NULL);
-  assert(meshfunc2->f != NULL);
-  assert(meshfunc1->fp != NULL);
-  assert(meshfunc2->fp != NULL);
-  assert(meshfunc1->fpp != NULL);
-  assert(meshfunc2->fpp != NULL);
 
   if ( pspio_mesh_cmp(meshfunc1->mesh, meshfunc2->mesh) == PSPIO_EQUAL) {
     for (i=0; i<pspio_mesh_get_np(meshfunc1->mesh); i++) {
