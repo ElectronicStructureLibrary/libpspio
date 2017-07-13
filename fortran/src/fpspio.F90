@@ -277,7 +277,7 @@ module fpspio_m
   integer(c_int), parameter, public :: PSPIO_NLCC_TETER1 = 3
   integer(c_int), parameter, public :: PSPIO_NLCC_TETER2 = 4
   integer(c_int), parameter, public :: PSPIO_NLCC_ATOM = 5
-  integer(c_int), parameter, public :: PSPIO_NLCC_ONCV = 5
+  integer(c_int), parameter, public :: PSPIO_NLCC_ONCV = 6
   !%%% END PSPIO CONSTANTS
 
 
