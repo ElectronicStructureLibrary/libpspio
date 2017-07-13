@@ -166,16 +166,3 @@ int strcmp_nullok(char *s1, char *s2)
 
   return strcmp(s1, s2);
 }
-
-int strcmp_nullok(char *s1, char *s2)
-{
-  if ( (s1 == NULL) && (s2 == NULL) ) {
-    return strcmp("A", "A");
-  }
-
-  if ( (s1 == NULL) || (s2 == NULL) ) {
-    return strcmp("A", "B");
-  }
-
-  return strcmp(s1, s2);
-}

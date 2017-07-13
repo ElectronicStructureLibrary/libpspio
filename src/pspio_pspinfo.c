@@ -63,11 +63,6 @@ int pspio_pspinfo_alloc(pspio_pspinfo_t **pspinfo)
   (*pspinfo)->time.tm_yday = 0;
   (*pspinfo)->time.tm_isdst = 0;
 
-  if (title != NULL) {
-    pspinfo->title = strdup(title);
-    FULFILL_OR_RETURN(pspinfo->title != NULL, PSPIO_ENOMEM);
-  }
-
   return PSPIO_SUCCESS;
 }
 
@@ -93,7 +88,6 @@ int pspio_pspinfo_copy(pspio_pspinfo_t **dst, const pspio_pspinfo_t *src) {
 void pspio_pspinfo_free(pspio_pspinfo_t *pspinfo)
 {
   if (pspinfo != NULL) {
-    free(pspinfo->title);
     free(pspinfo);
   }
 }
@@ -188,7 +182,7 @@ int pspio_pspinfo_set_description(pspio_pspinfo_t *pspinfo, const char *descript
   FULFILL_OR_RETURN(description != NULL, PSPIO_EVALUE);
 
   if(strlen(description) >= PSPIO_STRLEN_DESCRIPTION)
-    return PSPIO_STRLEN_ERROR;
+    return PSPIO_EVALUE;
   else
     strcpy(pspinfo->description, description);
 
@@ -199,11 +193,10 @@ int pspio_pspinfo_set_title(pspio_pspinfo_t *pspinfo, const char *title)
 {
   assert(pspinfo != NULL);
 
-  FULFILL_OR_RETURN(title != NULL, PSPIO_EVALUE);
-
-  free(pspinfo->title);
-  pspinfo->title = strdup(title);
-  FULFILL_OR_EXIT( pspinfo->title != NULL, PSPIO_ENOMEM );
+  if(strlen(title) >= PSPIO_STRLEN_TITLE)
+    return PSPIO_EVALUE;
+  else
+    strcpy(pspinfo->title, title);
 
   return PSPIO_SUCCESS;
 }

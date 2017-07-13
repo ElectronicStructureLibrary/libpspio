@@ -44,7 +44,7 @@ typedef struct{
   char code_version[PSPIO_STRLEN_LINE];
   struct tm time;
   char description[PSPIO_STRLEN_DESCRIPTION]; /**< descriptive string for content of file read in. Nothing should ever be assumed about its content. */
-  char *title;
+  char title[PSPIO_STRLEN_TITLE];
 } pspio_pspinfo_t;
 
 
