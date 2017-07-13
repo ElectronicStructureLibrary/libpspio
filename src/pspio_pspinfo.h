@@ -139,6 +139,13 @@ int pspio_pspinfo_set_description(pspio_pspinfo_t *pspinfo, const char *descript
  */
 int pspio_pspinfo_set_title(pspio_pspinfo_t *pspinfo, const char *title);
 
+/**
+ * @param[in,out] pspinfo: pointer to pspinfo structure
+ * @param[in] title: pointer to a title of the pseudopotential file
+ * @return error code
+ */
+int pspio_pspinfo_set_title(pspio_pspinfo_t *pspinfo, const char *title);
+
 
 /**********************************************************************
  * Getters                                                            *
@@ -185,6 +192,12 @@ int pspio_pspinfo_get_generation_year(const pspio_pspinfo_t *pspinfo);
  * @return pointer to a description of the pseudopotential file
  */
 const char * pspio_pspinfo_get_description(const pspio_pspinfo_t *pspinfo);
+
+/**
+ * @param[in] pspinfo: pointer to pspinfo structure
+ * @return pointer to a title of the pseudopotential file
+ */
+const char * pspio_pspinfo_get_title(const pspio_pspinfo_t *pspinfo);
 
 /**
  * @param[in] pspinfo: pointer to pspinfo structure

@@ -63,6 +63,11 @@ int pspio_pspinfo_alloc(pspio_pspinfo_t **pspinfo)
   (*pspinfo)->time.tm_yday = 0;
   (*pspinfo)->time.tm_isdst = 0;
 
+  if (title != NULL) {
+    pspinfo->title = strdup(title);
+    FULFILL_OR_RETURN(pspinfo->title != NULL, PSPIO_ENOMEM);
+  }
+
   return PSPIO_SUCCESS;
 }
 
@@ -82,12 +87,16 @@ int pspio_pspinfo_copy(pspio_pspinfo_t **dst, const pspio_pspinfo_t *src) {
   if (src->title != NULL)
     pspio_pspinfo_set_title(*dst, src->title);
 
+  if (src->title != NULL)
+    pspio_pspinfo_set_title(*dst, src->title);
+
   return PSPIO_SUCCESS;
 }
 
 void pspio_pspinfo_free(pspio_pspinfo_t *pspinfo)
 {
   if (pspinfo != NULL) {
+    free(pspinfo->title);
     free(pspinfo->title);
     free(pspinfo);
   }
@@ -203,6 +212,19 @@ int pspio_pspinfo_set_title(pspio_pspinfo_t *pspinfo, const char *title)
   return PSPIO_SUCCESS;
 }
 
+int pspio_pspinfo_set_title(pspio_pspinfo_t *pspinfo, const char *title)
+{
+  assert(pspinfo != NULL);
+
+  FULFILL_OR_RETURN(title != NULL, PSPIO_EVALUE);
+
+  free(pspinfo->title);
+  pspinfo->title = strdup(title);
+  FULFILL_OR_EXIT( pspinfo->title != NULL, PSPIO_ENOMEM );
+
+  return PSPIO_SUCCESS;
+}
+
 
 /**********************************************************************
  * Getters                                                            *
@@ -255,6 +277,13 @@ const char * pspio_pspinfo_get_description(const pspio_pspinfo_t *pspinfo)
   assert(pspinfo != NULL);
 
   return pspinfo->description;
+}
+
+const char * pspio_pspinfo_get_title(const pspio_pspinfo_t *pspinfo)
+{
+  assert(pspinfo != NULL);
+
+  return pspinfo->title;
 }
 
 const char * pspio_pspinfo_get_title(const pspio_pspinfo_t *pspinfo)
