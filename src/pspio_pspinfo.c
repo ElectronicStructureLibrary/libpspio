@@ -51,12 +51,13 @@ int pspio_pspinfo_alloc(pspio_pspinfo_t **pspinfo)
   (*pspinfo)->date = NULL;
   (*pspinfo)->description = NULL;
   (*pspinfo)->scheme_name = NULL;
+  (*pspinfo)->title = NULL;
 
   return PSPIO_SUCCESS;
 }
 
 int pspio_pspinfo_init(pspio_pspinfo_t *pspinfo, const char *author, const char *code,
-                       const char *date, const char *description, const char *scheme_name)
+                       const char *date, const char *description, const char *scheme_name, const char *title)
 {
   assert(pspinfo != NULL);
 
@@ -85,6 +86,11 @@ int pspio_pspinfo_init(pspio_pspinfo_t *pspinfo, const char *author, const char 
     FULFILL_OR_RETURN(pspinfo->scheme_name != NULL, PSPIO_ENOMEM);
   }
 
+  if (title != NULL) {
+    pspinfo->title = strdup(title);
+    FULFILL_OR_RETURN(pspinfo->title != NULL, PSPIO_ENOMEM);
+  }
+
   return PSPIO_SUCCESS;
 }
 
@@ -110,6 +116,9 @@ int pspio_pspinfo_copy(pspio_pspinfo_t **dst, const pspio_pspinfo_t *src) {
   if (src->scheme_name != NULL)
     pspio_pspinfo_set_scheme_name(*dst, src->scheme_name);
 
+  if (src->title != NULL)
+    pspio_pspinfo_set_title(*dst, src->title);
+
   return PSPIO_SUCCESS;
 }
 
@@ -121,6 +130,7 @@ void pspio_pspinfo_free(pspio_pspinfo_t *pspinfo)
     free(pspinfo->date);
     free(pspinfo->description);
     free(pspinfo->scheme_name);
+    free(pspinfo->title);
     free(pspinfo);
   }
 }
@@ -195,6 +205,19 @@ int pspio_pspinfo_set_scheme_name(pspio_pspinfo_t *pspinfo, const char *scheme_n
   return PSPIO_SUCCESS;
 }
 
+int pspio_pspinfo_set_title(pspio_pspinfo_t *pspinfo, const char *title)
+{
+  assert(pspinfo != NULL);
+
+  FULFILL_OR_RETURN(title != NULL, PSPIO_EVALUE);
+
+  free(pspinfo->title);
+  pspinfo->title = strdup(title);
+  FULFILL_OR_EXIT( pspinfo->title != NULL, PSPIO_ENOMEM );
+
+  return PSPIO_SUCCESS;
+}
+
 
 /**********************************************************************
  * Getters                                                            *
@@ -235,6 +258,13 @@ const char * pspio_pspinfo_get_scheme_name(const pspio_pspinfo_t *pspinfo)
   return pspinfo->scheme_name;
 }
 
+const char * pspio_pspinfo_get_title(const pspio_pspinfo_t *pspinfo)
+{
+  assert(pspinfo != NULL);
+
+  return pspinfo->title;
+}
+
 
 /**********************************************************************
  * Utility routines                                                   *
@@ -248,8 +278,9 @@ int pspio_pspinfo_cmp(const pspio_pspinfo_t *pspinfo1, const pspio_pspinfo_t *ps
   if (strcmp(pspinfo1->author, pspinfo2->author) ||
       strcmp(pspinfo1->code, pspinfo2->code) ||
       strcmp(pspinfo1->date, pspinfo2->date) ||
+      strcmp(pspinfo1->description, pspinfo2->description) ||
       strcmp(pspinfo1->scheme_name, pspinfo2->scheme_name) ||
-      strcmp(pspinfo1->description, pspinfo2->description) ) {
+      strcmp(pspinfo1->title, pspinfo2->title) ) {
     return PSPIO_DIFF;
   } else {
     return PSPIO_EQUAL;

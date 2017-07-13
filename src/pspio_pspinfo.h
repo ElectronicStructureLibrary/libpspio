@@ -41,6 +41,7 @@ typedef struct{
   char *date;
   char *description; /**< descriptive string for content of file read in. Nothing should ever be assumed about its content. */
   char *scheme_name;
+  char *title;
 } pspio_pspinfo_t;
 
 
@@ -63,12 +64,15 @@ int pspio_pspinfo_alloc(pspio_pspinfo_t **pspinfo);
  * @param[in] code: pointer to code name
  * @param[in] date: pointer to generation date
  * @param[in] description: pointer to pseudopotential description
+ * @param[in] scheme_name: pointer to pseudopotential scheme
+ * @param[in] title: pointer to pseudopotential title
  * @return error code
  * @note The pspinfo pointer has to be allocated first with the
  *       pspio_pspinfo_alloc method.
  */
 int pspio_pspinfo_init(pspio_pspinfo_t *pspinfo, const char *author, const char *code,
-                       const char *date, const char *description, const char *scheme_name);
+                       const char *date, const char *description,
+                       const char *scheme_name, const char *title);
 
 /**
  * Duplicates a pspinfo structure.
@@ -128,6 +132,13 @@ int pspio_pspinfo_set_description(pspio_pspinfo_t *pspinfo, const char *descript
  */
 int pspio_pspinfo_set_scheme_name(pspio_pspinfo_t *pspinfo, const char *scheme_name);
 
+/**
+ * @param[in,out] pspinfo: pointer to pspinfo structure
+ * @param[in] title: pointer to a title of the pseudopotential file
+ * @return error code
+ */
+int pspio_pspinfo_set_title(pspio_pspinfo_t *pspinfo, const char *title);
+
 
 /**********************************************************************
  * Getters                                                            *
@@ -162,6 +173,12 @@ const char * pspio_pspinfo_get_description(const pspio_pspinfo_t *pspinfo);
  * @return pointer to scheme name.
  */
 const char * pspio_pspinfo_get_scheme_name(const pspio_pspinfo_t *pspinfo);
+
+/**
+ * @param[in] pspinfo: pointer to pspinfo structure
+ * @return pointer to a title of the pseudopotential file
+ */
+const char * pspio_pspinfo_get_title(const pspio_pspinfo_t *pspinfo);
 
 
 /**********************************************************************
