@@ -31,6 +31,7 @@
 
 #include "pspio_pspinfo.h"
 #include "pspio_error.h"
+#include "util.h"
 
 
 /**********************************************************************
@@ -275,12 +276,12 @@ int pspio_pspinfo_cmp(const pspio_pspinfo_t *pspinfo1, const pspio_pspinfo_t *ps
   assert(pspinfo1 != NULL);
   assert(pspinfo2 != NULL);
 
-  if (strcmp(pspinfo1->author, pspinfo2->author) ||
-      strcmp(pspinfo1->code, pspinfo2->code) ||
-      strcmp(pspinfo1->date, pspinfo2->date) ||
-      strcmp(pspinfo1->description, pspinfo2->description) ||
-      strcmp(pspinfo1->scheme_name, pspinfo2->scheme_name) ||
-      strcmp(pspinfo1->title, pspinfo2->title) ) {
+  if (strcmp_nullok(pspinfo1->author, pspinfo2->author) ||
+      strcmp_nullok(pspinfo1->code, pspinfo2->code) ||
+      strcmp_nullok(pspinfo1->date, pspinfo2->date) ||
+      strcmp_nullok(pspinfo1->description, pspinfo2->description) ||
+      strcmp_nullok(pspinfo1->scheme_name, pspinfo2->scheme_name) ||
+      strcmp_nullok(pspinfo1->title, pspinfo2->title) ) {
     return PSPIO_DIFF;
   } else {
     return PSPIO_EQUAL;

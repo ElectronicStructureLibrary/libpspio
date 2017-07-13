@@ -89,4 +89,10 @@ double linear_extrapolation(double x1, double x2, double f1,  double f2, double 
  */
 char * psp_scheme_name(int scheme);
 
+/**
+ * Fault-tolerant string comparison, allowing any number of arguments to be
+ * NULL.
+ */
+int strcmp_nullok(char *s1, char *s2);
+
 #endif
