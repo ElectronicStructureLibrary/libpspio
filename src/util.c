@@ -153,3 +153,16 @@ int read_array_4by4(FILE *fp, double *array, int npts) {
 
   return PSPIO_SUCCESS;
 }
+
+int strcmp_nullok(char *s1, char *s2)
+{
+  if ( (s1 == NULL) && (s2 == NULL) ) {
+    return strcmp("A", "A");
+  }
+
+  if ( (s1 == NULL) || (s2 == NULL) ) {
+    return strcmp("A", "B");
+  }
+
+  return strcmp(s1, s2);
+}

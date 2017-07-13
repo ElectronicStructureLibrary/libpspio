@@ -32,6 +32,7 @@
 
 #include "pspio_pspinfo.h"
 #include "pspio_error.h"
+#include "util.h"
 
 
 /**********************************************************************

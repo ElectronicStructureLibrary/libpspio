@@ -110,4 +110,10 @@ char * psp_relativitic_treatment_name(int wave_eq);
  */
 int read_array_4by4(FILE * fp, double *array, int npts);
 
+/**
+ * Fault-tolerant string comparison, allowing any number of arguments to be
+ * NULL.
+ */
+int strcmp_nullok(char *s1, char *s2);
+
 #endif
