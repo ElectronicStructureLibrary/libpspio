@@ -388,6 +388,7 @@ AC_CONFIG_FILES([
   src/gcov_report
   src/test_memory
   tests/Makefile
-  tests/run_test_format])
+  tests/run_test_format
+  utils/Makefile])
 
 AC_OUTPUT
