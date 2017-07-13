@@ -51,6 +51,7 @@ int pspio_pspinfo_alloc(pspio_pspinfo_t **pspinfo)
   strcpy((*pspinfo)->code_name, "Unknown");
   strcpy((*pspinfo)->code_version, "Unknown");
   strcpy((*pspinfo)->description, "");
+  strcpy((*pspinfo)->title, "");
   (*pspinfo)->time.tm_sec = 0;
   (*pspinfo)->time.tm_min = 0;
   (*pspinfo)->time.tm_hour = 0;
@@ -77,12 +78,16 @@ int pspio_pspinfo_copy(pspio_pspinfo_t **dst, const pspio_pspinfo_t *src) {
   strcpy((*dst)->description, src->description);
   (*dst)->time = src->time;
 
+  if (src->title != NULL)
+    pspio_pspinfo_set_title(*dst, src->title);
+
   return PSPIO_SUCCESS;
 }
 
 void pspio_pspinfo_free(pspio_pspinfo_t *pspinfo)
 {
   if (pspinfo != NULL) {
+    free(pspinfo->title);
     free(pspinfo);
   }
 }
@@ -184,6 +189,19 @@ int pspio_pspinfo_set_description(pspio_pspinfo_t *pspinfo, const char *descript
   return PSPIO_SUCCESS;
 }
 
+int pspio_pspinfo_set_title(pspio_pspinfo_t *pspinfo, const char *title)
+{
+  assert(pspinfo != NULL);
+
+  FULFILL_OR_RETURN(title != NULL, PSPIO_EVALUE);
+
+  free(pspinfo->title);
+  pspinfo->title = strdup(title);
+  FULFILL_OR_EXIT( pspinfo->title != NULL, PSPIO_ENOMEM );
+
+  return PSPIO_SUCCESS;
+}
+
 
 /**********************************************************************
  * Getters                                                            *
@@ -238,6 +256,13 @@ const char * pspio_pspinfo_get_description(const pspio_pspinfo_t *pspinfo)
   return pspinfo->description;
 }
 
+const char * pspio_pspinfo_get_title(const pspio_pspinfo_t *pspinfo)
+{
+  assert(pspinfo != NULL);
+
+  return pspinfo->title;
+}
+
 
 /**********************************************************************
  * Utility routines                                                   *
@@ -255,7 +280,8 @@ int pspio_pspinfo_cmp(const pspio_pspinfo_t *pspinfo1, const pspio_pspinfo_t *ps
         strcmp(pspinfo1->code_name, pspinfo2->code_name) ||
         strcmp(pspinfo1->code_version, pspinfo2->code_version) ||
         difftime(mktime(&time1), mktime(&time2)) ||
-        strcmp(pspinfo1->description, pspinfo2->description) ) {
+        strcmp(pspinfo1->description, pspinfo2->description) ||
+        strcmp(pspinfo1->title, pspinfo2->title) ) {
       return PSPIO_DIFF;
     } else {
       return PSPIO_EQUAL;
