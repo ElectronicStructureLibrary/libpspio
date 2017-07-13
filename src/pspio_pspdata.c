@@ -687,6 +687,7 @@ int * pspio_pspdata_get_n_projectors_per_l(const pspio_pspdata_t *pspdata)
 const pspio_projector_t * pspio_pspdata_get_projector(const pspio_pspdata_t *pspdata, int index)
 {
   assert(pspdata != NULL);
+  assert(pspdata->projectors != NULL);
 
   return pspdata->projectors[index];
 }
