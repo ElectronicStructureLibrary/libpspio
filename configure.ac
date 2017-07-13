@@ -385,6 +385,7 @@ AC_CONFIG_FILES([
   src/gcov_check_coverage
   src/gcov_clean
   src/gcov_report
-  src/test_memory])
+  src/test_memory
+  utils/Makefile])
 
 AC_OUTPUT

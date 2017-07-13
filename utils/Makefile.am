@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2011-2016 Yann Pouillon <notifications@materialsevolution.es>
+# Copyright (C) 2017      Yann Pouillon <notifications@materialsevolution.es>
 #
 # This file is part of Libpspio.
 #
@@ -19,21 +19,30 @@
 # 02110-1301  USA.
 
 #
-# Top makefile for Libpspio
+# Makefile for the utilities of Libpspio
 #
 
-# Autotools parameters
-ACLOCAL_AMFLAGS = -I config/m4
+                    # ------------------------------------ #
 
-# Main tasks
-SUBDIRS = src utils
-if DO_BUILD_FORTRAN
-  SUBDIRS += fortran
-endif
+#
+# Programs
+#
 
-# Source tarball
-EXTRA_DIST = \
-  Doxyfile \
-  psp_references
+noinst_PROGRAMS = pspio_diff pspio_loop
 
-DISTCLEANFILES = libpspio-*.tar.gz
+pspio_diff_SOURCES = pspio_diff.c
+pspio_diff_CPPFLAGS = -I$(top_srcdir)/src
+pspio_diff_LDADD = ../src/libpspio.la $(LIBS_COVERAGE)
+
+pspio_loop_SOURCES = pspio_loop.c
+pspio_loop_CPPFLAGS = -I$(top_srcdir)/src
+pspio_loop_LDADD = ../src/libpspio.la $(LIBS_COVERAGE)
+
+                    # ------------------------------------ #
+
+#
+# Clean targets
+#
+
+# Temporary test outputs
+MOSTLYCLEANFILES = *.gcda *.gcno *.gcov test_*.tmp
