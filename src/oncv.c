@@ -194,7 +194,7 @@ int pspio_oncv_write(FILE *fp, const pspio_pspdata_t *pspdata)
       FULFILL_OR_RETURN( fprintf(fp, "%4d\n", l) > 0, PSPIO_EIO );
       for (ir=0; ir<pspdata->mesh->np; ir++) {
         FULFILL_OR_RETURN( fprintf(fp, "%6d %21.13E %21.13E\n",
-          ir+1, pspdata->mesh->r[ir], pspdata->vlocal->v[ir]) > 0, PSPIO_EIO );
+          ir+1, pspdata->mesh->r[ir], pspdata->vlocal->v->f[ir]) > 0, PSPIO_EIO );
       }
     } else if ( pspdata->n_projectors_per_l[l] == 1 ) {
       for (ip=0; ip<pspdata->n_projectors; ip++) {
