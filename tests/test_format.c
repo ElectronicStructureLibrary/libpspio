@@ -17,7 +17,7 @@ const size_t DIFF_SIZE = 4095;
 int main(int argc, char **argv) {
 
   char *cmd = NULL;
-  char *psp_rd = NULL, *psp_wr = NULL;
+  char *psp_rd = NULL, *psp_wr = NULL, *my_fmt = NULL;
   char psp_diff[DIFF_SIZE+1];
   int ierr, psp_fmt;
   size_t cmd_size;
@@ -25,18 +25,61 @@ int main(int argc, char **argv) {
 
   /* Get format and input file */
   if ( argc == 3 ) {
-    psp_fmt = atoi(argv[1]);
+    my_fmt = argv[1];
     psp_rd = argv[2];
   } else {
     fprintf(stderr, "Usage: test_format int(format) file\n");
     return 1;
   }
 
+  /* Convert format */
+  if ( strcmp(my_fmt, "abinit1") == 0 ) {
+      psp_fmt = PSPIO_FMT_ABINIT_1;
+  } else if ( strcmp(my_fmt, "abinit2") == 0 ) {
+      psp_fmt = PSPIO_FMT_ABINIT_2;
+  } else if ( strcmp(my_fmt, "abinit3") == 0 ) {
+      psp_fmt = PSPIO_FMT_ABINIT_3;
+  } else if ( strcmp(my_fmt, "abinit4") == 0 ) {
+      psp_fmt = PSPIO_FMT_ABINIT_4;
+  } else if ( strcmp(my_fmt, "abinit5") == 0 ) {
+      psp_fmt = PSPIO_FMT_ABINIT_5;
+  } else if ( strcmp(my_fmt, "abinit6") == 0 ) {
+      psp_fmt = PSPIO_FMT_ABINIT_6;
+  } else if ( strcmp(my_fmt, "abinit7") == 0 ) {
+      psp_fmt = PSPIO_FMT_ABINIT_7;
+  } else if ( strcmp(my_fmt, "abinit8") == 0 ) {
+      psp_fmt = PSPIO_FMT_ABINIT_8;
+  } else if ( strcmp(my_fmt, "abinit9") == 0 ) {
+      psp_fmt = PSPIO_FMT_ABINIT_9;
+  } else if ( strcmp(my_fmt, "abinit10") == 0 ) {
+      psp_fmt = PSPIO_FMT_ABINIT_10;
+  } else if ( strcmp(my_fmt, "abinit11") == 0 ) {
+      psp_fmt = PSPIO_FMT_ABINIT_11;
+  } else if ( strcmp(my_fmt, "abinit17") == 0 ) {
+      psp_fmt = PSPIO_FMT_ABINIT_17;
+  } else if ( strcmp(my_fmt, "atom") == 0 ) {
+      psp_fmt = PSPIO_FMT_ATOM;
+  } else if ( strcmp(my_fmt, "fhi98pp") == 0 ) {
+      psp_fmt = PSPIO_FMT_FHI98PP;
+  } else if ( strcmp(my_fmt, "octopus_hgh") == 0 ) {
+      psp_fmt = PSPIO_FMT_OCTOPUS_HGH;
+  } else if ( strcmp(my_fmt, "siesta") == 0 ) {
+      psp_fmt = PSPIO_FMT_SIESTA;
+  } else if ( strcmp(my_fmt, "upf") == 0 ) {
+      psp_fmt = PSPIO_FMT_UPF;
+  } else if ( strcmp(my_fmt, "xml") == 0 ) {
+      psp_fmt = PSPIO_FMT_XML;
+  } else {
+    pspio_error_add(PSPIO_EFILE_FORMAT, __FILE__, __LINE__, "main");
+    pspio_error_flush(stderr);
+    return 2;
+  }
+
   /* Prepare data structure */
   ierr = pspio_pspdata_alloc(&data);
   if ( ierr != PSPIO_SUCCESS ) {
     pspio_error_flush(stderr);
-    return 2;
+    return 3;
   }
 
   /* Load input data */

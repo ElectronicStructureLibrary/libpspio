@@ -167,7 +167,7 @@ int abinit_read_header(FILE *fp, int format, pspio_pspdata_t *pspdata)
 int abinit_write_header(FILE *fp, int format, const pspio_pspdata_t *pspdata)
 {
   char pspdate[7];
-  int pspxc, have_nlcc;
+  int pspcod, pspxc, have_nlcc;
   int *ppl;
   double rchrg, fchrg, qchrg;
 
@@ -179,8 +179,50 @@ int abinit_write_header(FILE *fp, int format, const pspio_pspdata_t *pspdata)
   SUCCEED_OR_RETURN(libxc_to_abinit(pspdata->xc->exchange, \
     pspdata->xc->correlation, &pspxc));
 
+  /* Set pspcod */
+  switch (format) {
+  case PSPIO_FMT_ABINIT_1:
+    pspcod = 1;
+    break;
+  case PSPIO_FMT_ABINIT_2:
+    pspcod = 2;
+    break;
+  case PSPIO_FMT_ABINIT_3:
+    pspcod = 3;
+    break;
+  case PSPIO_FMT_ABINIT_4:
+    pspcod = 4;
+    break;
+  case PSPIO_FMT_ABINIT_5:
+    pspcod = 5;
+    break;
+  case PSPIO_FMT_ABINIT_6:
+    pspcod = 6;
+    break;
+  case PSPIO_FMT_ABINIT_7:
+    pspcod = 7;
+    break;
+  case PSPIO_FMT_ABINIT_8:
+    pspcod = 8;
+    break;
+  case PSPIO_FMT_ABINIT_9:
+    pspcod = 9;
+    break;
+  case PSPIO_FMT_ABINIT_10:
+    pspcod = 10;
+    break;
+  case PSPIO_FMT_ABINIT_11:
+    pspcod = 11;
+    break;
+  case PSPIO_FMT_ABINIT_17:
+    pspcod = 17;
+    break;
+  default:
+    RETURN_WITH_ERROR(PSPIO_EFILE_FORMAT);
+  }
+
   /* Line 1: write title */
-  if ( format == 8 ) {
+  if ( format == PSPIO_FMT_ABINIT_8 ) {
     /* FIXME: write core radii */
     fprintf(fp, "%-3s   %s  r_core= %9.5f %9.5f %9.5f\n",
             pspio_pspdata_get_symbol(pspdata),
@@ -203,13 +245,13 @@ int abinit_write_header(FILE *fp, int format, const pspio_pspdata_t *pspdata)
   /* Line 4: write rchrg, fchrg, qchrg if NLCC */
   /* Lines 5-7: free comments, except for 8 */
   switch ( format ) {
-  case 4:
-  case 5:
-  case 6:
-  case 8:
+  case PSPIO_FMT_ABINIT_4:
+  case PSPIO_FMT_ABINIT_5:
+  case PSPIO_FMT_ABINIT_6:
+  case PSPIO_FMT_ABINIT_8:
     FULFILL_OR_RETURN(
         fprintf(fp, " %5d %7d %3d %5d %5d %5.1f   pspcod, pspxc, lmax, lloc, mmax, r2well\n",
-        format, pspxc, pspdata->l_max, pspdata->l_local,
+        pspcod, pspxc, pspdata->l_max, pspdata->l_local,
         pspdata->mesh->np, 0.0) > 0, PSPIO_EIO );
 
     if ( have_nlcc ) {
@@ -226,7 +268,7 @@ int abinit_write_header(FILE *fp, int format, const pspio_pspdata_t *pspdata)
         rchrg, fchrg, qchrg) > 0, PSPIO_EIO );
 
     /* FIXME: get spin-orbit information, no spin-orbit for now */
-    if ( format == 8 ) {
+    if ( format == PSPIO_FMT_ABINIT_8 ) {
       ppl = pspio_projectors_per_l(pspdata->projectors, pspdata->n_projectors);
       FULFILL_OR_RETURN( fprintf(fp, " %5d %5d %5d %5d %5d          nproj\n",
         ppl[0],ppl[1],ppl[2],ppl[3],ppl[4]) > 0, PSPIO_EIO );

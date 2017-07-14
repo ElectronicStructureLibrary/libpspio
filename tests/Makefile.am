@@ -33,7 +33,7 @@ AM_CPPFLAGS = -I@srcdir@/../src
 check_PROGRAMS = test_format
 
 test_format_SOURCES = test_format.c
-test_format_LDADD = ../src/libpspio.la
+test_format_LDADD = ../src/libpspio.la $(LIBS_COVERAGE)
 
                     # ------------------------------------ #
 
@@ -42,26 +42,26 @@ test_format_LDADD = ../src/libpspio.la
 #
 
 pio_tests_fmt_supported = \
-  run_test_format_6 \
-  run_test_format_14 \
-  run_test_format_17
+  run_test_format_abinit6 \
+  run_test_format_fhi98pp \
+  run_test_format_upf
 
 pio_tests_fmt_unsupported = \
-  run_test_format_1 \
-  run_test_format_2 \
-  run_test_format_3 \
-  run_test_format_4 \
-  run_test_format_5 \
-  run_test_format_7 \
-  run_test_format_8 \
-  run_test_format_9 \
-  run_test_format_10 \
-  run_test_format_11 \
-  run_test_format_12 \
-  run_test_format_13 \
-  run_test_format_15 \
-  run_test_format_16 \
-  run_test_format_18
+  run_test_format_abinit1 \
+  run_test_format_abinit2 \
+  run_test_format_abinit3 \
+  run_test_format_abinit4 \
+  run_test_format_abinit5 \
+  run_test_format_abinit7 \
+  run_test_format_abinit8 \
+  run_test_format_abinit9 \
+  run_test_format_abinit10 \
+  run_test_format_abinit11 \
+  run_test_format_abinit17 \
+  run_test_format_atom \
+  run_test_format_octopus_hgh \
+  run_test_format_siesta \
+  run_test_format_xml
 
 pio_tests_fmt = \
   $(pio_tests_fmt_supported) \

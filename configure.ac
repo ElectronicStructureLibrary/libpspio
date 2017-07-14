@@ -272,6 +272,9 @@ if test "${enable_debug}" = "yes"; then
 fi
 CPPFLAGS="${CPPFLAGS} -DDEBUG_LEVEL=${pio_dbg_level}"
 
+# Inform Automake
+AM_CONDITIONAL([DO_DEBUG], [test "${enable_debug}" = "yes"])
+
 # ---------------------------------------------------------------------------- #
 
 #
@@ -389,7 +392,8 @@ AC_CONFIG_COMMANDS([script-perms],
     src/gcov_clean \
     src/gcov_report \
     src/test_memory \
-    tests/run_test_format
+    tests/run_test_format \
+    utils/test_pspio_formats
   ])
 
 AC_CONFIG_FILES([
@@ -401,6 +405,7 @@ AC_CONFIG_FILES([
   src/test_memory
   tests/Makefile
   tests/run_test_format
-  utils/Makefile])
+  utils/Makefile
+  utils/test_pspio_formats])
 
 AC_OUTPUT

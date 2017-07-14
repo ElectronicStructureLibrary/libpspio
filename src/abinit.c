@@ -89,15 +89,13 @@ int pspio_abinit_write(FILE *fp, const pspio_pspdata_t *pspdata, int format)
   switch (format) {
   case PSPIO_FMT_ABINIT_6:
     ierr = abinit_write_header(fp, format, pspdata);
-    if (ierr == PSPIO_SUCCESS) {
-      ierr = pspio_fhi_write(fp, pspdata);
-    }
+    SKIP_FUNC_ON_ERROR(pspio_fhi_write(fp, pspdata));
+    ierr = pspio_error_get_last(__func__);
     break;
   case PSPIO_FMT_ABINIT_8:
     ierr = abinit_write_header(fp, format, pspdata);
-    if (ierr == PSPIO_SUCCESS) {
-      ierr = pspio_oncv_write(fp, pspdata);
-    }
+    SKIP_FUNC_ON_ERROR(pspio_oncv_write(fp, pspdata));
+    ierr = pspio_error_get_last(__func__);
     break;
   case PSPIO_FMT_ABINIT_1:
   case PSPIO_FMT_ABINIT_2:

@@ -1,7 +1,7 @@
 #!/bin/sh
 
 my_name=`basename "${0}"`
-my_fmt=`echo "${my_name}" | cut -d_ -f4`
+my_fmt=`echo "${my_name}" | cut -d_ -f4-`
 psp_root="@srcdir@/../psp_references"
 
 if test "${my_fmt}" = ""; then
@@ -10,26 +10,62 @@ if test "${my_fmt}" = ""; then
 fi
 
 case "${my_fmt}" in
-  1|2|3|4|5|6|7|8|9|10|11|12)
-    psp_dir="abinit${my_fmt}"
+  abinit1)
+    psp_dir="abinit1"
     ;;
-  13)
+  abinit2)
+    psp_dir="abinit2"
+    ;;
+  abinit3)
+    psp_dir="abinit3"
+    ;;
+  abinit4)
+    psp_dir="abinit4"
+    ;;
+  abinit5)
+    psp_dir="abinit5"
+    ;;
+  abinit6)
+    psp_dir="abinit6"
+    ;;
+  abinit7)
+    psp_dir="abinit7"
+    ;;
+  abinit8)
+    psp_dir="abinit8"
+    ;;
+  abinit9)
+    psp_dir="abinit9"
+    ;;
+  abinit10)
+    psp_dir="abinit10"
+    ;;
+  abinit11)
+    psp_dir="abinit11"
+    ;;
+  abinit17)
+    psp_dir="abinit17"
+    ;;
+  atom)
     psp_dir="atom"
     ;;
-  14)
+  fhi98pp)
     psp_dir="fhi"
     ;;
-  15)
+  octopus_hgh)
     psp_dir="octopus_hgh"
     ;;
-  16)
+  siesta)
     psp_dir="siesta"
     ;;
-  17)
+  upf)
     psp_dir="UPF"
     ;;
+  xml)
+    psp_dir="xml"
+    ;;
   *)
-    echo "${my_name}: unknown pseudopotential format" >&2
+    echo "${my_name}: unknown pseudopotential format '${my_fmt}'" >&2
     exit 102
     ;;
 esac
@@ -42,6 +78,7 @@ fi
 ret=0
 for psp_file in ${psp_root}/${psp_dir}/*; do
   if test "`basename ${psp_file}`" != "README"; then
+    echo "./test_format ${my_fmt} ${psp_file}" >&2
     ./test_format "${my_fmt}" "${psp_file}"
     ret="${?}"
     test "${ret}" = "0" || break

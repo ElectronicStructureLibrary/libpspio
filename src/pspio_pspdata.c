@@ -174,7 +174,6 @@ int pspio_pspdata_write(pspio_pspdata_t *pspdata, int file_format,
 
   /* Write to file in the selected format */
   switch(file_format) {
-    case PSPIO_FMT_ABINIT_5:
     case PSPIO_FMT_ABINIT_6:
       ierr = pspio_abinit_write(fp, pspdata, file_format);
       break;

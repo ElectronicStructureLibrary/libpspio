@@ -28,7 +28,11 @@
 # Programs
 #
 
+#if DO_DEBUG
+check_PROGRAMS = pspio_diff pspio_loop
+#else
 noinst_PROGRAMS = pspio_diff pspio_loop
+#endif
 
 pspio_diff_SOURCES = pspio_diff.c
 pspio_diff_CPPFLAGS = -I$(top_srcdir)/src
@@ -38,11 +42,19 @@ pspio_loop_SOURCES = pspio_loop.c
 pspio_loop_CPPFLAGS = -I$(top_srcdir)/src
 pspio_loop_LDADD = ../src/libpspio.la $(LIBS_COVERAGE)
 
+#if DO_DEBUG
+TESTS = test_pspio_formats
+#endif
+
                     # ------------------------------------ #
 
 #
 # Clean targets
 #
+
+# Temporary test directories
+mostlyclean-local:
+	rm -rf tmp-tests
 
 # Temporary test outputs
 MOSTLYCLEANFILES = *.gcda *.gcno *.gcov test_*.tmp

@@ -1,0 +1,75 @@
+#!/usr/bin/env python3
+
+import os
+import re
+import subprocess
+import yaml
+
+
+# Get script path
+ref_dir = os.path.join("@top_srcdir@", "psp_references")
+script_dir = "@builddir@"
+
+# Report template
+yaml_report = """\
+%YAML 1.1
+---
+
+test_loop:
+@%LOOP_REPORT%@
+
+test_diff:
+@%DIFF_REPORT%@
+
+@%ELOG_REPORT%@
+...
+"""
+
+# Init environment
+workdir = os.path.join(script_dir, "tmp-tests")
+pio_loop = os.path.join(script_dir, "pspio_loop")
+pio_diff = os.path.join(script_dir, "pspio_diff")
+if ( not os.path.exists(workdir) ):
+    os.makedirs(workdir)
+
+loop_report = ""
+diff_report = ""
+errors = {"loop_errors": [], "diff_errors": []}
+
+# Go through all available files
+for root, dirs, files in os.walk(ref_dir):
+    for ref_name in [item for item in files if item != "README"]:
+        ref_file = os.path.join(root, ref_name)
+        chk_file = os.path.join(workdir, ref_name)
+
+        cmd = [pio_loop, ref_file, chk_file]
+        chk_proc = subprocess.Popen(cmd, stdin=subprocess.PIPE,
+            stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        stdout, stderr = chk_proc.communicate()
+        loop_report += stdout.decode("utf-8")
+        errors["loop_errors"].append({"file": ref_name,
+            "errors": stderr.decode("utf-8")})
+
+        cmd = [pio_diff, ref_file, chk_file]
+        chk_proc = subprocess.Popen(cmd, stdin=subprocess.PIPE,
+            stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        stdout, stderr = chk_proc.communicate()
+        diff_report += stdout.decode("utf-8")
+        errors["diff_errors"].append({"file": ref_name,
+            "errors": stderr.decode("utf-8")})
+
+# Prepare substitutions
+substs = {
+    "LOOP_REPORT": loop_report,
+    "DIFF_REPORT": diff_report,
+    "ELOG_REPORT": yaml.dump(errors),
+}
+
+# Dump YAML report
+report = yaml_report
+report_file = os.path.join(workdir, "test_pspio_formats_report.yml")
+for key in substs:
+    report = re.sub("@%%%s%%@" % key, substs[key], report)
+with open(report_file, "w") as yaml_file:
+    yaml_file.write(report)
+    print("Wrote", report_file)

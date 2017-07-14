@@ -34,7 +34,8 @@ int main(int argc, char **argv)
   char *chk, *ref;
   int fmt = PSPIO_FMT_UNKNOWN, ret, pspcmp[8];
   pspio_pspdata_t *pchk = NULL, *pref = NULL;
-  pspio_potential_t *pi1, *pi2;
+  pspio_potential_t *vl1, *vl2;
+  pspio_meshfunc_t *rv1, *rv2;
 
   if ( argc < 3 ) {
     return 10;
@@ -81,27 +82,25 @@ int main(int argc, char **argv)
     if ( (pchk->n_projectors > 0) && (pref->n_projectors > 0) ) {
       pspcmp[4] = pspio_projector_cmp(pspio_pspdata_get_projector(pchk, 0), pspio_pspdata_get_projector(pref, 0));
     } else {
-      pspcmp[4] = 0;
+      pspcmp[4] = -128;
     }
-    fprintf(stderr, "C5\n"); fflush(stderr);
-    pi1 = pspio_pspdata_get_vlocal(pchk);
-    assert(pi1 != NULL);
-    fprintf(stderr, "C5A\n"); fflush(stderr);
-    pi2 = pspio_pspdata_get_vlocal(pref);
-    assert(pi2 != NULL);
-    fprintf(stderr, "C5B\n"); fflush(stderr);
-    pspcmp[5] = pspio_potential_cmp(pi1, pi2);
-    fprintf(stderr, "C5C\n"); fflush(stderr);
-    //pspcmp[5] = pspio_potential_cmp(pspio_pspdata_get_vlocal(pchk), \
-    //      pspio_pspdata_get_vlocal(pref));
-    fprintf(stderr, "C6\n"); fflush(stderr);
+    vl1 = pspio_pspdata_get_vlocal(pchk);
+    vl2 = pspio_pspdata_get_vlocal(pref);
+    if ( (vl1 != NULL) && (vl2 != NULL) ) {
+      pspcmp[5] = pspio_potential_cmp(vl1, vl2);
+    } else {
+      pspcmp[5] = -128;
+    }
     pspcmp[6] = pspio_xc_cmp(pspio_pspdata_get_xc(pchk), \
           pspio_pspdata_get_xc(pref));
-    fprintf(stderr, "C7\n"); fflush(stderr);
-    pspcmp[7] = pspio_meshfunc_cmp(pspio_pspdata_get_rho_valence(pchk), \
-         pspio_pspdata_get_rho_valence(pref));
+    rv1 = pspio_pspdata_get_rho_valence(pchk);
+    rv2 = pspio_pspdata_get_rho_valence(pref);
+    if ( (vl1 != NULL) && (vl2 != NULL) ) {
+      pspcmp[7] = pspio_meshfunc_cmp(rv1, rv2);
+    } else {
+      pspcmp[7] = -128;
+    }
 
-    fprintf(stderr, "C8\n"); fflush(stderr);
     printf("- {ref: '%s', chk: '%s', fmt: %d, info: %d, mesh: %d, state: %d, potential: %d, projector: %d, vlocal: %d, xc: %d, rho_valence: %d}\n", ref, chk, fmt, pspcmp[0], pspcmp[1], pspcmp[2], pspcmp[3], pspcmp[4], pspcmp[5], pspcmp[6], pspcmp[7]);
   }
 

@@ -61,28 +61,31 @@
  * File formats
  *
  * Note: keep the number of formats up-to-date
+ *
+ * Note: FHI98PP must be checked before ABINIT and thus must have a lower
+ *       index than that of Abinit
  */
 #define PSPIO_FMT_NFORMATS 19
 #define PSPIO_FMT_UNKNOWN -1
 #define PSPIO_FMT_NONE 0
-#define PSPIO_FMT_ABINIT_1     1 /* Teter */
-#define PSPIO_FMT_ABINIT_2     2 /* GTH */
-#define PSPIO_FMT_ABINIT_3     3 /* HGH */
-#define PSPIO_FMT_ABINIT_4     4 /* Teter */
-#define PSPIO_FMT_ABINIT_5     5 /* Phoney */
-#define PSPIO_FMT_ABINIT_6     6 /* FHI */
-#define PSPIO_FMT_ABINIT_7     7 /* PAW */
-#define PSPIO_FMT_ABINIT_8     8 /* Hamann */
-#define PSPIO_FMT_ABINIT_9     9 /* XML */
-#define PSPIO_FMT_ABINIT_10   10 /* HGH, with full h/k matrix */
-#define PSPIO_FMT_ABINIT_11   11 /* UPF */
-#define PSPIO_FMT_ABINIT_17   12 /* PAW XML */
-#define PSPIO_FMT_ATOM        13
-#define PSPIO_FMT_FHI98PP     14
-#define PSPIO_FMT_OCTOPUS_HGH 15
-#define PSPIO_FMT_SIESTA      16
-#define PSPIO_FMT_UPF         17
-#define PSPIO_FMT_XML         18 /* FSatom-pp */
+#define PSPIO_FMT_ATOM         1 /* Jose Luis Martin's ATOM */
+#define PSPIO_FMT_FHI98PP      2 /* FHI98PP */
+#define PSPIO_FMT_OCTOPUS_HGH  3 /* HGH for OCtopus != Goedecker's HGH */
+#define PSPIO_FMT_SIESTA       4 /* SIESTA ATOM's PSF */
+#define PSPIO_FMT_UPF          5 /* UPF 1 */
+#define PSPIO_FMT_XML          6 /* FSatom-pp */
+#define PSPIO_FMT_ABINIT_1    11 /* Teter */
+#define PSPIO_FMT_ABINIT_2    12 /* GTH */
+#define PSPIO_FMT_ABINIT_3    13 /* HGH */
+#define PSPIO_FMT_ABINIT_4    14 /* Teter */
+#define PSPIO_FMT_ABINIT_5    15 /* Phoney */
+#define PSPIO_FMT_ABINIT_6    16 /* FHI */
+#define PSPIO_FMT_ABINIT_7    17 /* PAW */
+#define PSPIO_FMT_ABINIT_8    18 /* Hamann ONCV */
+#define PSPIO_FMT_ABINIT_9    19 /* XML */
+#define PSPIO_FMT_ABINIT_10   20 /* HGH, with full h/k matrix */
+#define PSPIO_FMT_ABINIT_11   21 /* UPF */
+#define PSPIO_FMT_ABINIT_17   22 /* PAW XML */
 
 
 /**
