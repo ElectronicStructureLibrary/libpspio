@@ -214,7 +214,7 @@ module pspiof_m
   !%%% BEGIN PSPIO CONSTANTS
   integer(c_int), parameter, public :: PSPIO_STRLEN_ERROR = 1024
   integer(c_int), parameter, public :: PSPIO_STRLEN_LINE = 256
-  integer(c_int), parameter, public :: PSPIO_STRLEN_TITLE = 80
+  integer(c_int), parameter, public :: PSPIO_STRLEN_TITLE = 256
   integer(c_int), parameter, public :: PSPIO_STRLEN_DESCRIPTION = 4096
   integer(c_int), parameter, public :: PSPIO_SUCCESS = 0
   integer(c_int), parameter, public :: PSPIO_ERROR = -1
