@@ -249,16 +249,28 @@ fi
 # Debugging
 #
 
+# Get information from environment
+pio_dbg_level=0
+AC_ARG_VAR([PSPIO_DEBUG_LEVEL], [Verbosity level of the debugging messages])
+if test -n "${PSPIO_DEBUG_LEVEL}"; then
+  tmp_nonnum=`echo "${PSPIO_DEBUG_LEVEL}" | grep '[^0-9]'`
+  if test "${tmp_nonnum}" != ""; then
+    AC_MSG_WARN([ignoring non-numeric PSPIO_DEBUG_LEVEL value])
+  else
+    pio_dbg_level="${PSPIO_DEBUG_LEVEL}"
+  fi
+else
+  if test "${enable_debug}" = "yes"; then
+    pio_dbg_level=1
+  fi
+fi
+
 # Adjust verbosity
 if test "${enable_debug}" = "yes"; then
   AC_DEFINE([DEBUG_MODE], 1,
     [Define to 1 if you want to enable debug mode.])
-  AC_DEFINE([DEBUG_LEVEL], 1,
-    [Set to 1 or above if you want to enable debug messages.])
-else
-  AC_DEFINE([DEBUG_LEVEL], 0,
-    [Set to 1 or above if you want to enable debug messages.])
 fi
+CPPFLAGS="${CPPFLAGS} -DDEBUG_LEVEL=${pio_dbg_level}"
 
 # ---------------------------------------------------------------------------- #
 

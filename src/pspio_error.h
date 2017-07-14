@@ -131,10 +131,21 @@ const char *pspio_error_string(const int error_id);
  **********************************************************************/
 
 /**
+ * Switchable macro to log errors to stderr
+ * @note: must be defined first
+ */
+#if ( DEBUG_LEVEL >= 2 )
+#define DEBUG_LOG fprintf(stderr, "DEBUG: %s(%s):%d - error_id = %d\n", __FILE__, __func__, __LINE__, pspio_error_get_last(__func__));
+#else
+#define DEBUG_LOG
+#endif
+
+/**
  * Macro to break loops when there are deferred errors, in order to propagate
  * error conditions from inner loops to outer loops
  */
 #define BREAK_ON_DEFERRED_ERROR \
+  DEBUG_LOG \
   if ( pspio_error_get_last(__func__) != PSPIO_SUCCESS ) { \
     break; \
   }
@@ -145,6 +156,7 @@ const char *pspio_error_string(const int error_id);
  * @param[in] function_call: the function to be called with all its parameters
  */
 #define DEFER_FUNC_ERROR(function_call) \
+  DEBUG_LOG \
   pspio_error_add(function_call, __FILE__, __LINE__, __func__);
 
 /**
@@ -154,6 +166,7 @@ const char *pspio_error_string(const int error_id);
  * @param[in] error_id: error code to set
  */
 #define DEFER_TEST_ERROR(condition, error_id) \
+  DEBUG_LOG \
   if ( !(condition) ) {		    \
     pspio_error_add(error_id, __FILE__, __LINE__, __func__); \
   } 
@@ -164,6 +177,7 @@ const char *pspio_error_string(const int error_id);
  * @param[in] error_id: error code to set before breaking out of the loop
  */
 #define FULFILL_OR_BREAK(condition, error_id) \
+  DEBUG_LOG \
   if (!(condition)) { \
     pspio_error_add(error_id, __FILE__, __LINE__, __func__); \
     break; \
@@ -175,6 +189,7 @@ const char *pspio_error_string(const int error_id);
  * @param[in] error_id: error code to set before aborting
  */
 #define FULFILL_OR_EXIT(condition, error_id) \
+  DEBUG_LOG \
   if ( !(condition) ) {		    \
     pspio_error_add(error_id, __FILE__, __LINE__, __func__); \
     pspio_error_flush(stderr); \
@@ -187,6 +202,7 @@ const char *pspio_error_string(const int error_id);
  * @param[in] error_id: error code to set before returning
  */
 #define FULFILL_OR_RETURN(condition, error_id) \
+  DEBUG_LOG \
   if (!(condition)) {		    \
     return pspio_error_add(error_id, __FILE__, __LINE__, __func__); \
   }
@@ -195,6 +211,7 @@ const char *pspio_error_string(const int error_id);
  * Error handler macro for deferred errors
  */
 #define RETURN_ON_DEFERRED_ERROR \
+  DEBUG_LOG \
   if ( pspio_error_get_last(__func__) != PSPIO_SUCCESS ) { \
     return pspio_error_get_last(__func__); \
   }
@@ -205,13 +222,15 @@ const char *pspio_error_string(const int error_id);
  * @param[in] error_id: error code
  */
 #define RETURN_WITH_ERROR(error_id) \
-    return pspio_error_add(error_id, __FILE__, __LINE__, __func__);
+  DEBUG_LOG \
+  return pspio_error_add(error_id, __FILE__, __LINE__, __func__);
 
 /**
  * Break the current loop when a pspio function call fails
  * @param[in] function_call: the function to be called with all its parameters
  */
 #define SUCCEED_OR_BREAK(function_call) \
+  DEBUG_LOG \
   if ( pspio_error_add(function_call, __FILE__, __LINE__, __func__) != PSPIO_SUCCESS ) { \
     break; \
   }
@@ -221,6 +240,7 @@ const char *pspio_error_string(const int error_id);
  * @param[in] function_call: the function to be called with all its parameters
  */
 #define SUCCEED_OR_RETURN(function_call) \
+  DEBUG_LOG \
   if ( pspio_error_add(function_call, __FILE__, __LINE__, __func__) != PSPIO_SUCCESS ) { \
     return pspio_error_get_last(NULL); \
   }
@@ -230,6 +250,7 @@ const char *pspio_error_string(const int error_id);
  * @param[in] routine_call: the routine to be called with all its parameters
  */
 #define SKIP_CALL_ON_ERROR(routine_call) \
+  DEBUG_LOG \
   if ( pspio_error_get_last(__func__) == PSPIO_SUCCESS ) { \
     routine_call; \
   }
@@ -239,6 +260,7 @@ const char *pspio_error_string(const int error_id);
  * @param[in] function_call: the function to be called with all its parameters
  */
 #define SKIP_FUNC_ON_ERROR(function_call) \
+  DEBUG_LOG \
   if ( pspio_error_get_last(__func__) == PSPIO_SUCCESS ) { \
     pspio_error_add(function_call, __FILE__, __LINE__, __func__); \
   }
@@ -248,6 +270,7 @@ const char *pspio_error_string(const int error_id);
  * @param[in] function_call: the function to be called with all its parameters
  */
 #define SKIP_TEST_ON_ERROR(condition, error_id) \
+  DEBUG_LOG \
   if ( (pspio_error_get_last(__func__) == PSPIO_SUCCESS) && !(condition) ) { \
     pspio_error_add(error_id, __FILE__, __LINE__, __func__); \
   }
