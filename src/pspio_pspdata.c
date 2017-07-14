@@ -144,9 +144,6 @@ int pspio_pspdata_read(pspio_pspdata_t *pspdata, int file_format,
     }
   }
 
-  if ( ierr == PSPIO_SUCCESS ) {
-  }
-
   /* Close file */
   FULFILL_OR_RETURN( fclose(fp) == 0, PSPIO_EIO );
 
