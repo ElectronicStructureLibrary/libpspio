@@ -43,46 +43,26 @@ const char symbols[][4] = {"H",  "He", "Li", "Be", "B",  "C",  "N",  "O",  "F", 
                            "Uun", "Uuu", "Uub"};
 
 
-int symbol_to_z(const char symbol[4], double *z)
+/**********************************************************************
+ * Translation routines                                               *
+ **********************************************************************/
+
+char *psp_relativitic_treatment_name(int wave_eq)
 {
-  int i;
-
-  assert(symbol != NULL);
-
-  for (i=0; i<112; i++) {
-    if (strcmp(symbol, symbols[i])) {
-      *z = i + 1.0;
-      return PSPIO_SUCCESS;
-    }
+  switch (wave_eq) {
+  case PSPIO_EQN_SCHRODINGER:
+    return "non-relativistic";
+  case PSPIO_EQN_SCALAR_REL:
+    return "scalar-relativistic";
+  case PSPIO_EQN_DIRAC:
+    return "fully-relativistic";
+  default:
+    return "unknown";
   }
-
-  return PSPIO_ERROR;
 }
 
 
-int z_to_symbol(double z, char symbol[4])
-{
-  FULFILL_OR_RETURN(z < 113.0 && z > 0.0, PSPIO_EVALUE);
-
-  strcpy(symbol, symbols[(int)z-1]);
-
-  return PSPIO_SUCCESS;
-}
-  
-
-double linear_extrapolation(double x1, double x2, double f1,
-			    double f2, double x)
-{
-  double mm, f;
-
-  mm = (f2 - f1) / (x2 - x1);
-  f = f1 + mm * (x - x1);
-
-  return f;
-}
-
-
-char * psp_scheme_name(int scheme)
+char *psp_scheme_name(int scheme)
 {
   switch (scheme) {
     case PSPIO_SCM_BHS:
@@ -115,19 +95,53 @@ char * psp_scheme_name(int scheme)
   }
 }
 
-char * psp_relativitic_treatment_name(int wave_eq)
+
+int symbol_to_z(const char symbol[4], double *z)
 {
-  switch (wave_eq) {
-  case PSPIO_EQN_SCHRODINGER:
-    return "non-relativistic";
-  case PSPIO_EQN_SCALAR_REL:
-    return "scalar-relativistic";
-  case PSPIO_EQN_DIRAC:
-    return "fully-relativistic";
-  default:
-    return "unknown";
+  int i;
+
+  assert(symbol != NULL);
+
+  for (i=0; i<112; i++) {
+    if (strcmp(symbol, symbols[i])) {
+      *z = i + 1.0;
+      return PSPIO_SUCCESS;
+    }
   }
+
+  return PSPIO_ERROR;
 }
+
+
+int z_to_symbol(double z, char symbol[4])
+{
+  FULFILL_OR_RETURN(z < 113.0 && z > 0.0, PSPIO_EVALUE);
+
+  strcpy(symbol, symbols[(int)z-1]);
+
+  return PSPIO_SUCCESS;
+}
+
+
+/**********************************************************************
+ * Math routines                                                      *
+ **********************************************************************/
+
+double linear_extrapolation(double x1, double x2, double f1,
+			    double f2, double x)
+{
+  double mm, f;
+
+  mm = (f2 - f1) / (x2 - x1);
+  f = f1 + mm * (x - x1);
+
+  return f;
+}
+
+
+/**********************************************************************
+ * I/O routines                                                       *
+ **********************************************************************/
 
 int read_array_4by4(FILE *fp, double *array, int npts) {
 
@@ -154,6 +168,11 @@ int read_array_4by4(FILE *fp, double *array, int npts) {
   return PSPIO_SUCCESS;
 }
 
+
+/**********************************************************************
+ * String manipulation routines                                       *
+ **********************************************************************/
+
 int strcmp_nullok(char *s1, char *s2)
 {
   if ( (s1 == NULL) && (s2 == NULL) ) {
@@ -165,4 +184,27 @@ int strcmp_nullok(char *s1, char *s2)
   }
 
   return strcmp(s1, s2);
+}
+
+
+void strf2c(char *haystack) {
+  char *p1, *p2;
+
+  /* Replace Fortran 'D' notation with 'E' */
+  p1 = haystack;
+  p2 = strstr(haystack, "D");
+  while ( p2!= NULL ) {
+    p2[0] = 'E';
+    p1 = p2;
+    p2 = strstr(p1, "D");
+  }
+
+  /* Also replace Fortran 'd' notation with 'E' */
+  p1 = haystack;
+  p2 = strstr(haystack, "d");
+  while ( p2!= NULL ) {
+    p2[0] = 'E';
+    p1 = p2;
+    p2 = strstr(p1, "d");
+  }
 }

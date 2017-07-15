@@ -25,6 +25,7 @@
 #define UTIL_H
 
 #include <stdio.h>
+#include <string.h>
 
 /**
  * @file util.h
@@ -50,8 +51,33 @@
 
 
 /**********************************************************************
- * Routines                                                           *
+ * Translation routines                                               *
  **********************************************************************/
+
+/**
+ * Given the wave-equation id, returns a string with the name of the relativistic treatment
+ *
+ * @param[in] wave_eq: the wave-equation id
+ * @return relativistic treatment name
+ */
+char *psp_relativitic_treatment_name(int wave_eq);
+
+/**
+ * Given the pseudopotential generation scheme, returns a string with the scheme name
+ *
+ * @param[in] scheme: the pseudopotential generation scheme id
+ * @return scheme name
+ */
+char *psp_scheme_name(int scheme);
+
+/**
+ * Given the symbol, returns the atomic number
+ *
+ * @param[in] symbol: the symbol
+ * @param[out] z: atomic number
+ * @return error code
+ */
+int symbol_to_z(const char symbol[4], double *z);
 
 /**
  * Given the atomic number, returns the symbol
@@ -63,14 +89,10 @@
  */
 int z_to_symbol(double z, char symbol[4]);
 
-/**
- * Given the symbol, returns the atomic number
- *
- * @param[in] symbol: the symbol
- * @param[out] z: atomic number
- * @return error code
- */
-int symbol_to_z(const char symbol[4], double *z);
+
+/**********************************************************************
+ * Math routines                                                      *
+ **********************************************************************/
 
 /**
  * Given the values of a function at two points, uses a linear
@@ -83,21 +105,10 @@ int symbol_to_z(const char symbol[4], double *z);
  */
 double linear_extrapolation(double x1, double x2, double f1,  double f2, double x);
 
-/**
- * Given the pseudopotential generation scheme, returns a string with the scheme name
- *
- * @param[in] scheme: the pseudopotential generation scheme id
- * @return scheme name
- */
-char * psp_scheme_name(int scheme);
 
-/**
- * Given the wave-equation id, returns a string with the name of the relativistic treatment
- *
- * @param[in] wave_eq: the wave-equation id
- * @return relativistic treatment name
- */
-char * psp_relativitic_treatment_name(int wave_eq);
+/**********************************************************************
+ * I/O routines                                                       *
+ **********************************************************************/
 
 /**
  * Reads double precision array coefficients from a text file, 4 at a time,
@@ -110,10 +121,30 @@ char * psp_relativitic_treatment_name(int wave_eq);
  */
 int read_array_4by4(FILE * fp, double *array, int npts);
 
+
+/**********************************************************************
+ * String manipulation routines                                       *
+ **********************************************************************/
+
 /**
  * Fault-tolerant string comparison, allowing any number of arguments to be
  * NULL.
+ *
+ * @param[in] s1: pointer to the first string to compare
+ * @param[in] s2: pointer to the second string to compare
+ * @return the same values as strcmp
+ * @note two NULL strings are considered equal
  */
 int strcmp_nullok(char *s1, char *s2);
+
+/**
+ * Looks for all occurences of the Fortran-specific representation of
+ * double-precision numbers in a string conataining a series of numbers,
+ * and replaces them in-place with the standard IEEE-754 representation.
+ * Standard-compliant strings are left untouched.
+ *
+ * @param[inout] haystack: string containing a series of floating-point numbers
+*/
+void strf2c(char *haystack);
 
 #endif
