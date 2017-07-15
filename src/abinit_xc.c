@@ -23,6 +23,7 @@
 
 #include "pspio_error.h"
 #include "pspio_xc.h"
+#include "abinit.h"
 
 #if defined HAVE_CONFIG_H
 #include "config.h"
