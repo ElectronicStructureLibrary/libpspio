@@ -311,23 +311,6 @@ START_TEST(test_pspdata_setget_rho_valence)
 END_TEST
 
 
-START_TEST(test_pspdata_fhi_io)
-{
-  sprintf(filename, "%s/%s", PSPIO_CHK_DATADIR, "fhi/Li.cpi");
-  ck_assert(pspio_pspdata_read(pspdata, PSPIO_FMT_FHI98PP, filename) == PSPIO_SUCCESS);
-  sprintf(filename, "test_io_%d.tmp", PSPIO_FMT_FHI98PP);
-  ck_assert(pspio_pspdata_write(pspdata, PSPIO_FMT_FHI98PP, filename) == PSPIO_SUCCESS);
-}
-END_TEST
-
-START_TEST(test_pspdata_fhi_guess)
-  {
-    sprintf(filename, "%s/%s", PSPIO_CHK_DATADIR, "fhi/Li.cpi");
-    ck_assert(pspio_pspdata_read(pspdata, PSPIO_FMT_UNKNOWN, filename) == PSPIO_SUCCESS);
-    ck_assert(pspio_pspdata_get_format_guessed(pspdata) == PSPIO_FMT_FHI98PP);
-  }
-END_TEST
-
 START_TEST(test_pspdata_abinit6_io)
 {
   sprintf(filename, "%s/%s", PSPIO_CHK_DATADIR, "abinit6/03-Li.LDA.fhi");
@@ -343,6 +326,42 @@ START_TEST(test_pspdata_abinit6_guess)
   ck_assert(pspio_pspdata_read(pspdata, PSPIO_FMT_UNKNOWN, filename) == PSPIO_SUCCESS);
   ck_assert(pspio_pspdata_get_format_guessed(pspdata) == PSPIO_FMT_ABINIT_6);
 }
+END_TEST
+
+/* FIXME: must temporarily keep it off because of task rescheduling
+START_TEST(test_pspdata_abinit8_io)
+{
+  sprintf(filename, "%s/%s", PSPIO_CHK_DATADIR, "abinit8/26_Fe.psp8");
+  ck_assert(pspio_pspdata_read(pspdata, PSPIO_FMT_ABINIT_8, filename) == PSPIO_SUCCESS);
+  sprintf(filename, "test_io_%d.tmp", PSPIO_FMT_ABINIT_8);
+  ck_assert(pspio_pspdata_write(pspdata, PSPIO_FMT_ABINIT_8, filename) == PSPIO_SUCCESS);
+}
+END_TEST
+
+START_TEST(test_pspdata_abinit8_guess)
+{
+  sprintf(filename, "%s/%s", PSPIO_CHK_DATADIR, "abinit8/26_Fe.psp8");
+  ck_assert(pspio_pspdata_read(pspdata, PSPIO_FMT_UNKNOWN, filename) == PSPIO_SUCCESS);
+  ck_assert(pspio_pspdata_get_format_guessed(pspdata) == PSPIO_FMT_ABINIT_8);
+}
+END_TEST
+*/
+
+START_TEST(test_pspdata_fhi_io)
+{
+  sprintf(filename, "%s/%s", PSPIO_CHK_DATADIR, "fhi/Li.cpi");
+  ck_assert(pspio_pspdata_read(pspdata, PSPIO_FMT_FHI98PP, filename) == PSPIO_SUCCESS);
+  sprintf(filename, "test_io_%d.tmp", PSPIO_FMT_FHI98PP);
+  ck_assert(pspio_pspdata_write(pspdata, PSPIO_FMT_FHI98PP, filename) == PSPIO_SUCCESS);
+}
+END_TEST
+
+START_TEST(test_pspdata_fhi_guess)
+  {
+    sprintf(filename, "%s/%s", PSPIO_CHK_DATADIR, "fhi/Li.cpi");
+    ck_assert(pspio_pspdata_read(pspdata, PSPIO_FMT_UNKNOWN, filename) == PSPIO_SUCCESS);
+    ck_assert(pspio_pspdata_get_format_guessed(pspdata) == PSPIO_FMT_FHI98PP);
+  }
 END_TEST
 
 START_TEST(test_pspdata_upf_io)
