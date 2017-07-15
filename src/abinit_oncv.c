@@ -50,12 +50,12 @@ int pspio_oncv_read(FILE *fp, pspio_pspdata_t *pspdata)
   assert(pspdata->n_projectors == 0);
   assert(pspdata->n_projectors_per_l == NULL);
   FULFILL_OR_EXIT( (pspdata->n_projectors_per_l = (int *) malloc (2 * pspdata->l_max+1 * sizeof(int))) != NULL, PSPIO_ENOMEM );
-  memset(pspdata->n_projectors_per_l, 0, sizeof(pspdata->n_projectors_per_l));
+  memset(pspdata->n_projectors_per_l, 0, (2 * pspdata->l_max + 1) * sizeof(int));
 
   /* Read numbers of projectors */
   FULFILL_OR_RETURN( fgets(line, PSPIO_STRLEN_LINE, fp) != NULL, PSPIO_EIO );
   for (il=0; il < pspdata->l_max+1; il++) {
-    FULFILL_OR_RETURN( sscanf(line, "%d", &n_projectors_per_l[il]) == 1, PSPIO_EFILE_CORRUPT );
+    FULFILL_OR_RETURN( sscanf(line, "%d", &pspdata->n_projectors_per_l[il]) == 1, PSPIO_EFILE_CORRUPT );
   }
 
   /* Read Spin-orbit coupling descriptor */
@@ -80,11 +80,11 @@ int pspio_oncv_read(FILE *fp, pspio_pspdata_t *pspdata)
   }
 
   /* Update pspdata */
-  pspdata->projectors_l_max = -1
+  pspdata->projectors_l_max = -1;
   for (il=0; il < pspdata->l_max*2+1; il++) {
     pspdata->n_projectors += pspdata->n_projectors_per_l[il];
     if ( pspdata->n_projectors_per_l[il] > 0 ) {
-      pspdata->projectors_l_max = il
+      pspdata->projectors_l_max = il;
     }
   }
 
