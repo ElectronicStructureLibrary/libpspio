@@ -31,7 +31,6 @@
 #include "fhi.h"
 #include "upf.h"
 #include "abinit.h"
-#include "oncv.h"
 
 #if defined HAVE_CONFIG_H
 #include "config.h"
@@ -122,7 +121,7 @@ int pspio_pspdata_read(pspio_pspdata_t *pspdata, int file_format,
       ierr = pspio_abinit_read(fp, pspdata, fmt);
       break;
     case PSPIO_FMT_ABINIT_8:
-      ierr = pspio_oncv_read(fp, pspdata);
+      ierr = pspio_abinit_read(fp, pspdata, fmt);
       break;
     case PSPIO_FMT_FHI98PP:
       ierr = pspio_fhi_read(fp, pspdata);

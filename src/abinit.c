@@ -28,7 +28,6 @@
 #include <string.h>
 
 #include "fhi.h"
-#include "oncv.h"
 #include "abinit.h"
 
 #if defined HAVE_CONFIG_H

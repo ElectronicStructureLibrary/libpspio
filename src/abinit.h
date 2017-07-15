@@ -103,4 +103,29 @@ int abinit_read_header(FILE *fp, int format, pspio_pspdata_t *pspdata);
  */
 int abinit_write_header(FILE *fp, int format, const pspio_pspdata_t *pspdata);
 
+
+/**********************************************************************
+ * ABINIT ONCV routines                                               *
+ **********************************************************************/
+
+/**
+ * Read the data contained in a Hamann ONCV file and store it in
+ * the psp_data structure
+ * @param[in] fp a stream of the input file
+ * @param[in,out] pspdata the data structure
+ * @return error code
+ * @note This is ABINIT format 8
+ */
+int pspio_oncv_read(FILE * fp, pspio_pspdata_t *pspdata);
+
+/**
+ * Write the data contained in the psp_data structure to a file using the
+ * Hamann ONCV format
+ * @param[in] fp a stream of the input file
+ * @param[in] pspdata the data structure
+ * @return error code
+ * @note This is ABINIT format 8
+ */
+int pspio_oncv_write(FILE * fp, const pspio_pspdata_t *pspdata);
+
 #endif

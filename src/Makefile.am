@@ -34,10 +34,10 @@
 # C source - keep this in alphabetical order
 pio_core_srcs = \
   abinit.c \
+  abinit_oncv.c \
   abinit_util.c \
   abinit_xc.c \
   fhi.c \
-  oncv.c \
   pspio_error.c \
   pspio_info.c \
   pspio_interp.c \
@@ -84,7 +84,6 @@ pio_hidden_hdrs = \
   abinit.h \
   check_pspio.h \
   fhi.h \
-  oncv.h \
   upf.h \
   util.h
 
