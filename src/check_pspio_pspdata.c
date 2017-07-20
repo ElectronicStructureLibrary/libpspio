@@ -347,7 +347,7 @@ END_TEST
 
 START_TEST(test_pspdata_upf_io)
 {
-  sprintf(filename, "%s/%s", PSPIO_CHK_DATADIR, "UPF/Li.UPF");
+  sprintf(filename, "%s/%s", PSPIO_CHK_DATADIR, "upf1/Li.UPF");
   ck_assert(pspio_pspdata_read(pspdata, PSPIO_FMT_UPF, filename) == PSPIO_SUCCESS);
   sprintf(filename, "test_io_%d.tmp", PSPIO_FMT_UPF);
   ck_assert(pspio_pspdata_write(pspdata, PSPIO_FMT_UPF, filename) == PSPIO_SUCCESS);
@@ -356,7 +356,7 @@ END_TEST
 
 START_TEST(test_pspdata_upf_guess)
 {
-  sprintf(filename, "%s/%s", PSPIO_CHK_DATADIR, "UPF/Li.UPF");
+  sprintf(filename, "%s/%s", PSPIO_CHK_DATADIR, "upf1/Li.UPF");
   ck_assert(pspio_pspdata_read(pspdata, PSPIO_FMT_UNKNOWN, filename) == PSPIO_SUCCESS);
   ck_assert(pspio_pspdata_get_format_guessed(pspdata) == PSPIO_FMT_UPF);
 }

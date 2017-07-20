@@ -26,7 +26,7 @@ case "${my_fmt}" in
     psp_dir="siesta"
     ;;
   17)
-    psp_dir="UPF"
+    psp_dir="upf1"
     ;;
   *)
     echo "${my_name}: unknown pseudopotential format" >&2

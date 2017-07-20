@@ -24,7 +24,7 @@ ${test_program} "${pspdir}/fhi/Li.cpi" "test_fortran_io_14.tmp" 14
 echo ""
 
 # Run UPF 1 test
-${test_program} "${pspdir}/UPF/Li.UPF" "test_fortran_io_17.tmp" 17
+${test_program} "${pspdir}/upf1/Li.UPF" "test_fortran_io_17.tmp" 17
 echo ""
 
 # Detect FHI format
