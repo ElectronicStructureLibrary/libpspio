@@ -289,8 +289,8 @@ end function pspiof_pspdata_get_pspinfo
 ! symbol
 character(len=3) function pspiof_pspdata_get_symbol(pspdata) result(symbol)
   type(pspiof_pspdata_t), intent(in) :: pspdata
- 
-  call c_to_f_string(pspio_pspdata_get_symbol(pspdata%ptr), symbol)
+
+  call c_to_f_string_ptr(pspio_pspdata_get_symbol(pspdata%ptr), symbol)
 
 end function pspiof_pspdata_get_symbol
 

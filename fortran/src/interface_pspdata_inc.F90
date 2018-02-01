@@ -225,7 +225,7 @@ interface
   end function pspio_pspdata_get_pspinfo
   
   ! symbol
-  character(kind=c_char) function pspio_pspdata_get_symbol(pspdata) bind(c)
+  type(c_ptr) function pspio_pspdata_get_symbol(pspdata) bind(c)
     import
     type(c_ptr), value :: pspdata
   end function pspio_pspdata_get_symbol
