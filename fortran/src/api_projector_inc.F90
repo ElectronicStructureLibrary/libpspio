@@ -49,7 +49,7 @@ integer function pspiof_projector_copy(src, dst) result(ierr)
   type(pspiof_projector_t), intent(in)    :: src
   type(pspiof_projector_t), intent(inout) :: dst
 
-  ierr = pspio_projector_copy(src%ptr, dst%ptr)
+  ierr = pspio_projector_copy(dst%ptr, src%ptr)
 
 end function pspiof_projector_copy
 
