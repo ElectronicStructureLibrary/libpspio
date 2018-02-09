@@ -1,0 +1,32 @@
+%YAML 1.1
+---
+
+timestamp: "@pio_timestamp@"
+
+target:
+    cpu: "@target_cpu@"
+    vendor: "@target_vendor@"
+    os: "@target_os@"
+
+compilers:
+    CPP: "@CPP@"
+    CPPFLAGS: "@CPPFLAGS@"
+    CC: "@CC@"
+    MPICC: "@MPICC@"
+    CFLAGS: "@CFLAGS@"
+    LDFLAGS: "@LDFLAGS@"
+    LIBS: "@LIBS@"
+
+defaults:
+    debug_enable: "@pio_debug_enable_def@"
+
+options:
+    enable_debug: "@enable_debug@"
+
+triggers:
+    debug_enable: "@pio_debug_enable@"
+
+inits:
+    debug: "@pio_debug_type@"
+
+...

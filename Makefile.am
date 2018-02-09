@@ -31,9 +31,20 @@ if DO_BUILD_FORTRAN
   SUBDIRS += fortran
 endif
 
+# Files to install for pkg-config
+# See http://www.freedesktop.org/wiki/Software/pkg-config/ for details
+pkgconfigdir = $(libdir)/pkgconfig
+nodist_pkgconfig_DATA = config/data/libpspio.pc
+
+# Some files are not removed by default and cause "make distclean" to fail
+DISTCLEANFILES = \
+  libpspio-*.tar.bz2 \
+  libpspio-*.tar.gz \
+  libpspio-*.tar.xz \
+  config/data/libpspio.pc \
+  config/data/libpspio-config.yml
+
 # Source tarball
 EXTRA_DIST = \
   Doxyfile \
   psp_references
-
-DISTCLEANFILES = libpspio-*.tar.gz
