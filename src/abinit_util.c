@@ -24,6 +24,7 @@
 
 #include "abinit.h"
 #include "util.h"
+#include "pspio_pspinfo.h"
 
 #if defined HAVE_CONFIG_H
 #include "config.h"
