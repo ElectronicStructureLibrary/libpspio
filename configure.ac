@@ -37,7 +37,7 @@
 
 # Initialize Autoconf
 AC_PREREQ(2.62)
-AC_INIT([Libpspio], [0.2.0],
+AC_INIT([Libpspio], [0.2.2],
   [https://bugs.launchpad.net/libpspio/], [libpspio])
 AC_REVISION([Autotools support for Libpspio])
 AC_CONFIG_AUX_DIR([config/gnu])
@@ -350,6 +350,19 @@ fi
 # ---------------------------------------------------------------------------- #
 
 #
+# Fortran configuration
+#
+
+# Send Fortran status to pkg-config
+pio_lib_f=""
+if test "${enable_fortran}" = "yes"; then
+  pio_lib_f="-lpspiof"
+fi
+AC_SUBST(pio_lib_f)
+
+# ---------------------------------------------------------------------------- #
+
+#
 # Output configuration
 #
 
@@ -382,6 +395,8 @@ AC_CONFIG_COMMANDS([script-perms],
 
 AC_CONFIG_FILES([
   Makefile
+  config/data/libpspio.pc
+  config/data/libpspio-config.yml
   src/Makefile
   src/gcov_check_coverage
   src/gcov_clean
