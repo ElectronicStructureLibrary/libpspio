@@ -632,6 +632,7 @@ int pspio_pspdata_get_n_states(const pspio_pspdata_t *pspdata)
 const pspio_state_t * pspio_pspdata_get_state(const pspio_pspdata_t *pspdata, int index)
 {
   assert(pspdata != NULL);
+  assert(index >= 0 && index < pspdata->n_states);
 
   return pspdata->states[index];
 }
@@ -653,6 +654,7 @@ int pspio_pspdata_get_n_potentials(const pspio_pspdata_t *pspdata)
 const pspio_potential_t * pspio_pspdata_get_potential(const pspio_pspdata_t *pspdata, int index)
 {
   assert(pspdata != NULL);
+  assert(index >= 0 && index < pspdata->n_potentials);
 
   return pspdata->potentials[index];
 }
@@ -674,6 +676,7 @@ int * pspio_pspdata_get_n_projectors_per_l(const pspio_pspdata_t *pspdata)
 const pspio_projector_t * pspio_pspdata_get_projector(const pspio_pspdata_t *pspdata, int index)
 {
   assert(pspdata != NULL);
+  assert(index >= 0 && index < pspdata->n_projectors);
 
   return pspdata->projectors[index];
 }

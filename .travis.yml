@@ -1,0 +1,30 @@
+dist: trusty
+sudo: required
+
+language: c
+
+notifications:
+    email:
+        recipients:
+            - devops@materialsevolution.es
+        on_failure: always
+        on_success: change
+
+branches:
+    only:
+        - develop
+        - master
+
+before_install:
+    - sudo apt-get install -qq autoconf-archive check gfortran gsl-bin libgsl0ldbl libgsl0-dbg libgsl0-dev libxml2-dev
+    - ./autogen.sh
+    - ./configure
+
+install:
+    - make dist
+    - make -j2
+    - sudo make install
+
+script:
+    - make check
+    - make distcheck

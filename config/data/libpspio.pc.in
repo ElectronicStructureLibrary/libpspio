@@ -1,0 +1,11 @@
+prefix=@prefix@
+exec_prefix=@exec_prefix@
+libdir=@libdir@
+includedir=@includedir@
+pio_lib_f=@pio_lib_f@
+
+Name: pspio
+Description: Agnostic Pseudopotential I/O Library
+Version: @VERSION@
+Libs: -L${libdir} ${pio_lib_f} -lpspio
+Cflags: -I${includedir}

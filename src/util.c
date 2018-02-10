@@ -50,7 +50,7 @@ int symbol_to_z(const char symbol[4], double *z)
   assert(symbol != NULL);
 
   for (i=0; i<112; i++) {
-    if (strcmp(symbol, symbols[i])) {
+    if (!strcmp(symbol, symbols[i])) {
       *z = i + 1.0;
       return PSPIO_SUCCESS;
     }
