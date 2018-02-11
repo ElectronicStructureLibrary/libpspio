@@ -514,6 +514,7 @@ int upf_read_rhoatom(FILE *fp, int np, pspio_pspdata_t *pspdata)
   }
 
   /* Store the density in the pspdata structure */
+  pspdata->rho_valence_type = PSPIO_RHOVAL_UPF1;
   SKIP_FUNC_ON_ERROR( pspio_meshfunc_alloc(&pspdata->rho_valence, np) );
   SKIP_FUNC_ON_ERROR( pspio_meshfunc_init(pspdata->rho_valence,
     pspdata->mesh, rho_read, NULL, NULL) );

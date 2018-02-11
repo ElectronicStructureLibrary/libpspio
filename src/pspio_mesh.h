@@ -98,7 +98,7 @@ void pspio_mesh_init_from_points(pspio_mesh_t *mesh, const double *r, const doub
  * @note The mesh pointer has to be allocated first with the pspio_mesh_alloc
  *       method.
  */
-void pspio_mesh_init_from_parameters(pspio_mesh_t *mesh, int type, double a, double b);
+int pspio_mesh_init_from_parameters(pspio_mesh_t *mesh, int type, double a, double b);
 
 /**
  * Duplicates a mesh structure

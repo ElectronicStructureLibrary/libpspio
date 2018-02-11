@@ -131,7 +131,7 @@
 
 
 /** 
- * values for NLCC scheme - could add possibilities for different schemes
+ * NLCC schemes
  */
 #define PSPIO_NLCC_UNKNOWN -1
 #define PSPIO_NLCC_NONE 0
@@ -140,6 +140,13 @@
 #define PSPIO_NLCC_TETER1 3 /* 7 May 1992 by M. Teter abinit version for pspcod 4 */
 #define PSPIO_NLCC_TETER2 4 /* 5 Nov 1992 by M. Teter abinit version for pspcod 1 */
 #define PSPIO_NLCC_ATOM 5 /* Scheme implemented in the ATOM pseudopotential generator code. */
-#define PSPIO_NLCC_ONCV 5 /* Scheme implemented in the ONCVPSP pseudopotential generator code. */
+#define PSPIO_NLCC_ONCV 6 /* Scheme implemented in the ONCVPSP pseudopotential generator code. */
+
+/**
+ * Valence densities
+ */
+#define PSPIO_RHOVAL_NONE 0
+#define PSPIO_RHOVAL_UPF1 1
+#define PSPIO_RHOVAL_ONCV 2
 
 #endif

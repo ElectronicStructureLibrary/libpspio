@@ -13,15 +13,16 @@
  * more details.
  */
 
-/** 
+/**
  * @file oncv.c
- * @brief implementation to read and write Hamann ONCV files 
+ * @brief implementation to read and write Hamann ONCV files
  */
 #include <string.h>
 #include <stdio.h>
 #include <assert.h>
 #include <math.h>
 
+#include "pspio_common.h"
 #include "pspio_error.h"
 #include "pspio_pspdata.h"
 #include "util.h"
@@ -34,102 +35,145 @@
 int pspio_oncv_read(FILE *fp, pspio_pspdata_t *pspdata)
 {
   char line[PSPIO_STRLEN_LINE];
-  int i, l, np, n_potentials, ir, has_nlcc;
-  double zvalence, r12;
-  double *wf, *r, *v;
-  pspio_qn_t *qn = NULL;
+  char *strval;
+  int il, ipl, iproj, ir, l, npts, npl;
+  double *eofl, *rval, *vofr;
+  double **pofr;
+  pspio_mesh_t *mesh;
+  pspio_meshfunc_t *rhoval;
+  pspio_potential_t *vlocal;
+  pspio_qn_t *qn;
 
   assert(fp != NULL);
-  assert(pspdata != NULL); 
+  assert(pspdata != NULL);
+  assert(pspdata->n_projectors > 0);
+  assert(pspdata->n_projectors_per_l != NULL);
 
-  /* Read header */
-  FULFILL_OR_RETURN( fgets(line, PSPIO_STRLEN_LINE, fp) != NULL, PSPIO_EIO );
-  FULFILL_OR_RETURN( sscanf(line, "%lf %d", &zvalence, &n_potentials ) == 2, PSPIO_EFILE_CORRUPT );
-  SUCCEED_OR_RETURN( pspio_pspdata_set_zvalence(pspdata, zvalence) );
-  SUCCEED_OR_RETURN( pspio_pspdata_set_n_potentials(pspdata, n_potentials) );
-  for (i=0; i<10; i++) {
-    /* We ignore the next 10 lines, as they contain no information */
-    FULFILL_OR_RETURN( fgets(line, PSPIO_STRLEN_LINE, fp) != NULL, PSPIO_EIO );
-  }
-  SUCCEED_OR_RETURN( pspio_pspdata_set_l_max(pspdata, n_potentials-1) );
-  SUCCEED_OR_RETURN( pspio_pspdata_set_n_states(pspdata, n_potentials) );
+  /* Init */
+  npts = pspio_mesh_get_np(pspdata->mesh);
+  mesh = NULL;
+  qn = NULL;
+  eofl = NULL;
+  pofr = NULL;
+  rhoval = NULL;
+  rval = NULL;
+  rval = (double *) malloc(npts*sizeof(double));
+  vlocal = NULL;
 
+  /* Projectors */
+  iproj = 0;
+  for (il=0; il < pspdata->l_max; il++) {
 
-  /* Read mesh, potentials and wavefunctions */
-  for (l=0; l < pspdata->l_max+1; l++) {
-    FULFILL_OR_RETURN( fgets(line, PSPIO_STRLEN_LINE, fp) != NULL, PSPIO_EIO );
-    FULFILL_OR_RETURN( sscanf(line, "%d %lf", &np, &r12 ) == 2, PSPIO_EFILE_CORRUPT );
+    /* Manage memory to deal with a dynamic number of projectors */
+    npl = pspdata->n_projectors_per_l[il];
+    if ( npl == 0 ) continue;
+    eofl = (double *) malloc(npl*sizeof(double));
+    pofr = (double **) malloc(npl*sizeof(vlocal));
+    for (ipl=0; ipl < npl; ipl++) {
+      pofr[ipl] = (double *) malloc(npts*sizeof(double));
+    }
 
-    /* Allocate temporary data */
-    SUCCEED_OR_RETURN( pspio_qn_alloc(&qn) );
-    r = (double *) malloc (np*sizeof(double));
-    FULFILL_OR_EXIT( r != NULL, PSPIO_ENOMEM );
-    v = (double *) malloc (np*sizeof(double));
-    FULFILL_OR_EXIT( v != NULL, PSPIO_ENOMEM );
-    wf = (double *) malloc (np*sizeof(double));
-    FULFILL_OR_EXIT(wf != NULL, PSPIO_ENOMEM);
+    /* First line: l */
+    FULFILL_OR_BREAK( fgets(line, PSPIO_STRLEN_LINE, fp) != NULL, PSPIO_EIO );
+    strval = strtok(line, " ");
+    FULFILL_OR_BREAK( strval != NULL, PSPIO_EFILE_CORRUPT );
+    FULFILL_OR_BREAK( sscanf(strval, "%d", &l) == 1, PSPIO_EFILE_CORRUPT );
 
-    /* Read first line of block */
-    for (ir=0; ir<np; ir++) {
+    /* First line: [ekb ...] */
+    for (ipl=0; ipl < npl; ipl++) {
+      strval = strtok(NULL, " ");
+      FULFILL_OR_BREAK( strval != NULL, PSPIO_EFILE_CORRUPT );
+      FULFILL_OR_BREAK( sscanf(strval, "%lf", &eofl[ipl]) == 1, PSPIO_EFILE_CORRUPT );
+    }
+
+    /* Values on the grid: index, radius, [projector ...] */
+    for (ir=0; ir < npts; ir++) {
       FULFILL_OR_BREAK( fgets(line, PSPIO_STRLEN_LINE, fp) != NULL, PSPIO_EIO );
-      FULFILL_OR_BREAK( sscanf(line, "%d %lf %lf %lf", &i, &r[ir],
-        &wf[ir], &v[ir]) == 4, PSPIO_EFILE_CORRUPT );
-      wf[ir] = wf[ir]/r[ir];
+
+      /* Index */
+      strval = strtok(line, " ");
+      FULFILL_OR_BREAK( strval != NULL, PSPIO_EFILE_CORRUPT );
+
+      /* radius */
+      strval = strtok(NULL, " ");
+      FULFILL_OR_BREAK( strval != NULL, PSPIO_EFILE_CORRUPT );
+      FULFILL_OR_BREAK( sscanf(strval, "%lf", &rval[ir]) == 1, PSPIO_EFILE_CORRUPT );
+
+      /* [projector ...] */
+      for (ipl=0; ipl < npl; ipl++) {
+        strval = strtok(NULL, " ");
+        FULFILL_OR_BREAK( strval != NULL, PSPIO_EFILE_CORRUPT );
+        FULFILL_OR_BREAK( sscanf(strval, "%lf", &pofr[ipl][ir]) == 1, PSPIO_EFILE_CORRUPT );
+      }
     }
 
-    if ( l == 0 ) {
-      /*
-       * We will use the first block to generate the mesh, as the mesh
-       * is supposed to be the same for all blocks (at least this is
-       * the behavior of ONCVPSP)
-      */
-      SKIP_FUNC_ON_ERROR( pspio_mesh_alloc(&pspdata->mesh, np) );
-      SKIP_CALL_ON_ERROR( pspio_mesh_init_from_points(pspdata->mesh, r, NULL) );
+    /* Configure projectors, assuming a linear grid */
+    SUCCEED_OR_BREAK( pspio_mesh_alloc(&mesh, npts) );
+    SUCCEED_OR_BREAK( pspio_mesh_init_from_parameters(mesh, PSPIO_MESH_LINEAR, (rval[npts-1]-rval[0])/((double)(npts-1)), rval[0]) );
+    SUCCEED_OR_BREAK( pspio_qn_alloc(&qn) );
+    SUCCEED_OR_BREAK( pspio_qn_init(qn, 0, l, 0.0) );
+    for (ipl=0; ipl < npl; ipl++) {
+      SUCCEED_OR_BREAK( pspio_projector_init(pspdata->projectors[iproj+ipl], qn, eofl[ipl], mesh, pofr[ipl]) );
+      free(pofr[ipl]);
     }
-
-    /* Set pseudopotential and wavefunction */
-    SKIP_FUNC_ON_ERROR( pspio_qn_init(qn, 0, l, 0.0) );
-    SKIP_FUNC_ON_ERROR(
-      pspio_potential_alloc(&pspdata->potentials[LJ_TO_I(l,0.0)], np) );
-    SKIP_FUNC_ON_ERROR( pspio_potential_init(pspdata->potentials[LJ_TO_I(l,0.0)],
-      qn, pspdata->mesh, v) );
-    SKIP_FUNC_ON_ERROR( pspio_state_alloc(&pspdata->states[l], np) );
-    SKIP_FUNC_ON_ERROR( pspio_state_init(pspdata->states[l], 0.0, qn,
-      0.0, 0.0, pspdata->mesh, wf, NULL) );
-
-    /* Free temporary data */
-    free(r);
-    free(v);
-    free(wf);
+    pspio_mesh_free(mesh);
+    mesh = NULL;
     pspio_qn_free(qn);
     qn = NULL;
+    free(eofl);
+    eofl = NULL;
+    free(pofr);
+    pofr = NULL;
 
-    /* Return on error after making sure internal variables are freed */
-    RETURN_ON_DEFERRED_ERROR;
+    iproj += npl;
   }
 
-  /* If not done yet, then allocate the xc structure */
-  if ( pspdata->xc == NULL ) {
-    SUCCEED_OR_RETURN( pspio_xc_alloc(&pspdata->xc) );
+  /* Return on error after making sure internal variables are freed */
+  free(rval);
+  RETURN_ON_DEFERRED_ERROR;
+
+  /* Local potential */
+  rval = NULL;
+  rval = (double *) malloc(npts*sizeof(double));
+  vofr = NULL;
+  vofr = (double *) malloc(npts*sizeof(double));
+  DEFER_TEST_ERROR( fgets(line, PSPIO_STRLEN_LINE, fp) != NULL, PSPIO_EIO );
+  DEFER_TEST_ERROR( sscanf(line, "%d", &l) == 1, PSPIO_EFILE_CORRUPT );
+  assert(l == pspio_pspdata_get_l_local(pspdata));
+  for (ir=0; ir < npts; ir++) {
+    FULFILL_OR_BREAK(fgets(line, PSPIO_STRLEN_LINE, fp) != NULL, PSPIO_EIO);
+    FULFILL_OR_BREAK(sscanf(line, "%d %lf %lf", &ipl, &rval[ir], &vofr[ir]) == 3, PSPIO_EFILE_CORRUPT);
   }
+  DEFER_FUNC_ERROR( pspio_qn_alloc(&qn) );
+  DEFER_FUNC_ERROR( pspio_qn_init(qn, 0, l, 0.0) );
+  DEFER_FUNC_ERROR( pspio_potential_alloc(&vlocal, npts) );
+  DEFER_FUNC_ERROR( pspio_potential_init(vlocal, qn, pspdata->mesh, vofr) );
+  DEFER_FUNC_ERROR( pspio_pspdata_set_vlocal(pspdata, vlocal) );
+
+  /* Return on error after making sure internal variables are freed */
+  pspio_potential_free(vlocal);
+  pspio_qn_free(qn);
+  free(rval);
+  free(vofr);
+  RETURN_ON_DEFERRED_ERROR;
 
   /* Non-linear core-corrections */
-  has_nlcc = ( fgets(line, PSPIO_STRLEN_LINE, fp) != NULL );
-  if ( has_nlcc ) {
-    double *cd, *cdp, *cdpp;
-
-    SUCCEED_OR_RETURN( pspio_xc_set_nlcc_scheme(pspdata->xc, PSPIO_NLCC_ONCV) );
+  if ( pspio_xc_get_nlcc_scheme(pspdata->xc) != PSPIO_NLCC_NONE ) {
+    double r12, *cd, *cdp, *cdpp;
 
     /* Allocate memory */
-    cd = (double *) malloc (np*sizeof(double));
+    cd = NULL;
+    cd = (double *) malloc (npts*sizeof(double));
     FULFILL_OR_EXIT(cd != NULL, PSPIO_ENOMEM);
-    cdp = (double *) malloc (np*sizeof(double));
+    cdp = NULL;
+    cdp = (double *) malloc (npts*sizeof(double));
     FULFILL_OR_EXIT(cdp != NULL, PSPIO_ENOMEM);
-    cdpp = (double *) malloc (np*sizeof(double));
+    cdpp = NULL;
+    cdpp = (double *) malloc (npts*sizeof(double));
     FULFILL_OR_EXIT(cdpp != NULL, PSPIO_ENOMEM);
 
     /* Read core density */
-    for (ir=0; ir<np; ir++) {
+    for (ir=0; ir < npts; ir++) {
       if ( ir != 0 ) {
 	FULFILL_OR_BREAK(fgets(line, PSPIO_STRLEN_LINE, fp) != NULL, PSPIO_EIO);
       }
@@ -142,15 +186,20 @@ int pspio_oncv_read(FILE *fp, pspio_pspdata_t *pspdata)
     /* Store the non-linear core corrections in the pspdata structure */
     SKIP_FUNC_ON_ERROR(pspio_xc_set_nlcc_density(pspdata->xc, pspdata->mesh, cd, cdp, cdpp));
 
-    /* Free temporary variables */
-    free(cd); 
-    free(cdp); 
-    free(cdpp);
-
     /* Return on error after making sure internal variables are freed */
+    free(cd);
+    free(cdp);
+    free(cdpp);
     RETURN_ON_DEFERRED_ERROR;
   }
-  
+
+  /* Valence density */
+  if ( pspdata->rho_valence_type != PSPIO_RHOVAL_NONE ) {
+    /* TODO: read values */
+    SKIP_FUNC_ON_ERROR( pspio_meshfunc_alloc(&rhoval, npts) );
+    SKIP_FUNC_ON_ERROR( pspio_meshfunc_init(rhoval, pspdata->mesh, vofr, NULL, NULL) );
+  }
+
   /* We do not know the symbol (note that it might have been set somewhere else) */
   if ( pspdata->symbol == NULL ) {
     SUCCEED_OR_RETURN( pspio_pspdata_set_symbol(pspdata, "N/D") );

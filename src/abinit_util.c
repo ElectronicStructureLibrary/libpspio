@@ -40,12 +40,12 @@ int abinit_read_header(FILE *fp, int format, pspio_pspdata_t *pspdata)
   char *line4;
   int format_read, year, month, day, pspcod, pspxc, lmax, lloc, mmax;
   int exchange, correlation;
-  int ppl[6], npso[2];
+  int iproj, nproj, ppl[6], npso[2];
   double zatom, zval, r2well, rchrg, fchrg, qchrg;
 
   /* Line 1: read title */
   FULFILL_OR_RETURN( fgets(line, PSPIO_STRLEN_LINE, fp) != NULL, PSPIO_EIO );
-  FULFILL_OR_RETURN( sscanf(line, "%s %s : %s", tmp, code_name, description) == 3, PSPIO_EFILE_CORRUPT );
+  FULFILL_OR_RETURN( sscanf(line, "%s %s %s", tmp, code_name, description) == 3, PSPIO_EFILE_CORRUPT );
   SUCCEED_OR_RETURN( pspio_pspinfo_alloc(&pspdata->pspinfo) );
   SUCCEED_OR_RETURN( pspio_pspinfo_set_code_name(pspdata->pspinfo, code_name) );
   SUCCEED_OR_RETURN( pspio_pspinfo_set_description(pspdata->pspinfo, description) );
@@ -88,7 +88,11 @@ int abinit_read_header(FILE *fp, int format, pspio_pspdata_t *pspdata)
     DEFER_TEST_ERROR( sscanf(line, "%lf %lf %lf",
       &rchrg, &fchrg, &qchrg) == 3, PSPIO_EFILE_CORRUPT );
     if ( fabs(fchrg) >= 1.0e-14 ) {
-      pspio_xc_set_nlcc_scheme(pspdata->xc, PSPIO_NLCC_FHI);
+      if ( pspcod == 8 ) {
+        pspio_xc_set_nlcc_scheme(pspdata->xc, PSPIO_NLCC_ONCV);
+      } else {
+        pspio_xc_set_nlcc_scheme(pspdata->xc, PSPIO_NLCC_FHI);
+      }
       pspio_xc_set_nlcc_prefactors(pspdata->xc, rchrg, fchrg);
     }
   }
@@ -96,14 +100,36 @@ int abinit_read_header(FILE *fp, int format, pspio_pspdata_t *pspdata)
   RETURN_ON_DEFERRED_ERROR;
 
   /* Ignore lines 5-7, except with format 8 */
-  /* FIXME: do something with multiple projectors */
   /* FIXME: add spin-orbit support */
   if ( pspcod == 8 ) {
+    SUCCEED_OR_RETURN( pspio_mesh_alloc(&pspdata->mesh, mmax) );
+    SUCCEED_OR_RETURN( pspio_mesh_init_from_parameters(pspdata->mesh, PSPIO_MESH_LINEAR,
+      rchrg/((double) mmax-1), 0.0) );
+
+    for (iproj=0; iproj<6; iproj++) {
+      ppl[iproj] = 0;
+    }
+    npso[0] = 0;
+    npso[1] = 0;
+
     FULFILL_OR_RETURN( fgets(line, PSPIO_STRLEN_LINE, fp) != NULL, PSPIO_EIO );
     FULFILL_OR_RETURN( sscanf(line, "%d %d %d %d %d", &ppl[0], &ppl[1], &ppl[2], &ppl[3], &ppl[4]) == 5, PSPIO_EFILE_CORRUPT );
     FULFILL_OR_RETURN( fgets(line, PSPIO_STRLEN_LINE, fp) != NULL, PSPIO_EIO );
     FULFILL_OR_RETURN( sscanf(line, "%d %d", &npso[0], &npso[1]) == 2, PSPIO_EFILE_CORRUPT );
     FULFILL_OR_RETURN( ((npso[0] == 1) && (npso[1] == 1)), PSPIO_ENOSUPPORT );
+    if ( (npso[0] == 1) || (npso[0] == 3) ) {
+      pspdata->rho_valence_type = PSPIO_RHOVAL_ONCV;
+    }
+
+    SUCCEED_OR_RETURN( pspio_pspdata_set_n_projectors_per_l(pspdata, ppl) );
+    nproj = 0;
+    for (iproj=0; iproj<6; iproj++) {
+      nproj += ppl[iproj];
+      if ( ppl[iproj] > 0 ) {
+        SUCCEED_OR_RETURN( pspio_pspdata_set_projectors_l_max(pspdata, iproj) );
+      }
+    }
+    SUCCEED_OR_RETURN( pspio_pspdata_set_n_projectors(pspdata, nproj) );
   } else {
     FULFILL_OR_RETURN( fgets(line, PSPIO_STRLEN_LINE, fp) != NULL, PSPIO_EIO );
     FULFILL_OR_RETURN( fgets(line, PSPIO_STRLEN_LINE, fp) != NULL, PSPIO_EIO );

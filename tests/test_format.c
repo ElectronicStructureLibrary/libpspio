@@ -66,7 +66,7 @@ int main(int argc, char **argv) {
 
   fprintf(stderr,
     "Format : %d\nFile   : %s\n>>> BEGIN DIFF <<<\n", psp_fmt, psp_rd);
-  system(cmd);
+  ierr = system(cmd);
   fprintf(stderr, ">>> END DIFF <<<\n");
 
   return 0;

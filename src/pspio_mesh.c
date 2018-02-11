@@ -77,7 +77,7 @@ int pspio_mesh_init(pspio_mesh_t *mesh, int type, double a,
   return PSPIO_SUCCESS;
 }
 
-void pspio_mesh_init_from_parameters(pspio_mesh_t *mesh, int type,
+int pspio_mesh_init_from_parameters(pspio_mesh_t *mesh, int type,
 				     double a, double b)
 {
   int i;
@@ -105,8 +105,12 @@ void pspio_mesh_init_from_parameters(pspio_mesh_t *mesh, int type,
       mesh->r[i] = b*(exp(a*(i+1)) - 1.0);
       mesh->rab[i] = a*mesh->r[i] + a*b;
       break;
+    default:
+      return PSPIO_EVALUE;
     }
   }
+
+  return PSPIO_SUCCESS;
 }
 
 void pspio_mesh_init_from_points(pspio_mesh_t *mesh, const double *r, const double *rab)

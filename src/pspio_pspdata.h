@@ -76,6 +76,7 @@ typedef struct{
   pspio_xc_t *xc; /**< xc structure */
 
   /* Valence density */
+  int rho_valence_type;
   pspio_meshfunc_t *rho_valence; /**< valence density */
 
 } pspio_pspdata_t;
@@ -245,7 +246,7 @@ int pspio_pspdata_set_n_projectors(pspio_pspdata_t *pspdata, int n_projectors);
  * @note array length must be less than 7
  * @return error code
  */
-int pspio_pspdata_set_n_projectors_per_l(pspio_pspdata_t *pspdata, int *n_ppl);
+int pspio_pspdata_set_n_projectors_per_l(pspio_pspdata_t *pspdata, const int *n_ppl);
 
 /**
  * @param[in,out] pspdata: pointer to pspdata structure

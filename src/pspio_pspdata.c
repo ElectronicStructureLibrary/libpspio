@@ -75,6 +75,7 @@ int pspio_pspdata_alloc(pspio_pspdata_t **pspdata)
 
   (*pspdata)->xc = NULL;
 
+  (*pspdata)->rho_valence_type = PSPIO_RHOVAL_NONE;
   (*pspdata)->rho_valence = NULL;
 
   return PSPIO_SUCCESS;
@@ -113,6 +114,7 @@ int pspio_pspdata_read(pspio_pspdata_t *pspdata, int file_format,
     fflush(stdout);
     switch (fmt) {
     case PSPIO_FMT_ABINIT_6:
+    case PSPIO_FMT_ABINIT_8:
       ierr = pspio_abinit_read(fp, pspdata, fmt);
       break;
     case PSPIO_FMT_FHI98PP:
@@ -168,8 +170,8 @@ int pspio_pspdata_write(pspio_pspdata_t *pspdata, int file_format,
 
   /* Write to file in the selected format */
   switch(file_format) {
-    case PSPIO_FMT_ABINIT_5:
     case PSPIO_FMT_ABINIT_6:
+    case PSPIO_FMT_ABINIT_8:
       ierr = pspio_abinit_write(fp, pspdata, file_format);
       break;
     case PSPIO_FMT_FHI98PP:
@@ -270,6 +272,7 @@ void pspio_pspdata_reset(pspio_pspdata_t *pspdata)
   }
 
   /* Valence density */
+  pspdata->rho_valence_type = PSPIO_RHOVAL_NONE;
   if (pspdata->rho_valence != NULL) {
     pspio_meshfunc_free(pspdata->rho_valence);
     pspdata->rho_valence = NULL;
@@ -473,16 +476,19 @@ int pspio_pspdata_set_n_projectors(pspio_pspdata_t *pspdata, int n_projectors)
   return PSPIO_SUCCESS;
 }
 
-int pspio_pspdata_set_n_projectors_per_l(pspio_pspdata_t *pspdata, int *n_ppl)
+int pspio_pspdata_set_n_projectors_per_l(pspio_pspdata_t *pspdata, const int *n_ppl)
 {
+  int ippl;
+
   assert(pspdata != NULL);
   assert(pspdata->n_projectors_per_l == NULL);
+  assert(n_ppl != NULL);
 
-  if ( n_ppl == NULL ) {
-    pspdata->n_projectors_per_l = pspio_projectors_per_l(pspdata->projectors,
-      pspdata->n_projectors);
-  } else {
-    pspdata->n_projectors_per_l = n_ppl;
+  /* Here we make no assumption on the lifetime of n_ppl */
+  pspdata->n_projectors_per_l = (int *) malloc(6*sizeof(int));
+  FULFILL_OR_EXIT(pspdata->n_projectors_per_l != NULL, PSPIO_ENOMEM);
+  for (ippl=0; ippl<6; ippl++) {
+    pspdata->n_projectors_per_l[ippl] = n_ppl[ippl];
   }
 
   return PSPIO_SUCCESS;
