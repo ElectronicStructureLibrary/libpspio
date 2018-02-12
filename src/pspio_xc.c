@@ -149,6 +149,7 @@ int pspio_xc_set_nlcc_scheme(pspio_xc_t *xc, int nlcc_scheme)
   case PSPIO_NLCC_TETER1:
   case PSPIO_NLCC_TETER2:
   case PSPIO_NLCC_ATOM:
+  case PSPIO_NLCC_ONCV:
     break;    
   default:
     return PSPIO_EVALUE;
