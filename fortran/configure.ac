@@ -31,7 +31,7 @@
 
 # Initialize Autoconf
 AC_PREREQ(2.62)
-AC_INIT([Libpspio-Fortran], [0.2.0],
+AC_INIT([Libpspio-Fortran], [0.2.3],
   [https://bugs.launchpad.net/libpspio/], [libpspio-fortran])
 AC_REVISION([Autotools support for Libpspio-Fortran])
 AC_CONFIG_AUX_DIR([config/gnu])
