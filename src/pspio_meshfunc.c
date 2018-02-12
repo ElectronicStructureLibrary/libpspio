@@ -116,6 +116,7 @@ int pspio_meshfunc_copy(pspio_meshfunc_t **dst, const pspio_meshfunc_t *src)
   int np;
 
   assert(src != NULL);
+  assert(dst != NULL);
 
   np = pspio_mesh_get_np(src->mesh);
 
