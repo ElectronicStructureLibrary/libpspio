@@ -86,6 +86,12 @@ interface
     type(c_ptr), value :: state
   end function pspio_state_get_rc
 
+  ! wf
+  type(c_ptr) function pspio_state_get_wf(state) bind(c)
+    import
+    type(c_ptr), value :: state
+  end function pspio_state_get_wf
+
 
   !*********************************************************************!
   ! Utility routines                                                    !
