@@ -174,23 +174,28 @@ double pspio_projector_eval_deriv2(const pspio_projector_t *projector, double r)
   return pspio_meshfunc_eval_deriv2(projector->proj, r);
 }
 
-int * pspio_projectors_per_l(pspio_projector_t ** const projectors, int nproj)
+int *pspio_projectors_per_l(pspio_projector_t ** const projectors, int nproj)
 {
   int i, l;
-  int * ret;
+  int *ret;
 
   assert(projectors != NULL);
   assert(nproj > 0);
 
-  ret = (unsigned int *) malloc (6*sizeof(unsigned int));
+  ret = (int *) malloc (6*sizeof(int));
   for (i=0; i<6; i++) {
     ret[i] = 0;
   }
 
-  for (i=0;i<nproj;i++) {
+  for (i=0; i < nproj; i++) {
     l = projectors[i]->qn->l;
-    FULFILL_OR_EXIT( l < 6, PSPIO_ENOMEM );
+    FULFILL_OR_BREAK( l < 6, PSPIO_ENOMEM );
     ret[l] += 1;
+  }
+
+  if ( pspio_error_get_last(NULL) != PSPIO_SUCCESS ) {
+    free(ret);
+    ret = NULL;
   }
 
   return ret;
