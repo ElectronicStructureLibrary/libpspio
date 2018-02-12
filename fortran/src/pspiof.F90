@@ -173,6 +173,7 @@ module pspiof_m
     pspiof_state_get_occ, &
     pspiof_state_get_ev, &
     pspiof_state_get_rc, &
+    pspiof_state_get_wf, &
     pspiof_state_cmp, &
     pspiof_state_wf_eval, &
     pspiof_state_wf_eval_deriv, &
