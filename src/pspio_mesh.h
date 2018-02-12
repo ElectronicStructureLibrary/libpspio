@@ -87,7 +87,7 @@ int pspio_mesh_init(pspio_mesh_t *mesh, int type, double a,
  * @note If rab is null it will be determined automatically, otherwise 
  *       consistency will be checked between r and rab.
  */
-void pspio_mesh_init_from_points(pspio_mesh_t *mesh, const double *r, const double *rab);
+int pspio_mesh_init_from_points(pspio_mesh_t *mesh, const double *r, const double *rab);
 
 /**
  * Generates the mesh from the mesh type and parameters.

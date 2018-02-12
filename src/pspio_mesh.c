@@ -113,7 +113,7 @@ int pspio_mesh_init_from_parameters(pspio_mesh_t *mesh, int type,
   return PSPIO_SUCCESS;
 }
 
-void pspio_mesh_init_from_points(pspio_mesh_t *mesh, const double *r, const double *rab)
+int pspio_mesh_init_from_points(pspio_mesh_t *mesh, const double *r, const double *rab)
 {
   int i;
   double tol = 1.0e-10;
@@ -209,7 +209,11 @@ void pspio_mesh_init_from_points(pspio_mesh_t *mesh, const double *r, const doub
   if ( mesh->type == PSPIO_MESH_UNKNOWN ) {
     mesh->a = 0.0;
     mesh->b = 0.0;
+
+    return PSPIO_ERROR;
   }
+
+  return PSPIO_SUCCESS;
 }
 
 int pspio_mesh_copy(pspio_mesh_t **dst, const pspio_mesh_t *src)
