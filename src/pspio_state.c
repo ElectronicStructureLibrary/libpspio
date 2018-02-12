@@ -226,6 +226,12 @@ const char *pspio_state_get_label(const pspio_state_t *state)
   return state->label;
 }
 
+const pspio_meshfunc_t *pspio_state_get_wf(const pspio_state_t *state)
+{
+  assert(state != NULL);
+
+  return state->wf;
+}
 
 /**********************************************************************
  * Utility routines                                                   *
