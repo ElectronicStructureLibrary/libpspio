@@ -26,6 +26,16 @@
 #include "pspio_error.h"
 #include "pspio_xc.h"
 
+#if defined HAVE_GSL
+#define TOL_FUNC 1.0e-10
+#define TOL_DER1 1.0e-10
+#define TOL_DER2 1.0e-10
+#else
+#define TOL_FUNC 1.0e-10
+#define TOL_DER1 6.5e-2
+#define TOL_DER2 1.0e-10
+#endif
+
 
 static pspio_mesh_t *m1 = NULL, *m2 = NULL;
 static pspio_xc_t *xc11 = NULL, *xc12 = NULL, *xc2 = NULL;
@@ -153,7 +163,7 @@ START_TEST(test_xc_setget_nlcc_density)
   ck_assert(pspio_xc_set_nlcc_density(xc11, m1, cd11, NULL, NULL) == PSPIO_SUCCESS);
   cd = pspio_meshfunc_get_function(pspio_xc_get_nlcc_density(xc11));
   for (i=0; i<pspio_mesh_get_np(m1); i++) {
-    ck_assert( fabs(cd[i] - cd11[i]) < 1e-10);
+    ck_assert( fabs(cd[i] - cd11[i]) < TOL_FUNC);
   }
 }
 END_TEST
@@ -161,7 +171,7 @@ END_TEST
 START_TEST(test_xc_init)
 {
   ck_assert(pspio_xc_init(xc11, xid11, cid11, nlcc11, nlccpfs11, nlccpfv11, m1, cd11, NULL, NULL) == PSPIO_SUCCESS);
-  xc_compare_values(xc11, xid11, cid11, nlcc11, nlccpfs11, nlccpfv11, m1, cd11, 1e-10);
+  xc_compare_values(xc11, xid11, cid11, nlcc11, nlccpfs11, nlccpfv11, m1, cd11, TOL_FUNC);
 }
 END_TEST
 
@@ -240,7 +250,7 @@ START_TEST(test_xc_nlcc_density_eval)
   pspio_xc_init(xc11, xid11, cid11, nlcc11, nlccpfs11, nlccpfv11, m1, cd11, NULL, NULL);
   eval = pspio_xc_nlcc_density_eval(xc11, 0.01);
   expect = 1.6456049569e+00;
-  ck_assert_msg(fabs(eval - expect) <= 1e-10, "nlcc density eval returned= %16.10e expected= %16.10e\n", eval, expect);
+  ck_assert_msg(fabs(eval - expect) <= TOL_FUNC, "nlcc density eval returned= %16.10e expected= %16.10e\n", eval, expect);
 }
 END_TEST
 
@@ -251,7 +261,7 @@ START_TEST(test_xc_nlcc_density_eval_deriv)
   pspio_xc_init(xc11, xid11, cid11, nlcc11, nlccpfs11, nlccpfv11, m1, cd11, NULL, NULL);
   eval = pspio_xc_nlcc_density_eval_deriv(xc11, 0.01);
   expect = -1.5477352024e-01;
-  ck_assert_msg(fabs(eval - expect) <= 1e-10, "nlcc density eval deriv returned= %16.10e expected= %16.10e\n", eval, expect);
+  ck_assert_msg(fabs(eval - expect) <= TOL_DER1, "nlcc density eval deriv returned= %16.10e expected= %16.10e\n", eval, expect);
 }
 END_TEST
 
@@ -262,7 +272,7 @@ START_TEST(test_xc_nlcc_density_eval_deriv2)
   pspio_xc_init(xc11, xid11, cid11, nlcc11, nlccpfs11, nlccpfv11, m1, cd11, NULL, NULL);
   eval = pspio_xc_nlcc_density_eval_deriv2(xc11, 0.01);
   expect = -5.8963771072e-03;
-  ck_assert_msg(fabs(eval - expect) <= 1e-10, "nlcc density eval deriv2 returned= %16.10e expected= %16.10e\n", eval, expect);
+  ck_assert_msg(fabs(eval - expect) <= TOL_DER2, "nlcc density eval deriv2 returned= %16.10e expected= %16.10e\n", eval, expect);
 }
 END_TEST
 

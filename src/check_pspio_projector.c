@@ -26,6 +26,19 @@
 #include "pspio_error.h"
 #include "pspio_projector.h"
 
+#if defined HAVE_CONFIG_H
+#include "config.h"
+#endif
+
+#if defined HAVE_GSL
+#define TOL_FUNC 1.0e-10
+#define TOL_DER1 1.0e-10
+#define TOL_DER2 1.0e-10
+#else
+#define TOL_FUNC 1.0e-10
+#define TOL_DER1 1.0e-1
+#define TOL_DER2 1.0e-10
+#endif
 
 
 static pspio_mesh_t *m1 = NULL, *m2 = NULL;
@@ -131,7 +144,7 @@ END_TEST
 START_TEST(test_projector_init)
 {
   ck_assert(pspio_projector_init(proj11, qn11, e11, m1, p11) == PSPIO_SUCCESS);
-  projector_compare_values(m1, proj11, qn11, e11, p11, 1e-10);
+  projector_compare_values(m1, proj11, qn11, e11, p11, TOL_FUNC);
 }
 END_TEST
 
@@ -216,7 +229,7 @@ START_TEST(test_projector_eval)
   pspio_projector_init(proj11, qn11, e11, m1, p11);
   eval = pspio_projector_eval(proj11, 0.01);
   expect = 1.6456049569e+00;
-  ck_assert_msg(fabs(eval - expect) <= 1e-10, "projector eval returned= %16.10e expected= %16.10e\n", eval, expect);
+  ck_assert_msg(fabs(eval - expect) <= TOL_FUNC, "projector eval returned= %16.10e expected= %16.10e\n", eval, expect);
 }
 END_TEST
 
@@ -227,7 +240,7 @@ START_TEST(test_projector_eval_deriv)
   pspio_projector_init(proj11, qn11, e11, m1, p11);
   eval = pspio_projector_eval_deriv(proj11, 0.01);
   expect = -1.5477352024e-01;
-  ck_assert_msg(fabs(eval - expect) <= 1e-10, "projector eval deriv returned= %16.10e expected= %16.10e\n", eval, expect);
+  ck_assert_msg(fabs(eval - expect) <= TOL_DER1, "projector eval deriv returned= %16.10e expected= %16.10e\n", eval, expect);
 }
 END_TEST
 
@@ -238,7 +251,7 @@ START_TEST(test_projector_eval_deriv2)
   pspio_projector_init(proj11, qn11, e11, m1, p11);
   eval = pspio_projector_eval_deriv2(proj11, 0.01);
   expect = -5.8963771072e-03;
-  ck_assert_msg(fabs(eval - expect) <= 1e-10, "projector eval deriv2 returned= %16.10e expected= %16.10e\n", eval, expect);
+  ck_assert_msg(fabs(eval - expect) <= TOL_DER2, "projector eval deriv2 returned= %16.10e expected= %16.10e\n", eval, expect);
 }
 END_TEST
 

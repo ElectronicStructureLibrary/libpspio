@@ -27,6 +27,16 @@
 #include "pspio_error.h"
 #include "pspio_state.h"
 
+#if defined HAVE_GSL
+#define TOL_FUNC 1.0e-10
+#define TOL_DER1 1.0e-10
+#define TOL_DER2 1.0e-10
+#else
+#define TOL_FUNC 1.0e-10
+#define TOL_DER1 6.5e-2
+#define TOL_DER2 1.0e-10
+#endif
+
 
 static pspio_mesh_t *m1 = NULL, *m2 = NULL;
 static pspio_qn_t *qn11 = NULL, *qn12 = NULL, *qn2 = NULL;
@@ -139,14 +149,14 @@ END_TEST
 START_TEST(test_state_init)
 {
   ck_assert(pspio_state_init(state11, e11, qn11, occ11, rc11, m1, wf11, "1s0.5") == PSPIO_SUCCESS);
-  state_compare_values(state11, e11, qn11, occ11, rc11, m1, wf11, "1s0.5", 1e-10);
+  state_compare_values(state11, e11, qn11, occ11, rc11, m1, wf11, "1s0.5", TOL_FUNC);
 }
 END_TEST
 
 START_TEST(test_state_init_label)
 {
   ck_assert(pspio_state_init(state11, e11, qn11, occ11, rc11, m1, wf11, NULL) == PSPIO_SUCCESS);
-  state_compare_values(state11, e11, qn11, occ11, rc11, m1, wf11, "2s0.5", 1e-10);
+  state_compare_values(state11, e11, qn11, occ11, rc11, m1, wf11, "2s0.5", TOL_FUNC);
 }
 END_TEST
 
@@ -319,7 +329,7 @@ START_TEST(test_state_wf_eval)
   pspio_state_init(state11, e11, qn11, occ11, rc11, m1, wf11, NULL);
   eval = pspio_state_wf_eval(state11, 0.01);
   expect = 1.6456049569e+00;
-  ck_assert_msg(fabs(eval - expect) <= 1e-10, "wavefunction eval returned= %16.10e expected= %16.10e\n", eval, expect);
+  ck_assert_msg(fabs(eval - expect) <= TOL_FUNC, "wavefunction eval returned= %16.10e expected= %16.10e\n", eval, expect);
 }
 END_TEST
 
@@ -330,7 +340,7 @@ START_TEST(test_state_wf_eval_deriv)
   pspio_state_init(state11, e11, qn11, occ11, rc11, m1, wf11, NULL);
   eval = pspio_state_wf_eval_deriv(state11, 0.01);
   expect = -1.5477352024e-01;
-  ck_assert_msg(fabs(eval - expect) <= 1e-10, "wavefunction eval deriv returned= %16.10e expected= %16.10e\n", eval, expect);
+  ck_assert_msg(fabs(eval - expect) <= TOL_DER1, "wavefunction eval deriv returned= %16.10e expected= %16.10e\n", eval, expect);
 }
 END_TEST
 
@@ -341,7 +351,7 @@ START_TEST(test_state_wf_eval_deriv2)
   pspio_state_init(state11, e11, qn11, occ11, rc11, m1, wf11, NULL);
   eval = pspio_state_wf_eval_deriv2(state11, 0.01);
   expect = -5.8963771072e-03;
-  ck_assert_msg(fabs(eval - expect) <= 1e-10, "wavefunction eval deriv2 returned= %16.10e expected= %16.10e\n", eval, expect);
+  ck_assert_msg(fabs(eval - expect) <= TOL_DER2, "wavefunction eval deriv2 returned= %16.10e expected= %16.10e\n", eval, expect);
 }
 END_TEST
 
