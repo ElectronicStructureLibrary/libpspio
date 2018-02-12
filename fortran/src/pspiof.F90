@@ -276,7 +276,10 @@ module pspiof_m
   integer(c_int), parameter, public :: PSPIO_NLCC_TETER1 = 3
   integer(c_int), parameter, public :: PSPIO_NLCC_TETER2 = 4
   integer(c_int), parameter, public :: PSPIO_NLCC_ATOM = 5
-  integer(c_int), parameter, public :: PSPIO_NLCC_ONCV = 5
+  integer(c_int), parameter, public :: PSPIO_NLCC_ONCV = 6
+  integer(c_int), parameter, public :: PSPIO_RHOVAL_NONE = 0
+  integer(c_int), parameter, public :: PSPIO_RHOVAL_UPF1 = 1
+  integer(c_int), parameter, public :: PSPIO_RHOVAL_ONCV = 2
   !%%% END PSPIO CONSTANTS
 
 
