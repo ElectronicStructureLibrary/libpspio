@@ -42,6 +42,7 @@ int abinit_read_header(FILE *fp, int format, pspio_pspdata_t *pspdata)
   int exchange, correlation;
   int iproj, nproj, ppl[6], npso[2];
   double zatom, zval, r2well, rchrg, fchrg, qchrg;
+  pspio_mesh_t *mesh;
 
   /* Line 1: read title */
   FULFILL_OR_RETURN( fgets(line, PSPIO_STRLEN_LINE, fp) != NULL, PSPIO_EIO );
@@ -89,11 +90,11 @@ int abinit_read_header(FILE *fp, int format, pspio_pspdata_t *pspdata)
       &rchrg, &fchrg, &qchrg) == 3, PSPIO_EFILE_CORRUPT );
     if ( fabs(fchrg) >= 1.0e-14 ) {
       if ( pspcod == 8 ) {
-        pspio_xc_set_nlcc_scheme(pspdata->xc, PSPIO_NLCC_ONCV);
+        SUCCEED_OR_RETURN( pspio_xc_set_nlcc_scheme(pspdata->xc, PSPIO_NLCC_ONCV) );
       } else {
-        pspio_xc_set_nlcc_scheme(pspdata->xc, PSPIO_NLCC_FHI);
+        SUCCEED_OR_RETURN( pspio_xc_set_nlcc_scheme(pspdata->xc, PSPIO_NLCC_FHI) );
       }
-      pspio_xc_set_nlcc_prefactors(pspdata->xc, rchrg, fchrg);
+      SUCCEED_OR_RETURN( pspio_xc_set_nlcc_prefactors(pspdata->xc, rchrg, fchrg) );
     }
   }
   free(line4);
@@ -102,18 +103,24 @@ int abinit_read_header(FILE *fp, int format, pspio_pspdata_t *pspdata)
   /* Ignore lines 5-7, except with format 8 */
   /* FIXME: add spin-orbit support */
   if ( pspcod == 8 ) {
-    SUCCEED_OR_RETURN( pspio_mesh_alloc(&pspdata->mesh, mmax) );
-    SUCCEED_OR_RETURN( pspio_mesh_init_from_parameters(pspdata->mesh, PSPIO_MESH_LINEAR,
-      rchrg/((double) mmax-1), 0.0) );
 
+    /* Init linear mesh */
+    SUCCEED_OR_RETURN( pspio_mesh_alloc(&mesh, mmax) );
+    SUCCEED_OR_RETURN( pspio_mesh_init_from_parameters(mesh, PSPIO_MESH_LINEAR,
+      rchrg/((double) mmax-1), 0.0) );
+    SUCCEED_OR_RETURN( pspio_pspdata_set_mesh(pspdata, mesh) );
+    pspio_mesh_free(mesh);
+
+    /* Count projectors */
     for (iproj=0; iproj<6; iproj++) {
       ppl[iproj] = 0;
     }
     npso[0] = 0;
     npso[1] = 0;
-
     FULFILL_OR_RETURN( fgets(line, PSPIO_STRLEN_LINE, fp) != NULL, PSPIO_EIO );
     FULFILL_OR_RETURN( sscanf(line, "%d %d %d %d %d", &ppl[0], &ppl[1], &ppl[2], &ppl[3], &ppl[4]) == 5, PSPIO_EFILE_CORRUPT );
+
+    /* Retrieve information on spin-orbit coupling */
     FULFILL_OR_RETURN( fgets(line, PSPIO_STRLEN_LINE, fp) != NULL, PSPIO_EIO );
     FULFILL_OR_RETURN( sscanf(line, "%d %d", &npso[0], &npso[1]) == 2, PSPIO_EFILE_CORRUPT );
     FULFILL_OR_RETURN( ((npso[0] == 1) && (npso[1] == 1)), PSPIO_ENOSUPPORT );
@@ -121,6 +128,7 @@ int abinit_read_header(FILE *fp, int format, pspio_pspdata_t *pspdata)
       pspdata->rho_valence_type = PSPIO_RHOVAL_ONCV;
     }
 
+    /* Prepare projectors */
     SUCCEED_OR_RETURN( pspio_pspdata_set_n_projectors_per_l(pspdata, ppl) );
     nproj = 0;
     for (iproj=0; iproj<6; iproj++) {
@@ -130,10 +138,13 @@ int abinit_read_header(FILE *fp, int format, pspio_pspdata_t *pspdata)
       }
     }
     SUCCEED_OR_RETURN( pspio_pspdata_set_n_projectors(pspdata, nproj) );
+
   } else {
+
     FULFILL_OR_RETURN( fgets(line, PSPIO_STRLEN_LINE, fp) != NULL, PSPIO_EIO );
     FULFILL_OR_RETURN( fgets(line, PSPIO_STRLEN_LINE, fp) != NULL, PSPIO_EIO );
     FULFILL_OR_RETURN( fgets(line, PSPIO_STRLEN_LINE, fp) != NULL, PSPIO_EIO );
+
   }
 
   /* Check that the format found is the one we expected */
