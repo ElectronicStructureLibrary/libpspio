@@ -79,7 +79,7 @@ AC_ARG_ENABLE([gsl],
   AC_HELP_STRING([--enable-gsl],
     [Enable support for GSL (default: enabled)]),
   [],
-  [enable_gsl="yes"])
+  [enable_gsl="no"])
 AC_ARG_WITH([gsl-incs],
   AC_HELP_STRING([--with-gsl-incs],
     [Includes for the GSL library]))
@@ -344,15 +344,29 @@ fi
 # ---------------------------------------------------------------------------- #
 
 #
-# Fortran configuration
+# Export configuration
 #
 
 # Send Fortran status to pkg-config
-pio_lib_f=""
+pio_lib_f_pc=""
 if test "${enable_fortran}" = "yes"; then
-  pio_lib_f="-lpspiof"
+  pio_lib_f_pc="-lpspiof"
 fi
-AC_SUBST(pio_lib_f)
+AC_SUBST(pio_lib_f_pc)
+
+# Send GSL status to pkg-config
+pio_lib_gsl_pc=""
+if test "${enable_gsl}" = "yes"; then
+  pio_lib_gsl_pc="${pio_gsl_libs}"
+fi
+AC_SUBST(pio_lib_gsl_pc)
+
+# Send XML status to pkg-config
+pio_lib_xml_pc=""
+if test "${enable_xml}" = "yes"; then
+  pio_lib_xml_pc="${pio_xml_libs}"
+fi
+AC_SUBST(pio_lib_xml_pc)
 
 # ---------------------------------------------------------------------------- #
 

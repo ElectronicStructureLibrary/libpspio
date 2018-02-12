@@ -2,10 +2,12 @@ prefix=@prefix@
 exec_prefix=@exec_prefix@
 libdir=@libdir@
 includedir=@includedir@
-pio_lib_f=@pio_lib_f@
+pio_lib_f=@pio_lib_f_pc@
+pio_lib_gsl=@pio_lib_gsl_pc@
+pio_lib_xml=@pio_lib_xml_pc@
 
 Name: pspio
 Description: Agnostic Pseudopotential I/O Library
 Version: @VERSION@
-Libs: -L${libdir} ${pio_lib_f} -lpspio
+Libs: -L${libdir} ${pio_lib_f} -lpspio ${pio_lib_xml} ${pio_lib_gsl}
 Cflags: -I${includedir}
