@@ -112,6 +112,14 @@ real(8) function pspiof_state_get_rc(state) result(rc)
    
 end function pspiof_state_get_rc
 
+! wf
+type(pspiof_meshfunc_t) function pspiof_state_get_wf(state) result(wf)
+  type(pspiof_state_t), intent(in)  :: state
+
+  wf%ptr = pspio_state_get_wf(state%ptr)
+
+end function pspiof_state_get_wf
+
 
 !*********************************************************************!
 ! Utility routines                                                    !

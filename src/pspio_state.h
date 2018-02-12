@@ -149,6 +149,13 @@ double pspio_state_get_ev(const pspio_state_t *state);
  */
 double pspio_state_get_rc(const pspio_state_t *state);
 
+/**
+ * Returns the state wavefuction
+ * @param[in] state: state structure
+ * @return the wavefunction
+ */
+const pspio_meshfunc_t *pspio_state_get_wf(const pspio_state_t *state);
+
 
 /**********************************************************************
  * Utility routines                                                   *
