@@ -45,8 +45,8 @@ typedef struct{
   int format_guessed;/**< Format of the file guessed by pspio_pspdata_read. */
   char symbol[4];    /**< Atomic symbol */
   double z;          /**< Atomic number */
-  double zvalence;   /**< charge of pseudopotential ion - valence electrons */
-  double nelvalence; /**< number of electrons - normally equal to zion, except for special cases for ions */
+  double zvalence;   /**< charge of pseudopotential ion */
+  double nelvalence; /**< number of electrons; normally equal to zvalence, except for special cases for ions */
   int l_max;         /**< maximal angular momentum channel */
   int wave_eq;       /**< type of wave equation which was solved: Dirac, Scalar Relativistic, or Schroedinger */
   double total_energy; /**< the total energy of the pseudo atom */
