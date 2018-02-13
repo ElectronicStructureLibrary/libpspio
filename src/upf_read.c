@@ -446,6 +446,7 @@ int upf_read_pswfc(FILE *fp, int np, pspio_pspdata_t *pspdata)
   SKIP_FUNC_ON_ERROR( upf_tag_init(fp,"PP_PSWFC",GO_BACK) );
 
   /* Read states */
+  pspdata->nelvalence = 0.0;
   lmax = -1;
   l = -1;
   for (is=0; is<pspdata->n_states; is++) {
@@ -476,6 +477,7 @@ int upf_read_pswfc(FILE *fp, int np, pspio_pspdata_t *pspdata)
     SUCCEED_OR_BREAK( pspio_state_alloc(&pspdata->states[is], np) );
     SUCCEED_OR_BREAK( pspio_state_init(pspdata->states[is], 0.0,
       qn, occ, 0.0, pspdata->mesh, wf, label) );
+    pspdata->nelvalence += occ;
   }
   pspdata->l_max = lmax;
 
