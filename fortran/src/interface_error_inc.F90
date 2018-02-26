@@ -52,7 +52,7 @@ interface
   end function pspio_error_len
 
   ! string
-  character(kind=c_char) function pspio_error_string(error_id) bind(c) result(error_msg)
+  type(c_ptr) function pspio_error_string(error_id) bind(c) result(error_msg)
     import
     integer(c_int), value :: error_id
   end function pspio_error_string

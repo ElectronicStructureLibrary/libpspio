@@ -63,9 +63,6 @@ subroutine pspiof_error_string(error_id, error_msg)
   integer,                           intent(in)  :: error_id
   character(len=PSPIO_STRLEN_ERROR), intent(out) :: error_msg
 
-  character(kind=c_char) :: c_error_msg(PSPIO_STRLEN_ERROR)
-
-  c_error_msg = pspio_error_string(error_id)
-  call c_to_f_string(c_error_msg, error_msg)
+  call c_to_f_string_ptr(pspio_error_string(error_id), error_msg)
 
 end subroutine pspiof_error_string
