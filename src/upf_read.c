@@ -72,7 +72,7 @@ int upf_read_info(FILE *fp, pspio_pspdata_t *pspdata)
   return PSPIO_SUCCESS;
 }
 
-int upf_read_header(FILE *fp, int *np, pspio_pspdata_t *pspdata)
+int upf_read_header_old(FILE *fp, int *np, pspio_pspdata_t *pspdata)
 {
   char line[PSPIO_STRLEN_LINE];
   int version_number, i;
@@ -163,6 +163,73 @@ int upf_read_header(FILE *fp, int *np, pspio_pspdata_t *pspdata)
   return PSPIO_SUCCESS;
 }
 
+int upf_read_header(FILE *fp, int *np, pspio_pspdata_t *pspdata)
+{
+  char line[PSPIO_STRLEN_LINE];
+  char *attr, *at;
+  char symbol[4];
+  int exchange, correlation, l_max, n_states, n_projectors;
+  double z, zvalence, total_energy;
+
+  attr = upf_tag_read_attr(fp, "PP_HEADER", "pseudo_type", line);
+  if (!attr)
+    return upf_read_header_old(fp, np, pspdata);
+  /* At the moment LIBPSP_IO can only read norm-conserving pseudo-potentials */
+  FULFILL_OR_RETURN( strncmp(attr, "NC", 2) == 0, PSPIO_ENOSUPPORT );
+
+  FULFILL_OR_RETURN( attr = upf_tag_read_attr(fp, "PP_HEADER", "element", line),
+                     PSPIO_EFILE_CORRUPT);
+  SUCCEED_OR_RETURN( pspio_pspdata_set_symbol(pspdata, attr) );
+  SUCCEED_OR_RETURN( symbol_to_z(attr, &z) );
+  SUCCEED_OR_RETURN( pspio_pspdata_set_z(pspdata, z) );
+
+  FULFILL_OR_RETURN( attr = upf_tag_read_attr(fp, "PP_HEADER", "core_correction", line),
+                     PSPIO_EFILE_CORRUPT);
+  /* Initialize xc */
+  SUCCEED_OR_RETURN( pspio_xc_alloc(&pspdata->xc) );
+  if (strcmp(attr, ".T.") == 0 || strcmp(attr, "T") == 0) {
+    SUCCEED_OR_RETURN( pspio_xc_set_nlcc_scheme(pspdata->xc, PSPIO_NLCC_UNKNOWN) );
+  } else {
+    SUCCEED_OR_RETURN( pspio_xc_set_nlcc_scheme(pspdata->xc, PSPIO_NLCC_NONE) );
+  }
+  FULFILL_OR_RETURN( attr = upf_tag_read_attr(fp, "PP_HEADER", "functional", line),
+                     PSPIO_EFILE_CORRUPT);
+  at = attr;
+  while (*at ++) if (*at == '-') *at = ' ';
+  SUCCEED_OR_RETURN( upf_to_libxc(attr, &exchange, &correlation) );
+  SUCCEED_OR_RETURN( pspio_xc_set_exchange(pspdata->xc, exchange) );
+  SUCCEED_OR_RETURN( pspio_xc_set_correlation(pspdata->xc, correlation) );
+
+  FULFILL_OR_RETURN( attr = upf_tag_read_attr(fp, "PP_HEADER", "z_valence", line),
+                     PSPIO_EFILE_CORRUPT);
+  FULFILL_OR_RETURN( sscanf(attr, "%lf", &zvalence) == 1, PSPIO_EFILE_CORRUPT );
+  SUCCEED_OR_RETURN( pspio_pspdata_set_zvalence(pspdata, zvalence) );
+  
+  FULFILL_OR_RETURN( attr = upf_tag_read_attr(fp, "PP_HEADER", "total_psenergy", line),
+                     PSPIO_EFILE_CORRUPT);
+  FULFILL_OR_RETURN( sscanf(attr, "%lg", &total_energy) == 1, PSPIO_EFILE_CORRUPT );
+  SUCCEED_OR_RETURN( pspio_pspdata_set_total_energy(pspdata, total_energy) );
+
+  FULFILL_OR_RETURN( attr = upf_tag_read_attr(fp, "PP_HEADER", "l_max", line),
+                     PSPIO_EFILE_CORRUPT);
+  FULFILL_OR_RETURN( sscanf(attr, "%d", &l_max) == 1, PSPIO_EFILE_CORRUPT );
+  SUCCEED_OR_RETURN( pspio_pspdata_set_l_max(pspdata, l_max) );
+
+  FULFILL_OR_RETURN( attr = upf_tag_read_attr(fp, "PP_HEADER", "mesh_size", line),
+                     PSPIO_EFILE_CORRUPT);
+  FULFILL_OR_RETURN( sscanf(attr, "%d", np) == 1, PSPIO_EFILE_CORRUPT );
+  
+  FULFILL_OR_RETURN( attr = upf_tag_read_attr(fp, "PP_HEADER", "number_of_wfc", line),
+                     PSPIO_EFILE_CORRUPT);
+  FULFILL_OR_RETURN( sscanf(attr, "%d", &n_states) == 1, PSPIO_EFILE_CORRUPT );
+  SUCCEED_OR_RETURN( pspio_pspdata_set_n_states(pspdata, n_states) );
+  FULFILL_OR_RETURN( attr = upf_tag_read_attr(fp, "PP_HEADER", "number_of_proj", line),
+                     PSPIO_EFILE_CORRUPT);
+  FULFILL_OR_RETURN( sscanf(attr, "%d", &n_projectors) == 1, PSPIO_EFILE_CORRUPT );
+  SUCCEED_OR_RETURN( pspio_pspdata_set_n_projectors(pspdata, n_projectors) );
+
+  return PSPIO_SUCCESS;
+}
 
 int upf_read_mesh(FILE *fp, int np, pspio_pspdata_t *pspdata)
 {
