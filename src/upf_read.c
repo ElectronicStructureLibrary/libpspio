@@ -72,7 +72,7 @@ int upf_read_info(FILE *fp, pspio_pspdata_t *pspdata)
   return PSPIO_SUCCESS;
 }
 
-int upf_read_header_old(FILE *fp, int *np, pspio_pspdata_t *pspdata)
+static int upf_read_header_old(FILE *fp, int *np, pspio_pspdata_t *pspdata)
 {
   char line[PSPIO_STRLEN_LINE];
   int version_number, i;
@@ -204,7 +204,7 @@ int upf_read_header(FILE *fp, int *np, pspio_pspdata_t *pspdata)
                      PSPIO_EFILE_CORRUPT);
   FULFILL_OR_RETURN( sscanf(attr, "%lf", &zvalence) == 1, PSPIO_EFILE_CORRUPT );
   SUCCEED_OR_RETURN( pspio_pspdata_set_zvalence(pspdata, zvalence) );
-  
+
   FULFILL_OR_RETURN( attr = upf_tag_read_attr(fp, "PP_HEADER", "total_psenergy", line),
                      PSPIO_EFILE_CORRUPT);
   FULFILL_OR_RETURN( sscanf(attr, "%lg", &total_energy) == 1, PSPIO_EFILE_CORRUPT );
@@ -218,7 +218,7 @@ int upf_read_header(FILE *fp, int *np, pspio_pspdata_t *pspdata)
   FULFILL_OR_RETURN( attr = upf_tag_read_attr(fp, "PP_HEADER", "mesh_size", line),
                      PSPIO_EFILE_CORRUPT);
   FULFILL_OR_RETURN( sscanf(attr, "%d", np) == 1, PSPIO_EFILE_CORRUPT );
-  
+
   FULFILL_OR_RETURN( attr = upf_tag_read_attr(fp, "PP_HEADER", "number_of_wfc", line),
                      PSPIO_EFILE_CORRUPT);
   FULFILL_OR_RETURN( sscanf(attr, "%d", &n_states) == 1, PSPIO_EFILE_CORRUPT );
@@ -305,19 +305,151 @@ int upf_read_nlcc(FILE *fp, int np, pspio_pspdata_t *pspdata)
   return PSPIO_SUCCESS;
 }
 
+static int upf_read_dij_old(FILE *fp, double *ekb, pspio_pspdata_t *pspdata)
+{
+  char line[PSPIO_STRLEN_LINE];
+  int i, n_dij, ii, jj;
+  double energy;
+
+  /* Find init tag */
+  SUCCEED_OR_RETURN( upf_tag_init(fp,"PP_NONLOCAL",GO_BACK) );
+
+  /* We start by reading the KB energies, as it is more convinient this way */
+  SUCCEED_OR_RETURN( upf_tag_init(fp,"PP_DIJ",NO_GO_BACK) );
+
+  /* Read the number of n_dij */
+  FULFILL_OR_EXIT( fgets(line, PSPIO_STRLEN_LINE, fp) != NULL, PSPIO_EIO );
+  FULFILL_OR_EXIT( sscanf(line,"%d", &n_dij) == 1, PSPIO_EFILE_CORRUPT );
+
+  for (i=0; i<n_dij; i++){
+    FULFILL_OR_BREAK( fgets(line, PSPIO_STRLEN_LINE, fp) != NULL, PSPIO_EIO );
+    FULFILL_OR_BREAK( sscanf(line,"%d %d %lf", &ii, &jj, &energy) == 3,
+      PSPIO_EFILE_CORRUPT );
+    FULFILL_OR_BREAK( ii == jj, PSPIO_EVALUE );
+    ekb[ii-1] = energy*2.0;
+  }
+
+  /* Check end tag */
+  SUCCEED_OR_RETURN( upf_tag_check_end(fp,"PP_DIJ") );
+  SUCCEED_OR_RETURN( upf_tag_check_end(fp,"PP_NONLOCAL") );
+
+  return PSPIO_SUCCESS;
+}
+
+static int upf_read_dij(FILE *fp, double *ekb, pspio_pspdata_t *pspdata)
+{
+  char line[PSPIO_STRLEN_LINE];
+  char *attr;
+  int i, ii, n_dij;
+  double *dij;
+
+  attr = upf_tag_read_attr(fp, "PP_DIJ", "size", line);
+  if (!attr)
+    return upf_read_dij_old(fp, ekb, pspdata);
+  FULFILL_OR_EXIT( sscanf(attr,"%d", &n_dij) == 1, PSPIO_EFILE_CORRUPT );
+  FULFILL_OR_EXIT( n_dij == pspdata->n_projectors * pspdata->n_projectors, PSPIO_EFILE_CORRUPT );
+
+  dij = (double *) malloc (n_dij * sizeof(double));
+  FULFILL_OR_EXIT(dij != NULL, PSPIO_ENOMEM);
+
+  SKIP_FUNC_ON_ERROR( upf_tag_init(fp,"PP_NONLOCAL",GO_BACK) );
+  SKIP_FUNC_ON_ERROR( upf_tag_init(fp,"PP_DIJ",NO_GO_BACK) );
+
+  /* Read the projector function */
+  SKIP_FUNC_ON_ERROR( read_array_4by4(fp, dij, n_dij) );
+
+  SKIP_FUNC_ON_ERROR( upf_tag_check_end(fp,"PP_DIJ") );
+  SKIP_FUNC_ON_ERROR( upf_tag_check_end(fp,"PP_NONLOCAL") );
+
+  /* Currently store the diagonal part only. */
+  for (i = 0, ii = 0; i < n_dij; i += pspdata->n_projectors + 1, ii += 1)
+    ekb[ii] = dij[i] * 2.0;
+
+  free(dij);
+
+  RETURN_ON_DEFERRED_ERROR;
+
+  return PSPIO_SUCCESS;
+}
+
+static int upf_read_beta_old(FILE *fp, int np, int index, double *projector_read, int *l)
+{
+  char line[PSPIO_STRLEN_LINE];
+  int ii, proj_np, j;
+
+  SUCCEED_OR_RETURN( upf_tag_init(fp, "PP_BETA", NO_GO_BACK) );
+
+  FULFILL_OR_RETURN( fgets(line, PSPIO_STRLEN_LINE, fp) != NULL, PSPIO_EIO );
+  FULFILL_OR_RETURN( sscanf(line, "%d %d", &ii, l) == 2,
+                     PSPIO_EFILE_CORRUPT );
+
+  /* Read the number of points of projections */
+  FULFILL_OR_RETURN( fgets(line, PSPIO_STRLEN_LINE, fp) != NULL, PSPIO_EIO );
+  FULFILL_OR_RETURN( sscanf(line, "%d", &proj_np) == 1, PSPIO_EFILE_CORRUPT );
+
+  /* Read the projector function */
+  SUCCEED_OR_RETURN( read_array_4by4(fp, projector_read, (proj_np < np) ? proj_np : np) );
+
+  /* Fill with zeros, if any left */
+  for (j=proj_np; j<np; j++) projector_read[j] = 0.0;
+
+  /* Check end tag */
+  if (upf_tag_check_end(fp,"PP_BETA") != PSPIO_SUCCESS) {
+    /*
+      We may have a "new" version of the format with two extra lines at
+      the end of this block, so we will try to skip them. Note that one
+      line was already read by upf_tag_check_end.
+    */
+    FULFILL_OR_RETURN( fgets(line, PSPIO_STRLEN_LINE, fp) != NULL,
+                       PSPIO_EIO );
+    SUCCEED_OR_RETURN( upf_tag_check_end(fp,"PP_BETA") );
+  }
+
+  return PSPIO_SUCCESS;
+}
+
+static int upf_read_beta(FILE *fp, int np, int index, double *projector_read, int *l)
+{
+  char line[PSPIO_STRLEN_LINE];
+  char element[12];
+  char *attr;
+  int ii, proj_np, j;
+  long at;
+
+  /* Store position because read_attr is rewinding. */
+  at = ftell(fp);
+
+  sprintf(element, "PP_BETA.%d", index + 1);
+  attr = upf_tag_read_attr(fp, element, "size", line);
+  if (!attr) {
+    fseek(fp, at, SEEK_SET);
+    return upf_read_beta_old(fp, np, index, projector_read, l);
+  }
+  FULFILL_OR_RETURN( sscanf(attr, "%d", &proj_np) == 1, PSPIO_EFILE_CORRUPT );
+
+  FULFILL_OR_RETURN( attr = upf_tag_read_attr(fp, element, "angular_momentum", line), PSPIO_EFILE_CORRUPT );
+  FULFILL_OR_RETURN( sscanf(attr, "%d", l) == 1, PSPIO_EFILE_CORRUPT );
+
+  /* Read the projector function */
+  SUCCEED_OR_RETURN( read_array_4by4(fp, projector_read, (proj_np < np) ? proj_np : np) );
+
+  /* Fill with zeros, if any left */
+  for (j=proj_np; j<np; j++) projector_read[j] = 0.0;
+
+  /* Check end tag */
+  SUCCEED_OR_RETURN( upf_tag_check_end(fp, element) );
+
+  return PSPIO_SUCCESS;
+}
 
 int upf_read_nonlocal(FILE *fp, int np, pspio_pspdata_t *pspdata)
 {
   char line[PSPIO_STRLEN_LINE];
   int proj_np = 0;
-  int i, j, l, n_dij, ii, jj;
+  int i, j, l, ii, jj;
   double *proj_j;
-  double energy;
   double *ekb, *projector_read;
   pspio_qn_t *qn = NULL;
-
-  /* Find init tag */
-  SUCCEED_OR_RETURN( upf_tag_init(fp,"PP_NONLOCAL",GO_BACK) );
 
   /* Allocate memory */
   SUCCEED_OR_RETURN( pspio_qn_alloc(&qn) );
@@ -332,24 +464,7 @@ int upf_read_nonlocal(FILE *fp, int np, pspio_pspdata_t *pspdata)
   FULFILL_OR_EXIT(ekb != NULL, PSPIO_ENOMEM);
   memset(ekb, 0, pspdata->n_projectors*sizeof(double));
 
-  /* We start by reading the KB energies, as it is more convinient this way */
-  DEFER_FUNC_ERROR( upf_tag_init(fp,"PP_DIJ",NO_GO_BACK) );
-
-  /* Read the number of n_dij */
-  SKIP_TEST_ON_ERROR( fgets(line, PSPIO_STRLEN_LINE, fp) != NULL, PSPIO_EIO );
-  SKIP_TEST_ON_ERROR( sscanf(line,"%d",&n_dij) == 1, PSPIO_EFILE_CORRUPT );
-
-  for (i=0; i<n_dij; i++){
-    FULFILL_OR_BREAK( fgets(line, PSPIO_STRLEN_LINE, fp) != NULL, PSPIO_EIO );
-    FULFILL_OR_BREAK( sscanf(line,"%d %d %lf", &ii, &jj, &energy) == 3,
-      PSPIO_EFILE_CORRUPT );
-    FULFILL_OR_BREAK( ii == jj, PSPIO_EVALUE );
-    ekb[ii-1] = energy*2.0;
-  }
-
-  /* Check end tag */
-  SKIP_FUNC_ON_ERROR( upf_tag_check_end(fp,"PP_DIJ") );
-  SKIP_FUNC_ON_ERROR( upf_tag_check_end(fp,"PP_NONLOCAL") );
+  SKIP_FUNC_ON_ERROR( upf_read_dij(fp, ekb, pspdata) );
 
   /* In the case of a fully-relativistic calculation, there is 
      extra information in the ADDINFO tag */
@@ -372,23 +487,7 @@ int upf_read_nonlocal(FILE *fp, int np, pspio_pspdata_t *pspdata)
   SKIP_FUNC_ON_ERROR( upf_tag_init(fp, "PP_NONLOCAL", GO_BACK) );
 
   for (i=0; i<pspdata->n_projectors; i++){
-    SUCCEED_OR_BREAK( upf_tag_init(fp, "PP_BETA", NO_GO_BACK) );
-
-    FULFILL_OR_BREAK( fgets(line, PSPIO_STRLEN_LINE, fp) != NULL, PSPIO_EIO );
-    FULFILL_OR_BREAK( sscanf(line, "%d %d", &ii, &l) == 2,
-      PSPIO_EFILE_CORRUPT );
-
-    /* Read the number of points of projections */
-    FULFILL_OR_BREAK( fgets(line, PSPIO_STRLEN_LINE, fp) != NULL, PSPIO_EIO );
-    FULFILL_OR_BREAK( sscanf(line, "%d", &proj_np) == 1, PSPIO_EFILE_CORRUPT );
-
-    /* Read the projector function */
-    SKIP_FUNC_ON_ERROR( read_array_4by4(fp, projector_read, np) );
-
-    BREAK_ON_DEFERRED_ERROR;
-
-    /* Fill with zeros, if any left */
-    for (j=proj_np; j<np; j++) projector_read[j] = 0.0;
+    SUCCEED_OR_BREAK( upf_read_beta(fp, np, i, projector_read, &l) );
 
     /* Convert units */
     for (j=0; j<np; j++) projector_read[j] /= 2.0*pspdata->mesh->r[j];
@@ -398,20 +497,6 @@ int upf_read_nonlocal(FILE *fp, int np, pspio_pspdata_t *pspdata)
     SUCCEED_OR_BREAK(
       pspio_projector_alloc( &(pspdata->projectors[i]), np) );
     SUCCEED_OR_BREAK( pspio_projector_init(pspdata->projectors[i], qn, ekb[i], pspdata->mesh, projector_read) );
-
-    /* Check end tag */
-    if ( pspio_error_get_last(__func__) == PSPIO_SUCCESS ) {
-      if (upf_tag_check_end(fp,"PP_BETA") != PSPIO_SUCCESS) {
-        /*
-	  We may have a "new" version of the format with two extra lines at
-	  the end of this block, so we will try to skip them. Note that one
-	  line was already read by upf_tag_check_end.
-	*/
-        FULFILL_OR_BREAK( fgets(line, PSPIO_STRLEN_LINE, fp) != NULL,
-          PSPIO_EIO );
-        SUCCEED_OR_BREAK( upf_tag_check_end(fp,"PP_BETA") );
-      }
-    }
   }
 
   /* Free memory */
@@ -477,6 +562,74 @@ int upf_read_local(FILE *fp, int np, pspio_pspdata_t *pspdata)
   return PSPIO_SUCCESS;
 }
 
+static int upf_read_pswfc_one_old(FILE *fp, int np, int index, double *wf,
+                                  char label[3], double *occ, int *n, int *l)
+{
+  char line[PSPIO_STRLEN_LINE];
+  int nargs;
+  char ll;
+
+  /* Read the quantum numbers and occupations */
+  FULFILL_OR_RETURN( fgets(line, PSPIO_STRLEN_LINE, fp) != NULL, PSPIO_EIO );
+  // TODO: ask QE developers whether they still accept the old format
+  //       like in the He pseudo
+  //FULFILL_OR_BREAK( sscanf(line, "%1d%1c %d %lf", &n, &ll, &l, &occ) == 4, PSPIO_EFILE_CORRUPT );
+  nargs = sscanf(line, "%1d%1c %d %lf", n, &ll, l, occ);
+  if ( nargs != 4 ) {
+    *n = 1;
+    nargs = sscanf(line, "%1c %d %lf", &ll, l, occ);
+    FULFILL_OR_RETURN( nargs == 3, PSPIO_EFILE_CORRUPT );
+  }
+  FULFILL_OR_RETURN( sprintf(label, "%1d%1c", *n, ll) > 0, PSPIO_EIO );
+
+  /* Read wavefunction */
+  SUCCEED_OR_RETURN( read_array_4by4(fp, wf, np) );
+
+  return PSPIO_SUCCESS;
+}
+
+static int upf_read_pswfc_one(FILE *fp, int np, int index, double *wf,
+                              char label[3], double *occ, int *n, int *l)
+{
+  char line[PSPIO_STRLEN_LINE];
+  char *attr;
+  char element[10];
+  long at;
+  int wf_np;
+  char ll;
+
+  /* Store position because read_attr is rewinding. */
+  at = ftell(fp);
+
+  sprintf(element, "PP_CHI.%d", index + 1);
+  attr = upf_tag_read_attr(fp, element, "size", line);
+  if (!attr) {
+    fseek(fp, at, SEEK_SET);
+    return upf_read_pswfc_one_old(fp, np, index, wf, label, occ, n, l);
+  }
+  FULFILL_OR_RETURN( sscanf(attr, "%d", &wf_np) == 1, PSPIO_EFILE_CORRUPT );
+
+  FULFILL_OR_RETURN( attr = upf_tag_read_attr(fp, element, "label", line), PSPIO_EFILE_CORRUPT );
+  label[0] = attr[0], label[1] = attr[1], label[2] = '\0';
+
+  FULFILL_OR_RETURN( attr = upf_tag_read_attr(fp, element, "occupation", line), PSPIO_EFILE_CORRUPT );
+  FULFILL_OR_RETURN( sscanf(attr, "%lf", occ) == 1, PSPIO_EFILE_CORRUPT );
+
+  FULFILL_OR_RETURN( attr = upf_tag_read_attr(fp, element, "n", line), PSPIO_EFILE_CORRUPT );
+  FULFILL_OR_RETURN( sscanf(attr, "%d", n) == 1, PSPIO_EFILE_CORRUPT );
+
+  FULFILL_OR_RETURN( attr = upf_tag_read_attr(fp, element, "l", line), PSPIO_EFILE_CORRUPT );
+  FULFILL_OR_RETURN( sscanf(attr, "%d", l) == 1, PSPIO_EFILE_CORRUPT );
+
+  /* Read wavefunction */
+  SUCCEED_OR_RETURN( read_array_4by4(fp, wf, np) );
+
+  /* Check end tag */
+  SUCCEED_OR_RETURN( upf_tag_check_end(fp, element) );
+
+  return PSPIO_SUCCESS;
+}
+
 int upf_read_pswfc(FILE *fp, int np, pspio_pspdata_t *pspdata)
 {
   char line[PSPIO_STRLEN_LINE];
@@ -517,25 +670,9 @@ int upf_read_pswfc(FILE *fp, int np, pspio_pspdata_t *pspdata)
   lmax = -1;
   l = -1;
   for (is=0; is<pspdata->n_states; is++) {
-    /* Read the quantum numbers and occupations */
-    FULFILL_OR_BREAK( fgets(line, PSPIO_STRLEN_LINE, fp) != NULL, PSPIO_EIO );
-    // TODO: ask QE developers whether they still accept the old format
-    //       like in the He pseudo
-    //FULFILL_OR_BREAK( sscanf(line, "%1d%1c %d %lf", &n, &ll, &l, &occ) == 4, PSPIO_EFILE_CORRUPT );
-    nargs = sscanf(line, "%1d%1c %d %lf", &n, &ll, &l, &occ);
-    if ( nargs != 4 ) {
-        n = 1;
-        nargs = sscanf(line, "%1c %d %lf", &ll, &l, &occ);
-        FULFILL_OR_BREAK( nargs == 3, PSPIO_EFILE_CORRUPT );
-    }
-    FULFILL_OR_BREAK( sprintf(label, "%1d%1c", n, ll) > 0, PSPIO_EIO );
+    SUCCEED_OR_BREAK( upf_read_pswfc_one(fp, np, is, wf, label, &occ, &n, &l) );
     SUCCEED_OR_BREAK( pspio_qn_init(qn, n, l, j[is]) );
     lmax = max(l, lmax);
-
-    /* Read wavefunction */
-    SKIP_FUNC_ON_ERROR( read_array_4by4(fp, wf, np) );
-
-    BREAK_ON_DEFERRED_ERROR;
 
     /* UPF uses the wavefunctions multiplied by r */
     for (ir=0; ir<np; ir++) wf[ir] /= pspdata->mesh->r[ir];

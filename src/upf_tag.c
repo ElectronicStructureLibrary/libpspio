@@ -93,6 +93,7 @@ int upf_tag_isdef(FILE *fp, const char *tag)
 char* upf_tag_read_attr(FILE *fp, const char * tag, const char * attr,
                         char buf[PSPIO_STRLEN_LINE])
 {
+  char line[PSPIO_STRLEN_LINE];
   char init_tag[PSPIO_STRLEN_LINE];
   char * read_string = NULL, * at = NULL;
   int tag_found = 0;
@@ -102,21 +103,21 @@ char* upf_tag_read_attr(FILE *fp, const char * tag, const char * attr,
   /* Prepare base string */
   sprintf(init_tag, "<%s", tag);
 
-  while ( fgets(buf, PSPIO_STRLEN_LINE, fp) != NULL ) {
+  while ( fgets(at ? line : buf, PSPIO_STRLEN_LINE, fp) != NULL ) {
     /* Skip white spaces */
-    read_string = buf;
+    read_string = at ? line : buf;
     while (read_string[0] == ' ') read_string++;
 
     if ( !tag_found && strncasecmp(read_string, init_tag, strlen(init_tag)) == 0 ) {
       tag_found = 1;
-      read_string = read_string + strlen(init_tag);
+      read_string += strlen(init_tag);
     }
-    if ( tag_found && (at = strstr(read_string, attr))) {
+    if ( tag_found && !at && (at = strstr(read_string, attr)) ) {
       at = strtok(at, "=");
-      return at ? strtok(NULL, " \"") : at;
     }
-    if ( strncasecmp(read_string, "/>", 2) == 0 ) {
-      return (char*)0;
+    /* Ensure that lines are eaten up to the closing bracket. */
+    if ( tag_found && strchr(read_string, '>') ) {
+      return at ? strtok(NULL, " \"") : at;
     }
   }
 
