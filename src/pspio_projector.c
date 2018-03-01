@@ -61,16 +61,15 @@ int pspio_projector_alloc(pspio_projector_t **projector, int np)
 }
 
 int pspio_projector_init(pspio_projector_t *projector, const pspio_qn_t *qn, 
-			 double energy, const pspio_mesh_t *mesh,
-			 const double *pofr)
+			 const pspio_mesh_t *mesh, const double *pofr)
 {
   assert(projector != NULL);
   assert(qn != NULL);
   assert(mesh != NULL);
   assert(pofr != NULL);
 
+  projector->energy = 0.;
   SUCCEED_OR_RETURN(pspio_qn_copy(&projector->qn, qn));
-  projector->energy = energy;
   SUCCEED_OR_RETURN(pspio_meshfunc_init(projector->proj, mesh, pofr, NULL, NULL));
 
   return PSPIO_SUCCESS;
@@ -114,6 +113,19 @@ void pspio_projector_free(pspio_projector_t *projector)
   }
 }
 
+
+/**********************************************************************
+ * Setters                                                            *
+ **********************************************************************/
+
+int pspio_projector_set_energy(pspio_projector_t *projector, double energy)
+{
+  assert(projector != NULL);
+
+  projector->energy = energy;
+
+  return PSPIO_SUCCESS;
+}
 
 /**********************************************************************
  * Getters                                                            *

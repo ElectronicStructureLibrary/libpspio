@@ -68,7 +68,7 @@ int pspio_projector_alloc(pspio_projector_t **projector, int np);
  *       pspio_projector_alloc method.
  */
 int pspio_projector_init(pspio_projector_t *projector, const pspio_qn_t *qn, 
-      double energy, const pspio_mesh_t *mesh, const double *pofr);
+                         const pspio_mesh_t *mesh, const double *pofr);
 
 /**
  * Duplicates a projector structure.
@@ -91,6 +91,19 @@ int pspio_projector_copy(pspio_projector_t **dst, const pspio_projector_t *src);
  */
 void pspio_projector_free(pspio_projector_t *projector);
 
+
+/**********************************************************************
+ * Setters                                                            *
+ **********************************************************************/
+
+/**
+ * Specify the energy of the projector
+ *
+ * @param[in] projector: projector structure
+ * @param[in] energy: value of the projector energy
+ * @return error code
+ */
+int pspio_projector_set_energy(pspio_projector_t *projector, double energy);
 
 /**********************************************************************
  * Getters                                                            *

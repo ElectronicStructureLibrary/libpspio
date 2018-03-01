@@ -305,11 +305,11 @@ int upf_read_nlcc(FILE *fp, int np, pspio_pspdata_t *pspdata)
   return PSPIO_SUCCESS;
 }
 
-static int upf_read_dij_old(FILE *fp, double *ekb, pspio_pspdata_t *pspdata)
+static int upf_read_dij_old(FILE *fp, pspio_pspdata_t *pspdata)
 {
   char line[PSPIO_STRLEN_LINE];
   int i, n_dij, ii, jj;
-  double energy;
+  double *dij, energy;
 
   /* Find init tag */
   SUCCEED_OR_RETURN( upf_tag_init(fp,"PP_NONLOCAL",GO_BACK) );
@@ -320,32 +320,42 @@ static int upf_read_dij_old(FILE *fp, double *ekb, pspio_pspdata_t *pspdata)
   /* Read the number of n_dij */
   FULFILL_OR_EXIT( fgets(line, PSPIO_STRLEN_LINE, fp) != NULL, PSPIO_EIO );
   FULFILL_OR_EXIT( sscanf(line,"%d", &n_dij) == 1, PSPIO_EFILE_CORRUPT );
+  FULFILL_OR_EXIT( n_dij == pspdata->n_projectors, PSPIO_EFILE_CORRUPT );
+
+  dij = (double *) malloc (n_dij * n_dij * sizeof(double));
+  memset(dij, '\0', n_dij * n_dij * sizeof(double));
+  FULFILL_OR_EXIT(dij != NULL, PSPIO_ENOMEM);
 
   for (i=0; i<n_dij; i++){
     FULFILL_OR_BREAK( fgets(line, PSPIO_STRLEN_LINE, fp) != NULL, PSPIO_EIO );
     FULFILL_OR_BREAK( sscanf(line,"%d %d %lf", &ii, &jj, &energy) == 3,
       PSPIO_EFILE_CORRUPT );
     FULFILL_OR_BREAK( ii == jj, PSPIO_EVALUE );
-    ekb[ii-1] = energy*2.0;
+    dij[(ii - 1) * n_dij + jj - 1] = energy*2.0;
   }
+  SKIP_FUNC_ON_ERROR( pspio_pspdata_set_projector_energies(pspdata, dij) );
 
   /* Check end tag */
-  SUCCEED_OR_RETURN( upf_tag_check_end(fp,"PP_DIJ") );
-  SUCCEED_OR_RETURN( upf_tag_check_end(fp,"PP_NONLOCAL") );
+  SKIP_FUNC_ON_ERROR( upf_tag_check_end(fp,"PP_DIJ") );
+  SKIP_FUNC_ON_ERROR( upf_tag_check_end(fp,"PP_NONLOCAL") );
+
+  free(dij);
+
+  RETURN_ON_DEFERRED_ERROR;
 
   return PSPIO_SUCCESS;
 }
 
-static int upf_read_dij(FILE *fp, double *ekb, pspio_pspdata_t *pspdata)
+static int upf_read_dij(FILE *fp, pspio_pspdata_t *pspdata)
 {
   char line[PSPIO_STRLEN_LINE];
   char *attr;
-  int i, ii, n_dij;
+  int i, n_dij;
   double *dij;
 
   attr = upf_tag_read_attr(fp, "PP_DIJ", "size", line);
   if (!attr)
-    return upf_read_dij_old(fp, ekb, pspdata);
+    return upf_read_dij_old(fp, pspdata);
   FULFILL_OR_EXIT( sscanf(attr,"%d", &n_dij) == 1, PSPIO_EFILE_CORRUPT );
   FULFILL_OR_EXIT( n_dij == pspdata->n_projectors * pspdata->n_projectors, PSPIO_EFILE_CORRUPT );
 
@@ -361,9 +371,9 @@ static int upf_read_dij(FILE *fp, double *ekb, pspio_pspdata_t *pspdata)
   SKIP_FUNC_ON_ERROR( upf_tag_check_end(fp,"PP_DIJ") );
   SKIP_FUNC_ON_ERROR( upf_tag_check_end(fp,"PP_NONLOCAL") );
 
-  /* Currently store the diagonal part only. */
-  for (i = 0, ii = 0; i < n_dij; i += pspdata->n_projectors + 1, ii += 1)
-    ekb[ii] = dij[i] * 2.0;
+  for (i = 0; i < n_dij; i++)
+    dij[i] *= 2.;
+  SKIP_FUNC_ON_ERROR( pspio_pspdata_set_projector_energies(pspdata, dij) );
 
   free(dij);
 
@@ -448,23 +458,15 @@ int upf_read_nonlocal(FILE *fp, int np, pspio_pspdata_t *pspdata)
   int proj_np = 0;
   int i, j, l, ii, jj;
   double *proj_j;
-  double *ekb, *projector_read;
-  pspio_qn_t *qn = NULL;
+  double *projector_read;
+  pspio_qn_t qn;
 
   /* Allocate memory */
-  SUCCEED_OR_RETURN( pspio_qn_alloc(&qn) );
-
   proj_j = (double *) malloc (pspdata->n_projectors * sizeof(double));
   FULFILL_OR_EXIT(proj_j != NULL, PSPIO_ENOMEM);
 
   projector_read = (double *) malloc (np * sizeof(double));
   FULFILL_OR_EXIT(projector_read != NULL, PSPIO_ENOMEM);
-
-  ekb = (double *) malloc (pspdata->n_projectors*sizeof(double));
-  FULFILL_OR_EXIT(ekb != NULL, PSPIO_ENOMEM);
-  memset(ekb, 0, pspdata->n_projectors*sizeof(double));
-
-  SKIP_FUNC_ON_ERROR( upf_read_dij(fp, ekb, pspdata) );
 
   /* In the case of a fully-relativistic calculation, there is 
      extra information in the ADDINFO tag */
@@ -493,17 +495,17 @@ int upf_read_nonlocal(FILE *fp, int np, pspio_pspdata_t *pspdata)
     for (j=0; j<np; j++) projector_read[j] /= 2.0*pspdata->mesh->r[j];
 
     /* Store the projectors in the pspdata structure */
-    SUCCEED_OR_BREAK( pspio_qn_init(qn, 0, l, proj_j[i]) );
+    SUCCEED_OR_BREAK( pspio_qn_init(&qn, 0, l, proj_j[i]) );
     SUCCEED_OR_BREAK(
       pspio_projector_alloc( &(pspdata->projectors[i]), np) );
-    SUCCEED_OR_BREAK( pspio_projector_init(pspdata->projectors[i], qn, ekb[i], pspdata->mesh, projector_read) );
+    SUCCEED_OR_BREAK( pspio_projector_init(pspdata->projectors[i], &qn, pspdata->mesh, projector_read) );
   }
+
+  SKIP_FUNC_ON_ERROR( upf_read_dij(fp, pspdata) );
 
   /* Free memory */
   free(projector_read);
-  free(ekb);
   free(proj_j);
-  pspio_qn_free(qn);
 
   /* Make sure no error is left unhandled */
   RETURN_ON_DEFERRED_ERROR;
