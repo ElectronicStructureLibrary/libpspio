@@ -145,7 +145,8 @@ int pspio_pspdata_read(pspio_pspdata_t *pspdata, int file_format,
   FULFILL_OR_RETURN(ierr == PSPIO_SUCCESS, ierr);
 
   /* Create states lookup table */
-  SUCCEED_OR_RETURN( pspio_states_lookup_table(pspdata->n_states, pspdata->states, &pspdata->qn_to_istate) );
+  if (pspdata->n_states > 0)
+    SUCCEED_OR_RETURN( pspio_states_lookup_table(pspdata->n_states, pspdata->states, &pspdata->qn_to_istate) );
 
   return PSPIO_SUCCESS;
 }

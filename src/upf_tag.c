@@ -33,21 +33,25 @@ int upf_tag_init(FILE * fp, const char * tag, int go_back)
   char line[PSPIO_STRLEN_LINE];
   char init_tag[PSPIO_STRLEN_LINE];
   char * read_string = NULL;
+  int ln;
 
   if ( go_back ) rewind(fp);
   
   /* Prepare base string */
-  sprintf(init_tag, "<%s>", tag);
+  sprintf(init_tag, "<%s", tag);
 
   while ( fgets(line, sizeof line, fp) != NULL ) {
     /* Skip white spaces */
-    if ( line[0] == ' ' )
-      read_string = strtok(line," ");
-    else 
-      read_string = line;
+    read_string = line;
+    while (read_string[0] == ' ') read_string++;
 
-    if ( strncasecmp(read_string, init_tag, strlen(init_tag)) == 0 ) {
-      return PSPIO_SUCCESS;
+    ln = strlen(init_tag);
+    if ( strncasecmp(read_string, init_tag, ln) == 0 ) {
+      if ( strchr(read_string + ln, '>') ) return PSPIO_SUCCESS;
+      while ( fgets(line, sizeof line, fp) != NULL ) {
+        if ( strchr(line, '>') ) return PSPIO_SUCCESS;
+      }
+      return PSPIO_EFILE_CORRUPT;
     }
   }
 
@@ -81,31 +85,41 @@ int upf_tag_check_end(FILE *fp, const char *tag)
   return status;
 }
 
-
 int upf_tag_isdef(FILE *fp, const char *tag)
+{
+  return (upf_tag_init(fp, tag, GO_BACK) == PSPIO_SUCCESS);
+}
+
+char* upf_tag_read_attr(FILE *fp, const char * tag, const char * attr,
+                        char buf[PSPIO_STRLEN_LINE])
 {
   char line[PSPIO_STRLEN_LINE];
   char init_tag[PSPIO_STRLEN_LINE];
-  char * read_string = NULL;
+  char * read_string = NULL, * at = NULL;
+  int tag_found = 0;
 
-  /* Go to the beginning of the buffer */
   rewind(fp);
   
   /* Prepare base string */
-  sprintf(init_tag, "<%s>", tag);
+  sprintf(init_tag, "<%s", tag);
 
-  while ( fgets(line, sizeof line, fp) != NULL ) {
+  while ( fgets(at ? line : buf, PSPIO_STRLEN_LINE, fp) != NULL ) {
     /* Skip white spaces */
-    if ( line[0] == ' ' )
-      read_string = strtok(line," ");
-    else 
-      read_string = line;
+    read_string = at ? line : buf;
+    while (read_string[0] == ' ') read_string++;
 
-    if ( strncasecmp(read_string, init_tag, strlen(init_tag)) == 0 ) {
-      return 1;
+    if ( !tag_found && strncasecmp(read_string, init_tag, strlen(init_tag)) == 0 ) {
+      tag_found = 1;
+      read_string += strlen(init_tag);
+    }
+    if ( tag_found && !at && (at = strstr(read_string, attr)) ) {
+      at = strtok(at, "=");
+    }
+    /* Ensure that lines are eaten up to the closing bracket. */
+    if ( tag_found && strchr(read_string, '>') ) {
+      return at ? strtok(NULL, " \"") : at;
     }
   }
 
-  /* End of the buffer reached; so return false */
-  return 0;
+  return (char*)0;
 }

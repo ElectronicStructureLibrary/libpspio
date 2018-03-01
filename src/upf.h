@@ -226,6 +226,16 @@ int upf_tag_check_end(FILE *fp, const char *tag);
  */
 int upf_tag_isdef(FILE *fp, const char *tag);
 
+/**
+ * Read the value of an attribute.
+ * @param[in] fp a stream of the input file
+ * @param[in] tag the tag. It is case-insensitive
+ * @param[in] attr the attribute. It is case-insensitive
+ * @param[inout] buf. A buffer to store the read line
+ * @return a pointer to the start of the attribute in buf, if found.
+ */
+char* upf_tag_read_attr(FILE *fp, const char * tag, const char * attr,
+                        char buf[PSPIO_STRLEN_LINE]);
 
 /**********************************************************************
  * upf_xc routines                                                    *
