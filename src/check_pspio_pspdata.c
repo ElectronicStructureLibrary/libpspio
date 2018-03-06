@@ -96,7 +96,7 @@ void pspdata_full_setup(void)
 
   pspio_projector_free(projector);
   pspio_projector_alloc(&projector, 8);
-  pspio_projector_init(projector, qn, 2.0, mesh, func);
+  pspio_projector_init(projector, qn, mesh, func);
 
   pspio_xc_free(xc);
   pspio_xc_alloc(&xc);

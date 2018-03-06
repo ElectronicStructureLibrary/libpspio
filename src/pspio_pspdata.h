@@ -66,7 +66,8 @@ typedef struct{
 
   /* Non-local projectors */
   int n_projectors;               /**< number of projectors */
-  int *n_projectors_per_l;       /**< number of projectors per angular momentum */
+  int *n_projectors_per_l;        /**< number of projectors per angular momentum */
+  double *projector_energies;     /**< Dij terms for interactions between projectors */
   pspio_projector_t **projectors; /**< projectors */
   int projectors_l_max;           /**< maximum angular momentum of considered in the projectors */
   int l_local;                    /**< angular momentum channel of local potential */
@@ -290,6 +291,13 @@ int pspio_pspdata_set_xc(pspio_pspdata_t *pspdata, const pspio_xc_t *xc);
  */
 int pspio_pspdata_set_rho_valence(pspio_pspdata_t *pspdata, const pspio_meshfunc_t *rho_valence);
 
+/**
+ * @param[in,out] pspdata: pointer to pspdata structure
+ * @param[in] energies: matrix of projector energies (ordered [i * n + j])
+ * @return error code
+ */
+int pspio_pspdata_set_projector_energies(pspio_pspdata_t *pspdata,
+                                         const double *energies);
 
 /**********************************************************************
  * Getters                                                            *
@@ -435,5 +443,14 @@ const pspio_xc_t * pspio_pspdata_get_xc(const pspio_pspdata_t *pspdata);
  * @return pointer to the valence density
  */
 const pspio_meshfunc_t * pspio_pspdata_get_rho_valence(const pspio_pspdata_t *pspdata);
+
+/**
+ * @param[in] pspdata: pointer to pspdata structure
+ * @param[in] i: index of first projector
+ * @param[in] j: index of second projector
+ * @return the interaction energy between projector i and projector j
+ */
+double pspio_pspdata_get_projector_energy(const pspio_pspdata_t *pspdata,
+                                          int i, int j);
 
 #endif

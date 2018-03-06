@@ -130,46 +130,56 @@ END_TEST
 
 START_TEST(test_projector_init)
 {
-  ck_assert(pspio_projector_init(proj11, qn11, e11, m1, p11) == PSPIO_SUCCESS);
+  ck_assert(pspio_projector_init(proj11, qn11, m1, p11) == PSPIO_SUCCESS);
+  ck_assert(pspio_projector_set_energy(proj11, e11) == PSPIO_SUCCESS);
   projector_compare_values(m1, proj11, qn11, e11, p11, 1e-10);
 }
 END_TEST
 
 START_TEST(test_projector_cmp_equal)
 {
-  ck_assert(pspio_projector_init(proj11, qn11, e11, m1, p11) == PSPIO_SUCCESS);
-  ck_assert(pspio_projector_init(proj12, qn11, e11, m1, p11) == PSPIO_SUCCESS);
+  ck_assert(pspio_projector_init(proj11, qn11, m1, p11) == PSPIO_SUCCESS);
+  ck_assert(pspio_projector_set_energy(proj11, e11) == PSPIO_SUCCESS);
+  ck_assert(pspio_projector_init(proj12, qn11, m1, p11) == PSPIO_SUCCESS);
+  ck_assert(pspio_projector_set_energy(proj12, e11) == PSPIO_SUCCESS);
   ck_assert(pspio_projector_cmp(proj12, proj11) == PSPIO_EQUAL);
 }
 END_TEST
 
 START_TEST(test_projector_cmp_diff_qn)
 {
-  ck_assert(pspio_projector_init(proj11, qn11, e11, m1, p11) == PSPIO_SUCCESS);
-  ck_assert(pspio_projector_init(proj12, qn12, e11, m1, p11) == PSPIO_SUCCESS);
+  ck_assert(pspio_projector_init(proj11, qn11, m1, p11) == PSPIO_SUCCESS);
+  ck_assert(pspio_projector_set_energy(proj11, e11) == PSPIO_SUCCESS);
+  ck_assert(pspio_projector_init(proj12, qn12, m1, p11) == PSPIO_SUCCESS);
+  ck_assert(pspio_projector_set_energy(proj12, e11) == PSPIO_SUCCESS);
   ck_assert(pspio_projector_cmp(proj12, proj11) == PSPIO_DIFF);
 }
 END_TEST
 
 START_TEST(test_projector_cmp_diff_energy)
 {
-  ck_assert(pspio_projector_init(proj11, qn11, e11, m1, p11) == PSPIO_SUCCESS);
-  ck_assert(pspio_projector_init(proj12, qn11, e12, m1, p11) == PSPIO_SUCCESS);
+  ck_assert(pspio_projector_init(proj11, qn11, m1, p11) == PSPIO_SUCCESS);
+  ck_assert(pspio_projector_set_energy(proj11, e11) == PSPIO_SUCCESS);
+  ck_assert(pspio_projector_init(proj12, qn11, m1, p11) == PSPIO_SUCCESS);
+  ck_assert(pspio_projector_set_energy(proj12, e12) == PSPIO_SUCCESS);
   ck_assert(pspio_projector_cmp(proj12, proj11) == PSPIO_DIFF);
 }
 END_TEST
 
 START_TEST(test_projector_cmp_diff_proj)
 {
-  ck_assert(pspio_projector_init(proj11, qn11, e11, m1, p12) == PSPIO_SUCCESS);
-  ck_assert(pspio_projector_init(proj12, qn11, e11, m1, p11) == PSPIO_SUCCESS);
+  ck_assert(pspio_projector_init(proj11, qn11, m1, p12) == PSPIO_SUCCESS);
+  ck_assert(pspio_projector_set_energy(proj11, e11) == PSPIO_SUCCESS);
+  ck_assert(pspio_projector_init(proj12, qn11, m1, p11) == PSPIO_SUCCESS);
+  ck_assert(pspio_projector_set_energy(proj12, e11) == PSPIO_SUCCESS);
   ck_assert(pspio_projector_cmp(proj12, proj11) == PSPIO_DIFF);
 }
 END_TEST
 
 START_TEST(test_projector_copy_null)
 {
-  pspio_projector_init(proj11, qn11, e11, m1, p11);
+  pspio_projector_init(proj11, qn11, m1, p11);
+  pspio_projector_set_energy(proj11, e11);
   pspio_projector_free(proj12);
   proj12 = NULL;
   ck_assert(pspio_projector_copy(&proj12, proj11) == PSPIO_SUCCESS);
@@ -179,8 +189,10 @@ END_TEST
 
 START_TEST(test_projector_copy_nonnull)
 {
-  pspio_projector_init(proj11, qn11, e11, m1, p11);
-  pspio_projector_init(proj12, qn12, e12, m1, p12);
+  pspio_projector_init(proj11, qn11, m1, p11);
+  pspio_projector_set_energy(proj11, e11);
+  pspio_projector_init(proj12, qn12, m1, p12);
+  pspio_projector_set_energy(proj11, e12);
   ck_assert(pspio_projector_copy(&proj12, proj11) == PSPIO_SUCCESS);
   ck_assert(pspio_projector_cmp(proj12, proj11) == PSPIO_EQUAL);
 }
@@ -188,8 +200,10 @@ END_TEST
 
 START_TEST(test_projector_copy_nonnull_size)
 {
-  pspio_projector_init(proj11, qn11, e11, m1, p11);
-  pspio_projector_init(proj2, qn2, e2, m2, p2);
+  pspio_projector_init(proj11, qn11, m1, p11);
+  pspio_projector_set_energy(proj11, e11);
+  pspio_projector_init(proj2, qn2, m2, p2);
+  pspio_projector_set_energy(proj2, e2);
   ck_assert(pspio_projector_copy(&proj2, proj11) == PSPIO_SUCCESS);
   ck_assert(pspio_projector_cmp(proj2, proj11) == PSPIO_EQUAL);
 }
@@ -197,14 +211,15 @@ END_TEST
 
 START_TEST(test_projector_get_energy)
 {
-  pspio_projector_init(proj11, qn11, e11, m1, p11);
+  pspio_projector_init(proj11, qn11, m1, p11);
+  pspio_projector_set_energy(proj11, e11);
   ck_assert(pspio_projector_get_energy(proj11) == e11);
 }
 END_TEST
 
 START_TEST(test_projector_get_qn)
 {
-  pspio_projector_init(proj11, qn11, e11, m1, p11);
+  pspio_projector_init(proj11, qn11, m1, p11);
   ck_assert(pspio_qn_cmp(pspio_projector_get_qn(proj11), qn11) == PSPIO_EQUAL);
 }
 END_TEST
@@ -213,7 +228,7 @@ START_TEST(test_projector_eval)
 {
   double eval, expect;
 
-  pspio_projector_init(proj11, qn11, e11, m1, p11);
+  pspio_projector_init(proj11, qn11, m1, p11);
   eval = pspio_projector_eval(proj11, 0.01);
   expect = 1.6456049569e+00;
   ck_assert_msg(fabs(eval - expect) <= 1e-10, "projector eval returned= %16.10e expected= %16.10e\n", eval, expect);
@@ -224,7 +239,7 @@ START_TEST(test_projector_eval_deriv)
 {
   double eval, expect;
 
-  pspio_projector_init(proj11, qn11, e11, m1, p11);
+  pspio_projector_init(proj11, qn11, m1, p11);
   eval = pspio_projector_eval_deriv(proj11, 0.01);
   expect = -1.5477352024e-01;
   ck_assert_msg(fabs(eval - expect) <= 1e-10, "projector eval deriv returned= %16.10e expected= %16.10e\n", eval, expect);
@@ -235,7 +250,7 @@ START_TEST(test_projector_eval_deriv2)
 {
   double eval, expect;
 
-  pspio_projector_init(proj11, qn11, e11, m1, p11);
+  pspio_projector_init(proj11, qn11, m1, p11);
   eval = pspio_projector_eval_deriv2(proj11, 0.01);
   expect = -5.8963771072e-03;
   ck_assert_msg(fabs(eval - expect) <= 1e-10, "projector eval deriv2 returned= %16.10e expected= %16.10e\n", eval, expect);

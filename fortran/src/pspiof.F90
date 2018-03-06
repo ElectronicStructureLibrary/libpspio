@@ -131,6 +131,7 @@ module pspiof_m
     pspiof_pspdata_get_vlocal, &
     pspiof_pspdata_get_xc, &
     pspiof_pspdata_get_rho_valence, &
+    pspiof_pspdata_get_projector_energy, &
     ! pspinfo
     pspiof_pspinfo_t, &
     pspiof_pspinfo_alloc, &

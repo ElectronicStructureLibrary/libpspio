@@ -342,4 +342,11 @@ interface
     type(c_ptr), value :: pspdata
   end function pspio_pspdata_get_rho_valence
 
+  ! projector energy
+  real(c_double) function pspio_pspdata_get_projector_energy(pspdata, i, j) bind(c)
+    import
+    type(c_ptr), value :: pspdata
+    integer(c_int), value :: i, j
+  end function pspio_pspdata_get_projector_energy
+
 end interface

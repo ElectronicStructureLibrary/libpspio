@@ -443,3 +443,12 @@ type(pspiof_meshfunc_t) function pspiof_pspdata_get_rho_valence(pspdata) result(
   rho_valence%ptr = pspio_pspdata_get_rho_valence(pspdata%ptr)
 
 end function pspiof_pspdata_get_rho_valence
+
+! projector interaction
+real(8) function pspiof_pspdata_get_projector_energy(pspdata, i, j) result(energy)
+  type(pspiof_pspdata_t),  intent(in) :: pspdata
+  integer, intent(in) :: i, j
+
+  energy = pspio_pspdata_get_projector_energy(pspdata%ptr, i - 1, j - 1)
+
+end function pspiof_pspdata_get_projector_energy
