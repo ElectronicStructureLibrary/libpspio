@@ -68,7 +68,7 @@ int pspio_pspdata_alloc(pspio_pspdata_t **pspdata)
 
   (*pspdata)->n_projectors = 0;
   (*pspdata)->n_projectors_per_l = NULL;
-  (*pspdata)->energies = NULL;
+  (*pspdata)->projector_energies = NULL;
   (*pspdata)->projectors = NULL;
   (*pspdata)->projectors_l_max = 0;
   (*pspdata)->l_local = 0;
@@ -254,9 +254,9 @@ void pspio_pspdata_reset(pspio_pspdata_t *pspdata)
     free(pspdata->projectors);
     pspdata->projectors = NULL;
   }
-  if (pspdata->energies != NULL) {
-    free(pspdata->energies);
-    pspdata->energies = NULL;
+  if (pspdata->projector_energies != NULL) {
+    free(pspdata->projector_energies);
+    pspdata->projector_energies = NULL;
   }
   pspdata->n_projectors = 0;
   if (pspdata->n_projectors_per_l != NULL) {
@@ -466,7 +466,7 @@ int pspio_pspdata_set_n_projectors(pspio_pspdata_t *pspdata, int n_projectors)
       pspio_projector_free(pspdata->projectors[ip]);
     }
     free(pspdata->projectors);
-    free(pspdata->energies);
+    free(pspdata->projector_energies);
   }
 
   pspdata->n_projectors = n_projectors;
@@ -476,9 +476,9 @@ int pspio_pspdata_set_n_projectors(pspio_pspdata_t *pspdata, int n_projectors)
   for (ip=0; ip<pspdata->n_projectors; ip++) {
     pspdata->projectors[ip] = NULL;
   }
-  pspdata->energies = (double*) malloc ( pspdata->n_projectors * pspdata->n_projectors * sizeof(double));
-  FULFILL_OR_EXIT(pspdata->energies != NULL, PSPIO_ENOMEM);
-  memset(pspdata->energies, '\0', pspdata->n_projectors * pspdata->n_projectors * sizeof(double));
+  pspdata->projector_energies = (double*) malloc ( pspdata->n_projectors * pspdata->n_projectors * sizeof(double));
+  FULFILL_OR_EXIT(pspdata->projector_energies != NULL, PSPIO_ENOMEM);
+  memset(pspdata->projector_energies, '\0', pspdata->n_projectors * pspdata->n_projectors * sizeof(double));
 
   return PSPIO_SUCCESS;
 }
@@ -559,19 +559,19 @@ int pspio_pspdata_set_projector_energies(pspio_pspdata_t *pspdata,
   int i, j;
 
   assert(pspdata != NULL);
-  assert(pspdata->energies != NULL && energies != NULL);
+  assert(pspdata->projector_energies != NULL && energies != NULL);
 
   for (i = 0; i < pspdata->n_projectors; i++) {
     pspio_projector_set_energy(pspdata->projectors[i],
                                energies[i * pspdata->n_projectors + i]);
-    pspdata->energies[i * pspdata->n_projectors + i] =
+    pspdata->projector_energies[i * pspdata->n_projectors + i] =
       energies[i * pspdata->n_projectors + i];
     for (j = i + 1; j < pspdata->n_projectors; j++) {
-      pspdata->energies[i * pspdata->n_projectors + j] = 0.5 *
+      pspdata->projector_energies[i * pspdata->n_projectors + j] = 0.5 *
         (energies[i * pspdata->n_projectors + j] +
          energies[j * pspdata->n_projectors + i]);
-      pspdata->energies[j * pspdata->n_projectors + i] =
-        pspdata->energies[i * pspdata->n_projectors + j];
+      pspdata->projector_energies[j * pspdata->n_projectors + i] =
+        pspdata->projector_energies[i * pspdata->n_projectors + j];
     }
   }
 
@@ -754,5 +754,5 @@ double pspio_pspdata_get_projector_energy(const pspio_pspdata_t *pspdata,
   assert(i >= 0 && i < pspdata->n_projectors);
   assert(j >= 0 && j < pspdata->n_projectors);
 
-  return pspdata->energies[i * pspdata->n_projectors + j];
+  return pspdata->projector_energies[i * pspdata->n_projectors + j];
 }

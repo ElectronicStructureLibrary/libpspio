@@ -67,7 +67,7 @@ typedef struct{
   /* Non-local projectors */
   int n_projectors;               /**< number of projectors */
   int *n_projectors_per_l;        /**< number of projectors per angular momentum */
-  double *energies;               /**< Dij terms for interactions between projectors */
+  double *projector_energies;     /**< Dij terms for interactions between projectors */
   pspio_projector_t **projectors; /**< projectors */
   int projectors_l_max;           /**< maximum angular momentum of considered in the projectors */
   int l_local;                    /**< angular momentum channel of local potential */
