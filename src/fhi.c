@@ -166,6 +166,7 @@ int pspio_fhi_write(FILE *fp, const pspio_pspdata_t *pspdata)
 
   assert(fp != NULL);
   assert(pspdata != NULL);
+  assert(pspdata->qn_to_istate != NULL);
 
   /*
    * If one considers that the specifications of this format is the

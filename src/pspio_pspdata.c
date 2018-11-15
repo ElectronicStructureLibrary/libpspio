@@ -160,7 +160,7 @@ int pspio_pspdata_write(pspio_pspdata_t *pspdata, int file_format,
 
   assert(pspdata != NULL);
 
-  if (pspdata->qn_to_istate == NULL) {
+  if (pspdata->qn_to_istate == NULL && pspdata->n_states > 0) {
     SUCCEED_OR_RETURN(pspio_states_lookup_table(pspdata->n_states, pspdata->states, &pspdata->qn_to_istate));
   }
 
