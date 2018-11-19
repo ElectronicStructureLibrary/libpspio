@@ -56,7 +56,7 @@
  *
  * Note: keep the number of formats up-to-date
  */
-#define PSPIO_FMT_NFORMATS 19
+#define PSPIO_FMT_NFORMATS 20
 #define PSPIO_FMT_UNKNOWN -1
 #define PSPIO_FMT_NONE 0
 #define PSPIO_FMT_ABINIT_1     1 /* Teter */
@@ -77,6 +77,7 @@
 #define PSPIO_FMT_SIESTA      16
 #define PSPIO_FMT_UPF         17
 #define PSPIO_FMT_XML         18 /* FSatom-pp */
+#define PSPIO_FMT_RECPOT      19 /* Used by CASTEP / ONETEP */
 
 
 /**

@@ -28,6 +28,9 @@ case "${my_fmt}" in
   17)
     psp_dir="UPF"
     ;;
+  19)
+    psp_dir="recpot"
+    ;;
   *)
     echo "${my_name}: unknown pseudopotential format" >&2
     exit 102

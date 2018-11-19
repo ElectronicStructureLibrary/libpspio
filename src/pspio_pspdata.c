@@ -26,6 +26,7 @@
 #include "fhi.h"
 #include "upf.h"
 #include "abinit.h"
+#include "recpot.h"
 
 #if defined HAVE_CONFIG_H
 #include "config.h"
@@ -122,6 +123,9 @@ int pspio_pspdata_read(pspio_pspdata_t *pspdata, int file_format,
     case PSPIO_FMT_UPF:
       ierr = pspio_upf_read(fp, pspdata);
       break;
+    case PSPIO_FMT_RECPOT:
+      ierr = pspio_recpot_read(fp, pspdata);
+      break;
 
     default:
       ierr = PSPIO_ENOSUPPORT;
@@ -179,6 +183,9 @@ int pspio_pspdata_write(pspio_pspdata_t *pspdata, int file_format,
       break;
     case PSPIO_FMT_UPF:
       ierr = pspio_upf_write(fp, pspdata);
+      break;
+    case PSPIO_FMT_RECPOT:
+      ierr = pspio_recpot_write(fp, pspdata);
       break;
     default:
       ierr = PSPIO_EFILE_FORMAT;

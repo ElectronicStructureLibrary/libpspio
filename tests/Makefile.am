@@ -38,7 +38,8 @@ test_format_LDADD = ../src/libpspio.la
 pio_tests_fmt_supported = \
   run_test_format_6 \
   run_test_format_14 \
-  run_test_format_17
+  run_test_format_17 \
+  run_test_format_19
 
 pio_tests_fmt_unsupported = \
   run_test_format_1 \
@@ -64,9 +65,7 @@ pio_tests_fmt = \
 TESTS = $(pio_tests_fmt)
 XFAIL_TESTS = $(pio_tests_fmt_unsupported)
 
-$(pio_tests_fmt):
-	$(LN_S) -f run_test_format $@
+$(pio_tests_fmt): run_test_format
+	chmod u+x run_test_format && $(LN_S) -f run_test_format $@
 
 CLEANFILES = $(pio_tests_fmt) pspio-test-[0-9][0-9][0-9][0-9][0-9][0-9]
-
-EXTRA_DIST = run_test_format

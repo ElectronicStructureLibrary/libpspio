@@ -45,6 +45,7 @@ pio_core_srcs = \
   pspio_qn.c \
   pspio_state.c \
   pspio_xc.c \
+  recpot.c \
   upf.c \
   upf_read.c \
   upf_tag.c \
@@ -79,6 +80,7 @@ pio_hidden_hdrs = \
   check_pspio.h \
   fhi.h \
   oncv.h \
+  recpot.h \
   upf.h \
   util.h
 
