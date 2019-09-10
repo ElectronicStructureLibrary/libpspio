@@ -49,7 +49,6 @@ static int recpot_read(FILE *fp, struct RecPot *recpot)
 {
   char line[PSPIO_STRLEN_LINE];
   size_t idx, l;
-  int iq;
   size_t descEnd = PSPIO_STRLEN_DESCRIPTION;
 
   idx = NQMAX;
