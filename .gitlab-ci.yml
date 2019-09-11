@@ -2,7 +2,7 @@ test:opensuse:
   image: drfaustroll/esl:opensuse-tumbleweed
   script:
     - source /etc/profile.d/lmod.sh
-    - module load gnu/7  
+    - module load gnu/8
    # Prepare source tree
     - ./wipeout.sh
     - ./autogen.sh
