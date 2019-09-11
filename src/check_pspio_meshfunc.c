@@ -31,6 +31,17 @@
 #include "config.h"
 #endif
 
+#if defined HAVE_GSL
+#define TOL_FUNC 1.0e-10
+#define TOL_DER1 1.0e-10
+#define TOL_DER2 1.0e-10
+#else
+#define TOL_FUNC 1.0e-6
+#define TOL_DER1 3.5e-1
+#define TOL_DER2 1.5e-1
+#endif
+
+
 static pspio_mesh_t *m1 = NULL, *m2 = NULL;
 static pspio_meshfunc_t *mf11 = NULL, *mf12 = NULL, *mf2 = NULL;
 static double *f11, *f11p, *f11pp;
@@ -114,7 +125,7 @@ void meshfunc_teardown(void)
   free(f2pp);
 }
 
-void meshfunc_compare_values(const pspio_mesh_t *mesh, const pspio_meshfunc_t *meshfunc, const double *f, const double *fp, const double *fpp, const double tol)
+void meshfunc_compare_values(const pspio_mesh_t *mesh, const pspio_meshfunc_t *meshfunc, const double *f, const double *fp, const double *fpp, const double tol_func, const double tol_der1, const double tol_der2)
 {
   int i;
   const double *ff, *ffp, *ffpp;
@@ -124,9 +135,9 @@ void meshfunc_compare_values(const pspio_mesh_t *mesh, const pspio_meshfunc_t *m
   ffp  = pspio_meshfunc_get_deriv1(meshfunc);
   ffpp = pspio_meshfunc_get_deriv2(meshfunc);
   for (i=0; i<pspio_mesh_get_np(mesh); i++) {
-    ck_assert_msg( fabs(f[i] - ff[i]) < tol, "function at point %i: interp= %16.10e expected=%16.10e\n", i, ff[i], f[i]);
-    ck_assert_msg( fabs(fp[i] - ffp[i]) < tol, "deriv at point %i: interp= %16.10e expected=%16.10e\n", i, ffp[i], fp[i]);
-    ck_assert_msg( fabs(fpp[i] - ffpp[i]) < tol, "deriv2 at point %i: interp= %16.10e expected=%16.10e\n", i, ffpp[i], fpp[i]);
+    ck_assert_msg( fabs(f[i] - ff[i]) < tol_func, "function at point %i: interp= %16.10e expected=%16.10e\n", i, ff[i], f[i]);
+    ck_assert_msg( fabs(fp[i] - ffp[i]) < tol_der1, "deriv at point %i: interp= %16.10e expected=%16.10e\n", i, ffp[i], fp[i]);
+    ck_assert_msg( fabs(fpp[i] - ffpp[i]) < tol_der2, "deriv2 at point %i: interp= %16.10e expected=%16.10e\n", i, ffpp[i], fpp[i]);
   }
 }
 
@@ -144,7 +155,7 @@ START_TEST(test_meshfunc_init1)
                         2.0295953518e+00, 1.8895268024e+00, 2.4601351993e+00, 0.0};
 
   ck_assert(pspio_meshfunc_init(mf11, m1, f11, NULL, NULL) == PSPIO_SUCCESS);
-  meshfunc_compare_values(m1, mf11, f11, fp, fpp, 1e-10);
+  meshfunc_compare_values(m1, mf11, f11, fp, fpp, TOL_FUNC, TOL_DER1, TOL_DER2);
 }
 END_TEST
 
@@ -154,14 +165,14 @@ START_TEST(test_meshfunc_init2)
                         2.0295953518e+00, 1.8895268024e+00, 2.4601351993e+00, 0.0};
 
   ck_assert(pspio_meshfunc_init(mf11, m1, f11, f11p, NULL) == PSPIO_SUCCESS);
-  meshfunc_compare_values(m1, mf11, f11, f11p, fpp, 1e-10);
+  meshfunc_compare_values(m1, mf11, f11, f11p, fpp, TOL_FUNC, TOL_DER1, TOL_DER2);
 }
 END_TEST
 
 START_TEST(test_meshfunc_init3)
 {
   ck_assert(pspio_meshfunc_init(mf11, m1, f11, f11p, f11pp) == PSPIO_SUCCESS);
-  meshfunc_compare_values(m1, mf11, f11, f11p, f11pp, 1e-10);
+  meshfunc_compare_values(m1, mf11, f11, f11p, f11pp, TOL_FUNC, TOL_DER1, TOL_DER2);
 }
 END_TEST
 
@@ -299,10 +310,11 @@ START_TEST(test_meshfunc_eval)
 {
   pspio_meshfunc_init(mf11, m1, f12, f12p, f12pp);
   /* Interpolation */
-  ck_assert(fabs(pspio_meshfunc_eval(mf11, 0.001) - 2.688989e-08) <= 1e-10);
+  ck_assert_msg(fabs(pspio_meshfunc_eval(mf11, 0.001) - 2.688989e-08) <= TOL_FUNC,
+     "function at x=%16.10e: interp= %16.10e expected=%16.10e\n", 0.001, pspio_meshfunc_eval(mf11, 0.001), 2.688989e-08);
   /* Extrapolation */
-  ck_assert(fabs(pspio_meshfunc_eval(mf11, -0.1) + 2.500000e-04) <= 1e-10);
-  ck_assert(fabs(pspio_meshfunc_eval(mf11, 1.1) - 1.257250e+00) <= 1e-10);
+  ck_assert(fabs(pspio_meshfunc_eval(mf11, -0.1) + 2.500000e-04) <= TOL_FUNC);
+  ck_assert(fabs(pspio_meshfunc_eval(mf11, 1.1) - 1.257250e+00) <= TOL_FUNC);
 }
 END_TEST
 
@@ -310,10 +322,10 @@ START_TEST(test_meshfunc_eval_deriv)
 {
   pspio_meshfunc_init(mf11, m1, f12, f12p, f12pp);
   /* Interpolation */
-  ck_assert(fabs(pspio_meshfunc_eval_deriv(mf11, 0.001) - 8.697106e-05) <= 1e-10);
+  ck_assert(fabs(pspio_meshfunc_eval_deriv(mf11, 0.001) - 8.697106e-05) <= TOL_DER1);
   /* Extrapolation */
-  ck_assert(fabs(pspio_meshfunc_eval_deriv(mf11, -0.1) + 1.500000e-02) <= 1e-10);
-  ck_assert(fabs(pspio_meshfunc_eval_deriv(mf11, 1.1) - 3.555000e+00) <= 1e-10);
+  ck_assert(fabs(pspio_meshfunc_eval_deriv(mf11, -0.1) + 1.500000e-02) <= TOL_DER1);
+  ck_assert(fabs(pspio_meshfunc_eval_deriv(mf11, 1.1) - 3.555000e+00) <= TOL_DER1);
 }
 END_TEST
 
@@ -321,10 +333,10 @@ START_TEST(test_meshfunc_eval_deriv2)
 {
   pspio_meshfunc_init(mf11, m1, f12, f12p, f12pp);
   /* Interpolation */
-  ck_assert(fabs(pspio_meshfunc_eval_deriv2(mf11, 0.001) - 6.000000e-03) <= 1e-10);
+  ck_assert(fabs(pspio_meshfunc_eval_deriv2(mf11, 0.001) - 6.000000e-03) <= TOL_DER2);
   /* Extrapolation */
-  ck_assert(fabs(pspio_meshfunc_eval_deriv2(mf11, -0.1) + 6.000000e-01) <= 1e-10);
-  ck_assert(fabs(pspio_meshfunc_eval_deriv2(mf11, 1.1) - 6.600000e+00) <= 1e-10);
+  ck_assert(fabs(pspio_meshfunc_eval_deriv2(mf11, -0.1) + 6.000000e-01) <= TOL_DER2);
+  ck_assert(fabs(pspio_meshfunc_eval_deriv2(mf11, 1.1) - 6.600000e+00) <= TOL_DER2);
 }
 END_TEST
 

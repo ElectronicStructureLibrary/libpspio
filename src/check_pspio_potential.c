@@ -26,6 +26,20 @@
 #include "pspio_error.h"
 #include "pspio_potential.h"
 
+#if defined HAVE_CONFIG_H
+#include "config.h"
+#endif
+
+#if defined HAVE_GSL
+#define TOL_FUNC 1.0e-10
+#define TOL_DER1 1.0e-10
+#define TOL_DER2 1.0e-10
+#else
+#define TOL_FUNC 1.0e-10
+#define TOL_DER1 1.0e+0
+#define TOL_DER2 1.0e-10
+#endif
+
 
 static pspio_mesh_t *m1 = NULL, *m2 = NULL;
 static pspio_qn_t *qn11 = NULL, *qn12 = NULL, *qn2 = NULL;
@@ -199,7 +213,7 @@ START_TEST(test_potential_eval)
   pspio_potential_init(pot11, qn11, m1, v11);
   eval = pspio_potential_eval(pot11, 0.01);
   expect = 1.6456049569e+00;
-  ck_assert_msg(fabs(eval - expect) <= 1e-10, "potential eval returned= %16.10e expected= %16.10e\n", eval, expect);
+  ck_assert_msg(fabs(eval - expect) <= TOL_FUNC, "potential eval returned= %16.10e expected= %16.10e\n", eval, expect);
 }
 END_TEST
 
@@ -210,7 +224,7 @@ START_TEST(test_potential_eval_deriv)
   pspio_potential_init(pot11, qn11, m1, v11);
   eval = pspio_potential_eval_deriv(pot11, 0.01);
   expect = -1.5477352024e-01;
-  ck_assert_msg(fabs(eval - expect) <= 1e-10, "potential eval deriv returned= %16.10e expected= %16.10e\n", eval, expect);
+  ck_assert_msg(fabs(eval - expect) <= TOL_DER1, "potential eval deriv returned= %16.10e expected= %16.10e\n", eval, expect);
 }
 END_TEST
 
@@ -221,7 +235,7 @@ START_TEST(test_potential_eval_deriv2)
   pspio_potential_init(pot11, qn11, m1, v11);
   eval = pspio_potential_eval_deriv2(pot11, 0.01);
   expect = -5.8963771072e-03;
-  ck_assert_msg(fabs(eval - expect) <= 1e-10, "potential eval deriv2 returned= %16.10e expected= %16.10e\n", eval, expect);
+  ck_assert_msg(fabs(eval - expect) <= TOL_DER2, "potential eval deriv2 returned= %16.10e expected= %16.10e\n", eval, expect);
 }
 END_TEST
 
